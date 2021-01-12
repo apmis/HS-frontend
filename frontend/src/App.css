@@ -40,7 +40,17 @@
   padding-top: 0rem !important;
   padding-bottom: 0rem !important;
 }
-
+.pullup{
+  margin-top: -1rem;
+}
+.vscrollable{
+  overflow-y: auto;
+  max-height: 84vh ; /* 550px */
+}
+.layout{
+  display: flex;
+  flex-direction: column;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -52,6 +62,9 @@
 .minHt{
   height:2.5rem !important;
   margin-top: -10px !important;
+}
+.signupcenter{
+  margin-top: 5% !important;
 }
 
 .App-link {

@@ -10,10 +10,10 @@ export default function InventorySetup() {
                 <div className="column is-9">
                 <div class="tabs">
                         <ul>
-                            <li class="is-active"><a>Store</a></li>
-                            <li><a>Products</a></li>
-                            <li><a>Suppliers</a></li>
-                            <li><a>Documents</a></li>
+                            <li class="is-active"><div>Store</div></li>
+                            <li><div>Products</div></li>
+                            <li><div>Suppliers</div></li>
+                            <li><div>Documents</div></li>
                         </ul>
                     </div>
                     

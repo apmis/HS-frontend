@@ -13,6 +13,9 @@ body {
   font-size: 0.7rem !important;
   
 }
+.input{
+  height: 2.0em !important;
+}
 
 /* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

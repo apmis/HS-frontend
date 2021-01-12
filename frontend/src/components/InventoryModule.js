@@ -86,9 +86,7 @@ export default function InventoryModule() {
                         </Route>
 
                     </Switch>
-                        {/*  */}
-                   {/*  </div> */}
-               {/*  </div> */}
+                  
 
                 
             </section>

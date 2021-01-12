@@ -1,12 +1,15 @@
-import React from 'react'
-import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
+import React, {useContext, useEffect, useState} from 'react'
+import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-router-dom'
 import FacilityModule from './FacilityModule'
 import InventoryModule from './InventoryModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
+import {UserContext} from '../context'
+import client from '../feathers'
 
 export default function Home() {
     let { path, url } = useRouteMatch();
+    const {user,setUser} = useContext(UserContext)
     console.log(path)
 
     return (
@@ -30,6 +33,39 @@ export default function Home() {
 } 
 
 function NavBar({url}){
+    const {user,setUser} = useContext(UserContext)
+    const history =useHistory()
+    const [fullname, setFullname]=useState("")
+    const reAuth =  async() =>{
+        try{
+       const resp = await client.reAuthenticate();
+       setUser(resp.user)
+       console.log("reauth tried")
+        return
+        }
+        catch(error){
+            history.push("/")
+        }  
+    }
+
+    
+
+    useEffect( () => {
+        if(!user){
+            console.log("No user")
+            reAuth()
+            //history.push("/")    
+            return      
+        }
+        async function getFullname(){
+         const resp =   await setFullname(`${user.firstname + " " + user.lastname}`)
+        }
+        getFullname()
+      console.log(fullname)
+        return () => {
+            return
+        }
+    }, [user])
 
     return(
         <div>
@@ -68,7 +104,7 @@ function NavBar({url}){
                                 <span className="icon">
                                 <i className="fa fa-user-md"></i>
                                 </span>
-                                <span>Simpa Dania</span>
+                                <span>{fullname}</span>
                             </div>
                            
                         </div>
