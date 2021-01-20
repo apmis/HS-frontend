@@ -73,22 +73,23 @@ export function LocationCreate(){
     useEffect(()=>{
         //setFacility(user.activeLocation.FacilityId)//
       if (!user.stacker){
+          console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
             shouldValidate: true,
             shouldDirty: true
         }) 
       }
-    },[user])
+    })
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
         setMessage("")
         setError(false)
         setSuccess(false)
-          data.createdby=user._id
-          //console.log(data);
+         // data.createdby=user._id
+          console.log(data);
           if (user.currentEmployee){
-         // data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
         LocationServ.create(data)
         .then((res)=>{
@@ -172,7 +173,7 @@ export function LocationCreate(){
            <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
                 <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                 <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register({ required: true })} name="facility" type="text" placeholder="Facility" />
+                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
                     <span className="icon is-small is-left">
                     <i className="fas  fa-map-marker-alt"></i>
                     </span>
@@ -423,13 +424,13 @@ export function LocationList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th>First Name</th>
-                                        <th><abbr title="Last Name">Last Name</abbr></th>
-                                        <th><abbr title="Profession">Profession</abbr></th>
-                                        <th><abbr title="Phone">Phone</abbr></th>
+                                        <th>Name</th>
+                                        <th><abbr title="Last Name">Location Type</abbr></th>
+                                        {/*<th><abbr title="Profession">Profession</abbr></th>
+                                         <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th>
+                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
                                         <th><abbr title="Facility">Facility</abbr></th>
                                         <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
@@ -442,13 +443,13 @@ export function LocationList(){
 
                                             <tr key={Location._id} onClick={()=>handleRow(Location)}>
                                             <th>{i+1}</th>
-                                            <th>{Location.firstname}</th>
-                                            <td>{Location.lastname}</td>
-                                            <td>{Location.profession}</td>
+                                            <th>{Location.name}</th>
+                                            <td>{Location.locationType}</td>
+                                            {/*< td>{Location.profession}</td>
                                             <td>{Location.phone}</td>
                                             <td>{Location.email}</td>
                                             <td>{Location.department}</td>
-                                            <td>{Location.deptunit}</td>
+                                            <td>{Location.deptunit}</td> */}
                                             <td>{Location.facility}</td>
                                             <td><span   className="showAction"  >...</span></td>
                                            
@@ -502,31 +503,32 @@ export function LocationDetail(){
             </div>
             <div className="card-content vscrollable">
            
-            <fieldset>
+                <table> 
+                <tbody>         
                 <tr>
                     <td>
                 
                     <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        First Name: 
+                        Name: 
                         </label>
                         </td>
                         <td>
-                        <span className="is-medium "   name="LocationName"> {Location.firstname} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Location.name} </span>
                         </td>
                     </tr>
                     <tr>
                     <td>
                 <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
-                    </span>Last Name:
+                    </span>Location Type:
                     </label></td>
                     <td>
-                    <span className="is-small "  name="LocationAddress">{Location.lastname} </span> 
+                    <span className="is-size-7 padleft"   name="LocationType">{Location.locationType} </span> 
                     </td>
                 </tr>
-                    <tr>
+                  {/*   <tr>
                     <td>
             <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-map-marker-alt"></i>
@@ -536,7 +538,7 @@ export function LocationDetail(){
                     </label>
                     </td>
                 <td>
-                <span className="is-small "  name="LocationCity">{Location.profession}</span> 
+                <span className="is-size-7 padleft "  name="LocationCity">{Location.profession}</span> 
                 </td>
                 </tr>
                     <tr>
@@ -548,7 +550,7 @@ export function LocationDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-small "  name="LocationContactPhone" >{Location.phone}</span>
+                        <span className="is-size-7 padleft "  name="LocationContactPhone" >{Location.phone}</span>
                         </td>
                   </tr>
                     <tr><td>
@@ -558,7 +560,7 @@ export function LocationDetail(){
                     </span>Email:                     
                     
                          </label></td><td>
-                         <span className="is-small "  name="LocationEmail" >{Location.email}</span>
+                         <span className="is-size-7 padleft "  name="LocationEmail" >{Location.email}</span>
                          </td>
              
                 </tr>
@@ -569,7 +571,7 @@ export function LocationDetail(){
                     
                     </label></td>
                     <td>
-                    <span className="is-small "  name="LocationOwner">{Location.department}</span>
+                    <span className="is-size-7 padleft "  name="LocationOwner">{Location.department}</span>
                     </td>
                
                 </tr>
@@ -581,22 +583,23 @@ export function LocationDetail(){
                     
                 </label></td>
                 <td>
-                <span className="is-small "  name="LocationType">{Location.deptunit}</span>
+                <span className="is-size-7 padleft "  name="LocationType">{Location.deptunit}</span>
                 </td>
               
-                </tr>
+                </tr> */}
                     
           {/*   <div className="field">
              <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>Category:              
-                    <span className="is-small "  name= "LocationCategory">{Location.LocationCategory}</span>
+                    <span className="is-size-7 padleft "  name= "LocationCategory">{Location.LocationCategory}</span>
                 </label>
                  </div> */}
 
-
+            </tbody> 
+            </table> 
            
-            <div className="field">
+            <div className="field mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
@@ -604,7 +607,7 @@ export function LocationDetail(){
                 </p>
             </div>
             { error && <div className="message"> {message}</div>}
-            </fieldset>
+           
         </div>
         </div>
         </>
@@ -631,15 +634,15 @@ export function LocationModify(){
     const Location =state.LocationModule.selectedLocation 
 
         useEffect(() => {
-            setValue("firstname", Location.firstname,  {
+            setValue("name", Location.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("lastname", Location.lastname,  {
+            setValue("locationType", Location.locationType,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("profession", Location.profession,  {
+           /*  setValue("profession", Location.profession,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
@@ -658,7 +661,7 @@ export function LocationModify(){
             setValue("deptunit", Location.deptunit,  {
                 shouldValidate: true,
                 shouldDirty: true
-            })
+            }) */
           /*   setValue("LocationCategory", Location.LocationCategory,  {
                 shouldValidate: true,
                 shouldDirty: true
@@ -779,9 +782,9 @@ export function LocationModify(){
            
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
-                    <label className="label is-small">First Name
+                    <label className="label is-small"> Name
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input  is-small" ref={register({ required: true })}  name="firstname" type="text" placeholder="First Name" />
+                        <input className="input  is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
@@ -789,9 +792,9 @@ export function LocationModify(){
                     </label>
                     </div>
                 <div className="field">
-                <label className="label is-small">Last Name
+                <label className="label is-small">Location Type
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="lastname" type="text" placeholder="Last Name" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="locationType" type="text" placeholder="Location Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -799,7 +802,7 @@ export function LocationModify(){
                 </p>
                 </label>
                 </div>
-            <div className="field">
+            {/* <div className="field">
             <label className="label is-small">Profession
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
@@ -849,7 +852,7 @@ export function LocationModify(){
                     </span>
                 </p>
                 </label>
-                </div>
+                </div> */}
            {/*  <div className="field">
             <label className="label is-small">Category
                 <p className="control has-icons-left">
@@ -863,8 +866,8 @@ export function LocationModify(){
            
            
             </form>
-            <div className="block">
-            <div className="field  is-grouped">
+            
+            <div className="field  is-grouped mt-2" >
                 <p className="control">
                     <button type="submit" className="button is-success is-small" onClick={handleSubmit(onSubmit)}>
                         Save
@@ -880,7 +883,6 @@ export function LocationModify(){
                        Delete
                     </button>
                 </p>
-            </div>
             </div>
         </div>
         </div>
