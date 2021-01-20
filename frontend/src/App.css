@@ -45,12 +45,33 @@
 }
 .vscrollable{
   overflow-y: auto;
-  max-height: 84vh ; /* 550px */
+  max-height: 100vh ; /* 550px */
+}
+.vscrollable-table{
+  overflow-y: auto;
+  max-height: 75vh ; 
 }
 .layout{
   display: flex;
   flex-direction: column;
 }
+
+.onTop{
+  z-index: 50;
+  position: absolute;
+  background-color: lightslategray;
+  cursor: pointer;
+  margin-top: -12px;
+  width: 200px;
+
+}
+.dropdown-item{
+  padding-top: 0px !important;
+  /*padding-bottom: 0px !important;
+   margin-bottom: 0px; */
+  cursor: pointer;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

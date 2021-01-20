@@ -19,7 +19,7 @@ const onSubmit = (data,e) =>{
         setError(false)
            const  email=data.email
            const password=data.password
-          console.log(data);
+         
           
           client.authenticate({
             strategy:'local',
@@ -30,6 +30,7 @@ const onSubmit = (data,e) =>{
                 e.target.reset();
                await setUser(res.user)
                console.log(user)
+               localStorage.setItem("user",JSON.stringify(res.user))
                history.push("/app")
 
             })

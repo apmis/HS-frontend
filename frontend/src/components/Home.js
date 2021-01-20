@@ -10,7 +10,9 @@ import client from '../feathers'
 export default function Home() {
     let { path, url } = useRouteMatch();
     const {user,setUser} = useContext(UserContext)
-    console.log(path)
+
+    
+    //console.log(path)
 
     return (
         <div>
@@ -33,45 +35,90 @@ export default function Home() {
 } 
 
 function NavBar({url}){
+    const [fullname, setFullname]=useState("")
+    const [userFacility, setUserFacility]=useState()
     const {user,setUser} = useContext(UserContext)
     const history =useHistory()
-    const [fullname, setFullname]=useState("")
+    
     const reAuth =  async() =>{
         try{
-       const resp = await client.reAuthenticate();
-       setUser(resp.user)
-       console.log("reauth tried")
-        return
-        }
+            const resp = await client.reAuthenticate();
+            //console.log(resp)
+            await setUser(resp.user)
+            /* console.log("lastname:",  user.lastname)
+            console.log("reauth tried")
+            */
+           console.log(user)
+            return
+            }
         catch(error){
-            history.push("/")
+            console.log(error)
+           history.push("/")
         }  
     }
 
-    
+    /* useEffect(() => {
+        const localUser= JSON.parse(localStorage.getItem("user"))
+        setUser(localUser)
+        console.log(user)
+        return () => {
+           
+        }
+    }, []) */
+
 
     useEffect( () => {
         if(!user){
-            console.log("No user")
+           console.log("No user")
             reAuth()
+          
             //history.push("/")    
-            return      
+             return
         }
+
         async function getFullname(){
-         const resp =   await setFullname(`${user.firstname + " " + user.lastname}`)
+            const zed= user.firstname+" "+user.lastname
+         const resp =   await setFullname(zed)
+        // console.log(zed)
+         if (user.employeeData.length){
+            user.currentEmployee= user.employeeData[0]
+            const fac=  user.currentEmployee.facilityDetail.facilityName
+           await setUserFacility(fac)
+         }else{
+            user.currentEmployee= null
+           
+         }
+        
+         await setUser(user)
+         localStorage.setItem("user",JSON.stringify(user))
+         
+         
+         
         }
         getFullname()
-      console.log(fullname)
+        console.log(user)
+       /*  console.log(user.lastname)
+      console.log(user) */
         return () => {
-            return
+            
         }
-    }, [user])
+    },[] )
 
+    const handleFacilityClick=()=>{
+        const availableFacilities=[]
+        if (Array.isArray(user.employeeData)&& user.employeeData.length){
+            user.employeeData.map((emp)=>{
+             return   availableFacilities.push(emp.facilityDetail)
+            })
+        }
+        console.log(availableFacilities)
+    }
+    if (!user) return 'Loading...'
     return(
         <div>
-           <nav className="navbar is-small minHt" role="navigation" aria-label="main navigation">
+           <nav className="navbar is-small minHt has-background-info" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
-                    <div className="navbar-item is-size-5 "> <strong>Foremost Base Hospital </strong> </div>
+                    <div className="navbar-item is-size-5 " onClick={handleFacilityClick}> <strong>{userFacility ||""} </strong> </div>
                     {/* <div className="navbar-item" href="https://bulma.io">
                     <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
                     </div> */}
@@ -105,6 +152,8 @@ function NavBar({url}){
                                 <i className="fa fa-user-md"></i>
                                 </span>
                                 <span>{fullname}</span>
+                                
+                                {/* <span>{user.firstname}</span> */}
                             </div>
                            
                         </div>

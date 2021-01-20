@@ -217,7 +217,10 @@ export function FacilityList(){
                     $options:'i'
                    
                 },
-                $limit:20
+                $limit:10,
+                $sort: {
+                    createdAt: -1
+                  }
                     }}).then((res)=>{
                 console.log(res)
                setFacilities(res.data)
@@ -239,7 +242,13 @@ export function FacilityList(){
         }
      */
         const getFacilities=()=>{
-            facilityServ.find()
+            facilityServ.find({query: {
+              
+                $limit:20,
+                $sort: {
+                    createdAt: -1
+                  }
+                    }})
             .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
@@ -265,7 +274,7 @@ export function FacilityList(){
         }
     },[])
 
-
+    //todo: pagination and vertical scroll bar
 
     return(
             <>   
@@ -294,8 +303,8 @@ export function FacilityList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth">
+                <div className="table-container pullup ">
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="S/No">S/No</abbr></th>

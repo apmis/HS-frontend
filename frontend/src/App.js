@@ -1,44 +1,113 @@
 //import logo from './logo.svg';
 import './App.css';
-import {BrowserRouter as Router, Route,  Switch} from 'react-router-dom'
+import {BrowserRouter as Router, Route,  Switch, Redirect} from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/Login' 
 import SignUp from './components/SignUp'
-import {useState} from 'react'
+import {useState, useContext, useEffect} from 'react'
 import {UserContext,ObjectContext} from './context'
+import MyUserProvider from './context'
+import client from './feathers'
 
 import 'bulma/css/bulma.css'
 import "@fortawesome/fontawesome-free/css/all.css"; 
 
+
 function App() {
-  const [user,setUser] = useState()
+  
   const [state,setState] = useState({
     facilityModule:{
       show:'create',
       selectedFacility:{}
+    },
+    EmployeeModule:{
+      show:'create',
+      selectedEmployee:{}
+    },
+    LocationModule:{
+      show:'create',
+      selectedLocation:{}
     }
   })
+  
+ 
   return (
     <ObjectContext.Provider value={{state,setState}}>
-    <UserContext.Provider value={{user,setUser}}>
+   {/*  <UserContext.Provider value={{user,setUser}}> */}
+   <MyUserProvider>
     <Router>
       <div className="App has-background-info">
         <Switch>
           <Route path='/signup' exact>
             <SignUp />
           </Route>
-          <Route path='/app' >
+         <ProtectedRoute path='/app' >
             <Home/>
-          </Route>
+          </ProtectedRoute>
           <Route path='/' exact>
             <Login /> 
+          </Route>
+          <Route path='*' >
+            <div>404-not found</div>
           </Route>
         </Switch>  
       </div>
     </Router>
-    </UserContext.Provider>
+    </MyUserProvider>
+    {/* </UserContext.Provider> */}
     </ObjectContext.Provider>
   );
 }
 
 export default App;
+
+// eslint-disable-next-line 
+const ProtectedRoute =({children,...props})=>{
+  
+  const {user,setUser} = useContext(UserContext)
+
+ 
+useEffect(()=>{
+const check=async ()=>{
+  if (!user){
+    (async () => {
+      try {
+        // First try to log in with an existing JWT
+        const resp= await client.reAuthenticate();
+            console.log(resp)
+           const user1=await resp.user 
+           return    await setUser(resp.user)
+        
+      } catch (error) {
+        // If that errors, log in with email/password
+        // Here we would normally show a login page
+        // to get the login information
+        /* return await client.authenticate({
+          strategy: 'local',
+          email: 'hello@feathersjs.com',
+          password: 'supersecret'
+        }); */
+        console.log(error)
+      }
+    })()
+   }
+}
+ check().then((resp)=>{
+  console.log("testing")
+ })
+  
+}, [])
+
+
+  return  (<Route {...props} render={({location}) => {
+    return  user/* fakeAuth.isAuthenticated === true */
+      ? children
+      : <Redirect to={{
+        pathname: '/',
+        state: { from: location }
+      }} />
+  }} />)
+  /* user? <Route {...props}>{children}</Route>:<Redirect to='/'></Redirect> */
+
+}
+

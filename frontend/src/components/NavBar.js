@@ -3,9 +3,10 @@ import {Route, Switch,  useRouteMatch, Link} from 'react-router-dom'
 
 export default function NavBar() {
     let { path, url } = useRouteMatch();
+    
     return (
         <div>
-           <nav className="navbar is-small minHt" role="navigation" aria-label="main navigation">
+           <nav className="navbar is-small minHt has-background-info" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
                     <div className="navbar-item is-4 "> <strong>Health Stack </strong> </div>
                     {/* <div className="navbar-item" href="https://bulma.io">
