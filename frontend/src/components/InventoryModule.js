@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import InventoryReport from './inventory/InventoryReport'
 import InventorySetup from './inventory/InventorySetup'
@@ -8,9 +8,19 @@ import ProductEntry from './inventory/ProductEntry'
 import ProductExit from './inventory/ProductExit'
 import Products from './inventory/Products'
 import Store from './inventory/Store'
+import {UserContext,ObjectContext} from '../context'
 
 export default function InventoryModule() {
+    const {state}=useContext(ObjectContext) //,setState
+    // eslint-disable-next-line
+    const [selectedStore,setSelectedStore]=useState()
+
     let { path, url } = useRouteMatch();
+    useEffect(()=>{
+     setSelectedStore(state.StoreModule.selectedStore)
+
+    },[state.StoreModule])
+
     return (
             <section className="section has-background-info remPad">
                {/*  <div className=""> */}
@@ -18,7 +28,7 @@ export default function InventoryModule() {
                         <div className="container ">
                             <div className="navbar-brand ">
                                 <div className="navbar-item ">
-                                    <span className="is-size-6 has-text-weight-medium">Health Stack::Pharmacy</span> 
+    <span className="is-size-6 has-text-weight-medium">Health Stack::Inventory::{selectedStore?selectedStore.name:""}</span> 
                                 </div>
                             {/* <div className="navbar-item">
                                 <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
@@ -33,6 +43,9 @@ export default function InventoryModule() {
                                 <div className="navbar-end">
                                     <div className="navbar-item">
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
+                                    </div>
+                                    <div className="navbar-item">
+                                        <NavLink to={`${url}/inv-stores`}>Stores</NavLink>
                                     </div>
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/inv-admin`}>Admin</NavLink>
@@ -90,6 +103,9 @@ export default function InventoryModule() {
                         </Route>
                         <Route path={`${path}/inv-reports`} exact>
                             <InventoryReport />
+                        </Route>
+                        <Route path={`${path}/inv-stores`} exact>
+                            <Store />
                         </Route>
 
                     </Switch>

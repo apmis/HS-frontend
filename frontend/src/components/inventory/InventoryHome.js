@@ -10,17 +10,17 @@ export default function InventoryHome() {
                 <div className="columns ">
                     <div className="column is-9">
                    
-                        <div class="field">
-                            <p class="control has-icons-left  ">
-                                <input class="input is-small sz2" type="text" placeholder="Search Inventory" />
-                                <span class="icon is-small is-left">
-                                <i class="fas fa-search"></i>
+                        <div className="field">
+                            <p className="control has-icons-left  ">
+                                <input className="input is-small sz2" type="text" placeholder="Search Inventory" />
+                                <span className="icon is-small is-left">
+                                <i className="fas fa-search"></i>
                                 </span>
                             </p>
                         </div>
-                        <div class="table-container">
+                        <div className="table-container">
                         
-                                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth">
                                     <thead>
                                         <tr>
                                         <th><abbr title="S/No">S/No</abbr></th>
@@ -78,7 +78,7 @@ export default function InventoryHome() {
                                         <td>70</td>
                                         
                                         </tr>
-                                        <tr class="is-selected">
+                                        <tr className="is-selected">
                                         <th>4</th>
                                         <td><a href="https://en.wikipedia.org/wiki/Manchester_City_F.C." title="Manchester City F.C.">Manchester City</a></td>
                                         <td>38</td>
