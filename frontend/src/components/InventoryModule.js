@@ -6,6 +6,7 @@ import InventoryStore from './inventory/InventoryStore'
 import InventoryHome from './inventory/InventoryHome'
 import ProductEntry from './inventory/ProductEntry'
 import ProductExit from './inventory/ProductExit'
+import Products from './inventory/Products'
 import Store from './inventory/Store'
 
 export default function InventoryModule() {
@@ -46,6 +47,9 @@ export default function InventoryModule() {
                                         <NavLink to={`${url}/inv-exit`}>Product Exit</NavLink>
                                     </div>
                                     <div className="navbar-item">
+                                        <NavLink to={`${url}/inv-products`}>Products</NavLink>
+                                    </div>
+                                    <div className="navbar-item">
                                         <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
                                     </div>
                                 {/* <span className="navbar-item">
@@ -80,6 +84,9 @@ export default function InventoryModule() {
                         </Route>
                         <Route path={`${path}/inv-exit`} exact>
                             <ProductExit/>
+                        </Route>
+                        <Route path={`${path}/inv-products`} exact>
+                            <Products />
                         </Route>
                         <Route path={`${path}/inv-reports`} exact>
                             <InventoryReport />

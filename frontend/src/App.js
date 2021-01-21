@@ -27,6 +27,10 @@ function App() {
     LocationModule:{
       show:'create',
       selectedLocation:{}
+    },
+    ProductModule:{
+      show:'create',
+      selectedProduct:{}
     }
   })
   

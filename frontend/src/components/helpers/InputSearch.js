@@ -2,7 +2,8 @@ import React, {useState,useContext, useEffect} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 
-export default function InputSearch2() {
+export  function InputSearch({getSearchfacility,clear}) {
+    
     const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
@@ -10,11 +11,26 @@ export default function InputSearch2() {
      // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
      // eslint-disable-next-line
-   const [message, setMessage] = useState("") 
+   const [searchMessage, setSearchMessage] = useState("") 
+   // eslint-disable-next-line 
+   const [simpa,setSimpa]=useState("")
+   // eslint-disable-next-line 
+   const [chosen,setChosen]=useState(false)
+   // eslint-disable-next-line 
+   const [count,setCount]=useState(0)
+   const inputEl=useRef(null)
+
 
    const handleRow= async(obj)=>{
-        await setSelectedFacility(obj)
+        await setChosen(true)
+        //alert("something is chaning")
+       getSearchfacility(obj)
+       
+       await setSimpa(obj.facilityName)
+       
+        // setSelectedFacility(obj)
         setShowPanel(false)
+        await setCount(2)
         /* const    newfacilityModule={
             selectedFacility:facility,
             show :'detail'
@@ -22,11 +38,30 @@ export default function InputSearch2() {
    await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
    //console.log(state)
 }
-
-    const handleSearch=(val)=>{
+    const handleBlur=async(e)=>{
+         if (count===2){
+             console.log("stuff was chosen")
+         }
+       
+       /*  console.log("blur")
+         setShowPanel(false)
+        console.log(JSON.stringify(simpa))
+        if (simpa===""){
+            console.log(facilities.length)
+            setSimpa("abc")
+            setSimpa("")
+            setFacilities([])
+            inputEl.current.setValue=""
+        }
+        console.log(facilities.length)
+        console.log(inputEl.current) */
+    }
+    const handleSearch=async(val)=>{
+        
         const field='facilityName' //field variable
-        console.log(val)
-        facilityServ.find({query: {     //service
+       
+        if (val.length>=3){
+            facilityServ.find({query: {     //service
                  [field]: {
                      $regex:val,
                      $options:'i'
@@ -37,10 +72,10 @@ export default function InputSearch2() {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-                 console.log(res)
+              console.log("facility  fetched successfully") 
                 setFacilities(res.data)
-                 setMessage(" facility  fetched successfully")
-                 setShowPanel(false)
+                 setSearchMessage(" facility  fetched successfully")
+                 setShowPanel(true)
              })
              .catch((err)=>{
                  console.log(err)
@@ -48,48 +83,59 @@ export default function InputSearch2() {
                  setSearchError(true)
              })
          }
+        else{
+            console.log("less than 3 ")
+            console.log(val)
+            setShowPanel(false)
+            await setFacilities([])
+            console.log(facilities)
+        }
+    }
+    useEffect(() => {
+       if (clear){
+           setSimpa("")
+       }
+        return () => {
+            
+        }
+    }, [clear] )
     return (
         <div>
             <div className="field">
-                <p className="control has-icons-left  ">
-                    <DebounceInput className="input is-small " 
-                        type="text" placeholder="Search Facilities"
-                        minLength={3}
-                        debounceTimeout={400}
-                        onChange={(e)=>handleSearch(e.target.value)} />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-search"></i>
-                    </span>
-                </p>
+                <div className="control has-icons-left  ">
+                    <div className={`dropdown ${showPanel?"is-active":""}`}>
+                        <div className="dropdown-trigger">
+                            <DebounceInput className="input is-small " 
+                                type="text" placeholder="Search Facilities"
+                                value={simpa}
+                                minLength={1}
+                                debounceTimeout={400}
+                                onBlur={(e)=>handleBlur(e)}
+                                onChange={(e)=>handleSearch(e.target.value)}
+                                inputRef={inputEl}
+                                  />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-search"></i>
+                            </span>
+                        </div>
+                        {searchError&&<div>{searchMessage}</div>}
+                        <div className="dropdown-menu" >
+                            <div className="dropdown-content">
+                            {facilities.map((facility, i)=>(
+                                    
+                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
+                                        
+                                        <span>{facility.facilityName}</span>
+                                        
+                                    </div>
+                                    
+                                    ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          {showPanel &&  <div className="onTop">
-            <table>
-              <tbody>
-                {searchError&&<tr>{searchMessage}</tr>}
-                 {setTimeout(() => {
-                    setSearchError(false)
-                }, 200)}
-                
-               
-                {facilities.map((facility, i)=>(
-
-                    <tr key={facility._id} onClick={()=>handleRow(facility)}>
-                        <td>{i+1}</td>
-                        <td>{facility.facilityName}</td>
-                        {/*< td>{facility.facilityAddress}</td>
-                        <td>{facility.facilityCity}</td>
-                        <td>{facility.facilityContactPhone}</td>
-                        <td>{facility.facilityEmail}</td>
-                        <td>{facility.facilityType}</td>
-                        <td>{facility.facilityCategory}</td>
-                    
-                    <td><span   className="showAction"  >...</span></td> */}
-                    </tr>
-
-                ))}
-             </tbody>
-            </table>
-            </div>}
+          
         </div>
     )
 }
