@@ -214,6 +214,8 @@ export function ProductEntryCreate(){
 
       } 
 
+    
+
     return (
         <>
             <div className="card ">
@@ -441,6 +443,7 @@ export function ProductEntryList(){
                     $options:'i'
                    
                 },
+                storeId:state.StoreModule.selectedStore._id,
                facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
                 $sort: {
@@ -476,6 +479,13 @@ export function ProductEntryList(){
                 }
                 else {
                     if (user.stacker){
+                        /* toast({
+                            message: 'You do not qualify to view this',
+                            type: 'is-danger',
+                            dismissible: true,
+                            pauseOnHover: true,
+                          }) 
+                          return */
                         const findProductEntry= await ProductEntryServ.find(
                             {query: {
                                 
@@ -515,8 +525,16 @@ export function ProductEntryList(){
 
             useEffect(() => {
                
-                if (user){
+                if (!state.StoreModule.selectedStore){
+                    toast({
+                        message: 'kindly select a store',
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      }) 
+                      return
                     getFacilities()
+
                 }else{
                     /* const localUser= localStorage.getItem("user")
                     const user1=JSON.parse(localUser)
@@ -535,12 +553,18 @@ export function ProductEntryList(){
                 }
             },[])
 
-
+            useEffect(() => {
+                getFacilities()
+                console.log("store changed")
+                return () => {
+                   
+                }
+            }, [state.StoreModule.selectedStore])
     //todo: pagination and vertical scroll bar
 
     return(
         <>
-           {user?( <>  
+           {state.StoreModule.selectedStore?( <>  
                 <div className="level">
                     <div className="level-left">
                         <div className="level-item">
@@ -603,7 +627,7 @@ export function ProductEntryList(){
                                     </table>
                                     
                 </div>              
-            </>):<div>loading</div>}
+            </>):<div>loading... Choose a Store</div>}
             </>
               
     )

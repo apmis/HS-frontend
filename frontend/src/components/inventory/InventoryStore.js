@@ -294,9 +294,8 @@ export function InventoryList(){
             }
        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
        //console.log(state)
-        
-
     }
+
     const handleRow= async(Inventory)=>{
         //console.log("b4",state)
 
@@ -346,6 +345,7 @@ export function InventoryList(){
         const findInventory= await InventoryServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
+                    storeId:state.StoreModule.selectedStore._id,
                     $limit:20,
                     $sort: {
                         createdAt: -1
@@ -414,7 +414,13 @@ export function InventoryList(){
                 
                 }
             },[])
-
+        
+        useEffect(() => {
+            getFacilities()
+            return () => {
+               
+            }
+        }, [state.StoreModule.selectedStore])
 
     //todo: pagination and vertical scroll bar
 

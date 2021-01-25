@@ -17,13 +17,25 @@ export default function InventoryModule() {
     const [showModal,setShowModal]=useState(false)
 
     let { path, url } = useRouteMatch();
+    
+    useEffect(() => {
+       
+        console.log("starting up inventory module")
+        if (!selectedStore){
+            handleChangeStore()
+
+            }
+         return () => {       
+            }
+        }, [])
+   
     useEffect(()=>{
      setSelectedStore(state.StoreModule.selectedStore)
 
     },[state.StoreModule])
 
-    const handleChangeStore=()=>{
-        setShowModal(true)                                                                                                                                                        
+    const handleChangeStore= async()=>{
+        await setShowModal(true)                                                                                                                                                        
         console.log( showModal)
     }
 
