@@ -416,14 +416,14 @@ export function StoreList({standalone}){
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Stores </span></div>
                     <div className="level-right">
-                { standalone &&   <div className="level-item"> 
+                { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
                         </div>}
                     </div>
 
                 </div>
                 <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
@@ -435,7 +435,7 @@ export function StoreList({standalone}){
                                         <th><abbr title="Department">Department</abbr></th>
                                         <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
                                         <th><abbr title="Facility">Facility</abbr></th>*/}
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                       { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -454,7 +454,7 @@ export function StoreList({standalone}){
                                             <td>{Store.department}</td>
                                             <td>{Store.deptunit}</td> 
                                             <td>{Store.facility}</td>*/}
-                                            <td><span   className="showAction"  >...</span></td>
+                                          { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
                                             </tr>
 

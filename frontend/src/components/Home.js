@@ -163,7 +163,7 @@ function NavBar({url}){
                                     <NavLink to={`${url}`}>Landing Page</NavLink> 
                                 </div>
                                 <div className="navbar-item">
-                                    <NavLink to={`${url}/inventory`}>Pharmacy</NavLink>
+                                    <NavLink to={`${url}/inventory`}>Inventory</NavLink>
                                 </div>
                                 <div className="navbar-item">
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>

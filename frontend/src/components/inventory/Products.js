@@ -898,8 +898,8 @@ export function ProductModify(){
 }   
 
 export  function InputSearch({getSearchfacility,clear}) {
-    
-    const facilityServ=client.service('facility')
+    const ProductServ=client.service('products')
+   // const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -956,7 +956,7 @@ export  function InputSearch({getSearchfacility,clear}) {
         const field='facilityName' //field variable
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            ProductServ.find({query: {     //service
                  [field]: {
                      $regex:val,
                      $options:'i'

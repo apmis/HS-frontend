@@ -43,6 +43,10 @@
 .pullup{
   margin-top: -1rem;
 }
+
+.card-content form input{
+  margin-bottom: 1rem;
+}
 .vscrollable{
   overflow-y: auto;
   max-height: 100vh ; /* 550px */

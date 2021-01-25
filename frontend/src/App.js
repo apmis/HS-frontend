@@ -35,6 +35,14 @@ function App() {
     StoreModule:{
       show:'create',
       selectedStore:{}
+    },
+    InventoryModule:{
+      show:'create',
+      selectedInventory:{}
+    },
+    ProductEntryModule:{
+      show:'create',
+      selectedProductEntry:{}
     }
   })
   

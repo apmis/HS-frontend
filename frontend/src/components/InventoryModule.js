@@ -7,13 +7,14 @@ import InventoryHome from './inventory/InventoryHome'
 import ProductEntry from './inventory/ProductEntry'
 import ProductExit from './inventory/ProductExit'
 import Products from './inventory/Products'
-import Store from './inventory/Store'
+import Store, { StoreList } from './inventory/Store'
 import {UserContext,ObjectContext} from '../context'
 
 export default function InventoryModule() {
-    const {state}=useContext(ObjectContext) //,setState
+    const {state,setState}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
+    const [showModal,setShowModal]=useState(false)
 
     let { path, url } = useRouteMatch();
     useEffect(()=>{
@@ -21,15 +22,24 @@ export default function InventoryModule() {
 
     },[state.StoreModule])
 
+    const handleChangeStore=()=>{
+        setShowModal(true)                                                                                                                                                        
+        console.log( showModal)
+    }
+
     return (
             <section className="section has-background-info remPad">
+               
                {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
                         <div className="container ">
                             <div className="navbar-brand ">
                                 <div className="navbar-item ">
-    <span className="is-size-6 has-text-weight-medium">Health Stack::Inventory::{selectedStore?selectedStore.name:""}</span> 
+                                    <span className="is-size-6 has-text-weight-medium">
+                                        Health Stack::Inventory::{selectedStore?selectedStore.name:""}</span>
+                                        <button className="button is-small is-info" onClick={()=>handleChangeStore()}>Change Store</button> 
                                 </div>
+                                
                             {/* <div className="navbar-item">
                                 <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
                             </div> */}
@@ -77,6 +87,7 @@ export default function InventoryModule() {
                             </div>
                         </div>
                     </nav>
+                    
                {/*  </div> */}
                 
                 {/* <div className="section"> */}
@@ -111,7 +122,22 @@ export default function InventoryModule() {
                     </Switch>
                   
 
-                
+                    <div className={`modal ${showModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Choose Store</p>
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        <StoreList standalone="true" />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>        
             </section>
     )
 }
