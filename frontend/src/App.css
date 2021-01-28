@@ -43,7 +43,9 @@
 .pullup{
   margin-top: -1rem;
 }
-
+.card-overflow{
+  overflow: visible !important;
+}
 .card-content form input{
   margin-bottom: 1rem;
 }

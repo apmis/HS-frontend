@@ -162,7 +162,8 @@ export function ProductEntryCreate(){
         })
         productEntry.productitems=productItem
         productEntry.createdby=user._id
-        
+        productEntry.transactioncategory="credit"
+
           console.log("b4 facility",productEntry);
           if (user.currentEmployee){
          productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
@@ -218,13 +219,13 @@ export function ProductEntryCreate(){
 
     return (
         <>
-            <div className="card ">
+            <div className="card card-overflow">
             <div className="card-header">
                 <p className="card-header-title">
                     Create ProductEntry: Product Entry- Initialization, Purchase Invoice, Audit
                 </p>
             </div>
-            <div className="card-content vscrollable">
+            <div className="card-content ">
    
             <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit) */}
             <div className="field is-horizontal">
@@ -280,7 +281,7 @@ export function ProductEntryCreate(){
             </div>
             <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={e=>setTotalamount(e.target.value)} placeholder=" Total Amount"/>
+                    <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={async e=> await setTotalamount(e.target.value)} placeholder=" Total Amount"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-coins"></i>
                     </span>

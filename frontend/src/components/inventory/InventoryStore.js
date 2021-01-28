@@ -513,10 +513,75 @@ export function InventoryDetail(){
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
-
+    const {user} = useContext(UserContext) //,setUser
+    
    
 
    const Inventory =state.InventoryModule.selectedInventory 
+   console.log("selected",Inventory)
+
+   
+  const getFacilities= async()=>{
+    
+    
+     const findProductEntry= await client.service('productentry').find(
+        {query: {
+            'productitems.productId':Inventory.productId,
+            facility:user.currentEmployee.facilityDetail._id,
+            storeId:state.StoreModule.selectedStore._id,
+            $limit:20,
+            $sort: {
+                createdAt: -1
+            }
+            }})
+
+        console.log(findProductEntry)
+       }
+    
+       useEffect(() => {
+        getFacilities()
+           return () => {
+               
+           }
+       }, [Inventory])
+ /* await setFacilities(findProductEntry.data)
+        }
+        else {
+            if (user.stacker){ */
+                /* toast({
+                    message: 'You do not qualify to view this',
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+                  return */
+               /*  const findProductEntry= await ProductEntryServ.find(
+                    {query: {
+                        
+                        $limit:20,
+                        $sort: {
+                            createdAt: -1
+                        }
+                        }})
+    
+            await setFacilities(findProductEntry.data)
+
+            }
+        }  */
+  /*   .then((res)=>{
+        console.log(res)
+            setFacilities(res.data)
+            setMessage(" ProductEntry  fetched successfully")
+            setSuccess(true)
+        })
+        .catch((err)=>{
+            setMessage("Error creating ProductEntry, probable network issues "+ err )
+            setError(true)
+        }) */
+    
+    
+
+
 
     const handleEdit= async()=>{
         const    newInventoryModule={
@@ -546,14 +611,14 @@ export function InventoryDetail(){
                     <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        Name: 
+                        Product Name: 
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"> {Inventory.name} </span>
+                        <span className="is-size-7 padleft"   name="name"><strong> {Inventory.name} </strong></span>
                         </td>
                     </tr>
-                    <tr>
+                   {/*  <tr>
                     <td>
                 <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
@@ -562,82 +627,30 @@ export function InventoryDetail(){
                     <td>
                     <span className="is-size-7 padleft"   name="InventoryType">{Inventory.InventoryType} </span> 
                     </td>
-                </tr>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
-                    </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="InventoryCity">{Inventory.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="InventoryContactPhone" >{Inventory.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="InventoryEmail" >{Inventory.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="InventoryOwner">{Inventory.department}</span>
-                    </td>
-               
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="InventoryType">{Inventory.deptunit}</span>
-                </td>
-              
                 </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "InventoryCategory">{Inventory.InventoryCategory}</span>
-                </label>
-                 </div> */}
 
             </tbody> 
             </table> 
            
-            <div className="field mt-2">
+            <div className="field mt-2 is-grouped">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
-                        Edit
+                        Set Price
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-danger is-small"  /*  onClick={handleSetPrice} */>
+                        Audit
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-info is-small" /* onClick={handleEdit} */>
+                        Transaction History
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-warning is-small" /* onClick={handleEdit} */>
+                        Reorder Level
                     </button>
                 </p>
             </div>
@@ -659,72 +672,62 @@ export function InventoryModify(){
     const [success, setSuccess] =useState(false)
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
+    const [billservice,setBillService] = useState()
     // eslint-disable-next-line 
     const InventoryServ=client.service('inventory')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
+    const billServ=client.service('billing')
 
-    const Inventory =state.InventoryModule.selectedInventory 
-
-        useEffect(() => {
-            setValue("name", Inventory.name,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("InventoryType", Inventory.InventoryType,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-           /*  setValue("profession", Inventory.profession,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("phone", Inventory.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", Inventory.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("department", Inventory.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", Inventory.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("InventoryCategory", Inventory.InventoryCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
+    const Inventory =state.InventoryModule.selectedInventory // set inventory
+    const handleSetPrice = async()=>{
+    
+        const service = await  billServ.get(Inventory.billingId) // get the service
+            const contractSel= service.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
             
+            setValue("price", contractSel[0].price,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("oldprice", contractSel[0].price,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            await setBillService(service)
+            console.log(contractSel,service)
+    }
+ 
+        useEffect(() => {
+            handleSetPrice()
+     
             return () => {
                 
             }
-        })
+        },[])
 
    const handleCancel=async()=>{
+   
     const    newInventoryModule={
         selectedInventory:{},
-        show :'create'
+        show :'detail'
       }
-   await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newInventoryModule={
-            selectedInventory:{},
-            show :'create'
-        }
+            const    newInventoryModule={
+                selectedInventory:{},
+                show :'detail'
+            }
         setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
 
         }
+
+
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
@@ -772,16 +775,17 @@ export function InventoryModify(){
         
         setSuccess(false)
         console.log(data)
-        data.facility=Inventory.facility
+       // data.facility=Inventory.facility
           //console.log(data);
-          
-        InventoryServ.patch(Inventory._id,data)
+          const contractSel= billservice.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
+          contractSel[0].price=data.price 
+          billServ.patch(billservice._id,billservice)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
                // setMessage("updated Inventory successfully")
                  toast({
-                    message: 'Inventory updated succesfully',
+                    message: 'Price updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -794,12 +798,12 @@ export function InventoryModify(){
                 //setMessage("Error creating Inventory, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Inventory, probable network issues or "+ err,
+                    message: "Error updating Price, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
                   })
-            })
+            }) 
 
       } 
      
@@ -810,16 +814,16 @@ export function InventoryModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Inventory Details-Modify
+                    Set Price for {Inventory.name} per {Inventory.baseunit}
                 </p>
             </div>
             <div className="card-content vscrollable">
            
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
-                    <label className="label is-small"> Name
+                    <label className="label is-small"> New Selling Price
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input  is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name" />
+                        <input className="input  is-small" ref={register({ required: true })}  name="price" type="text" placeholder="Name" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
@@ -827,9 +831,9 @@ export function InventoryModify(){
                     </label>
                     </div>
                 <div className="field">
-                <label className="label is-small">Inventory Type
+                <label className="label is-small">Old Price
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="InventoryType" type="text" placeholder="Inventory Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="oldprice" type="text" placeholder="Inventory Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -837,67 +841,7 @@ export function InventoryModify(){
                 </p>
                 </label>
                 </div>
-            {/* <div className="field">
-            <label className="label is-small">Profession
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Inventory Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="InventoryCategory" type="text" placeholder="Inventory Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
+           
            
            
             </form>
@@ -913,11 +857,11 @@ export function InventoryModify(){
                         Cancel
                     </button>
                 </p>
-                <p className="control">
+               {/*  <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p>
+                </p> */}
             </div>
         </div>
         </div>
