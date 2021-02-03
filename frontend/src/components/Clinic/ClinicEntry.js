@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import {ProductCreate} from './Products'
-var random = require('random-string-generator');
+import {ClientCreate} from './Patient'
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -24,12 +23,12 @@ export default function ProductEntry() {
             </div> */}
             <div className="columns ">
             <div className="column is-6 ">
-                <ProductExitList />
+                <ProductEntryList />
                 </div>
             <div className="column is-6 ">
-                {(state.ProductExitModule.show ==='create')&&<ProductExitCreate />}
-                {(state.ProductExitModule.show ==='detail')&&<ProductExitDetail  />}
-                {(state.ProductExitModule.show ==='modify')&&<ProductExitModify ProductEntry={selectedProductEntry} />}
+                {(state.ProductEntryModule.show ==='create')&&<ProductEntryCreate />}
+                {(state.ProductEntryModule.show ==='detail')&&<ProductEntryDetail  />}
+                {(state.ProductEntryModule.show ==='modify')&&<ProductEntryModify ProductEntry={selectedProductEntry} />}
                
             </div>
 
@@ -40,7 +39,7 @@ export default function ProductEntry() {
     
 }
 
-export function ProductExitCreate(){
+export function ProductEntryCreate(){
    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
@@ -52,26 +51,19 @@ export function ProductExitCreate(){
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const [type,setType] = useState("Sales")
+    const [type,setType] = useState("Purchase Invoice")
     const [documentNo,setDocumentNo] = useState("")
-    const [totalamount,setTotalamount] = useState(0)
-    const [qamount,setQAmount] = useState(null)
+    const [totalamount,setTotalamount] = useState("")
     const [productId,setProductId] = useState("")
     const [source,setSource] = useState("")
     const [date,setDate] = useState("")
     const [name,setName] = useState("")
-    const [inventoryId,setInventoryId] = useState("")
     const [baseunit,setBaseunit] = useState("")
-    const [quantity,setQuantity] = useState("")
-    const [sellingprice,setSellingPrice] = useState("")
-    const [costprice,setCostprice] = useState(0)
-    const [invquantity,setInvQuantity] = useState("")
-    const [calcamount,setCalcAmount] = useState(0)
+    const [quantity,setQuantity] = useState()
+    const [costprice,setCostprice] = useState()
     const [productItem,setProductItem] = useState([])
     const {state}=useContext(ObjectContext)
-    const inputEl = useRef(0);
-    let calcamount1
-    let hidestatus
+    
     const [productEntry,setProductEntry]=useState({
         productitems:[],
         date,
@@ -86,36 +78,18 @@ export function ProductExitCreate(){
         productId,
         name,
         quantity,
-        sellingprice,
-        amount:qamount||calcamount,
-        baseunit,
-        costprice
+        costprice,
+        amount:quantity*costprice,
+        baseunit
 
     }
     // consider batchformat{batchno,expirydate,qtty,baseunit}
     //consider baseunoit conversions
     const getSearchfacility=(obj)=>{
 
-        setProductId(obj.productId)
+        setProductId(obj._id)
         setName(obj.name)
         setBaseunit(obj.baseunit)
-        setInventoryId(obj.inventoryId)
-        setSellingPrice(obj.sellingprice)
-        setInvQuantity(obj.quantity)
-        setCostprice(obj.costprice)
-        if (!obj){
-            //"clear stuff"
-            setProductId("")
-            setName("")
-            setBaseunit("")
-            setInventoryId("")
-            setSellingPrice("")
-            setInvQuantity("")
-            setQAmount(null)
-            setCostprice("")
-           // setCalcAmount(null)
-
-        }
         
        /*  setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -131,40 +105,20 @@ export function ProductExitCreate(){
         }
     }, [user])
 
-    const handleUpdateTotal=()=>{
-
-        
-        setTotalamount(prevtotal=>Number(prevtotal) + Number(calcamount))
-    }
-
     const handleChangeType=async (e)=>{
         await setType(e.target.value)
     }
-
-    const handleAmount= async()=>{
-        await setQAmount(null)
-       // alert("Iam chaning qamount")
-    }
     const handleClickProd=async()=>{
-        console.log("amount: ",productItemI.amount)
-        console.log("qamount: ",qamount)
-        console.log("calcamount: ",calcamount)
         await setSuccess(false)
-        await setProductItem(
+        setProductItem(
             prevProd=>prevProd.concat(productItemI)
         )
-       handleUpdateTotal()
         setName("")
         setBaseunit("")
         setQuantity("")
-        setInventoryId("")
-        setSellingPrice("")
-        setInvQuantity("")
-            handleAmount()
-       // setCalcAmount(null)
+        setCostprice("")
        await setSuccess(true)
        console.log(success)
-       console.log(qamount)
        console.log(productItem)
     }
   //check user for facility or get list of facility  
@@ -180,42 +134,8 @@ export function ProductExitCreate(){
       }
     }) */
 
-    const handleQtty=async(e)=>{
-        if (invquantity<e.target.value){
-            toast({
-                message: 'You can not sell more quantity than exist in inventory ' ,
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              })
-            return
-        }
-        setQuantity(e.target.value)
-        calcamount1=quantity*sellingprice
-        await setCalcAmount(calcamount1)
-        console.log(calcamount)
-
-       
-
-    }
-
-    useEffect( () => {
-         setProductEntry({
-            
-            date,
-            documentNo,
-            type,
-            totalamount,
-            source,
-        })
-       setCalcAmount(quantity*sellingprice) 
-        return () => {
-            
-        }
-    },[date])
-
     const resetform=()=>{
-     setType("Sales")
+     setType("Purchase Invoice")
     setDocumentNo("")
     setTotalamount("")
     setProductId("")
@@ -242,14 +162,14 @@ export function ProductExitCreate(){
         })
         productEntry.productitems=productItem
         productEntry.createdby=user._id
-        productEntry.transactioncategory="debit"
-       
+        productEntry.transactioncategory="credit"
+
           console.log("b4 facility",productEntry);
           if (user.currentEmployee){
          productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }else{
             toast({
-                message: 'You can not remove inventory from any organization',
+                message: 'You can not add inventory to any organization',
                 type: 'is-danger',
                 dismissible: true,
                 pauseOnHover: true,
@@ -260,7 +180,7 @@ export function ProductExitCreate(){
             productEntry.storeId=state.StoreModule.selectedStore._id
           }else{
             toast({
-                message: 'You need to select a store before removing inventory',
+                message: 'You need to select a store before adding inventory',
                 type: 'is-danger',
                 dismissible: true,
                 pauseOnHover: true,
@@ -276,23 +196,17 @@ export function ProductExitCreate(){
                /*  setMessage("Created ProductEntry successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'ProductExit created succesfully',
+                    message: 'ProductEntry created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
                   })
                   setSuccess(false)
                   setProductItem([])
-                  const today=new Date().toLocaleString()
-      
-                  setDate(today)
-                  const invoiceNo=random(6,'uppernumeric')
-                setDocumentNo(invoiceNo)
-                setType("Sales")
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating ProductExit ' + err,
+                    message: 'Error creating ProductEntry ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -301,25 +215,14 @@ export function ProductExitCreate(){
 
       } 
 
-    console.log("i am rendering")
-
-    useEffect(() => {
-        const today=new Date().toLocaleString()
-        console.log(today)
-        setDate(today)
-        const invoiceNo=random(6,'uppernumeric')
-        setDocumentNo(invoiceNo)
-        return () => {
-            
-        }
-    }, [])
+    
 
     return (
         <>
             <div className="card card-overflow">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Product Exit: Product Exit- Sales, Dispense, Audit, Transfer out
+                    Create ProductEntry: Product Entry- Initialization, Purchase Invoice, Audit
                 </p>
             </div>
             <div className="card-content ">
@@ -332,9 +235,8 @@ export function ProductExitCreate(){
                     <div className="select is-small">
                         <select name="type" value={type} onChange={handleChangeType}>
                            <option value="">Choose Type </option>
-                            <option value="Sales">Sales </option>
-                            <option value="In-house">In-House </option>
-                            <option value="Dispense">Dispense</option>
+                            <option value="Purchase Invoice">Purchase Invoice </option>
+                            <option value="Initialization">Initialization</option>
                             <option value="Audit">Audit</option>
                         </select>
                     </div>
@@ -342,7 +244,7 @@ export function ProductExitCreate(){
             </div>
             <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
+                        <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="supplier" type="text" onChange={e=>setSource(e.target.value)} placeholder="Supplier" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
@@ -379,7 +281,7 @@ export function ProductExitCreate(){
             </div>
             <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={e=>setTotalamount(e.target.value)} placeholder=" Total Amount"/>
+                    <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={async e=> await setTotalamount(e.target.value)} placeholder=" Total Amount"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-coins"></i>
                     </span>
@@ -398,40 +300,30 @@ export function ProductExitCreate(){
          <div className="field is-horizontal">
             <div className="field-body">
             <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                    <InventorySearch  getSearchfacility={getSearchfacility} clear={success} /> 
+                    <ProductSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                     <p className="control has-icons-left " style={{display:"none"}}>
                         <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
                         <span className="icon is-small is-left">
                         <i className="fas  fa-map-marker-alt"></i>
                         </span>
                     </p>
-                 {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"} 
                 </div>
-            </div>
-        </div>
-        <div className="field is-horizontal">
-            <div className="field-body" >
-                <div className="field" style={{width:"40%"}}>
-                <p className="control has-icons-left" >
-                    <input className="input is-small"  /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={ e=> handleQtty(e)} placeholder="Quantity"  />
+                <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
                     <span className="icon is-small is-left">
-                    <i className="fas fa-hashtag"></i>
+                    <i className="fas fa-envelope"></i>
                     </span>
-                   
                 </p>
         <label >{baseunit}</label>
             </div> 
             <div className="field">
-            <label>Amount:</label><p>{quantity*sellingprice}</p>
-            </div>
-            <div className="field" style={{width:"40%"}}>
-                <p className="control has-icons-left " /* style={{display:"none"}} */>
-                    <input className="input is-small"  name="qamount" value={qamount} type="text"  onChange={async e=> await setQAmount(e.target.value)}  placeholder="Amount"  />
+                <p className="control has-icons-left">
+                    <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Cost Price"  />
                     <span className="icon is-small is-left">
                     <i className="fas fa-dollar-sign"></i>
                     </span>
                 </p>
-
             </div> 
             <div className="field">
             <p className="control">
@@ -452,7 +344,7 @@ export function ProductExitCreate(){
                     <th><abbr title="Type">Name</abbr></th>
                     <th><abbr title="Type">Quanitity</abbr></th>
                     <th><abbr title="Document No">Unit</abbr></th>
-                    <th><abbr title="Cost Price">Selling Price</abbr></th>
+                    <th><abbr title="Cost Price">Cost Price</abbr></th>
                     <th><abbr title="Cost Price">Amount</abbr></th>
                     <th><abbr title="Actions">Actions</abbr></th>
                     </tr>
@@ -468,7 +360,7 @@ export function ProductExitCreate(){
                         <td>{ProductEntry.name}</td>
                         <th>{ProductEntry.quantity}</th>
                         <td>{ProductEntry.baseunit}</td>
-                        <td>{ProductEntry.sellingprice}</td>
+                        <td>{ProductEntry.costprice}</td>
                         <td>{ProductEntry.amount}</td>
                         <td><span className="showAction"  >x</span></td>
                         
@@ -477,15 +369,10 @@ export function ProductExitCreate(){
                     ))}
                 </tbody>
                 </table>
-                <div className="field mt-2 is-grouped">
+                <div className="field mt-2">
                 <p className="control">
                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={onSubmit}>
-                        Sell
-                    </button>
-                </p>
-                <p className="control">
-                    <button className="button is-warning is-small" disabled={!productItem.length>0} /* onClick={onSubmit} */>
-                        Clear
+                        Create
                     </button>
                 </p>
                 </div>
@@ -501,7 +388,7 @@ export function ProductExitCreate(){
    
 }
 
-export function ProductExitList(){
+export function ProductEntryList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -523,11 +410,11 @@ export function ProductExitList(){
 
 
     const handleCreateNew = async()=>{
-        const    newProductExitModule={
+        const    newProductEntryModule={
             selectedProductEntry:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, ProductExitModule:newProductExitModule}))
+       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
        //console.log(state)
         
 
@@ -539,11 +426,11 @@ export function ProductExitList(){
 
         await setSelectedProductEntry(ProductEntry)
 
-        const    newProductExitModule={
+        const    newProductEntryModule={
             selectedProductEntry:ProductEntry,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, ProductExitModule:newProductExitModule}))
+       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
        //console.log(state)
 
     }
@@ -557,7 +444,6 @@ export function ProductExitList(){
                     $options:'i'
                    
                 },
-                transactioncategory:"debit",
                 storeId:state.StoreModule.selectedStore._id,
                facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
@@ -582,7 +468,6 @@ export function ProductExitList(){
             
         const findProductEntry= await ProductEntryServ.find(
                 {query: {
-                    transactioncategory:"debit",
                     facility:user.currentEmployee.facilityDetail._id,
                     storeId:state.StoreModule.selectedStore._id,
                     $limit:20,
@@ -604,7 +489,7 @@ export function ProductExitList(){
                           return */
                         const findProductEntry= await ProductEntryServ.find(
                             {query: {
-                                transactioncategory:"debit",
+                                
                                 $limit:20,
                                 $sort: {
                                     createdAt: -1
@@ -627,7 +512,7 @@ export function ProductExitList(){
                 }) */
             }
             
-         /*    useEffect(() => {
+            useEffect(() => {
                 setTimeout(() => {
                     console.log("happy birthday")
                     //getFacilities(user)
@@ -637,7 +522,7 @@ export function ProductExitList(){
                     
 
                 }
-            },[]) */
+            },[])
 
             useEffect(() => {
                
@@ -713,7 +598,7 @@ export function ProductExitList(){
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th><abbr title="Date">Date</abbr></th>
                                         <th><abbr title="Type">Type</abbr></th>
-                                        <th>Client</th>
+                                        <th>Source</th>
                                         <th><abbr title="Document No">Document No</abbr></th>
                                         <th><abbr title="Total Amount">Total Amount</abbr></th>
                                         <th><abbr title="Enteredby">Entered By</abbr></th>
@@ -750,7 +635,7 @@ export function ProductExitList(){
     }
 
 
-export function ProductExitDetail(){
+export function ProductEntryDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
@@ -764,14 +649,14 @@ export function ProductExitDetail(){
 
    
 
-   const ProductEntry =state.ProductExitModule.selectedProductEntry 
+   const ProductEntry =state.ProductEntryModule.selectedProductEntry 
 
     const handleEdit= async()=>{
-        const    newProductExitModule={
+        const    newProductEntryModule={
             selectedProductEntry:ProductEntry,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, ProductExitModule:newProductExitModule}))
+       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
        //console.log(state)
        
     }
@@ -861,8 +746,8 @@ export function ProductExitDetail(){
                     <th><abbr title="Type">Name</abbr></th>
                     <th><abbr title="Type">Quanitity</abbr></th>
                     <th><abbr title="Document No">Unit</abbr></th>
-                    <th><abbr title="Selling Price">Selling Price</abbr></th>
-                    <th><abbr title="Amount">Amount</abbr></th>
+                    <th><abbr title="Cost Price">Cost Price</abbr></th>
+                    <th><abbr title="Cost Price">Amount</abbr></th>
                    
                     </tr>
                 </thead>
@@ -877,7 +762,7 @@ export function ProductExitDetail(){
                         <td>{ProductEntry.name}</td>
                         <th>{ProductEntry.quantity}</th>
                         <td>{ProductEntry.baseunit}</td>
-                        <td>{ProductEntry.sellingprice}</td>
+                        <td>{ProductEntry.costprice}</td>
                         <td>{ProductEntry.amount}</td>
                         
                         
@@ -973,7 +858,7 @@ export function ProductExitDetail(){
    
 }
 
-export function ProductExitModify(){
+export function ProductEntryModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -988,7 +873,7 @@ export function ProductExitModify(){
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const ProductEntry =state.ProductExitModule.selectedProductEntry 
+    const ProductEntry =state.ProductEntryModule.selectedProductEntry 
 
         useEffect(() => {
             setValue("name", ProductEntry.name,  {
@@ -1030,21 +915,21 @@ export function ProductExitModify(){
         })
 
    const handleCancel=async()=>{
-    const    newProductExitModule={
+    const    newProductEntryModule={
         selectedProductEntry:{},
         show :'create'
       }
-   await setState((prevstate)=>({...prevstate, ProductExitModule:newProductExitModule}))
+   await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newProductExitModule={
+        const    newProductEntryModule={
             selectedProductEntry:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, ProductExitModule:newProductExitModule}))
+        setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
 
         }
     const handleDelete=async()=>{
@@ -1250,9 +1135,9 @@ export function ProductExitModify(){
                 
 }   
 
-export  function InventorySearch({getSearchfacility,clear}) {
+export  function ProductSearch({getSearchfacility,clear}) {
     
-    const productServ=client.service('inventory')
+    const productServ=client.service('products')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -1268,8 +1153,6 @@ export  function InventorySearch({getSearchfacility,clear}) {
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
-   const {user} = useContext(UserContext) 
-   const {state}=useContext(ObjectContext)
     const [productModal,setProductModal]=useState(false)
 
    const handleRow= async(obj)=>{
@@ -1288,7 +1171,7 @@ export  function InventorySearch({getSearchfacility,clear}) {
         }
    await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
    //console.log(state)
-    }
+}
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
@@ -1311,7 +1194,6 @@ export  function InventorySearch({getSearchfacility,clear}) {
         setVal(value)
         if (value===""){
             setShowPanel(false)
-            getSearchfacility(false)
             return
         }
         const field='name' //field variable
@@ -1324,8 +1206,6 @@ export  function InventorySearch({getSearchfacility,clear}) {
                      $options:'i'
                     
                  },
-                 facility: user.currentEmployee.facilityDetail._id,
-                 storeId: state.StoreModule.selectedStore._id,
                  $limit:10,
                  $sort: {
                      createdAt: -1
@@ -1375,9 +1255,9 @@ export  function InventorySearch({getSearchfacility,clear}) {
         <div>
             <div className="field">
                 <div className="control has-icons-left  ">
-                    <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
-                        <div className="dropdown-trigger" style={{width:"100%"}}>
-                            <DebounceInput className="input is-small  is-expanded" 
+                    <div className={`dropdown ${showPanel?"is-active":""}`}>
+                        <div className="dropdown-trigger">
+                            <DebounceInput className="input is-small " 
                                 type="text" placeholder="Search Product"
                                 value={simpa}
                                 minLength={3}
@@ -1391,18 +1271,15 @@ export  function InventorySearch({getSearchfacility,clear}) {
                             </span>
                         </div>
                         {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu expanded" style={{width:"100%"}}>
+                        <div className="dropdown-menu" >
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item" /* onClick={handleAddproduct} */> <span> {val} is not in your inventory</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to product list</span> </div>}
 
                               {facilities.map((facility, i)=>(
                                     
                                     <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <div><span>{facility.name}</span></div>
-                                        <div><span><strong>{facility.quantity}</strong></span>
-                                        <span>{facility.baseunit}(s) remaining</span>
-                                        <span className="padleft"><strong>Price:</strong> N{facility.sellingprice}</span></div>
+                                        <span>{facility.name}</span>
                                         
                                     </div>
                                     
@@ -1422,7 +1299,7 @@ export  function InventorySearch({getSearchfacility,clear}) {
                                         </header>
                                         <section className="modal-card-body">
                                         {/* <StoreList standalone="true" /> */}
-                                        <ProductCreate />
+                                        <ClientCreate />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

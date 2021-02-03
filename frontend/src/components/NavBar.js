@@ -3,6 +3,9 @@ import {Route, Switch,  useRouteMatch, Link} from 'react-router-dom'
 
 export default function NavBar() {
     let { path, url } = useRouteMatch();
+    const handleClick=()=>{
+        console.log("show menu")
+    }
     
     return (
         <div>
@@ -13,7 +16,7 @@ export default function NavBar() {
                     <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
                     </div> */}
 
-                    <div role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <div role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" onClick={handleClick}>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>

@@ -9,25 +9,25 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Inventory() {
+export default function Clinic() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedInventory,setSelectedInventory]=useState()
+    const [selectedClinic,setSelectedClinic]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Clinic  Module</span></div>
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-                <InventoryList />
+                <ClinicList />
                 </div>
             <div className="column is-4 ">
-                {(state.InventoryModule.show ==='create')&&<InventoryCreate />}
-                {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
-                {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}
+                {(state.ClinicModule.show ==='create')&&<ClinicCreate />}
+                {(state.ClinicModule.show ==='detail')&&<ClinicDetail  />}
+                {(state.ClinicModule.show ==='modify')&&<ClinicModify Clinic={selectedClinic} />}
                
             </div>
 
@@ -38,14 +38,14 @@ export default function Inventory() {
     
 }
 
-export function InventoryCreate(){
+export function ClinicCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const InventoryServ=client.service('inventory')
+    const ClinicServ=client.service('location')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
@@ -53,7 +53,7 @@ export function InventoryCreate(){
 
 
 
-    const getSearchfacility=(obj)=>{
+    const getSearchfacility=(obj)=>{ // buble-up from inputsearch for creating resource
         
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -71,7 +71,7 @@ export function InventoryCreate(){
 
   //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeInventory.FacilityId)//
+        //setFacility(user.activeClinic.FacilityId)//
       if (!user.stacker){
           console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -91,14 +91,15 @@ export function InventoryCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        InventoryServ.create(data)
+          data.locationType="Clinic"
+        ClinicServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Inventory successfully") */
+               /*  setMessage("Created Clinic successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Inventory created succesfully',
+                    message: 'Clinic created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -107,7 +108,7 @@ export function InventoryCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Inventory ' + err,
+                    message: 'Error creating Clinic ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -121,91 +122,64 @@ export function InventoryCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Inventory: Product Entry- Initialization, Purchase Invoice, Audit
+                    Create Clinic
                 </p>
             </div>
             <div className="card-content vscrollable">
    
             <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="field">    
-                <div class="control">
-                    <div class="select is-small">
-                        <select>
-                            <option>Purchase Invoice </option>
-                            <option>Initialization</option>
-                            <option>Audit</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left"> {/* Audit/initialization/Purchase Invoice */}
-                    <input className="input is-small" ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div>
-                <div className="field">
+               {/*  <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="supplier" type="text" placeholder="Supplier" />
+                        <input className="input is-small" ref={register({ required: true })}  name="ClinicType" type="text" placeholder="Type of Clinic" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
                     </p>
-                </div>
+                </div> */}
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="date" type="text" placeholder="Date" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Clinic" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
                     
                 </p>
             </div>
-            
+           {/*  <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
+                    <span className="icon is-small is-left">
+                    <i className=" fas fa-user-md "></i>
+                    </span>
+                </p>
+            </div>
             <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="totalamount" type="text" placeholder=" Total Amount"/>
+                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-phone-alt"></i>
                     </span>
                 </p>
             </div>
            
-         {/* array of inventory items */}
-         <p className="control">
-                    <button className="button is-info is-small  is-pulled-right">
-                      <span className="is-small"> +</span>
-                    </button>
+            <div className="field">
+                <p className="control has-icons-left">
+                
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>
                 </p>
-           <div className="field"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                <ProductSearch  getSearchfacility={getSearchfacility} clear={success} /> 
+            </div> */}
+           <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
+                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                 <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } /* add array no */ name="productId" type="text" placeholder="Product Id" />
+                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
                     <span className="icon is-small is-left">
                     <i className="fas  fa-map-marker-alt"></i>
                     </span>
                 </p>
             </div>
-           
-               <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="quantity" type="text" placeholder="Quantity"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                <label className="label is-small">Base Unit</label>
-            </div> 
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="costprice" type="text" placeholder="Cost Price"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> 
            {/*  <div className="field">
                 <div className="control has-icons-left">
                     <div className="dropdown ">
@@ -266,7 +240,7 @@ export function InventoryCreate(){
    
 }
 
-export function InventoryList(){
+export function ClinicList({standalone}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -274,12 +248,12 @@ export function InventoryList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const InventoryServ=client.service('inventory')
+    const ClinicServ=client.service('location')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedInventory, setSelectedInventory]=useState() //
+   const [selectedClinic, setSelectedClinic]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -288,26 +262,27 @@ export function InventoryList(){
 
 
     const handleCreateNew = async()=>{
-        const    newInventoryModule={
-            selectedInventory:{},
+        const    newClinicModule={
+            selectedClinic:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
-    }
+        
 
-    const handleRow= async(Inventory)=>{
+    }
+    const handleRow= async(Clinic)=>{
         //console.log("b4",state)
 
-        //console.log("handlerow",Inventory)
+        //console.log("handlerow",Clinic)
 
-        await setSelectedInventory(Inventory)
+        await setSelectedClinic(Clinic)
 
-        const    newInventoryModule={
-            selectedInventory:Inventory,
+        const    newClinicModule={
+            selectedClinic:Clinic,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
 
     }
@@ -315,26 +290,27 @@ export function InventoryList(){
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       InventoryServ.find({query: {
+       ClinicServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                locationType:"Clinic",
+               $limit:10,
                 $sort: {
-                    createdAt: -1
+                    name: 1
                   }
                     }}).then((res)=>{
                 console.log(res)
                setFacilities(res.data)
-                setMessage(" Inventory  fetched successfully")
+                setMessage(" Clinic  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Inventory, probable network issues "+ err )
+                setMessage("Error fetching Clinic, probable network issues "+ err )
                 setError(true)
             })
         }
@@ -342,41 +318,41 @@ export function InventoryList(){
         const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findInventory= await InventoryServ.find(
+        const findClinic= await ClinicServ.find(
                 {query: {
+                    locationType:"Clinic",
                     facility:user.currentEmployee.facilityDetail._id,
-                    storeId:state.StoreModule.selectedStore._id,
                     $limit:20,
                     $sort: {
-                        createdAt: -1
+                        name: 1
                     }
                     }})
 
-         await setFacilities(findInventory.data)
+         await setFacilities(findClinic.data)
                 }
                 else {
                     if (user.stacker){
-                        const findInventory= await InventoryServ.find(
+                        const findClinic= await ClinicServ.find(
                             {query: {
-                                
+                                locationType:"Clinic",
                                 $limit:20,
                                 $sort: {
-                                    createdAt: -1
+                                    name: 1
                                 }
                                 }})
             
-                    await setFacilities(findInventory.data)
+                    await setFacilities(findClinic.data)
 
                     }
                 }
           /*   .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
-                    setMessage(" Inventory  fetched successfully")
+                    setMessage(" Clinic  fetched successfully")
                     setSuccess(true)
                 })
                 .catch((err)=>{
-                    setMessage("Error creating Inventory, probable network issues "+ err )
+                    setMessage("Error creating Clinic, probable network issues "+ err )
                     setError(true)
                 }) */
             }
@@ -406,21 +382,15 @@ export function InventoryList(){
                     console.log(user)
                     getFacilities(user) */
                 }
-                InventoryServ.on('created', (obj)=>getFacilities())
-                InventoryServ.on('updated', (obj)=>getFacilities())
-                InventoryServ.on('patched', (obj)=>getFacilities())
-                InventoryServ.on('removed', (obj)=>getFacilities())
+                ClinicServ.on('created', (obj)=>getFacilities())
+                ClinicServ.on('updated', (obj)=>getFacilities())
+                ClinicServ.on('patched', (obj)=>getFacilities())
+                ClinicServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
                 }
             },[])
-        
-        useEffect(() => {
-            getFacilities()
-            return () => {
-               
-            }
-        }, [state.StoreModule.selectedStore])
+
 
     //todo: pagination and vertical scroll bar
 
@@ -433,7 +403,7 @@ export function InventoryList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Inventory"
+                                        type="text" placeholder="Search Clinics"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -444,49 +414,47 @@ export function InventoryList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Inventories </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div>
                     <div className="level-right">
-                        <div className="level-item"> 
+                { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div>
+                        </div>}
                     </div>
 
                 </div>
                 <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        {/* <th><abbr title="Category">Category</abbr></th> */}
-                                        <th>Product</th>
-                                        <th><abbr title="Quantity">Quantity</abbr></th>
-                                        <th><abbr title="Base Unit">Base Unit</abbr></th>
-                                        <th><abbr title="Stock Value">Stock Value</abbr></th>
-                                         <th><abbr title="Cost Price">Cost Price</abbr></th>
-                                        <th><abbr title="Selling Price">Selling Price</abbr></th>
-                                        <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
-                                        <th><abbr title="Expiry">Expiry</abbr></th> 
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        <th>Name</th>
+                                        {/* <th><abbr title="Last Name">Clinic Type</abbr></th>
+                                       <th><abbr title="Profession">Profession</abbr></th>
+                                         <th><abbr title="Phone">Phone</abbr></th>
+                                        <th><abbr title="Email">Email</abbr></th>
+                                        <th><abbr title="Department">Department</abbr></th>
+                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
+                                        <th><abbr title="Facility">Facility</abbr></th>*/}
+                                       { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((Inventory, i)=>(
+                                        {facilities.map((Clinic, i)=>(
 
-                                            <tr key={Inventory._id} onClick={()=>handleRow(Inventory)}>
+                                            <tr key={Clinic._id} onClick={()=>handleRow(Clinic)}  className={Clinic._id===(selectedClinic?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            {/* <td>{Inventory.productDetail.category}</td> */}
-                                            <th>{Inventory.name}</th>
-                                            <td>{Inventory.quantity}</td>
-                                            <td>{Inventory.baseunit}</td>
-                                            <td>{Inventory.stockvalue}</td>
-                                            <td>{Inventory.costprice}</td>
-                                            <td>{Inventory.sellingprice}</td>
-                                            <td>{Inventory.reorder_level}</td> 
-                                            <td>{Inventory.expiry}</td>
-                                            <td><span   className="showAction"  >...</span></td>
+                                            <th>{Clinic.name}</th>
+                                            {/*<td>{Clinic.ClinicType}</td>
+                                            < td>{Clinic.profession}</td>
+                                            <td>{Clinic.phone}</td>
+                                            <td>{Clinic.email}</td>
+                                            <td>{Clinic.department}</td>
+                                            <td>{Clinic.deptunit}</td> 
+                                            <td>{Clinic.facility}</td>*/}
+                                          { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
                                             </tr>
 
@@ -502,93 +470,28 @@ export function InventoryList(){
     }
 
 
-export function InventoryDetail(){
+export function ClinicDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const InventoryServ=client.service('/Inventory')
+    //const ClinicServ=client.service('/Clinic')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
-    const {user} = useContext(UserContext) //,setUser
-    
-   
-
-   const Inventory =state.InventoryModule.selectedInventory 
-   console.log("selected",Inventory)
 
    
-  const getFacilities= async()=>{
-    
-    
-     const findProductEntry= await client.service('productentry').find(
-        {query: {
-            'productitems.productId':Inventory.productId,
-            facility:user.currentEmployee.facilityDetail._id,
-            storeId:state.StoreModule.selectedStore._id,
-            $limit:20,
-            $sort: {
-                createdAt: -1
-            }
-            }})
 
-        console.log(findProductEntry)
-       }
-    
-       useEffect(() => {
-        getFacilities()
-           return () => {
-               
-           }
-       }, [Inventory])
- /* await setFacilities(findProductEntry.data)
-        }
-        else {
-            if (user.stacker){ */
-                /* toast({
-                    message: 'You do not qualify to view this',
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  }) 
-                  return */
-               /*  const findProductEntry= await ProductEntryServ.find(
-                    {query: {
-                        
-                        $limit:20,
-                        $sort: {
-                            createdAt: -1
-                        }
-                        }})
-    
-            await setFacilities(findProductEntry.data)
-
-            }
-        }  */
-  /*   .then((res)=>{
-        console.log(res)
-            setFacilities(res.data)
-            setMessage(" ProductEntry  fetched successfully")
-            setSuccess(true)
-        })
-        .catch((err)=>{
-            setMessage("Error creating ProductEntry, probable network issues "+ err )
-            setError(true)
-        }) */
-    
-    
-
-
+   const Clinic =state.ClinicModule.selectedClinic 
 
     const handleEdit= async()=>{
-        const    newInventoryModule={
-            selectedInventory:Inventory,
+        const    newClinicModule={
+            selectedClinic:Clinic,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
        
     }
@@ -598,7 +501,7 @@ export function InventoryDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Inventory Details
+                    Clinic Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -611,46 +514,98 @@ export function InventoryDetail(){
                     <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        Product Name: 
+                        Name: 
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"><strong> {Inventory.name} </strong></span>
+                        <span className="is-size-7 padleft"   name="name"> {Clinic.name} </span>
                         </td>
                     </tr>
-                   {/*  <tr>
+                    <tr>
                     <td>
                 <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
-                    </span>Inventory Type:
+                    </span>Location Type:
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft"   name="InventoryType">{Inventory.InventoryType} </span> 
+                    <span className="is-size-7 padleft"   name="ClinicType">{Clinic.locationType} </span> 
                     </td>
+                </tr>
+                  {/*   <tr>
+                    <td>
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-map-marker-alt"></i>
+                    </span>Profession: 
+                
+                    
+                    </label>
+                    </td>
+                <td>
+                <span className="is-size-7 padleft "  name="ClinicCity">{Clinic.profession}</span> 
+                </td>
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-phone-alt"></i>
+                    </span>Phone:           
+                    
+                        </label>
+                        </td>
+                        <td>
+                        <span className="is-size-7 padleft "  name="ClinicContactPhone" >{Clinic.phone}</span>
+                        </td>
+                  </tr>
+                    <tr><td>
+            
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>Email:                     
+                    
+                         </label></td><td>
+                         <span className="is-size-7 padleft "  name="ClinicEmail" >{Clinic.email}</span>
+                         </td>
+             
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"> <span className="icon is-small is-left">
+                    <i className="fas fa-user-md"></i></span>Department:
+                    
+                    </label></td>
+                    <td>
+                    <span className="is-size-7 padleft "  name="ClinicOwner">{Clinic.department}</span>
+                    </td>
+               
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"> <span className="icon is-small is-left">
+                    <i className="fas fa-hospital-symbol"></i>
+                    </span>Departmental Unit:              
+                    
+                </label></td>
+                <td>
+                <span className="is-size-7 padleft "  name="ClinicType">{Clinic.deptunit}</span>
+                </td>
+              
                 </tr> */}
+                    
+          {/*   <div className="field">
+             <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-clinic-medical"></i>
+                    </span>Category:              
+                    <span className="is-size-7 padleft "  name= "ClinicCategory">{Clinic.ClinicCategory}</span>
+                </label>
+                 </div> */}
 
             </tbody> 
             </table> 
            
-            <div className="field mt-2 is-grouped">
+            <div className="field mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
-                        Set Price
-                    </button>
-                </p>
-                <p className="control">
-                    <button className="button is-danger is-small"  /*  onClick={handleSetPrice} */>
-                        Audit
-                    </button>
-                </p>
-                <p className="control">
-                    <button className="button is-info is-small" /* onClick={handleEdit} */>
-                        Transaction History
-                    </button>
-                </p>
-                <p className="control">
-                    <button className="button is-warning is-small" /* onClick={handleEdit} */>
-                        Reorder Level
+                        Edit
                     </button>
                 </p>
             </div>
@@ -664,7 +619,7 @@ export function InventoryDetail(){
    
 }
 
-export function InventoryModify(){
+export function ClinicModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -672,80 +627,90 @@ export function InventoryModify(){
     const [success, setSuccess] =useState(false)
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
-    const [billservice,setBillService] = useState()
     // eslint-disable-next-line 
-    const InventoryServ=client.service('inventory')
+    const ClinicServ=client.service('location')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
-    const billServ=client.service('billing')
 
-    const Inventory =state.InventoryModule.selectedInventory // set inventory
-    const handleSetPrice = async()=>{
-    
-        const service = await  billServ.get(Inventory.billingId) // get the service
-            const contractSel= service.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
-            
-            setValue("price", contractSel[0].price,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("oldprice", contractSel[0].price,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            await setBillService(service)
-            console.log(contractSel,service)
-    }
- 
+    const Clinic =state.ClinicModule.selectedClinic 
+
         useEffect(() => {
-            handleSetPrice()
-     
+            setValue("name", Clinic.name,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("locationType", Clinic.locationType,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+           /*  setValue("profession", Clinic.profession,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("phone", Clinic.phone,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("email", Clinic.email,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("department", Clinic.department,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("deptunit", Clinic.deptunit,  {
+                shouldValidate: true,
+                shouldDirty: true
+            }) */
+          /*   setValue("ClinicCategory", Clinic.ClinicCategory,  {
+                shouldValidate: true,
+                shouldDirty: true
+            }) */
+            
             return () => {
                 
             }
-        },[])
+        })
 
    const handleCancel=async()=>{
-   
-    const    newInventoryModule={
-        selectedInventory:{},
-        show :'detail'
+    const    newClinicModule={
+        selectedClinic:{},
+        show :'create'
       }
-        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+   await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-            const    newInventoryModule={
-                selectedInventory:{},
-                show :'detail'
-            }
-        setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+        const    newClinicModule={
+            selectedClinic:{},
+            show :'create'
+        }
+        setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
 
         }
-
-
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=Inventory._id
+        const dleteId=Clinic._id
         if (conf){
              
-        InventoryServ.remove(dleteId)
+        ClinicServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Inventory successfully")
+               /*  setMessage("Deleted Clinic successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'Inventory deleted succesfully',
+                    message: 'Clinic deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -753,10 +718,10 @@ export function InventoryModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Inventory, probable network issues "+ err )
+               // setMessage("Error deleting Clinic, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting Inventory, probable network issues or "+ err,
+                    message: "Error deleting Clinic, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -775,17 +740,16 @@ export function InventoryModify(){
         
         setSuccess(false)
         console.log(data)
-       // data.facility=Inventory.facility
+        data.facility=Clinic.facility
           //console.log(data);
-          const contractSel= billservice.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
-          contractSel[0].price=data.price 
-          billServ.patch(billservice._id,billservice)
+          
+        ClinicServ.patch(Clinic._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated Inventory successfully")
+               // setMessage("updated Clinic successfully")
                  toast({
-                    message: 'Price updated succesfully',
+                    message: 'Clinic updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -795,15 +759,15 @@ export function InventoryModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Inventory, probable network issues "+ err )
+                //setMessage("Error creating Clinic, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Price, probable network issues or "+ err,
+                    message: "Error updating Clinic, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
                   })
-            }) 
+            })
 
       } 
      
@@ -814,16 +778,16 @@ export function InventoryModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Set Price for {Inventory.name} per {Inventory.baseunit}
+                    Clinic Details-Modify
                 </p>
             </div>
             <div className="card-content vscrollable">
            
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
-                    <label className="label is-small"> New Selling Price
+                    <label className="label is-small"> Name
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input  is-small" ref={register({ required: true })}  name="price" type="text" placeholder="Name" />
+                        <input className="input  is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
@@ -831,9 +795,9 @@ export function InventoryModify(){
                     </label>
                     </div>
                 <div className="field">
-                <label className="label is-small">Old Price
+                <label className="label is-small">Location Type
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="oldprice" type="text" placeholder="Inventory Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="ClinicType" type="text" placeholder="Clinic Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -841,7 +805,67 @@ export function InventoryModify(){
                 </p>
                 </label>
                 </div>
-           
+            {/* <div className="field">
+            <label className="label is-small">Profession
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-map-marker-alt"></i>
+                    </span>
+                </p>
+                </label>
+                </div>
+            <div className="field">
+            <label className="label is-small">Phone
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-phone-alt"></i>
+                    </span>
+                </p>
+                </label>
+                 </div>
+            <div className="field">
+            <label className="label is-small">Email
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Clinic Email"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>
+                </p>
+                </label>
+                </div>
+            <div className="field">
+            <label className="label is-small">Department
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-user-md"></i>
+                    </span>
+                </p>
+                </label>
+                {errors.department && <span>This field is required</span>}
+                </div>
+            <div className="field">
+            <label className="label is-small">Departmental Unit
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-hospital-symbol"></i>
+                    </span>
+                </p>
+                </label>
+                </div> */}
+           {/*  <div className="field">
+            <label className="label is-small">Category
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="ClinicCategory" type="text" placeholder="Clinic Category"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-clinic-medical"></i>
+                    </span>
+                </p>
+                </label>
+            </div> */}
            
            
             </form>
@@ -857,7 +881,7 @@ export function InventoryModify(){
                         Cancel
                     </button>
                 </p>
-               {/*  <p className="control">
+                {/* <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
@@ -872,9 +896,9 @@ export function InventoryModify(){
                 
 }   
 
-export  function ProductSearch({getSearchfacility,clear}) {
+export  function InputSearch({getSearchfacility,clear}) {
     
-    const facilityServ=client.service('products')
+    const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -928,7 +952,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
     }
     const handleSearch=async(val)=>{
         
-        const field='name' //field variable
+        const field='facilityName' //field variable
        
         if (val.length>=3){
             facilityServ.find({query: {     //service
@@ -976,7 +1000,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
                     <div className={`dropdown ${showPanel?"is-active":""}`}>
                         <div className="dropdown-trigger">
                             <DebounceInput className="input is-small " 
-                                type="text" placeholder="Search Product"
+                                type="text" placeholder="Search Facilities"
                                 value={simpa}
                                 minLength={1}
                                 debounceTimeout={400}

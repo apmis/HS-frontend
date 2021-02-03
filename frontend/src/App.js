@@ -47,6 +47,14 @@ function App() {
     ProductExitModule:{
       show:'create',
       selectedProductEntry:{}
+    },
+    ClinicModule:{
+      show:'create',
+      selectedClinic:{}
+    },
+    ClientModule:{
+      show:'create',
+      selectedClient:{}
     }
   })
   

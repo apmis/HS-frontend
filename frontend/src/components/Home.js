@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-router-dom'
 import FacilityModule from './FacilityModule'
 import InventoryModule from './InventoryModule'
+import ClinicModule from './ClinicModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
 import {UserContext} from '../context'
@@ -28,7 +29,9 @@ export default function Home() {
                 <Route path={`${path}/facility`} >
                     <FacilityModule />
                 </Route>
-                
+                <Route path={`${path}/clinic`} >
+                    <ClinicModule />
+                </Route>
             </Switch>
         </div>
     )
@@ -161,6 +164,9 @@ function NavBar({url}){
                             <div className="navbar-dropdown bckcolor">
                                 <div className="navbar-item">
                                     <NavLink to={`${url}`}>Landing Page</NavLink> 
+                                </div>
+                                <div className="navbar-item">
+                                    <NavLink to={`${url}/clinic`}>Clinic</NavLink>
                                 </div>
                                 <div className="navbar-item">
                                     <NavLink to={`${url}/inventory`}>Inventory</NavLink>
