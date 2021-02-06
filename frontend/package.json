@@ -13,6 +13,7 @@
     "bulma": "^0.9.1",
     "bulma-toast": "^2.2.0",
     "date-fns": "^2.16.1",
+    "dotenv": "^8.2.0",
     "random-string-generator": "^1.0.0",
     "react": "^17.0.1",
     "react-debounce-input": "^3.2.3",
