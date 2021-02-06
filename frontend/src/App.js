@@ -55,8 +55,13 @@ function App() {
     ClientModule:{
       show:'create',
       selectedClient:{}
+    },
+    DocumentClassModule:{
+      show:'create',
+      selectedDocumentClass:{}
     }
   })
+  
   
  
   return (

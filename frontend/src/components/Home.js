@@ -120,8 +120,8 @@ function NavBar({url}){
     return(
         <div>
            <nav className="navbar is-small minHt has-background-info" role="navigation" aria-label="main navigation">
-                <div className="navbar-brand">
-                    <div className="navbar-item is-size-5 " onClick={handleFacilityClick}> <strong>{userFacility ||""} </strong> </div>
+                <div className="navbar-brand minHt">
+                    <div className="navbar-item is-size-5 minHt" onClick={handleFacilityClick}> <strong>{userFacility ||""} </strong> </div>
                     {/* <div className="navbar-item" href="https://bulma.io">
                     <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
                     </div> */}
@@ -133,7 +133,7 @@ function NavBar({url}){
                     </div>
                 </div>
 
-                <div id="navbarBasicExample" className="navbar-menu">
+                <div id="navbarBasicExample" className="navbar-menu minHt">
                     <div className="navbar-start">
                     {/* <div className="navbar-item">
                         Home
@@ -150,7 +150,7 @@ function NavBar({url}){
                     <div className="navbar-item has-dropdown is-hoverable">
                         <div className="navbar-link">
                         
-                            <div className="button is-info is-inverted">
+                            <div className="button is-info is-inverted minHt">
                                 <span className="icon">
                                 <i className="fa fa-user-md"></i>
                                 </span>

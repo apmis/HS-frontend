@@ -12,6 +12,11 @@
  
   color: white; */
 }
+.payment{
+  background-color: rgb(133, 237, 133);
+  color:white !important;
+  width:fit-content
+}
 .sz2{
   width:20% !important;
   border: none;
@@ -52,7 +57,7 @@
 }
 .vscrollable{
   overflow-y: auto;
-  max-height: 100vh ; /* 550px */
+  max-height: 80vh ; /* 550px */
 }
 .vscrollable-table{
   overflow-y: auto;
@@ -91,8 +96,9 @@
   background-color: #282c34;
 } */
 .minHt{
-  height:2.5rem !important;
-  margin-top: -10px !important;
+  height:1.5rem !important;
+  min-height: 1.5rem !important;
+/*   margin-top: -10px !important; */
 }
 .signupcenter{
   margin-top: 5% !important;
@@ -112,4 +118,45 @@
 }
 .mvUp{
   margin-top: 0px;
+}
+html {
+  --scrollbarBG: #CFD8DC;
+  --thumbBG: #90A4AE;
+}
+body::-webkit-scrollbar {
+  width: 11px;
+}
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+body::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+body::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG) ;
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
+}
+div::-webkit-scrollbar {
+  width: 11px;
+}
+div {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+div::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+div::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG) ;
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
+}
+.docdate{
+  width:4rem;
+  margin-right: 0.75rem;
+}
+.hovercard{
+  cursor: pointer;
 }

@@ -5,20 +5,53 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import {ClientCreate, ClientDetail, ClientList} from './Patient'
-import PatientSide from './PatientSide';
+import {ClientCreate, ClientDetail, ClientList} from '../ClientMgt/Patient'
+
 import EncounterMain from './EncounterMain';
 import EncounterRight from './EncounterRight';
+import PatientProfile from '../ClientMgt/PatientProfile';
 var random = require('random-string-generator');
 // eslint-disable-next-line
 const searchfacility={};
 
 
-export default function ProductEntry() {
+export default function Encounter() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedProductEntry,setSelectedProductEntry]=useState()
+    //const [selectedProductEntry,setSelectedProductEntry]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
+    //const {state,setState}=useContext(ObjectContext) //,setState
+    // eslint-disable-next-line
+    const [selectedClient,setSelectedClient]=useState()
+    const [showModal,setShowModal]=useState(false)
+
+    //let { path, url } = useRouteMatch();
+    
+    useEffect(() => {
+       
+        console.log("starting up Encounter module")
+        console.log(state.ClientModule.selectedClient)
+        if (Object.keys(state.ClientModule.selectedClient).length === 0 && state.ClientModule.selectedClient.constructor === Object){
+            handleChangeClient()
+
+            }
+         return () => {       
+            }
+        }, [])
+   
+    useEffect(()=>{
+     setSelectedClient(state.ClientModule.selectedClient)
+
+    },[state.ClientModule])
+
+    const handleChangeClient= async()=>{
+        await setShowModal(true)                                                                                                                                                        
+        console.log( showModal)
+    }
+
+
+
+
     
     return(
         <section className= "section remPadTop">
@@ -26,16 +59,33 @@ export default function ProductEntry() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-3 ">
-                    <PatientSide />
+                <div className="column is-2 ">
+                    <PatientProfile  />
                     </div>
-                <div className="column is-4 ">
-                   <EncounterMain />
+                <div className= {(state.DocumentClassModule.show ==='detail')?"column is-6":"column is-10 "}>
+                   <EncounterMain client={selectedClient}/>
                 </div>
-                <div className="column is-4 ">
-                  <EncounterRight />
+                <div className="column is-4 " >
+                {(state.DocumentClassModule.show ==='detail')&& <EncounterRight  client={selectedClient}/>}
+               {/*  <DocumentClassCreate /> */}
                 </div>
-            </div>                            
+            </div>
+            <div className={`modal ${showModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Choose Client</p>
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        <ClientList standalone="true" />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>                                    
             </section>
        
     )

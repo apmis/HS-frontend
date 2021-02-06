@@ -18,8 +18,8 @@ export default function FacilityModule() {
             <section className="section has-background-info remPad">
                {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
-                        <div className="container ">
-                            <div className="navbar-brand ">
+                        <div className="container minHt ">
+                            <div className="navbar-brand minHt ">
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">Health Stack::Facility</span> 
                                 </div>

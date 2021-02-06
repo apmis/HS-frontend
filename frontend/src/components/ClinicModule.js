@@ -5,8 +5,8 @@ import ClinicSetup from './Clinic/ClinicSetup'
 import ClinicStore from './Clinic/ClinicStore'
 import ClinicHome from './Clinic/ClinicHome'
 import ClinicEntry from './Clinic/ClinicEntry'
-import Encounter from './Clinic/Encounter'
-import Patients from './Clinic/Patient'
+import Encounter from './EncounterMgt/Encounter'
+import Patients from './ClientMgt/Patient'
 import Clinic, { ClinicList } from './Clinic/Clinic'
 import {UserContext,ObjectContext} from '../context'
 
@@ -44,8 +44,8 @@ export default function ClinicModule() {
                
                {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
-                        <div className="container ">
-                            <div className="navbar-brand ">
+                        <div className="container minHt">
+                            <div className="navbar-brand  minHt">
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">
                                         Health Stack::Clinic::{selectedClinic?selectedClinic.name:""}</span>

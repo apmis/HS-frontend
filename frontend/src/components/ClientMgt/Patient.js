@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
+import { formatDistanceToNowStrict } from 'date-fns'
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -593,7 +594,7 @@ export function ClientList(){
                 }) */
             }
             
-    useEffect(() => {
+    /* useEffect(() => {
                 setTimeout(() => {
                     console.log("happy birthday")
                     //getFacilities(user)
@@ -603,7 +604,7 @@ export function ClientList(){
                     
 
                 }
-            },[])
+            },[]) */
 
     useEffect(() => {
                
@@ -685,7 +686,7 @@ export function ClientList(){
                                             <th>{Client.firstname}</th>
                                             <td>{Client.middlename}</td>
                                            < td>{Client.lastname}</td>
-                                           <td>{Client.dob}</td>
+                                           <td>{formatDistanceToNowStrict(new Date(Client.dob))}</td>
                                             <td>{Client.gender}</td>
                                              <td>{Client.phone}</td>
                                             <td>{Client.email}</td>
@@ -780,7 +781,7 @@ export function ClientDetail(){
                 {Client.dob &&<div className="field">
                     <p className="control has-icons-left">
                     
-                        <label className="label is-size-7 my-0"  name="dob" type="text">Date of Birth </label><label className="is-size-7 my-0">{Client.dob }</label>
+                        <label className="label is-size-7 my-0"  name="dob" type="text">Date of Birth </label><label className="is-size-7 my-0">{ new Date(Client.dob).toLocaleDateString('en-GB')}</label>
                         <span className="icon is-small is-left">
                         <i className="nop-envelope"></i>
                         </span>

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import {ClientCreate} from './Patient'
+import {ClientCreate} from '../ClientMgt/Patient'
 // eslint-disable-next-line
 const searchfacility={};
 
