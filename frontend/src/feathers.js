@@ -3,8 +3,9 @@ import feathers from '@feathersjs/feathers'
 import socketio from '@feathersjs/socketio-client'
 import authentication from '@feathersjs/authentication-client'
 
-const url= /* 'https://healthstack-backend.herokuapp.com:8080' */ /* || */'http://localhost:3035'
-const socket=io(url, {
+const url= 'http://localhost:3035'
+const API = process.env.NODE_ENV === 'production' ? 'https://healthstack-backend.herokuapp.com' : url;
+const socket=io(API, {
     transports: ['websocket'],
     forceNew: true
   })
