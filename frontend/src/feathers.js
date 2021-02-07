@@ -3,8 +3,11 @@ import feathers from '@feathersjs/feathers'
 import socketio from '@feathersjs/socketio-client'
 import authentication from '@feathersjs/authentication-client'
 
-const url= process.env.URL
-const socket=io(url)
+const url= process.env.URL/* ||'http://localhost:3035' */
+const socket=io(url, {
+    transports: ['websocket'],
+    forceNew: true
+  })
 const client=feathers()
 client.configure(socketio(socket))
 client.configure(authentication({
