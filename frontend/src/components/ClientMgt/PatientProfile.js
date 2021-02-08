@@ -148,7 +148,7 @@ export default function PatientProfile () {
                             <div>
                             <label className="label is-size-7">Tasks:</label>
                             {/* {disabilities} */}
-                            </div>gi
+                            </div>
                             
                         </div>
                         
