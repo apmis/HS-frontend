@@ -5,8 +5,8 @@ import authentication from '@feathersjs/authentication-client'
 
 const herok= 'https://healthstack-backend.herokuapp.com'
 const url= 'http://localhost:3035'
-const API = process.env.NODE_ENV === 'production' ? 'https://healthstack-backend.herokuapp.com' : url;
-const socket=io(url, {
+const API = process.env.NODE_ENV !== 'production' ?  url :'https://healthstack-backend.herokuapp.com' ;
+const socket=io(API, {
     transports: ['websocket'],
     forceNew: true
   })
