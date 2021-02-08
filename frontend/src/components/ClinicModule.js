@@ -49,7 +49,7 @@ export default function ClinicModule() {
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">
                                         Health Stack::Clinic::{selectedClinic?selectedClinic.name:""}</span>
-                                        <button className="button is-small is-info" onClick={()=>handleChangeClinic()}>Change Clinic</button> 
+                                        <button className="button is-small is-info minHt" onClick={()=>handleChangeClinic()}>Change Clinic</button> 
                                 </div>
                                 
                             {/* <div className="navbar-item">

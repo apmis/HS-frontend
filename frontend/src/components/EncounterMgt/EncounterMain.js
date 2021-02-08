@@ -8,6 +8,7 @@ import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 
+
 export default function EncounterMain() {
  // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
@@ -209,6 +210,7 @@ export default function EncounterMain() {
 
     return (
         <div>
+            
             <div className="level">
                     <div className="level-left">
                         <div className="level-item">

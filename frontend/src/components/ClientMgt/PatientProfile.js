@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict } from 'date-fns'
+import VideoConference from '../utils/VideoConference';
 
 export default function PatientProfile () {
     const {state}=useContext(ObjectContext) //,setState
@@ -84,6 +85,7 @@ export default function PatientProfile () {
                                 </p>
                             
                         </div>
+
                     </div>
 
                         <div className="content">
@@ -149,7 +151,9 @@ export default function PatientProfile () {
                             </div>
                             
                         </div>
+                        
                     </div>
+                    <VideoConference />
         </div>
     )
 }
