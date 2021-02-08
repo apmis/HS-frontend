@@ -7,7 +7,7 @@ import {DocumentClassList} from './DocumentClass'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-
+import  VideoConference  from '../utils/VideoConference';
 
 export default function EncounterMain() {
  // const { register, handleSubmit, watch, errors } = useForm();
@@ -210,7 +210,7 @@ export default function EncounterMain() {
 
     return (
         <div>
-            
+            <VideoConference/>
             <div className="level">
                     <div className="level-left">
                         <div className="level-item">
