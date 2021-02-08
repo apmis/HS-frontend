@@ -13,7 +13,7 @@ const socket=io(herok, {
 const client=feathers()
 client.configure(socketio(socket))
 client.configure(authentication({
-    storage:window.localStoragegit
+    storage:window.localStorage
 }))
 
 export default client
