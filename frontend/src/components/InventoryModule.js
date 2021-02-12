@@ -6,6 +6,7 @@ import InventoryStore from './inventory/InventoryStore'
 import InventoryHome from './inventory/InventoryHome'
 import ProductEntry from './inventory/ProductEntry'
 import ProductExit from './inventory/ProductExit'
+import Dispense from './inventory/Dispensary'
 import Products from './inventory/Products'
 import Store, { StoreList } from './inventory/Store'
 import {UserContext,ObjectContext} from '../context'
@@ -70,7 +71,7 @@ export default function InventoryModule() {
                                         <NavLink to={`${url}/inv-stores`}>Stores</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-admin`}>Admin</NavLink>
+                                        <NavLink to={`${url}/inv-dispense`}>Dispensary</NavLink>
                                     </div>
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
@@ -108,6 +109,9 @@ export default function InventoryModule() {
                     <Switch>
                         <Route path={path} exact>
                             <InventoryHome />
+                        </Route>
+                        <Route path={`${path}/inv-dispense`} exact >
+                            <Dispense />
                         </Route>
                         <Route path={`${path}/inv-admin`} exact >
                             <InventorySetup />

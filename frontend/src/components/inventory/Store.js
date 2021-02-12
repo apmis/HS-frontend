@@ -444,7 +444,7 @@ export function StoreList({standalone}){
                                     <tbody>
                                         {facilities.map((Store, i)=>(
 
-                                            <tr key={Store._id} onClick={()=>handleRow(Store)}>
+                                            <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{Store.name}</th>
                                             {/*<td>{Store.StoreType}</td>
@@ -1017,7 +1017,7 @@ export  function InputSearch({getSearchfacility,clear}) {
                             <div className="dropdown-content">
                             {facilities.map((facility, i)=>(
                                     
-                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
+                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)} >
                                         
                                         <span>{facility.facilityName}</span>
                                         

@@ -48,6 +48,7 @@
 }
 .pullup{
   margin-top: -1rem;
+  cursor: pointer;
 }
 .card-overflow{
   overflow: visible !important;
@@ -58,6 +59,9 @@
 .vscrollable{
   overflow-y: auto;
   max-height: 80vh ; /* 550px */
+}
+.larger{
+  width:95% !important;
 }
 .vscrollable-table{
   overflow-y: auto;
@@ -107,6 +111,9 @@
 .App-link {
   color: #61dafb;
 }
+input{
+  margin-bottom: 0rem !important;
+}
 .sticky {
   position: fixed;
   /* top: 0;
@@ -114,7 +121,9 @@
  /*  width: 30%; */
   /* z-index:100 */
 }
-
+table tr{
+  cursor: pointer !important;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

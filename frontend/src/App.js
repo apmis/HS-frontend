@@ -59,6 +59,18 @@ function App() {
     DocumentClassModule:{
       show:'create',
       selectedDocumentClass:{}
+    },
+    AppointmentModule:{
+      show:'create',
+      selectedAppointment:{}
+    },
+    OrderModule:{
+      show:'create',
+      selectedOrder:{}
+    },
+    DispenseModule:{
+      show:'create',
+      selectedDispense:{}
     }
   })
   

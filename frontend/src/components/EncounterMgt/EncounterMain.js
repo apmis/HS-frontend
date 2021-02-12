@@ -8,6 +8,7 @@ import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 import  VideoConference  from '../utils/VideoConference';
+import  Prescription, { PrescriptionCreate } from './Prescription';
 
 export default function EncounterMain() {
  // const { register, handleSubmit, watch, errors } = useForm();
@@ -28,6 +29,7 @@ export default function EncounterMain() {
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
     const [showModal,setShowModal]=useState(false)
+    const [showPrescriptionModal,setShowPrescriptionModal]=useState(false)
     // tracking on which page we currently are
     const [page, setPage] = useState(0);
     // add loader refrence 
@@ -38,6 +40,10 @@ export default function EncounterMain() {
     const handleNewDocument= async()=>{
         await setShowModal(true)                                                                                                                                                        
         console.log( showModal)
+    }
+    const handleNewPrescription= async()=>{
+        await setShowPrescriptionModal(true)                                                                                                                                                        
+        console.log( showPrescriptionModal)
     }
 
 
@@ -119,6 +125,7 @@ export default function EncounterMain() {
                 alert("skip:",ulimit )
                 console.log("skip:",ulimit ) */
             await setFacilities(findClinic.data)
+            console.log(findClinic.data)
            /*  } */
                 }
                 else {
@@ -231,7 +238,10 @@ export default function EncounterMain() {
                    {/*  <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div> */}
                     <div className="level-right">
                 { !standalone &&   <div className="level-item"> 
-                            <div className="level-item"><div className="button is-success is-small" onClick={handleNewDocument}>New</div></div>
+                            <div className="level-item">
+                            <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Presciption</div>
+                                <div className="button is-success is-small" onClick={handleNewDocument}>New Document</div>
+                                </div>
                         </div>}
                     </div>
 
@@ -255,31 +265,57 @@ export default function EncounterMain() {
                                                         </span>
                                                         </button> */}
                                                     </header>
-                                                    <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
-                                                
-                                             
-                                                     {/* <div>{Clinic.client} </div> */}
-                                                
-                                               
-                                                 {/* <div>{JSON.stringify(Clinic.documentdetail,2,10)} </div> */}
-                                                 {
-                                                     Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
-                                                       <div className="field is-horizontal"> 
-                                                            <div className="field-label"> 
-                                                                <label className="label is-size-7" key={i}>
-                                                                    {keys}:
-                                                                    </label>
+                                                  {Clinic.documentname!=="Prescription" &&  <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                        { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                            <div className="field is-horizontal"> 
+                                                                    <div className="field-label"> 
+                                                                        <label className="label is-size-7" key={i}>
+                                                                            {keys}:
+                                                                            </label>
+                                                                    </div>
+                                                                    <div className="field-body"> 
+                                                                        <div className="field" >
+                                                                            {value}   
+                                                                        </div>  
+                                                                    </div>                                                 
                                                             </div>
-                                                            <div className="field-body"> 
-                                                                <div className="field" >
-                                                                    {value}   
-                                                                </div>  
-                                                            </div>                                                 
-                                                       </div>
-                                                     ))
-                                                 }
-                                                </div>
-                                                </div>                                           
+                                                            ))
+                                                        }
+                                                </div>}
+                                                {Clinic.documentname==="Prescription" &&  
+                                                <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                        
+                                                        {(Clinic.documentdetail.length>0) && <div>
+                                                            <label>Medications:</label>
+                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                <thead>
+                                                                    <tr>
+                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                
+                                                                    <th><abbr title="Type">Medication</abbr></th>
+                                                                    <th><abbr title="Destination">Destination</abbr></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tfoot>
+                                                                    
+                                                                </tfoot>
+                                                                <tbody>
+                                                                { Clinic.documentdetail.map((ProductEntry, i)=>(
+
+                                                                        <tr key={i}>
+                                                                        <th>{i+1}</th>
+                                                                        {/* <td>{ProductEntry.name}</td> */}
+                                                                        <td>{ProductEntry.medication}<br/>
+                                                                        <span className="help is-size-7">{ProductEntry.instruction}</span></td> 
+                                                                        <td>{ProductEntry.destination}</td>                                                                     
+                                                                        </tr>
+
+                                                                    ))}
+                                                                </tbody>
+                                                                </table>
+                                                                </div>}                                                   
+                                                            </div>}
+                                                    </div>                                           
                                             </div>
 
                                         ))}
@@ -290,9 +326,9 @@ export default function EncounterMain() {
                                 </div>
                                     
                 </div> 
-                <div className={`modal ${showModal?"is-active":""}` }>
+                <div className={`modal  ${showModal?"is-active":""}` }>
                                     <div className="modal-background"></div>
-                                    <div className="modal-card">
+                                    <div className="modal-card ">
                                         <header className="modal-card-head">
                                         <p className="modal-card-title">Choose Document Class</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
@@ -305,7 +341,23 @@ export default function EncounterMain() {
                                         <button className="button">Cancel</button>
                                         </footer> */}
                                     </div>
-                                </div>                     
+                                </div>
+                                <div className={`modal ${showPrescriptionModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card larger">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Prescription</p>
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowPrescriptionModal(false)}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        <Prescription standalone="true" />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>                            
         </div>
     )
 }

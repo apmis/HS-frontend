@@ -4,7 +4,7 @@ import ClinicReport from './Clinic/ClinicReport'
 import ClinicSetup from './Clinic/ClinicSetup'
 import ClinicStore from './Clinic/ClinicStore'
 import ClinicHome from './Clinic/ClinicHome'
-import ClinicEntry from './Clinic/ClinicEntry'
+import Appointments from './Clinic/Appointments'
 import Encounter from './EncounterMgt/Encounter'
 import Patients from './ClientMgt/Patient'
 import Clinic, { ClinicList } from './Clinic/Clinic'
@@ -72,12 +72,12 @@ export default function ClinicModule() {
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
                                     </div>
-                                   {/*  <div className="navbar-item">
-                                        <NavLink to={`${url}/clinicstore`}>Clinic Store</NavLink>
+                                     <div className="navbar-item">
+                                        <NavLink to={`${url}/appointments`}>Appointments</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/clinicentry`}>Clinic Entry</NavLink>
-                                    </div> */}
+                                        <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
+                                    </div> 
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
                                     </div>
@@ -112,11 +112,11 @@ export default function ClinicModule() {
                         <Route path={`${path}/clinicsetup`} exact >
                             <ClinicSetup />
                         </Route>
+                        <Route path={`${path}/appointments`} exact>
+                            <Appointments/>
+                        </Route>
                         <Route path={`${path}/clinicstore`} exact>
                             <ClinicStore />
-                        </Route>
-                        <Route path={`${path}/clinicentry`} exact>
-                            <ClinicEntry />
                         </Route>
                         <Route path={`${path}/encounter`} exact>
                             <Encounter/>

@@ -6,27 +6,29 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import { formatDistanceToNowStrict } from 'date-fns'
+import { formatDistanceToNowStrict, format } from 'date-fns'
 // eslint-disable-next-line
 const searchfacility={};
 
 
-export default function Client() {
+export default function Appointments() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedClient,setSelectedClient]=useState()
+    const [selectedAppointment,setSelectedAppointment]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
             <div className="columns ">
-            <div className="column is-6 ">
+           
+            <div className="column is-8 ">
                 <ClientList />
                 </div>
-            <div className="column is-6 ">
-                {(state.ClientModule.show ==='create')&&<ClientCreate />}
-                {(state.ClientModule.show ==='detail')&&<ClientDetail  />}
-                {(state.ClientModule.show ==='modify')&&<ClientModify Client={selectedClient} />}
+            <div className="column is-4 ">
+                {(state.AppointmentModule.show ==='create')&&<AppointmentCreate />}
+                {(state.AppointmentModule.show ==='detail')&&<ClientDetail  />}
+                {(state.AppointmentModule.show ==='modify')&&<ClientModify Client={selectedClient} />}
                
             </div>
 
@@ -37,28 +39,62 @@ export default function Client() {
     
 }
 
-export function ClientCreate(){
+export function AppointmentCreate(){
+    const {state,setState}=useContext(ObjectContext) 
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
+    const [clientId,setClientId] = useState()
+    const [type,setType] = useState()
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const ClientServ=client.service('client')
+    const ClientServ=client.service('appointments')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
+    const [selectedClient,setSelectedClient]=useState()
+    const [selectedAppointment,setSelectedAppointment]=useState()
+   // const [appointment_reason,setAppointment_reason]= useState()
+    const [appointment_status,setAppointment_status]=useState("")
+    const [appointment_type, setAppointment_type]=useState("")
+    const [chosen, setChosen]=useState()
 
 
-
-    const getSearchfacility=(obj)=>{
+   /*  const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
             shouldValidate: true,
             shouldDirty: true
         })
+    } */
+    const handleChangeType=async (e)=>{
+        await setAppointment_type(e.target.value)
     }
+
+    const handleChangeStatus=async (e)=>{
+        await setAppointment_status(e.target.value)
+    }
+
+    const getSearchfacility=(obj)=>{
+
+       setClientId(obj._id)
+       setChosen(obj)
+       
+        if (!obj){
+            //"clear stuff"
+            setClientId()
+            setChosen()
+           
+        }
     
+        
+       /*  setValue("facility", obj._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        }) */
+    }
+
     useEffect(() => {
         setCurrentUser(user)
         //console.log(currentUser)
@@ -89,14 +125,34 @@ export function ClientCreate(){
           if (user.currentEmployee){
           data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
+          data.locationId=state.ClinicModule.selectedClinic._id
+          data.appointment_type=appointment_type
+         // data.appointment_reason=appointment_reason
+          data.appointment_status=appointment_status
+          data.clientId=clientId
+          data.firstname=chosen.firstname
+            data.middlename=chosen.middlename
+            data.lastname=chosen.lastname
+            data.dob=chosen.dob
+            data.gender=chosen.gender
+            data.phone=chosen.phone
+            data.email=chosen.email
+          data.actions=[{
+              action:appointment_status,
+              actor:user.currentEmployee._id
+          }]
+
         ClientServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
+               setAppointment_type("")
+               setAppointment_status("")
+               setClientId("")
                /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Client created succesfully',
+                    message: 'Appointment created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -105,7 +161,7 @@ export function ClientCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Client ' + err,
+                    message: 'Error creating Appointment ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -116,6 +172,7 @@ export function ClientCreate(){
 
     return (
         <>
+            
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
@@ -123,282 +180,76 @@ export function ClientCreate(){
                 </p>
             </div>
             <div className="card-content vscrollable">
-            <p className=" is-small">
+           {/*  <p className=" is-small">
                     Kindly search Client list before creating new Clients!
-                </p>
+                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="field is-horizontal">
-                <div className="field-body">
-                    <div className="field">
-                        <p className="control has-icons-left has-icons-right">
-                            <input className="input is-small" ref={register()}  name="firstname" type="text" placeholder="First Name" />
-                            <span className="icon is-small is-left">
-                                <i className="fas fa-hospital"></i>
-                            </span>                    
-                        </p>
+            <input name="start_time" ref={register ({ required: true })} type="datetime-local" />
+           
+            <label className="label is-small">Client:</label>
+         <div className="field is-horizontal">
+            <div className="field-body">
+            <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <ClientSearch  getSearchfacility={getSearchfacility} clear={success} /> 
+                    <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={clientId} name="ClientId" type="text" onChange={e=>setClientId(e.target.value)} placeholder="Product Id" />
+                        <span className="icon is-small is-left">
+                        <i className="fas  fa-map-marker-alt"></i>
+                        </span>
+                    </p>
+                 {/* {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"}  */}
+                </div>
+            </div>
+        </div>
+        <div className="field">    
+                <div className="control">
+                    <div className="select is-small">
+                        <select name="type" value={type} onChange={handleChangeType}>
+                           <option value="">Choose Appointment Type  </option>
+                            <option value="New">New</option>
+                            <option value="Followup">Followup</option>
+                            <option value="Readmission with 24hrs">Readmission with 24hrs</option>
+                            <option value="Annual Checkup">Annual Checkup</option>
+                            <option value="Walk in">Walk-in</option>
+                        </select>
                     </div>
-                
-                
-                    <div className="field">
-                        <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register()}  name="middlename" type="text" placeholder="Middle Name" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-map-signs"></i>
-                        </span>
-                        
-                        </p>
+                </div>
+            </div>
+        <div className="field">    
+                <div className="control">
+                    <div className="select is-small">
+                        <select name="appointment_status" value={appointment_status} onChange={handleChangeStatus}>
+                           <option value="">Appointment Status  </option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Checked In">Checked In</option>
+                            <option value="Vitals Taken">Vitals Taken</option>
+                            <option value="With Nurse">With Nurse</option>
+                            <option value="With Doctor">With Doctor</option>
+                            <option value="No Show">No Show</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Billed">Billed</option>
+                        </select>
                     </div>
-              
-                <div className="field">
-                    <p className="control has-icons-left">
-                        <input className="input is-small" ref={register()} name="lastname" type="text" placeholder="Last Name"/>
-                        <span className="icon is-small is-left">
-                        <i className=" fas fa-user-md "></i>
-                        </span>
-                    </p>
                 </div>
-            </div>  
         </div>
-        <div className="field is-horizontal">
-            <div className="field-body">
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="dob" type="text" placeholder="Date of Birth"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="gender" type="text" placeholder="Gender"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="maritalstatus" type="text" placeholder="Marital Status"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="mrn" type="text" placeholder="Medical Records Number"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-            </div>
+        <div className="field">
+            <p className="control has-icons-left has-icons-right">
+                <input className="input is-small" ref={register()}  name="appointment_reason" type="text" placeholder="Reason For Appointment" />
+                <span className="icon is-small is-left">
+                    <i className="fas fa-hospital"></i>
+                </span>                    
+            </p>
         </div>
-        <div className="field is-horizontal">
-            <div className="field-body">
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="religion" type="text" placeholder="Religion"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="profession" type="text" placeholder="Profession"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                        <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-phone-alt"></i>
-                        </span>
-                    </p>
-                </div>
-
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-            </div>
+        <div className="field " style={{display:"none"}} >
+            <p className="control has-icons-left has-icons-right">
+                <input className="input is-small" ref={register()}  name="billingservice" type="text" placeholder="Billing service" />
+                <span className="icon is-small is-left">
+                    <i className="fas fa-hospital"></i>
+                </span>                    
+            </p>
         </div>
-   
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register()} name="address" type="text" placeholder="Residential Address"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> 
-        <div className="field is-horizontal">
-            <div className="field-body">
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="city" type="text" placeholder="Town/City"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="lga" type="text" placeholder="Local Govt Area"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="state" type="text" placeholder="State"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="country" type="text" placeholder="Country"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div>
-            </div>
-        </div> 
-        <div className="field is-horizontal">
-            <div className="field-body">
-                    <div className="field">
-                        <p className="control has-icons-left">
-                        
-                            <input className="input is-small" ref={register()} name="bloodgroup" type="text" placeholder="Blood Group"  />
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-envelope"></i>
-                            </span>
-                        </p>
-                    </div> 
-                    <div className="field">
-                        <p className="control has-icons-left">
-                        
-                            <input className="input is-small" ref={register()} name="genotype" type="text" placeholder="Genotype"  />
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-envelope"></i>
-                            </span>
-                        </p>
-                    </div> 
-                    <div className="field">
-                        <p className="control has-icons-left">
-                        
-                            <input className="input is-small" ref={register()} name="disabilities" type="text" placeholder="Disabilities"  />
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-envelope"></i>
-                            </span>
-                        </p>
-                    </div> 
-                </div> 
-            </div>  
-            
-        <div className="field is-horizontal">
-            <div className="field-body">
-
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="allergies" type="text" placeholder="Allergies"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="comorbidities" type="text" placeholder="Co-mobidities"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-            </div>
-        </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register()} name="clientTags" type="text" placeholder="Tags"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> 
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register()} name="specificDetails" type="text" placeholder="Specific Details about patient"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> 
-        <div className="field is-horizontal">
-            <div className="field-body">
-                <div className="field">
-                    <p className="control has-icons-left">
-                        <input className="input is-small" ref={register()} name="nok_name" type="text" placeholder="Next of Kin Full Name"/>
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-clinic-medical"></i>
-                        </span>
-                    </p>
-                </div>
-                <div className="field">
-                    <p className="control has-icons-left">
-                        <input className="input is-small" ref={register()} name="nok_phoneno" type="text" placeholder="Next of Kin Phone Number"/>
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-clinic-medical"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="nok_email" type="email" placeholder="Next of Kin Email"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div>
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="nok_relationship" type="text" placeholder="Next of Kin Relationship"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div>
-            </div>
-        </div> 
+           
         <div className="field  is-grouped mt-2" >
                 <p className="control">
                     <button type="submit" className="button is-success is-small" >
@@ -470,7 +321,7 @@ export function ClientList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const ClientServ=client.service('client')
+    const ClientServ=client.service('appointments')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
@@ -480,26 +331,28 @@ export function ClientList(){
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
+    
+    const [selectedAppointment,setSelectedAppointment]=useState()
 
 
 
     const handleCreateNew = async()=>{
         const newClientModule={
-            selectedClient:{},
+            selectedAppointment:{},
             show :'create'
             }
-        await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+        await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
        //console.log(state)
         } 
 
     
     const handleRow= async(Client)=>{
-        await setSelectedClient(Client)
+        await setSelectedAppointment(Client)
         const    newClientModule={
-            selectedClient:Client,
+            selectedAppointment:Client,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+       await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
     }
 
    const handleSearch=(val)=>{
@@ -641,7 +494,7 @@ export function ClientList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Clients"
+                                        type="text" placeholder="Search Appointments"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -652,7 +505,7 @@ export function ClientList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clients </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Appointments </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -665,6 +518,7 @@ export function ClientList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
+                                        <th><abbr title="Time">Date/Time</abbr></th>
                                         <th>First Name</th>
                                         <th><abbr title="Middle Name">Middle Name</abbr></th>
                                        <th><abbr title="Last Name">Last Name</abbr></th>
@@ -672,7 +526,9 @@ export function ClientList(){
                                         <th><abbr title="Gender">Gender</abbr></th> 
                                         <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Tags">Tags</abbr></th>
+                                        <th><abbr title="Type">Type</abbr></th>
+                                        <th><abbr title="Status">Status</abbr></th>
+                                        <th><abbr title="Reason">Reason</abbr></th>
                                         <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
                                     </thead>
@@ -682,16 +538,19 @@ export function ClientList(){
                                     <tbody>
                                         {facilities.map((Client, i)=>(
 
-                                            <tr key={Client._id} onClick={()=>handleRow(Client)}  className={Client._id===(selectedClient?._id||null)?"is-selected":""}>
+                                            <tr key={Client._id} onClick={()=>handleRow(Client)}  className={Client._id===(selectedAppointment?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
+                                            <td><strong>{format(new Date(Client.start_time),"dd-MM-yy HH:mm:ss")}</strong></td>
                                             <th>{Client.firstname}</th>
                                             <td>{Client.middlename}</td>
                                            < td>{Client.lastname}</td>
-                                           <td>{formatDistanceToNowStrict(new Date(Client.dob))}</td>
+                                           < td>{formatDistanceToNowStrict(new Date(Client.dob))}</td>
                                             <td>{Client.gender}</td>
                                              <td>{Client.phone}</td>
                                             <td>{Client.email}</td>
-                                            <td>{Client.clientTags}</td>
+                                            <td>{Client.appointment_type}</td>
+                                            <td>{Client.appointment_status}</td>
+                                            <td>{Client.appointment_reason}</td>
                                             <td><span   className="showAction"  >...</span></td>
                                            
                                             </tr>
@@ -722,19 +581,32 @@ export function ClientDetail(){
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
+    const [selectedClient,setSelectedClient]=useState()
+    const [selectedAppointment,setSelectedAppointment]=useState()
 
    
 
-   const Client =state.ClientModule.selectedClient 
-    const client=Client
+   const Client =state.AppointmentModule.selectedAppointment 
+    //const client=Client
     const handleEdit= async()=>{
         const    newClientModule={
-            selectedClient:Client,
+            selectedAppointment:Client,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+       await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
        //console.log(state)
        
+    }
+    const handleAttend=async()=>{
+        
+        const patient = await client.service('client').get(Client.clientId)
+        await setSelectedClient(patient)
+        const    newClientModule={
+            selectedClient:patient, 
+            show :'detail'
+        }
+       await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+        history.push('/app/clinic/encounter')
     }
  
     return (
@@ -1025,7 +897,7 @@ export function ClientDetail(){
                         Edit Details
                     </button>
                 </p>
-                <p className="control">
+              {/*   <p className="control">
                     <button className="button is-info is-small" >
                         Financial Info
                     </button>
@@ -1034,14 +906,14 @@ export function ClientDetail(){
                     <button className="button is-warning is-small" >
                         Schedule appointment
                     </button>
-                </p>
-                <p className="control">
+                </p> */}
+               {/*  <p className="control">
                     <button className="button is-danger is-small" >
                         Check into Clinic 
                     </button>
-                </p>
+                </p> */}
                 <p className="control">
-                    <button className="button is-link is-small" onClick={()=>{history.push('/app/clinic/encounter')}} >
+                    <button className="button is-link is-small" onClick={()=>handleAttend()} >
                         Attend to Client
                     </button>
                 </p>
@@ -1071,8 +943,10 @@ export function ClientModify(){
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
+    const [selectedClient,setSelectedClient]=useState()
+    const [selectedAppointment,setSelectedAppointment]=useState()
 
-    const Client =state.ClientModule.selectedClient 
+    const Client =state.AppointmentModule.selectedAppointment
 
         useEffect(() => {
             setValue("firstname", Client.firstname,  {
@@ -1180,20 +1054,20 @@ export function ClientModify(){
 
    const handleCancel=async()=>{
     const    newClientModule={
-        selectedClient:{},
+        selectedAppointment:{},
         show :'create'
       }
-   await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
-   //console.log(state)
+         await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
+            //console.log(state)
            }
 
 
-        const changeState =()=>{
+    const changeState =()=>{
         const    newClientModule={
-            selectedClient:{},
+            selectedAppointment:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+        setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
 
         }
     const handleDelete=async()=>{
@@ -1590,9 +1464,9 @@ export function ClientModify(){
                 
 }   
 
-export  function InputSearch({getSearchfacility,clear}) {
+export  function ClientSearch({getSearchfacility,clear}) {
+    
     const ClientServ=client.service('client')
-   // const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -1607,14 +1481,17 @@ export  function InputSearch({getSearchfacility,clear}) {
    // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
-
+   const [val,setVal]=useState("")
+   const {user} = useContext(UserContext) 
+   const {state}=useContext(ObjectContext)
+    const [productModal,setProductModal]=useState(false)
 
    const handleRow= async(obj)=>{
         await setChosen(true)
         //alert("something is chaning")
        getSearchfacility(obj)
        
-       await setSimpa(obj.facilityName)
+       await setSimpa(obj.firstname + " "+ obj.middlename+ " "+obj.lastname + " "+obj.gender+" "+obj.phone )
        
         // setSelectedFacility(obj)
         setShowPanel(false)
@@ -1625,7 +1502,7 @@ export  function InputSearch({getSearchfacility,clear}) {
         }
    await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
    //console.log(state)
-}
+    }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
@@ -1645,30 +1522,68 @@ export  function InputSearch({getSearchfacility,clear}) {
         console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
-        
-        const field='facilityName' //field variable
+        setVal(val)
+        if (val===""){
+            setShowPanel(false)
+            getSearchfacility(false)
+            return
+        }
+        const field='name' //field variable
+
        
-        if (val.length>=3){
-            ClientServ.find({query: {     //service
-                 [field]: {
-                     $regex:val,
-                     $options:'i'
-                    
-                 },
+        if (val.length>=3 ){
+            ClientServ.find({query: {
+                $or:[
+                    { firstname: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { lastname: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { middlename: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { phone: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { clientTags: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { mrn: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { specificDetails: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                ],
+              
+                 //facility: user.currentEmployee.facilityDetail._id,
+                 //storeId: state.StoreModule.selectedStore._id,
                  $limit:10,
                  $sort: {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-              console.log("facility  fetched successfully") 
+              console.log("product  fetched successfully") 
+              console.log(res.data) 
                 setFacilities(res.data)
-                 setSearchMessage(" facility  fetched successfully")
+                 setSearchMessage(" product  fetched successfully")
                  setShowPanel(true)
              })
              .catch((err)=>{
-                 console.log(err)
-                 setSearchMessage("Error searching facility, probable network issues "+ err )
-                 setSearchError(true)
+                toast({
+                    message: 'Error creating ProductEntry ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
              })
          }
         else{
@@ -1679,8 +1594,17 @@ export  function InputSearch({getSearchfacility,clear}) {
             console.log(facilities)
         }
     }
+
+    const handleAddproduct =()=>{
+        setProductModal(true) 
+    }
+    const handlecloseModal =()=>{
+        setProductModal(false)
+        handleSearch(val)
+    }
     useEffect(() => {
        if (clear){
+           console.log("success has changed",clear)
            setSimpa("")
        }
         return () => {
@@ -1691,12 +1615,12 @@ export  function InputSearch({getSearchfacility,clear}) {
         <div>
             <div className="field">
                 <div className="control has-icons-left  ">
-                    <div className={`dropdown ${showPanel?"is-active":""}`}>
-                        <div className="dropdown-trigger">
-                            <DebounceInput className="input is-small " 
-                                type="text" placeholder="Search Facilities"
+                    <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
+                        <div className="dropdown-trigger" style={{width:"100%"}}>
+                            <DebounceInput className="input is-small  is-expanded mb-0" 
+                                type="text" placeholder="Search for Client"
                                 value={simpa}
-                                minLength={1}
+                                minLength={3}
                                 debounceTimeout={400}
                                 onBlur={(e)=>handleBlur(e)}
                                 onChange={(e)=>handleSearch(e.target.value)}
@@ -1706,24 +1630,50 @@ export  function InputSearch({getSearchfacility,clear}) {
                                 <i className="fas fa-search"></i>
                             </span>
                         </div>
-                        {searchError&&<div>{searchMessage}</div>}
-                        <div className="dropdown-menu" >
+                        <div className="dropdown-menu expanded" style={{width:"100%"}}>
                             <div className="dropdown-content">
-                            {facilities.map((facility, i)=>(
+                          { facilities.length>0?"":<div className="dropdown-item" /* onClick={handleAddproduct} */> <span> {val} is not yet your client</span> </div>}
+
+                              {facilities.map((facility, i)=>(
                                     
                                     <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <span>{facility.facilityName}</span>
-                                        
+                                        <div><span>{facility.firstname}</span>
+                                        <span className="padleft">{facility.middlename}</span>
+                                        <span className="padleft">{facility.lastname}</span>
+                                        <span className="padleft"> {formatDistanceToNowStrict(new Date(facility.dob))}</span>
+                                        <span className="padleft">{facility.gender}</span>
+                                        <span className="padleft">{facility.profession}</span>
+                                        <span className="padleft">{facility.phone}</span>
+                                        <span className="padleft">{facility.email}</span>
+                                        </div>
+                                       
                                     </div>
                                     
                                     ))}
+                                    
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-          
+            <div className={`modal ${productModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Choose Store</p>
+                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        {/* <StoreList standalone="true" /> */}
+                                        {/* <ProductCreate /> */}
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>       
         </div>
     )
 }

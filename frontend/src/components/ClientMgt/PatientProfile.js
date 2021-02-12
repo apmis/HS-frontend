@@ -54,7 +54,14 @@ export default function PatientProfile () {
         companyDetails,
         hmocover,
         hmoDetails
-        } =paymentinfo
+        } =state.ClientModule.selectedClient.paymentinfo
+
+    useEffect(() => {
+        
+        return () => {
+
+        }
+    }, [])
 
     useEffect(() => {
       setSelectedClient(state.ClientModule.selectedClient)

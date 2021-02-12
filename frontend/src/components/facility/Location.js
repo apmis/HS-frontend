@@ -441,7 +441,7 @@ export function LocationList(){
                                     <tbody>
                                         {facilities.map((Location, i)=>(
 
-                                            <tr key={Location._id} onClick={()=>handleRow(Location)}>
+                                            <tr key={Location._id} onClick={()=>handleRow(Location)} className={Location._id===(selectedLocation?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{Location.name}</th>
                                             <td>{Location.locationType}</td>

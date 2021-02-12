@@ -5,12 +5,13 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import {ClientCreate} from '../ClientMgt/Patient'
+import {format, formatDistanceToNowStrict } from 'date-fns'
+/* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
 const searchfacility={};
 
 
-export default function ProductEntry() {
+export default function Dispense() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -23,12 +24,12 @@ export default function ProductEntry() {
             </div> */}
             <div className="columns ">
             <div className="column is-6 ">
-                <ProductEntryList />
+                <DispenseList />
                 </div>
             <div className="column is-6 ">
-                {(state.ProductEntryModule.show ==='create')&&<ProductEntryCreate />}
-                {(state.ProductEntryModule.show ==='detail')&&<ProductEntryDetail  />}
-                {(state.ProductEntryModule.show ==='modify')&&<ProductEntryModify ProductEntry={selectedProductEntry} />}
+                {(state.DispenseModule.show ==='create')&&<DispenseCreate />}
+                {(state.DispenseModule.show ==='detail')&&<DispenseDetail  />}
+                {(state.DispenseModule.show ==='modify')&&<DispenseModify ProductEntry={selectedProductEntry} />}
                
             </div>
 
@@ -39,7 +40,7 @@ export default function ProductEntry() {
     
 }
 
-export function ProductEntryCreate(){
+export function DispenseCreate(){
    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
@@ -58,11 +59,12 @@ export function ProductEntryCreate(){
     const [source,setSource] = useState("")
     const [date,setDate] = useState("")
     const [name,setName] = useState("")
-    const [baseunit,setBaseunit] = useState("")
-    const [quantity,setQuantity] = useState()
-    const [costprice,setCostprice] = useState()
+    const [destination,setDestination] = useState("")
+    const [medication,setMedication] = useState()
+    const [instruction,setInstruction] = useState()
     const [productItem,setProductItem] = useState([])
     const {state}=useContext(ObjectContext)
+    const ClientServ=client.service('clinicaldocument')
     
     const [productEntry,setProductEntry]=useState({
         productitems:[],
@@ -75,12 +77,14 @@ export function ProductEntryCreate(){
     })
  
     const productItemI={
-        productId,
-        name,
-        quantity,
-        costprice,
+      /*   productId,
+        name, */
+        medication,
+        destination,
+        instruction
+        /* costprice,
         amount:quantity*costprice,
-        baseunit
+        baseunit */
 
     }
     // consider batchformat{batchno,expirydate,qtty,baseunit}
@@ -89,7 +93,7 @@ export function ProductEntryCreate(){
 
         setProductId(obj._id)
         setName(obj.name)
-        setBaseunit(obj.baseunit)
+       // setBaseunit(obj.baseunit)
         
        /*  setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -104,19 +108,28 @@ export function ProductEntryCreate(){
         
         }
     }, [user])
-
+   /*  useEffect(() => {
+        setProductItem(
+            prevProd=>prevProd.concat(productItemI)
+        )
+        console.log(productItem)
+        return () => {
+            
+        }
+    },[productItemI])
+ */
     const handleChangeType=async (e)=>{
         await setType(e.target.value)
     }
     const handleClickProd=async()=>{
         await setSuccess(false)
-        setProductItem(
+        await setProductItem(
             prevProd=>prevProd.concat(productItemI)
         )
         setName("")
-        setBaseunit("")
-        setQuantity("")
-        setCostprice("")
+        setMedication("")
+        setInstruction("")
+        setDestination("")
        await setSuccess(true)
        console.log(success)
        console.log(productItem)
@@ -142,11 +155,66 @@ export function ProductEntryCreate(){
     setSource("")
     setDate("")
     setName("")
-    setBaseunit()
-    setCostprice()
+    setMedication("")
+    setInstruction("")
     setProductItem([])
     }
+    const onSubmit = () =>{
+        //data,e
+       // e.preventDefault();
+        setMessage("")
+        setError(false)
+        setSuccess(false)
+        //write document
+        let document={}
+         // data.createdby=user._id
+         // console.log(data);
+          if (user.currentEmployee){
+          document.facility=user.currentEmployee.facilityDetail._id 
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          }
+         document.documentdetail=productItem
+         console.log(document.documentdetail)
+          document.documentname="Prescription" //state.DocumentClassModule.selectedDocumentClass.name
+         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.location=state.ClinicModule.selectedClinic.name+" "+state.ClinicModule.selectedClinic.locationType
+          document.locationId=state.ClinicModule.selectedClinic._id
+          document.client=state.ClientModule.selectedClient._id
+          document.createdBy=user._id
+          document.createdByname=user.firstname+ " "+user.lastname
+          document.status="completed"
+          console.log(document)
+        ClientServ.create(document)
+        .then((res)=>{
+                //console.log(JSON.stringify(res))
+               // e.target.reset();
+               /*  setMessage("Created Client successfully") */
+                setSuccess(true)
+                toast({
+                    message: 'Documentation created succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  setSuccess(false)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error creating Documentation ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            })
 
+      } 
+
+
+
+
+
+
+/* 
     const onSubmit = async(e) =>{
         e.preventDefault();
         setMessage("")
@@ -194,7 +262,7 @@ export function ProductEntryCreate(){
                 //console.log(JSON.stringify(res))
                 resetform()
                /*  setMessage("Created ProductEntry successfully") */
-                setSuccess(true)
+             /*    setSuccess(true)
                 toast({
                     message: 'ProductEntry created succesfully',
                     type: 'is-success',
@@ -213,118 +281,54 @@ export function ProductEntryCreate(){
                   })
             })
 
-      } 
+      }  */ 
 
-    
+    useEffect(() => {
+       console.log("Simpa")
+        return () => {
+            
+        }
+    }, [])
 
     return (
         <>
             <div className="card card-overflow">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create ProductEntry: Product Entry- Initialization, Purchase Invoice, Audit
+                    Create Prescription
                 </p>
             </div>
             <div className="card-content ">
    
-            <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit) */}
-            <div className="field is-horizontal">
-            <div className="field-body">
-            <div className="field">    
-                <div className="control">
-                    <div className="select is-small">
-                        <select name="type" value={type} onChange={handleChangeType}>
-                           <option value="">Choose Type </option>
-                            <option value="Purchase Invoice">Purchase Invoice </option>
-                            <option value="Initialization">Initialization</option>
-                            <option value="Audit">Audit</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="supplier" type="text" onChange={e=>setSource(e.target.value)} placeholder="Supplier" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div>
+           {/*  <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit)  </form>  */}
            
-            </div>
-            </div> {/* horizontal end */}
-           {/*  <div className="field">
-                <p className="control has-icons-left"> // Audit/initialization/Purchase Invoice 
-                    <input className="input is-small"  ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div> */}
-               <div className="field is-horizontal">
-               <div className="field-body">
-               <div className="field">
-                <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small"  /* ref={register({ required: true })} */ value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register} */ name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={async e=> await setTotalamount(e.target.value)} placeholder=" Total Amount"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-coins"></i>
-                    </span>
-                </p>
-            </div>
-
-                </div> 
-                </div> 
-               
-                </form>   
                
            
          {/* array of ProductEntry items */}
         
-        <label className="label is-small">Add Product Items:</label>
+        <label className="label is-small">Add Medication:</label>
          <div className="field is-horizontal">
             <div className="field-body">
-            <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                    <ProductSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                    <p className="control has-icons-left " style={{display:"none"}}>
-                        <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
+            {/* <div className="field is-expanded"  style={ !user.stacker?{display:"none"}:{}}  > */}
+                   {/*  <ProductSearch  getSearchfacility={getSearchfacility} clear={success} />  */}
+                   {/*  <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  ref={register ({ required: true }) }   add array no  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
                         <span className="icon is-small is-left">
                         <i className="fas  fa-map-marker-alt"></i>
                         </span>
-                    </p>
-                </div>
+                    </p> 
+                </div>*/}
                 <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
+                    <input className="input is-small" /* ref={register({ required: true })} */ name="medication" value={medication} type="text" onChange={e=>setMedication(e.target.value)} placeholder="medication"  />
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
                 </p>
-        <label >{baseunit}</label>
+       
             </div> 
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Cost Price"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-dollar-sign"></i>
-                    </span>
-                </p>
-            </div> 
+            
+          
             <div className="field">
             <p className="control">
                     <button className="button is-info is-small  is-pulled-right">
@@ -334,18 +338,40 @@ export function ProductEntryCreate(){
             </div>
             </div>
          </div>
-            
+         <div className="field is-horizontal">
+            <div className="field-body">
+         <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" /* ref={register({ required: true })} */ name="instruction" value={instruction} type="text" onChange={e=>setInstruction(e.target.value)} placeholder="Instructions/Note"  />
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>
+                </p>
+       
+            </div>  
+            <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" /* ref={register({ required: true })} */ name="destination" value={destination} type="text" onChange={e=>setDestination(e.target.value)} placeholder="Destination Pharmacy"  />
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>
+                </p>
+       
+            </div>  
+            </div> 
+            </div> 
+
        {(productItem.length>0) && <div>
-            <label>Product Items:</label>
+            <label>Medications:</label>
          <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                 <thead>
                     <tr>
                     <th><abbr title="Serial No">S/No</abbr></th>
-                    <th><abbr title="Type">Name</abbr></th>
-                    <th><abbr title="Type">Quanitity</abbr></th>
-                    <th><abbr title="Document No">Unit</abbr></th>
-                    <th><abbr title="Cost Price">Cost Price</abbr></th>
-                    <th><abbr title="Cost Price">Amount</abbr></th>
+                   {/*  <th><abbr title="Type">Name</abbr></th> */}
+                    <th><abbr title="Medication">Medication</abbr></th>
+                    <th><abbr title="Destination">Destination</abbr></th>
+                     {/*<th><abbr title="Cost Price">Cost Price</abbr></th>
+                    <th><abbr title="Cost Price">Amount</abbr></th> */}
                     <th><abbr title="Actions">Actions</abbr></th>
                     </tr>
                 </thead>
@@ -357,11 +383,12 @@ export function ProductEntryCreate(){
 
                         <tr key={i}>
                         <th>{i+1}</th>
-                        <td>{ProductEntry.name}</td>
-                        <th>{ProductEntry.quantity}</th>
-                        <td>{ProductEntry.baseunit}</td>
-                        <td>{ProductEntry.costprice}</td>
-                        <td>{ProductEntry.amount}</td>
+                        {/* <td>{ProductEntry.name}</td> */}
+                        <td>{ProductEntry.medication}<br/>
+                        <span className="help">{ProductEntry.instruction}</span></td>
+                       <td>{ProductEntry.destination}</td>
+                         {/* <td>{ProductEntry.costprice}</td>
+                        <td>{ProductEntry.amount}</td> */}
                         <td><span className="showAction"  >x</span></td>
                         
                         </tr>
@@ -388,7 +415,7 @@ export function ProductEntryCreate(){
    
 }
 
-export function ProductEntryList(){
+export function DispenseList({standalone}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -396,12 +423,12 @@ export function ProductEntryList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const ProductEntryServ=client.service('productentry')
+    const OrderServ=client.service('order')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedProductEntry, setSelectedProductEntry]=useState() //
+   const [selectedDispense, setSelectedDispense]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -411,10 +438,10 @@ export function ProductEntryList(){
 
     const handleCreateNew = async()=>{
         const    newProductEntryModule={
-            selectedProductEntry:{},
+            selectedDispense:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+       await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
        //console.log(state)
         
 
@@ -424,13 +451,13 @@ export function ProductEntryList(){
 
         //console.log("handlerow",ProductEntry)
 
-        await setSelectedProductEntry(ProductEntry)
+        await setSelectedDispense(ProductEntry)
 
         const    newProductEntryModule={
-            selectedProductEntry:ProductEntry,
+            selectedDispense:ProductEntry,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+       await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
        //console.log(state)
 
     }
@@ -438,14 +465,20 @@ export function ProductEntryList(){
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       ProductEntryServ.find({query: {
-                [field]: {
+       OrderServ.find({query: {
+                order: {
                     $regex:val,
                     $options:'i'
                    
                 },
-                storeId:state.StoreModule.selectedStore._id,
-               facility:user.currentEmployee.facilityDetail._id || "",
+                order_status: {
+                    $regex:val,
+                    $options:'i'
+                   
+                },
+                order_category:"Prescription",
+               // storeId:state.StoreModule.selectedStore._id,
+               //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
                 $sort: {
                     createdAt: -1
@@ -463,116 +496,50 @@ export function ProductEntryList(){
             })
         }
    
-        const getFacilities= async()=>{
-            if (user.currentEmployee){
-            
-        const findProductEntry= await ProductEntryServ.find(
+ const getFacilities= async()=>{
+       
+            console.log("here b4 server")
+             const findProductEntry= await OrderServ.find(
                 {query: {
-                    facility:user.currentEmployee.facilityDetail._id,
-                    storeId:state.StoreModule.selectedStore._id,
-                    $limit:20,
+                    order_category:"Prescription",
+                    fulfilled:false,
+                    //destination: user.currentEmployee.facilityDetail._id, need to set this
+                   
+                    //storeId:state.StoreModule.selectedStore._id,
+                    //clientId:state.ClientModule.selectedClient._id,
+                    $limit:50,
                     $sort: {
                         createdAt: -1
                     }
                     }})
-
          await setFacilities(findProductEntry.data)
-                }
-                else {
-                    if (user.stacker){
-                        /* toast({
-                            message: 'You do not qualify to view this',
-                            type: 'is-danger',
-                            dismissible: true,
-                            pauseOnHover: true,
-                          }) 
-                          return */
-                        const findProductEntry= await ProductEntryServ.find(
-                            {query: {
-                                
-                                $limit:20,
-                                $sort: {
-                                    createdAt: -1
-                                }
-                                }})
-            
-                    await setFacilities(findProductEntry.data)
-
-                    }
-                }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" ProductEntry  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating ProductEntry, probable network issues "+ err )
-                    setError(true)
-                }) */
-            }
-            
-            useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
-                    //getFacilities(user)
-                }, 200);
-
-                return () => {
-                    
-
-                }
-            },[])
+         }   
 
             useEffect(() => {
+                console.log("started")
+                getFacilities()
+              
                
-                if (!state.StoreModule.selectedStore){
-                    toast({
-                        message: 'kindly select a store',
-                        type: 'is-danger',
-                        dismissible: true,
-                        pauseOnHover: true,
-                      }) 
-                      return
-                    getFacilities()
-
-                }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
-                }
-                ProductEntryServ.on('created', (obj)=>getFacilities())
-                ProductEntryServ.on('updated', (obj)=>getFacilities())
-                ProductEntryServ.on('patched', (obj)=>getFacilities())
-                ProductEntryServ.on('removed', (obj)=>getFacilities())
+               OrderServ.on('created', (obj)=>getFacilities())
+                OrderServ.on('updated', (obj)=>getFacilities())
+                OrderServ.on('patched', (obj)=>getFacilities())
+                OrderServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
                 }
             },[])
 
-            useEffect(() => {
-                getFacilities()
-                console.log("store changed")
-                return () => {
-                   
-                }
-            }, [state.StoreModule.selectedStore])
-    //todo: pagination and vertical scroll bar
-
+            
     return(
-        <>
-           {state.StoreModule.selectedStore?( <>  
+        
+            <>  
                 <div className="level">
                     <div className="level-left">
                         <div className="level-item">
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search ProductEntry"
+                                        type="text" placeholder="Search Medications"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -583,7 +550,7 @@ export function ProductEntryList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Product Additions to Inventory </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Prescriptions </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -597,11 +564,12 @@ export function ProductEntryList(){
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th><abbr title="Date">Date</abbr></th>
-                                        <th><abbr title="Type">Type</abbr></th>
-                                        <th>Source</th>
-                                        <th><abbr title="Document No">Document No</abbr></th>
-                                        <th><abbr title="Total Amount">Total Amount</abbr></th>
-                                        <th><abbr title="Enteredby">Entered By</abbr></th>
+                                        <th><abbr title="Client Name">Client Name</abbr></th> 
+                                        <th><abbr title="Order">Medication</abbr></th>
+                                        <th>Fulfilled</th>
+                                        <th><abbr title="Status">Status</abbr></th>
+                                        <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
+                                        
                                         <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
                                     </thead>
@@ -611,14 +579,15 @@ export function ProductEntryList(){
                                     <tbody>
                                         {facilities.map((ProductEntry, i)=>(
 
-                                            <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)}>
+                                            <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)} className={ProductEntry._id===(selectedDispense?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <td>{ProductEntry.date}</td>
-                                            <th>{ProductEntry.type}</th>
-                                            <td>{ProductEntry.source}</td>
-                                            <td>{ProductEntry.documentNo}</td>
-                                            <td>{ProductEntry.totalamount}</td>
-                                            <td>{ProductEntry.enteredby}</td>
+                                            <td>{/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */}<span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td>
+                                            <td>{ProductEntry.clientId}</td> 
+                                            <th>{ProductEntry.order}</th>
+                                            <td>{ProductEntry.fulfilled?"Yes":"No"}</td>
+                                            <td>{ProductEntry.order_status}</td>
+                                            <td>{ProductEntry.requestingdoctor_Name}</td>
+                                            
                                             <td><span className="showAction"  >...</span></td>
                                            
                                             </tr>
@@ -628,14 +597,13 @@ export function ProductEntryList(){
                                     </table>
                                     
                 </div>              
-            </>):<div>loading... Choose a Store</div>}
             </>
               
     )
     }
 
 
-export function ProductEntryDetail(){
+export function DispenseDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
@@ -649,14 +617,14 @@ export function ProductEntryDetail(){
 
    
 
-   const ProductEntry =state.ProductEntryModule.selectedProductEntry 
+   const ProductEntry =state.DispenseModule.selectedDispense
 
     const handleEdit= async()=>{
         const    newProductEntryModule={
-            selectedProductEntry:ProductEntry,
+            selectedDispense:ProductEntry,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+       await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
        //console.log(state)
        
     }
@@ -666,191 +634,13 @@ export function ProductEntryDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    ProductEntry Details
+                    Dispense Details
                 </p>
             </div>
             <div className="card-content vscrollable">
-           
-                <table> 
-                <tbody>         
-                <tr>
-                    <td>
-                      <label className="label is-small"> <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                        Type
-                        </label>
-                    </td>
-                    <td>
-                        <span className="is-size-7 padleft"   name="name"> {ProductEntry.type} </span>
-                    </td>
-                    <td>
-
-                    </td>
-                    <td>
-                        <label className="label is-small padleft"><span className="icon is-small is-left">
-                            <i className="fas fa-map-signs"></i>
-                        </span>Supplier:
-                        </label>
-                    </td>
-                    <td>
-                        <span className="is-size-7 padleft"   name="ProductEntryType">{ProductEntry.source} </span> 
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label className="label is-small"> <span className="icon is-small is-left">
-                        <i className="fas fa-hospital"></i>
-                        </span>                    
-                        Date:
-                        </label>
-                    </td>
-                    <td>
-                        <span className="is-size-7 padleft"   name="name"> {ProductEntry.date} </span>
-                    </td>
-                    <td>
-                                
-                    </td>
-                    <td>
-                        <label className="label is-small padleft"><span className="icon is-small is-left">
-                            <i className="fas fa-map-signs"></i>
-                        </span>Invoice No:
-                        </label>
-                    </td>
-                    
-                    <td>
-                         <span className="is-size-7 padleft"   name="ProductEntryType">{ProductEntry.documentNo} </span> 
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                
-                        <label className="label is-small"> <span className="icon is-small is-left">
-                        <i className="fas fa-hospital"></i>
-                    </span>            
-                        Total Amount:
-                    </label>
-                    </td>
-                    <td>
-                        <span className="is-size-7 padleft"   name="name"> {ProductEntry.totalamount} </span>
-                    </td>
-                </tr>
-
-                </tbody> 
-            </table> 
-            <label className="label is-size-7 mt-2">Product Items:</label>
-         <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
-                <thead>
-                    <tr>
-                    <th><abbr title="Serial No">S/No</abbr></th>
-                    <th><abbr title="Type">Name</abbr></th>
-                    <th><abbr title="Type">Quanitity</abbr></th>
-                    <th><abbr title="Document No">Unit</abbr></th>
-                    <th><abbr title="Cost Price">Cost Price</abbr></th>
-                    <th><abbr title="Cost Price">Amount</abbr></th>
-                   
-                    </tr>
-                </thead>
-                <tfoot>
-                    
-                </tfoot>
-                <tbody>
-                   { ProductEntry.productitems.map((ProductEntry, i)=>(
-
-                        <tr key={i}>
-                        <th>{i+1}</th>
-                        <td>{ProductEntry.name}</td>
-                        <th>{ProductEntry.quantity}</th>
-                        <td>{ProductEntry.baseunit}</td>
-                        <td>{ProductEntry.costprice}</td>
-                        <td>{ProductEntry.amount}</td>
-                        
-                        
-                        </tr>
-
-                    ))}
-                </tbody>
-                </table>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
-                    </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="ProductEntryCity">{ProductEntry.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="ProductEntryContactPhone" >{ProductEntry.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="ProductEntryEmail" >{ProductEntry.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="ProductEntryOwner">{ProductEntry.department}</span>
-                    </td>
+            {JSON.stringify(ProductEntry,2,10)}
                
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="ProductEntryType">{ProductEntry.deptunit}</span>
-                </td>
-              
-                </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "ProductEntryCategory">{ProductEntry.ProductEntryCategory}</span>
-                </label>
-                 </div> */}
-
-            
-           
-           {/*  <div className="field mt-2">
-                <p className="control">
-                    <button className="button is-success is-small" onClick={handleEdit}>
-                        Edit
-                    </button>
-                </p>
             </div>
-            { error && <div className="message"> {message}</div>} */}
-           
-        </div>
         </div>
         </>
     )
@@ -858,7 +648,7 @@ export function ProductEntryDetail(){
    
 }
 
-export function ProductEntryModify(){
+export function DispenseModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -1299,7 +1089,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
                                         </header>
                                         <section className="modal-card-body">
                                         {/* <StoreList standalone="true" /> */}
-                                        <ClientCreate />
+                                       {/*  <ProductCreate /> */}
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>
