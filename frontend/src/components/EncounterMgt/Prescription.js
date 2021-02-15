@@ -4,6 +4,7 @@ import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
+import FacilityPopup from '../helpers/FacilityPopup'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 /* import {ProductCreate} from './Products' */
@@ -59,7 +60,9 @@ export function PrescriptionCreate(){
     const [source,setSource] = useState("")
     const [date,setDate] = useState("")
     const [name,setName] = useState("")
-    const [destination,setDestination] = useState("")
+    const [destination,setDestination] = useState('')
+    const [destinationId,setDestinationId] = useState('')
+    const [destinationModal,setDestinationModal] = useState(false)
     const [medication,setMedication] = useState()
     const [instruction,setInstruction] = useState()
     const [productItem,setProductItem] = useState([])
@@ -76,12 +79,17 @@ export function PrescriptionCreate(){
 
     })
  
+    const handlecloseModal =()=>{
+        setDestinationModal(false)
+        //handleSearch(val)
+    }
     const productItemI={
       /*   productId,
         name, */
         medication,
         destination,
-        instruction
+        instruction,
+        destinationId
         /* costprice,
         amount:quantity*costprice,
         baseunit */
@@ -91,8 +99,15 @@ export function PrescriptionCreate(){
     //consider baseunoit conversions
     const getSearchfacility=(obj)=>{
 
-        setProductId(obj._id)
-        setName(obj.name)
+        setInstruction(obj.instruction)
+        setMedication(obj.medication)
+
+        if (!obj){
+            //"clear stuff"
+            setInstruction("")
+            setMedication("")
+           
+        }
        // setBaseunit(obj.baseunit)
         
        /*  setValue("facility", obj._id,  {
@@ -118,18 +133,38 @@ export function PrescriptionCreate(){
         }
     },[productItemI])
  */
+    useEffect(() => {
+        
+        setDestination(state.DestinationModule.selectedDestination.facilityName)
+        setDestinationId(state.DestinationModule.selectedDestination._id)
+        return () => {
+           
+        }
+    }, [state.DestinationModule.selectedDestination])
+
     const handleChangeType=async (e)=>{
         await setType(e.target.value)
     }
     const handleClickProd=async()=>{
         await setSuccess(false)
+        if (!(productItemI.medication && productItemI.medication.length>0 )){
+            toast({
+                message: 'medication can not be empty ' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              return
+        }
         await setProductItem(
             prevProd=>prevProd.concat(productItemI)
         )
         setName("")
         setMedication("")
         setInstruction("")
-        setDestination("")
+        setDestination( user.currentEmployee.facilityDetail.facilityName)
+        setDestinationId( user.currentEmployee.facilityDetail._id)
+       // setDestination("")
        await setSuccess(true)
        console.log(success)
        console.log(productItem)
@@ -146,6 +181,10 @@ export function PrescriptionCreate(){
 
       }
     }) */
+
+    const handleChangeDestination=()=>{
+        setDestinationModal(true)
+    }
 
     const resetform=()=>{
      setType("Purchase Invoice")
@@ -180,6 +219,8 @@ export function PrescriptionCreate(){
           document.location=state.ClinicModule.selectedClinic.name+" "+state.ClinicModule.selectedClinic.locationType
           document.locationId=state.ClinicModule.selectedClinic._id
           document.client=state.ClientModule.selectedClient._id
+          document.clientname=state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname
+          document.clientobj=state.ClientModule.selectedClient
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status="completed"
@@ -191,80 +232,7 @@ export function PrescriptionCreate(){
                /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Documentation created succesfully',
-                    type: 'is-success',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-                  setSuccess(false)
-            })
-            .catch((err)=>{
-                toast({
-                    message: 'Error creating Documentation ' + err,
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-            })
-
-      } 
-
-
-
-
-
-
-/* 
-    const onSubmit = async(e) =>{
-        e.preventDefault();
-        setMessage("")
-        setError(false)
-        setSuccess(false)
-        await setProductEntry({
-            
-            date,
-            documentNo,
-            type,
-            totalamount,
-            source,
-        })
-        productEntry.productitems=productItem
-        productEntry.createdby=user._id
-        productEntry.transactioncategory="credit"
-
-          console.log("b4 facility",productEntry);
-          if (user.currentEmployee){
-         productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
-          }else{
-            toast({
-                message: 'You can not add inventory to any organization',
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              }) 
-              return
-          }
-          if (state.StoreModule.selectedStore._id){
-            productEntry.storeId=state.StoreModule.selectedStore._id
-          }else{
-            toast({
-                message: 'You need to select a store before adding inventory',
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              }) 
-              return
-
-          }
-          console.log("b4 create",productEntry);
-        ProductEntryServ.create(productEntry)
-        .then((res)=>{
-                //console.log(JSON.stringify(res))
-                resetform()
-               /*  setMessage("Created ProductEntry successfully") */
-             /*    setSuccess(true)
-                toast({
-                    message: 'ProductEntry created succesfully',
+                    message: 'Presciption created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -274,17 +242,18 @@ export function PrescriptionCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating ProductEntry ' + err,
+                    message: 'Error creating Prescription ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
                   })
             })
 
-      }  */ 
+      } 
 
     useEffect(() => {
-       console.log("Simpa")
+        setDestination( user.currentEmployee.facilityDetail.facilityName)
+        setDestinationId( user.currentEmployee.facilityDetail._id)
         return () => {
             
         }
@@ -309,24 +278,24 @@ export function PrescriptionCreate(){
         <label className="label is-small">Add Medication:</label>
          <div className="field is-horizontal">
             <div className="field-body">
-            {/* <div className="field is-expanded"  style={ !user.stacker?{display:"none"}:{}}  > */}
-                   {/*  <ProductSearch  getSearchfacility={getSearchfacility} clear={success} />  */}
-                   {/*  <p className="control has-icons-left " style={{display:"none"}}>
-                        <input className="input is-small"  ref={register ({ required: true }) }   add array no  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
+             <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */  > 
+                    <MedicationHelperSearch  getSearchfacility={getSearchfacility} clear={success} />  
+                  <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  /* ref={register ({ required: true }) }  */   value={medication} name="medication" type="text" onChange={e=>setMedication(e.target.value)} placeholder="medication" />
                         <span className="icon is-small is-left">
                         <i className="fas  fa-map-marker-alt"></i>
                         </span>
                     </p> 
-                </div>*/}
-                <div className="field">
+                </div>
+               {/*  <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ name="medication" value={medication} type="text" onChange={e=>setMedication(e.target.value)} placeholder="medication"  />
+                    <input className="input is-small" ref={register({ required: true })} name="medication" value={medication} type="text" onChange={e=>setMedication(e.target.value)} placeholder="medication"  />
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
                 </p>
        
-            </div> 
+            </div>  */}
             
           
             <div className="field">
@@ -351,18 +320,19 @@ export function PrescriptionCreate(){
             </div>  
             <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ name="destination" value={destination} type="text" onChange={e=>setDestination(e.target.value)} placeholder="Destination Pharmacy"  />
+                    <input className="input is-small " disabled /* ref={register({ required: true })} */ name="destination" value={destination===user.currentEmployee.facilityDetail.facilityName?"In-house":destination} type="text" onChange={e=>setDestination(e.target.value)} placeholder="Destination Pharmacy"  />
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
                 </p>
+                <button className="button is-small is-success btnheight" onClick={handleChangeDestination}>Change</button>
        
             </div>  
             </div> 
             </div> 
 
        {(productItem.length>0) && <div>
-            <label>Medications:</label>
+            <label className="label is-size-7">Medications:</label>
          <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                 <thead>
                     <tr>
@@ -386,7 +356,7 @@ export function PrescriptionCreate(){
                         {/* <td>{ProductEntry.name}</td> */}
                         <td>{ProductEntry.medication}<br/>
                         <span className="help">{ProductEntry.instruction}</span></td>
-                       <td>{ProductEntry.destination}</td>
+                       <td>{ProductEntry.destination===user.currentEmployee.facilityDetail.facilityName?"In-house":ProductEntry.destination}</td>
                          {/* <td>{ProductEntry.costprice}</td>
                         <td>{ProductEntry.amount}</td> */}
                         <td><span className="showAction"  >x</span></td>
@@ -410,6 +380,24 @@ export function PrescriptionCreate(){
             
             </div>
             </div>
+            <div className={`modal ${destinationModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Choose Destination</p>
+                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                            <FacilityPopup facilityType="Pharmacy"  closeModal={handlecloseModal}/>
+                                        {/* <StoreList standalone="true" /> */}
+                                       {/*  <ProductCreate /> */}
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>       
         </>
     )
    
@@ -499,6 +487,7 @@ export function PrescriptionList({standalone}){
  const getFacilities= async()=>{
        
             console.log("here b4 server")
+            console.log(state.ClientModule.selectedClient._id)
              const findProductEntry= await OrderServ.find(
                 {query: {
                     order_category:"Prescription",
@@ -1100,9 +1089,9 @@ export function ProductEntryModify(){
                 
 }   
 
-export  function ProductSearch({getSearchfacility,clear}) {
+export  function MedicationHelperSearch({getSearchfacility,clear}) {
     
-    const productServ=client.service('products')
+    const productServ=client.service('medicationhelper')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -1119,14 +1108,16 @@ export  function ProductSearch({getSearchfacility,clear}) {
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
     const [productModal,setProductModal]=useState(false)
+   let value
 
    const handleRow= async(obj)=>{
         await setChosen(true)
         //alert("something is chaning")
        getSearchfacility(obj)
+  
        
-       await setSimpa(obj.name)
-       
+       await  setSimpa(obj.medication)
+      
         // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
@@ -1159,9 +1150,10 @@ export  function ProductSearch({getSearchfacility,clear}) {
         setVal(value)
         if (value===""){
             setShowPanel(false)
+            getSearchfacility(false)
             return
         }
-        const field='name' //field variable
+        const field='medication' //field variable
 
        
         if (value.length>=3 ){
@@ -1177,14 +1169,23 @@ export  function ProductSearch({getSearchfacility,clear}) {
                    }
                      }}).then((res)=>{
               console.log("product  fetched successfully") 
-              console.log(res.data) 
-                setFacilities(res.data)
-                 setSearchMessage(" product  fetched successfully")
-                 setShowPanel(true)
+              console.log(res) 
+                    if(res.total>0){
+                        setFacilities(res.data)
+                        setSearchMessage(" product  fetched successfully")
+                        setShowPanel(true)
+                    }else{
+                        setShowPanel(false)
+                        getSearchfacility({
+                            medication:value,
+                            instruction:""
+                        })
+                    }
+               
              })
              .catch((err)=>{
                 toast({
-                    message: 'Error creating ProductEntry ' + err,
+                    message: 'Error fetching medication ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -1204,9 +1205,15 @@ export  function ProductSearch({getSearchfacility,clear}) {
         setProductModal(true) 
     }
     const handlecloseModal =()=>{
-        setProductModal(false)
-        handleSearch(val)
+       // setDestinationModal(false)
+        //handleSearch(val)
     }
+    useEffect(() => {
+        setSimpa(value)
+        return () => {
+            
+        }
+    }, [simpa])
     useEffect(() => {
        if (clear){
            console.log("success has changed",clear)
@@ -1220,14 +1227,14 @@ export  function ProductSearch({getSearchfacility,clear}) {
         <div>
             <div className="field">
                 <div className="control has-icons-left  ">
-                    <div className={`dropdown ${showPanel?"is-active":""}`}>
-                        <div className="dropdown-trigger">
+                    <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
+                        <div className="dropdown-trigger" style={{width:"100%"}}>
                             <DebounceInput className="input is-small " 
                                 type="text" placeholder="Search Product"
                                 value={simpa}
                                 minLength={3}
                                 debounceTimeout={400}
-                                onBlur={(e)=>handleBlur(e)}
+                               /*  onBlur={(e)=>handleBlur(e)} */
                                 onChange={(e)=>handleSearch(e.target.value)}
                                 inputRef={inputEl}
                                   />
@@ -1236,16 +1243,15 @@ export  function ProductSearch({getSearchfacility,clear}) {
                             </span>
                         </div>
                         {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu" >
+                        <div className="dropdown-menu" style={{width:"100%"}} >
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to product list</span> </div>}
+                         {/*  { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to product list</span> </div>} */}
 
                               {facilities.map((facility, i)=>(
                                     
                                     <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <span>{facility.name}</span>
-                                        
+                                        <span>{facility.medication}</span> // <span>{facility.instruction}</span>
                                     </div>
                                     
                                     ))}
@@ -1255,23 +1261,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
                     </div>
                 </div>
             </div>
-            <div className={`modal ${productModal?"is-active":""}` }>
-                                    <div className="modal-background"></div>
-                                    <div className="modal-card">
-                                        <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Store</p>
-                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
-                                        </header>
-                                        <section className="modal-card-body">
-                                        {/* <StoreList standalone="true" /> */}
-                                       {/*  <ProductCreate /> */}
-                                        </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
-                                    </div>
-                                </div>       
+           
         </div>
     )
 }

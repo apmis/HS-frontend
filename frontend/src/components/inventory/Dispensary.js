@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
+import BillDispenseCreate from './BillDispense'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
 const searchfacility={};
@@ -23,15 +24,19 @@ export default function Dispense() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-            <div className="column is-6 ">
-                <DispenseList />
+                <div className="column is-2 ">
+                    <DispenseList />
+                    </div>
+                <div className="column is-5 ">
+                   {/*  {(state.DispenseModule.show ==='create')&&<DispenseCreate />} */}
+                    {(state.DispenseModule.show ==='detail')&&<DispenseDetail  />}
+                    {(state.DispenseModule.show ==='modify')&&<DispenseModify ProductEntry={selectedProductEntry} />}
+                
                 </div>
-            <div className="column is-6 ">
-                {(state.DispenseModule.show ==='create')&&<DispenseCreate />}
-                {(state.DispenseModule.show ==='detail')&&<DispenseDetail  />}
-                {(state.DispenseModule.show ==='modify')&&<DispenseModify ProductEntry={selectedProductEntry} />}
-               
-            </div>
+                <div className="column is-5 ">
+                
+                {(state.medicationModule.show ==='detail')&&<BillDispenseCreate />}
+                </div>
 
             </div>                            
             </section>
@@ -459,6 +464,7 @@ export function DispenseList({standalone}){
         }
        await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
        //console.log(state)
+       ProductEntry.show=!ProductEntry.show
 
     }
 
@@ -503,8 +509,7 @@ export function DispenseList({standalone}){
                 {query: {
                     order_category:"Prescription",
                     fulfilled:false,
-                    //destination: user.currentEmployee.facilityDetail._id, need to set this
-                   
+                    destination: user.currentEmployee.facilityDetail._id,
                     //storeId:state.StoreModule.selectedStore._id,
                     //clientId:state.ClientModule.selectedClient._id,
                     $limit:50,
@@ -512,7 +517,9 @@ export function DispenseList({standalone}){
                         createdAt: -1
                     }
                     }})
-         await setFacilities(findProductEntry.data)
+
+         console.log(findProductEntry)
+         await setFacilities(findProductEntry.groupedOrder)
          }   
 
             useEffect(() => {
@@ -563,14 +570,15 @@ export function DispenseList({standalone}){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th><abbr title="Date">Date</abbr></th>
-                                        <th><abbr title="Client Name">Client Name</abbr></th> 
+                                        <th><abbr title="Client Name">Client Name</abbr></th>
+                                        <th><abbr title="Number of Orders"># of Medication</abbr></th>
+                                        {/* <th><abbr title="Date">Date</abbr></th>
                                         <th><abbr title="Order">Medication</abbr></th>
                                         <th>Fulfilled</th>
                                         <th><abbr title="Status">Status</abbr></th>
                                         <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
                                         
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -579,16 +587,20 @@ export function DispenseList({standalone}){
                                     <tbody>
                                         {facilities.map((ProductEntry, i)=>(
 
-                                            <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)} className={ProductEntry._id===(selectedDispense?._id||null)?"is-selected":""}>
-                                            <th>{i+1}</th>
-                                            <td>{/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */}<span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td>
-                                            <td>{ProductEntry.clientId}</td> 
-                                            <th>{ProductEntry.order}</th>
+                                            <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)} className={ProductEntry.client_id===(selectedDispense?.client_id||null)?"is-selected":""}>
+                                            
+                                                <th>{i+1}</th>
+                                                <td>{ProductEntry.clientname}</td> 
+                                                <td>{ProductEntry.orders.length}</td>
+                                           
+                                           
+                                            {/*<td> {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */}{/* <span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td> */}
+                                           {/*  <th>{ProductEntry.order}</th>
                                             <td>{ProductEntry.fulfilled?"Yes":"No"}</td>
                                             <td>{ProductEntry.order_status}</td>
-                                            <td>{ProductEntry.requestingdoctor_Name}</td>
+                                            <td>{ProductEntry.requestingdoctor_Name}</td> */}
                                             
-                                            <td><span className="showAction"  >...</span></td>
+                                           {/*  <td><span className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -607,7 +619,7 @@ export function DispenseDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
+    const [selectedMedication, setSelectedMedication] =useState("")
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
     //const ProductEntryServ=client.service('/ProductEntry')
@@ -618,6 +630,25 @@ export function DispenseDetail(){
    
 
    const ProductEntry =state.DispenseModule.selectedDispense
+   const facilities=ProductEntry.orders
+
+
+   const handleRow= async(ProductEntry)=>{
+    //console.log("b4",state)
+
+    //console.log("handlerow",ProductEntry)
+
+    await setSelectedMedication(ProductEntry)
+
+    const    newProductEntryModule={
+        selectedMedication:ProductEntry,
+        show :'detail'
+    }
+  await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
+   //console.log(state)
+   ProductEntry.show=!ProductEntry.show
+
+}
 
     const handleEdit= async()=>{
         const    newProductEntryModule={
@@ -638,7 +669,51 @@ export function DispenseDetail(){
                 </p>
             </div>
             <div className="card-content vscrollable">
-            {JSON.stringify(ProductEntry,2,10)}
+            {/* {JSON.stringify(ProductEntry.orders,2,10)} */}
+            <div className="table-container pullup ">
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                    <thead>
+                                        <tr>
+                                        <th><abbr title="Serial No">S/No</abbr></th>
+                                        {/* <th><abbr title="Client Name">Client Name</abbr></th> */}
+                                        {/* <th><abbr title="Number of Orders"># of Medication</abbr></th> */}
+                                        <th><abbr title="Date">Date</abbr></th>
+                                        <th><abbr title="Order">Medication</abbr></th>
+                                        <th>Fulfilled</th>
+                                        <th><abbr title="Status">Status</abbr></th>
+                                        <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
+                                        
+                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                    <tbody>
+                                        {facilities.map((ProductEntry, i)=>(
+
+                                            <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)} className={ProductEntry._id===(selectedMedication?._id||null)?"is-selected":""}>
+                                            
+                                               <th>{i+1}</th>
+                                                 {/* <td>{ProductEntry.clientname}</td> 
+                                                <td>{ProductEntry.orders.length}</td> */}
+                                           
+                                           
+                                            <td><span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
+                                          <th>{ProductEntry.order}</th>
+                                            <td>{ProductEntry.fulfilled?"Yes":"No"}</td>
+                                            <td>{ProductEntry.order_status}</td>
+                                            <td>{ProductEntry.requestingdoctor_Name}</td>
+                                            
+                                           {/*  <td><span className="showAction"  >...</span></td> */}
+                                           
+                                            </tr>
+
+                                        ))}
+                                    </tbody>
+                                    </table>
+                        
+                </div>              
                
             </div>
         </div>

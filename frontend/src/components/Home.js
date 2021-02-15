@@ -84,8 +84,9 @@ function NavBar({url}){
          const resp =   await setFullname(zed)
         // console.log(zed)
          if (user.employeeData.length){
-            user.currentEmployee= user.employeeData[0]
+            user.currentEmployee= user.employeeData[0] //choose the first facilty
             const fac=  user.currentEmployee.facilityDetail.facilityName
+           // await set
            await setUserFacility(fac)
          }else{
             user.currentEmployee= null
@@ -107,7 +108,7 @@ function NavBar({url}){
         }
     },[] )
 
-    const handleFacilityClick=()=>{
+    const handleFacilityClick=()=>{ //need to implement changing facility
         const availableFacilities=[]
         if (Array.isArray(user.employeeData)&& user.employeeData.length){
             user.employeeData.map((emp)=>{

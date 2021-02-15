@@ -71,6 +71,14 @@ function App() {
     DispenseModule:{
       show:'create',
       selectedDispense:{}
+    },
+    DestinationModule:{
+      show:'create',
+      selectedDestination:{}
+    },
+    medicationModule:{
+      show:'create',
+      selectedMedication:{}
     }
   })
   

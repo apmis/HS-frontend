@@ -46,9 +46,15 @@
   padding-top: 0rem !important;
   padding-bottom: 0rem !important;
 }
+.btnheight{
+  height: 1.2rem !important;
+}
 .pullup{
   margin-top: -1rem;
   cursor: pointer;
+}
+.wt100{
+  width:100%;
 }
 .card-overflow{
   overflow: visible !important;
