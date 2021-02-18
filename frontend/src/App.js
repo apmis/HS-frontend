@@ -79,7 +79,9 @@ function App() {
     medicationModule:{
       show:'create',
       selectedMedication:{}
-    }
+    },
+    currentClients:[]
+
   })
   
   

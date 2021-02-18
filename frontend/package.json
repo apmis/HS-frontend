@@ -17,6 +17,7 @@
     "dotenv": "^8.2.0",
     "random-string-generator": "^1.0.0",
     "react": "^17.0.1",
+    "react-accessible-accordion": "^3.3.4",
     "react-debounce-input": "^3.2.3",
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.3",

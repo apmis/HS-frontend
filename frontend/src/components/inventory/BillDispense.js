@@ -12,12 +12,13 @@ const searchfacility={};
 
 export default function BillDispenseCreate(){
     // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
-     const [error, setError] =useState(false)
+     //const [error, setError] =useState(false)
      const [success, setSuccess] =useState(false)
      const [message,setMessage] = useState("")
      // eslint-disable-next-line
      const [facility,setFacility] = useState()
      const ProductEntryServ=client.service('productentry')
+     const OrderServ=client.service('order')
      //const history = useHistory()
      const {user} = useContext(UserContext) //,setUser
      // eslint-disable-next-line
@@ -38,18 +39,33 @@ export default function BillDispenseCreate(){
      const [invquantity,setInvQuantity] = useState("")
      const [calcamount,setCalcAmount] = useState(0)
      const [productItem,setProductItem] = useState([])
-     const {state}=useContext(ObjectContext)
+     /* const [medication,setMedication]=useState("") */
+    
+     const {state,setState}=useContext(ObjectContext)
      const inputEl = useRef(0);
      let calcamount1
      let hidestatus
   
 
     
-        const medication =state.medicationModule.selectedMedication
-     
-     
+  let medication =state.medicationModule.selectedMedication
+    const handleRow= async(ProductEntry)=>{
+    //console.log("b4",state)
 
+    //console.log("handlerow",ProductEntry)
 
+    //await setMedication(ProductEntry)
+
+    const    newProductEntryModule={
+        selectedMedication:ProductEntry,
+        show :'detail'
+    }
+  await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
+   //console.log(state)
+  // ProductEntry.show=!ProductEntry.show
+
+        } 
+ 
      const [productEntry,setProductEntry]=useState({
          productitems:[],
          date,
@@ -109,10 +125,8 @@ export default function BillDispenseCreate(){
          }
      }, [user])
  
-     const handleUpdateTotal=()=>{
- 
-         
-         setTotalamount(prevtotal=>Number(prevtotal) + Number(calcamount))
+     const handleUpdateTotal=async ()=>{
+        await setTotalamount(prevtotal=>Number(prevtotal) + Number(calcamount))
      }
  
      const handleChangeType=async (e)=>{
@@ -123,15 +137,34 @@ export default function BillDispenseCreate(){
          await setQAmount(null)
         // alert("Iam chaning qamount")
      }
+
      const handleClickProd=async()=>{
-         console.log("amount: ",productItemI.amount)
+       /*   console.log("amount: ",productItemI.amount)
          console.log("qamount: ",qamount)
-         console.log("calcamount: ",calcamount)
+         console.log("calcamount: ",calcamount) */
          await setSuccess(false)
          await setProductItem(
              prevProd=>prevProd.concat(productItemI)
          )
         handleUpdateTotal()
+        //update order
+        
+         OrderServ.patch(medication._id,{
+            order_status:"Billed"
+        }).then((resp)=>{
+           // medication=resp
+           // console.log(resp)
+             handleRow(resp) 
+            //update dispense
+
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+        
+        //update status(billed) + action()
+        //?attached chosen product to medication
+        //dispense helper?
          setName("")
          setBaseunit("")
          setQuantity("")
@@ -141,9 +174,9 @@ export default function BillDispenseCreate(){
              handleAmount()
         // setCalcAmount(null)
         await setSuccess(true)
-        console.log(success)
+        /* console.log(success)
         console.log(qamount)
-        console.log(productItem)
+        console.log(productItem) */
      }
    //check user for facility or get list of facility  
     /*  useEffect(()=>{
@@ -171,10 +204,7 @@ export default function BillDispenseCreate(){
          setQuantity(e.target.value)
          calcamount1=quantity*sellingprice
          await setCalcAmount(calcamount1)
-         console.log(calcamount)
- 
-        
- 
+        // console.log(calcamount)
      }
  
      useEffect( () => {
@@ -208,7 +238,7 @@ export default function BillDispenseCreate(){
      const onSubmit = async(e) =>{
          e.preventDefault();
          setMessage("")
-         setError(false)
+         //setError(false)
          setSuccess(false)
          await setProductEntry({
              
@@ -222,7 +252,7 @@ export default function BillDispenseCreate(){
          productEntry.createdby=user._id
          productEntry.transactioncategory="debit"
         
-           console.log("b4 facility",productEntry);
+          // console.log("b4 facility",productEntry);
            if (user.currentEmployee){
           productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
            }else{
@@ -246,7 +276,7 @@ export default function BillDispenseCreate(){
                return
  
            }
-           console.log("b4 create",productEntry);
+           //console.log("b4 create",productEntry);
          ProductEntryServ.create(productEntry)
          .then((res)=>{
                  //console.log(JSON.stringify(res))
@@ -279,8 +309,15 @@ export default function BillDispenseCreate(){
  
        } 
  
-     console.log("i am rendering")
-
+    // console.log("i am rendering")
+   /*   useEffect(() => {
+         setMedication(state.medicationModule.selectedMedication)
+        // console.log(medication)
+         return () => {
+             
+         }
+     }, [state])
+  */
     useEffect(() => {
         setSource(medication.clientname)
         return () => {
@@ -289,6 +326,7 @@ export default function BillDispenseCreate(){
     }, [medication])
 
      useEffect(() => {
+       // const medication =state.medicationModule.selectedMedication
          const today=new Date().toLocaleString()
          console.log(today)
          setDate(today)
@@ -391,7 +429,7 @@ export default function BillDispenseCreate(){
                      <span className="helper is-size-7">{medication.instruction}</span>
                     
                  </p>
-        
+             {medication.order_status}
              </div> 
             
              </div>

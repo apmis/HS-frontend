@@ -522,8 +522,6 @@ export function InventoryDetail(){
 
    
   const getFacilities= async()=>{
-    
-    
      const findProductEntry= await client.service('productentry').find(
         {query: {
             'productitems.productId':Inventory.productId,

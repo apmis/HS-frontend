@@ -17,6 +17,9 @@
   color:white !important;
   width:fit-content
 }
+.accordion__panel{
+  padding:0px !important;
+}
 .sz2{
   width:20% !important;
   border: none;
