@@ -89,7 +89,7 @@ export default function Dispense() {
         }
        await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
        //console.log(state)
-       ProductEntry.show=!ProductEntry.show
+      
       }
 
     /*  useEffect(() => {
@@ -149,7 +149,7 @@ export function DispenseList(){
     const {user,setUser}=useContext(UserContext)
     const [selectedMedication, setSelectedMedication] =useState("")
 
-    const handleMedicationRow= async(ProductEntry)=>{
+    const handleMedicationRow= async(ProductEntry)=>{ //handle selected single order
         //console.log("b4",state)
     
         //console.log("handlerow",ProductEntry)
@@ -268,8 +268,8 @@ export function DispenseList(){
                     <Accordion allowZeroExpanded>
                         {state.currentClients.map((Clinic, i)=>(
                             <AccordionItem  key={Clinic.client_id} >
-                               <AccordionItemHeading>
-                               <AccordionItemButton>
+                               <AccordionItemHeading >
+                               <AccordionItemButton  >
                                        {i+1} {Clinic.clientname} with {Clinic.orders.length} medication(s)  
                                 </AccordionItemButton>
                                 </AccordionItemHeading>

@@ -52,9 +52,18 @@
 .btnheight{
   height: 1.2rem !important;
 }
+.accordion__button{
+  padding:0.5rem !important;
+}
 .pullup{
   margin-top: -1rem;
   cursor: pointer;
+}
+.selectadd{
+  height:2.0em !important;
+  font-size:0.75rem !important;
+  padding-top: 0rem !important;
+  padding-bottom: 0rem !important;
 }
 .wt100{
   width:100%;

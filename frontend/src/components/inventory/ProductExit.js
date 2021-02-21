@@ -68,6 +68,8 @@ export function ProductExitCreate(){
     const [invquantity,setInvQuantity] = useState("")
     const [calcamount,setCalcAmount] = useState(0)
     const [productItem,setProductItem] = useState([])
+    const [billingId,setBilllingId]=useState("")  
+    const [changeAmount, setChangeAmount] = useState(true)
     const {state}=useContext(ObjectContext)
     const inputEl = useRef(0);
     let calcamount1
@@ -87,9 +89,10 @@ export function ProductExitCreate(){
         name,
         quantity,
         sellingprice,
-        amount:qamount||calcamount,
+        amount:calcamount, //qamount||
         baseunit,
-        costprice
+        costprice,
+        billingId
 
     }
     // consider batchformat{batchno,expirydate,qtty,baseunit}
@@ -103,6 +106,7 @@ export function ProductExitCreate(){
         setSellingPrice(obj.sellingprice)
         setInvQuantity(obj.quantity)
         setCostprice(obj.costprice)
+        setBilllingId(obj.billingId)
         if (!obj){
             //"clear stuff"
             setProductId("")
@@ -149,6 +153,17 @@ export function ProductExitCreate(){
         console.log("amount: ",productItemI.amount)
         console.log("qamount: ",qamount)
         console.log("calcamount: ",calcamount)
+
+        if ( quantity===0||quantity===""|| productId===""){
+            toast({
+                message: 'You need to choose a product and quantity to proceed',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              }) 
+              return 
+        }
+
         await setSuccess(false)
         await setProductItem(
             prevProd=>prevProd.concat(productItemI)
@@ -163,9 +178,10 @@ export function ProductExitCreate(){
             handleAmount()
        // setCalcAmount(null)
        await setSuccess(true)
-       console.log(success)
+      /*  console.log(success)
        console.log(qamount)
-       console.log(productItem)
+       console.log(productItem) */
+       setChangeAmount(true)
     }
   //check user for facility or get list of facility  
    /*  useEffect(()=>{
@@ -301,7 +317,11 @@ export function ProductExitCreate(){
 
       } 
 
-    console.log("i am rendering")
+      const handleChangeAmount=()=>{
+        setChangeAmount((rev)=>(!rev))
+        
+    }
+   // console.log("i am rendering")
 
     useEffect(() => {
         const today=new Date().toLocaleString()
@@ -313,6 +333,16 @@ export function ProductExitCreate(){
             
         }
     }, [])
+
+    useEffect(() => {
+        calcamount1=quantity*sellingprice
+         setCalcAmount(calcamount1)
+         console.log(calcamount)
+         setChangeAmount(true)
+        return () => {
+            
+        }
+    }, [quantity])
 
     return (
         <>
@@ -330,7 +360,7 @@ export function ProductExitCreate(){
             <div className="field">    
                 <div className="control">
                     <div className="select is-small">
-                        <select name="type" value={type} onChange={handleChangeType}>
+                        <select name="type" value={type} onChange={handleChangeType} className="selectadd">
                            <option value="">Choose Type </option>
                             <option value="Sales">Sales </option>
                             <option value="In-house">In-House </option>
@@ -422,16 +452,16 @@ export function ProductExitCreate(){
         <label >{baseunit}</label>
             </div> 
             <div className="field">
-            <label>Amount:</label><p>{quantity*sellingprice}</p>
+            <label>Amount:</label>{/* <p>{quantity*sellingprice}</p> */}
             </div>
             <div className="field" style={{width:"40%"}}>
                 <p className="control has-icons-left " /* style={{display:"none"}} */>
-                    <input className="input is-small"  name="qamount" value={qamount} type="text"  onChange={async e=> await setQAmount(e.target.value)}  placeholder="Amount"  />
+                    <input className="input is-small" name="qamount" disabled={changeAmount} value={calcamount} type="text"  onChange={async e=> await setCalcAmount(e.target.value)}  placeholder="Amount"   />
                     <span className="icon is-small is-left">
                     <i className="fas fa-dollar-sign"></i>
                     </span>
                 </p>
-
+                <button className="button is-small is-success btnheight" onClick={handleChangeAmount}>Adjust</button>
             </div> 
             <div className="field">
             <p className="control">
@@ -698,7 +728,7 @@ export function ProductExitList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Product Additions to Inventory </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Product Exits </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
