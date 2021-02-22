@@ -10,7 +10,7 @@ var random = require('random-string-generator');
 // eslint-disable-next-line
 const searchfacility={};
 
-export default function BillDispenseCreate(){
+export default function BillPrescriptionCreate(){
     // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
      //const [error, setError] =useState(false)
      const [success, setSuccess] =useState(false)
@@ -41,9 +41,11 @@ export default function BillDispenseCreate(){
      const [productItem,setProductItem] = useState([])
       const [billingId,setBilllingId]=useState("")  
       const [changeAmount, setChangeAmount] = useState(true)
-      const [paymentmode, setPaymentMode] = useState("Cash")
+      const [paymentmode, setPaymentMode] = useState("")
       const [paymentOptions, setPaymentOptions]=useState([])
-    
+      const [billMode, setBillMode]=useState("")
+      const [obj, setObj]=useState("")
+     
      const {state,setState}=useContext(ObjectContext)
      const inputEl = useRef(0);
      let calcamount1
@@ -54,17 +56,15 @@ export default function BillDispenseCreate(){
   let medication =state.medicationModule.selectedMedication
 
 
-  const handleSelectedClient= async(Client)=>{
-   // await setSelectedClient(Client)
-    const    newClientModule={
-        selectedClient:Client,
-        show :'detail'
-    }
-   await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
-}
+  
 
-    const handleChangeMode=(value)=>{
-        setPaymentMode(value)
+    const handleChangeMode= async(value)=>{
+        console.log(value)
+       await setPaymentMode(value)
+        console.log(paymentOptions)
+       let billm= paymentOptions.filter(el=>el.name===value)
+       await setBillMode(billm)
+        console.log(billm)
         // at startup
         // check payment mode options from patient financial info
         // load that to select options
@@ -118,36 +118,68 @@ export default function BillDispenseCreate(){
      }
      // consider batchformat{batchno,expirydate,qtty,baseunit}
      //consider baseunoit conversions
-     const getSearchfacility=(obj)=>{
+     const getSearchfacility=async (obj)=>{
+       await setObj(obj)
+        if (!obj){
+            //"clear stuff"
+            setProductId("")
+            setName("")
+            setBaseunit("")
+            setInventoryId("")
+            setSellingPrice("")
+            setInvQuantity("")
+            setQAmount(null)
+            setCostprice("")
+           // setCalcAmount(null)
+            return
+        }
  
          setProductId(obj.productId)
          setName(obj.name)
          setBaseunit(obj.baseunit)
          setInventoryId(obj.inventoryId)
-         setSellingPrice(obj.sellingprice)
+         setSellingPrice(obj.sellingprice) //modify this based on billing mode
          setInvQuantity(obj.quantity)
          setCostprice(obj.costprice)
          setBilllingId(obj.billingId)
-         if (!obj){
-             //"clear stuff"
-             setProductId("")
-             setName("")
-             setBaseunit("")
-             setInventoryId("")
-             setSellingPrice("")
-             setInvQuantity("")
-             setQAmount(null)
-             setCostprice("")
-            // setCalcAmount(null)
- 
-         }
-         
+
+         const contracts=obj.billingDetails.contracts
+         //const billingserv=client.service('billing')
+        if( billMode.type==="HMO Cover"){ //paymentmode
+         let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
+         console.log(contract[0].price)
+         setSellingPrice(contract[0].price)
+         console.log(sellingprice)
+        
+        }
+        if( billMode.type==="Company Cover"){ //paymentmode
+            let contract=contracts.filter(el=>el.source_org===billMode.detail.company)
+            console.log(contract[0].price)
+            setSellingPrice(contract[0].price)
+            console.log(sellingprice)
+           
+           }
+          
         /*  setValue("facility", obj._id,  {
              shouldValidate: true,
              shouldDirty: true
          }) */
      }
-     
+     useEffect(() => {
+       /*  console.log(obj)
+        console.log(billMode)
+        if( paymentmode!=="Cash" && obj){
+            const contracts=obj.billingDetails.contracts
+            let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
+           console.log(contract[0].price)
+           setSellingPrice(contract[0].price)
+           console.log(sellingprice)
+       }
+         return () => {
+            
+         } */
+     }, [obj])
+
      useEffect(() => {
          setCurrentUser(user)
          //console.log(currentUser)
@@ -161,6 +193,7 @@ export default function BillDispenseCreate(){
      }
  
      const handleChangeType=async (e)=>{
+         console.log(e.target.value)
          await setType(e.target.value)
      }
  
@@ -211,31 +244,7 @@ export default function BillDispenseCreate(){
                     locationId:state.StoreModule.selectedStore._id, //selected location,
                     clientId:medication.clientId,
                     client:medication.client,
-                    paymentmode:[{
-                      cash:true,
-                
-                      familyCover:false,
-                      familyDetails:{
-                        familyPrincipal:"",
-                        active:false
-                      },
-                
-                      companyCover:false,
-                      companyDetails:[{
-                      companyPrincipal:null,
-                      company:null,
-                      companyPlan:null,
-                      active:false
-                      }],
-                
-                      hmoCover:false,
-                      hmoDetails:[{
-                      hmoPrincipal:null,
-                      hmo:null,
-                      hmoPlan:"",
-                      active:false,
-                      }]
-                    }]
+                    paymentmode:billMode
                   },
                   createdBy:user.id,
                   billing_status:"Unpaid"
@@ -330,6 +339,24 @@ export default function BillDispenseCreate(){
      setCostprice()
      setProductItem([])
      }
+
+
+     const handleMedicationDone= async()=>{ //handle selected single order
+        //console.log("b4",state)
+    
+        //console.log("handlerow",ProductEntry)
+    
+       // await setSelectedMedication("")
+    
+        const    newProductEntryModule={
+            selectedMedication:{},
+            show :'create'
+        }
+      await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
+       //console.log(state)
+      // ProductEntry.show=!ProductEntry.show
+    
+    }
  
      const onSubmit = async(e) =>{
          e.preventDefault();
@@ -419,61 +446,101 @@ export default function BillDispenseCreate(){
         setChangeAmount((rev)=>(!rev))
         
     }
+
+    const newclient=async ()=>{
+        await  setProductItem([])
+    }
+
     useEffect(() => {
+        const oldname=medication.clientname
+        console.log("oldname",oldname)
         setSource(medication.clientname)
-        handleSelectedClient(medication.client)
+
+        const newname=source
+        console.log("newname",newname)
+        if (oldname!==newname){
+            //newdispense
+        
+        setProductItem([])
+        setTotalamount(0)
+
+        }
+       
+
         const paymentoptions= []
         const info = medication.client.paymentinfo
+        let billme={}
        
         if( medication.client.paymentinfo.cash===true){
             const details={}
             details.detail=  info.cashDetails
             details.type="Cash"
-            paymentoptions.push({
+            const obj={
                 name:"Cash",
                 value:"Cash",
-                detail:details
-            })
+                detail:details,
+                type:"Cash"
+            }
+            paymentoptions.push(obj)
             setPaymentMode("Cash")
+            billme=obj
         }
         if( medication.client.paymentinfo.familyCover===true){
             const details={}
             details.detail=  info.familyDetails
             details.type="Family Cover"
-            paymentoptions.push({
+            const obj={
                 name:"Family Cover",
                 value:"familyCover",
-                detail:details
-            })
+                detail:details,
+                type:"Family Cover"
+            }
+            paymentoptions.push(obj)
             setPaymentMode("Family Cover")
+            billme=obj
+            
         }
         if( medication.client.paymentinfo.companyCover===true){
             const details={}
-            details.detail=  info.companyDetails.filter(el=>el.active===true)
             details.type="Company Cover"
-
-            paymentoptions.push({
-                name:"Company Cover",
-                value:"companyCover",
-                detail:details
+            details.detail=  info.companyDetails.filter(el=>el.active===true)
+            details.detail.forEach(el=>{
+                const obj={
+                    name:"Company: " +el.companyName +"("+el.companyPlan+")",
+                    value:"companyCover",
+                    detail:el,
+                    type:"Company Cover" 
+                }
+                paymentoptions.push(obj)
+                setPaymentMode("Company: " +el.companyName +"("+el.companyPlan+")")
+               // console.log("Company: " +el.companyName +"("+el.companyPlan+")")
+               billme=obj
             })
-            setPaymentMode("Company Cover")
         }
 
-        if( medication.client.paymentinfo.cash===true){
+        if( medication.client.paymentinfo.hmoCover===true){
+            
             const details={}
             details.type="HMO Cover"
             details.detail=  info.hmoDetails.filter(el=>el.active===true)
-            paymentoptions.push({
-                name:"HMO Cover",
-                value:"hmoCover",
-                detail:details
+            details.detail.forEach(el=>{
+                const obj={
+                    name:"HMO: " +el.hmoName +"("+el.hmoPlan+")",
+                    value:"hmoCover",
+                    detail:el,
+                    type:"HMO Cover"
+                }
+                paymentoptions.push(obj)
+                setPaymentMode("HMO: " +el.hmoName +"("+el.hmoPlan+")")
+                //console.log("HMO: " +el.hmoName +"("+el.hmoPlan+")")
+                billme=obj
             })
-            setPaymentMode("HMO Cover")
+         
         }
         setPaymentOptions(paymentoptions)
-        console.log(paymentoptions)
-        
+        setBillMode(billme)
+       console.log(paymentoptions)
+        console.log(billMode)
         return () => {
            
         }
@@ -501,7 +568,7 @@ export default function BillDispenseCreate(){
         }
     }, [quantity])
 
- console.log("simpa")
+// console.log("simpa")
      return (
          <>
              <div className="card card-overflow">
@@ -515,20 +582,20 @@ export default function BillDispenseCreate(){
              <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit) */}
              <div className="field is-horizontal">
              <div className="field-body">
-             <div className="field">    
+            {/*  <div className="field">    
                  <div className="control">
                      <div className="select is-small">
                          <select name="type" value={type} onChange={handleChangeType} className="selectadd">
                             <option value="">Choose Type </option>
                              <option value="Dispense">Dispense</option>
-                             <option value="Bill">Bill </option>
+                             <option value="Bill">Bill </option> */}
                              {/* <option value="Dispense">Dispense</option>
                              <option value="Audit">Audit</option> */}
-                         </select>
+                 {/*         </select>
                      </div>
                  </div>
              </div>
-
+ */}
              <div className="field">
                      <p className="control has-icons-left has-icons-right">
                          <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
@@ -701,7 +768,7 @@ export default function BillDispenseCreate(){
                  </table>
                  <div className="field mt-2 is-grouped">
                  <p className="control">
-                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={onSubmit}>
+                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handleMedicationDone}>
                         Done
                      </button>
                  </p>

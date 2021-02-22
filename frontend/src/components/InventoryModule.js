@@ -10,6 +10,7 @@ import Dispense from './inventory/Dispensary'
 import Products from './inventory/Products'
 import Store, { StoreList } from './inventory/Store'
 import {UserContext,ObjectContext} from '../context'
+import BillPrescription from './inventory/BillPrescription'
 
 export default function InventoryModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -74,6 +75,9 @@ export default function InventoryModule() {
                                         <NavLink to={`${url}/inv-dispense`}>Dispensary</NavLink>
                                     </div>
                                     <div className="navbar-item">
+                                        <NavLink to={`${url}/inv-bill`}>Bill Prescription</NavLink>
+                                    </div>
+                                    <div className="navbar-item">
                                         <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
                                     </div>
                                     <div className="navbar-item">
@@ -112,6 +116,9 @@ export default function InventoryModule() {
                         </Route>
                         <Route path={`${path}/inv-dispense`} exact >
                             <Dispense />
+                        </Route>
+                        <Route path={`${path}/inv-bill`} exact >
+                            <BillPrescription />
                         </Route>
                         <Route path={`${path}/inv-admin`} exact >
                             <InventorySetup />

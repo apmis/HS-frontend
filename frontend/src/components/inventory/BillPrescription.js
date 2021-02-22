@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-import BillDispenseCreate from './BillPrescriptionCreate'
+import BillPrescriptionCreate from './BillPrescriptionCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
@@ -24,7 +24,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 
 
 
-export default function Dispense() {
+export default function BillPrescription() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -65,12 +65,12 @@ export default function Dispense() {
             </div> */}
             <div className="columns ">
                 <div className="column is-5 ">
-                    <DispenseList />
+                    <BillPrescriptionList />
                     </div>
               
                 <div className="column is-4 ">
                 
-                {(state.medicationModule.show ==='detail')&&<BillDispenseCreate />}
+                {(state.medicationModule.show ==='detail')&&<BillPrescriptionCreate />}
                 </div>
                 <div className="column is-3 ">
                 
@@ -84,7 +84,7 @@ export default function Dispense() {
     
 }
 
-export function DispenseList(){
+export function BillPrescriptionList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -185,7 +185,7 @@ export function DispenseList(){
                 order_category:"Prescription",
                 fulfilled:false,
                 destination: user.currentEmployee.facilityDetail._id,
-                order_status:"Billed",  // need to set this finally
+                order_status:"Pending",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
                 $limit:50,
@@ -289,7 +289,7 @@ export function DispenseList(){
                                                 ))}
                                             </tbody>
                                             </table>
-
+                                            
                               </AccordionItemPanel>                                          
                                 </AccordionItem>
                             ))}
