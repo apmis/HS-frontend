@@ -21,6 +21,7 @@ import {
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
+import ClientBilledPrescription from './ClientPrescription';
 
 
 
@@ -144,9 +145,9 @@ export function BillPrescriptionList(){
     }
   
 
-    const handleSearch=(val)=>{
+    const handleSearch= async(val)=>{
        const field='name'
-       //console.log(val)
+       console.log(val)
        OrderServ.find({query: {
                 order: {
                     $regex:val,
@@ -158,18 +159,27 @@ export function BillPrescriptionList(){
                     $options:'i'
                    
                 },
+                clientname: {
+                    $regex:val,
+                    $options:'i'
+                   
+                },
                 order_category:"Prescription",
+                fulfilled:false,
+                destination: user.currentEmployee.facilityDetail._id,
+                order_status:"Pending",
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
                 $sort: {
                     createdAt: -1
                   }
-                    }}).then((res)=>{
-               // console.log(res)
-               setFacilities(res.data)
+                    }}).then( async(res)=>{
+               console.log(res)
+               setFacilities(res.groupedOrder)
+               await setState((prevstate)=>({...prevstate, currentClients:res.groupedOrder}))
                 setMessage(" ProductEntry  fetched successfully")
-                setSuccess(true) 
+                setSuccess(true)
             })
             .catch((err)=>{
                // console.log(err)
@@ -194,7 +204,7 @@ export function BillPrescriptionList(){
                 }
                 }})
 
-            console.log("updatedorder", findProductEntry.groupedOrder)
+           // console.log("updatedorder", findProductEntry.groupedOrder)
             await setFacilities(findProductEntry.groupedOrder)
             await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
@@ -245,7 +255,7 @@ export function BillPrescriptionList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Prescriptions </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Pending Prescriptions </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -256,11 +266,11 @@ export function BillPrescriptionList(){
                 <div className=" pullup ">
                     <div className=" is-fullwidth vscrollable pr-1">   
                     <Accordion allowZeroExpanded>
-                        {state.currentClients.map((Clinic, i)=>(
+                        {facilities.map((Clinic, i)=>(
                             <AccordionItem  key={Clinic.client_id} >
                                <AccordionItemHeading >
                                <AccordionItemButton  >
-                                       {i+1} {Clinic.clientname} with {Clinic.orders.length} medication(s)  
+                                      <strong> {i+1} {Clinic.clientname} with {Clinic.orders.length} Pending Prescription(s)  </strong>
                                 </AccordionItemButton>
                                 </AccordionItemHeading>
                                 <AccordionItemPanel>
@@ -289,7 +299,7 @@ export function BillPrescriptionList(){
                                                 ))}
                                             </tbody>
                                             </table>
-                                            
+                                            {/*   */}<ClientBilledPrescription  selectedClient={Clinic.client_id}/>{/*  } */}
                               </AccordionItemPanel>                                          
                                 </AccordionItem>
                             ))}

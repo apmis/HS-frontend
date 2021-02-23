@@ -59,6 +59,10 @@
   margin-top: -1rem;
   cursor: pointer;
 }
+.pullupx{
+  margin-top: -1.5rem;
+  cursor: pointer;
+}
 .selectadd{
   height:2.0em !important;
   font-size:0.75rem !important;
