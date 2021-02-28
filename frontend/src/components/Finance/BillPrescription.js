@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-import BillPrescriptionCreate from './BillPrescriptionCreate'
+import PaymentCreate from './PaymentCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
@@ -21,7 +21,7 @@ import {
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-import ClientBilledPrescription from './ClientPrescription';
+import ClientBilledPrescription from './ClientBill';
 
 
 
@@ -71,7 +71,7 @@ export default function BillPrescription() {
               
                 <div className="column is-4 ">
                 
-                {(state.medicationModule.show ==='detail')&&<BillPrescriptionCreate />}
+                {(state.medicationModule.show ==='detail')&&<PaymentCreate />}
                 </div>
                 <div className="column is-3 ">
                 

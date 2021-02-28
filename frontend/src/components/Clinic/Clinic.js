@@ -240,7 +240,7 @@ export function ClinicCreate(){
    
 }
 
-export function ClinicList({standalone}){
+export function ClinicList({standalone,closeModal}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -284,7 +284,7 @@ export function ClinicList({standalone}){
         }
        await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
-
+        closeModal()
     }
 
    const handleSearch=(val)=>{

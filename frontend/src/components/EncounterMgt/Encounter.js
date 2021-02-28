@@ -15,7 +15,7 @@ var random = require('random-string-generator');
 const searchfacility={};
 
 
-export default function Encounter() {
+export default function Encounter({standalone}) {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     //const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -59,13 +59,17 @@ export default function Encounter() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-2 ">
-                    <PatientProfile  />
-                    </div>
-                <div className= {(state.DocumentClassModule.show ==='detail')?"column is-6":"column is-10 "}>
+            {!standalone && <div className="column is-2 ">
+                   <PatientProfile  />
+                    </div>}
+
+            {!standalone &&     <div className= {(state.DocumentClassModule.show ==='detail')?"column is-6":"column is-10 "}>
                    <EncounterMain client={selectedClient}/>
-                </div>
-                <div className="column is-4 " >
+                </div>}
+                {standalone &&     <div className= {(state.DocumentClassModule.show ==='detail')?"column is-8":"column is-12 "}>
+                   <EncounterMain client={selectedClient} nopresc={standalone}/>
+                </div>}
+              <div className="column is-4 " >
                 {(state.DocumentClassModule.show ==='detail')&& <EncounterRight  client={selectedClient}/>}
                {/*  <DocumentClassCreate /> */}
                 </div>
@@ -73,11 +77,11 @@ export default function Encounter() {
             <div className={`modal ${showModal?"is-active":""}` }>
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
-                                        <header className="modal-card-head">
+                                        <header className="modal-card-head btnheight">
                                         <p className="modal-card-title">Choose Client</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
-                                        <section className="modal-card-body">
+                                        <section className="modal-card-body ">
                                         <ClientList standalone="true" />
                                         </section>
                                         {/* <footer className="modal-card-foot">

@@ -80,6 +80,11 @@ function App() {
       show:'create',
       selectedMedication:{}
     },
+    financeModule:{
+      show:'create',
+      state:'false',
+      selectedFinance:{}
+    },
     currentClients:[]
 
   })

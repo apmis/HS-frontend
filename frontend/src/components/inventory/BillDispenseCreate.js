@@ -6,25 +6,23 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {ProductCreate} from './Products'
-import Encounter from '../EncounterMgt/Encounter';
 var random = require('random-string-generator');
 // eslint-disable-next-line
 const searchfacility={};
 
-export default function BillPrescriptionCreate(){
+export default function BillDispenseCreate(){
     // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
-     //const [error, setError] =useState(false)
+     const [error, setError] =useState(false)
      const [success, setSuccess] =useState(false)
      const [message,setMessage] = useState("")
      // eslint-disable-next-line
      const [facility,setFacility] = useState()
      const ProductEntryServ=client.service('productentry')
-     const OrderServ=client.service('order')
      //const history = useHistory()
      const {user} = useContext(UserContext) //,setUser
      // eslint-disable-next-line
      const [currentUser,setCurrentUser] = useState()
-     const [type,setType] = useState("Bill")
+     const [type,setType] = useState("Sales")
      const [documentNo,setDocumentNo] = useState("")
      const [totalamount,setTotalamount] = useState(0)
      const [qamount,setQAmount] = useState(null)
@@ -40,69 +38,12 @@ export default function BillPrescriptionCreate(){
      const [invquantity,setInvQuantity] = useState("")
      const [calcamount,setCalcAmount] = useState(0)
      const [productItem,setProductItem] = useState([])
-      const [billingId,setBilllingId]=useState("")  
-      const [changeAmount, setChangeAmount] = useState(true)
-      const [paymentmode, setPaymentMode] = useState("")
-      const [paymentOptions, setPaymentOptions]=useState([])
-      const [billMode, setBillMode]=useState("")
-      const [productModal, setProductModal]=useState(false)
-      const [obj, setObj]=useState("")
-     
-     const {state,setState}=useContext(ObjectContext)
+     const [billingId,setBilllingId]=useState("")  
+     const [changeAmount, setChangeAmount] = useState(true)
+     const {state}=useContext(ObjectContext)
      const inputEl = useRef(0);
      let calcamount1
      let hidestatus
-  
-
-    
-  let medication =state.medicationModule.selectedMedication
-
-
-  const showDocumentation = async (value)=>{
-    setProductModal(true)
-  }
-  const handlecloseModal =()=>{
-    setProductModal(false)
-   // handleSearch(val)
-    }
-
-    const handleChangeMode= async(value)=>{
-        console.log(value)
-       await setPaymentMode(value)
-        console.log(paymentOptions)
-       let billm= paymentOptions.filter(el=>el.name===value)
-       await setBillMode(billm)
-        console.log(billm)
-        // at startup
-        // check payment mode options from patient financial info
-        // load that to select options
-        // default to HMO-->company-->family-->cash
-        //when chosen
-        //append payment mode to order
-        //check service contract for pricing info
-        // calculate pricing 
-        // pricing
-
-
-    }
-
-    const handleRow= async(ProductEntry)=>{
-    //console.log("b4",state)
-
-    //console.log("handlerow",ProductEntry)
-
-    //await setMedication(ProductEntry)
-
-    const    newProductEntryModule={
-        selectedMedication:ProductEntry,
-        show :'detail'
-    }
-  await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-   //console.log(state)
-  // ProductEntry.show=!ProductEntry.show
-
-        } 
- 
      const [productEntry,setProductEntry]=useState({
          productitems:[],
          date,
@@ -118,7 +59,7 @@ export default function BillPrescriptionCreate(){
          name,
          quantity,
          sellingprice,
-         amount:calcamount, //||qamount
+         amount:calcamount, //qamount||
          baseunit,
          costprice,
          billingId
@@ -126,68 +67,36 @@ export default function BillPrescriptionCreate(){
      }
      // consider batchformat{batchno,expirydate,qtty,baseunit}
      //consider baseunoit conversions
-     const getSearchfacility=async (obj)=>{
-       await setObj(obj)
-        if (!obj){
-            //"clear stuff"
-            setProductId("")
-            setName("")
-            setBaseunit("")
-            setInventoryId("")
-            setSellingPrice("")
-            setInvQuantity("")
-            setQAmount(null)
-            setCostprice("")
-           // setCalcAmount(null)
-            return
-        }
+     const getSearchfacility=(obj)=>{
  
          setProductId(obj.productId)
          setName(obj.name)
          setBaseunit(obj.baseunit)
          setInventoryId(obj.inventoryId)
-         setSellingPrice(obj.sellingprice) //modify this based on billing mode
+         setSellingPrice(obj.sellingprice)
          setInvQuantity(obj.quantity)
          setCostprice(obj.costprice)
          setBilllingId(obj.billingId)
-
-         const contracts=obj.billingDetails.contracts
-         //const billingserv=client.service('billing')
-        if( billMode.type==="HMO Cover"){ //paymentmode
-         let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-         console.log(contract[0].price)
-         setSellingPrice(contract[0].price)
-         console.log(sellingprice)
-        
-        }
-        if( billMode.type==="Company Cover"){ //paymentmode
-            let contract=contracts.filter(el=>el.source_org===billMode.detail.company)
-            console.log(contract[0].price)
-            setSellingPrice(contract[0].price)
-            console.log(sellingprice)
-           
-           }
-          
+         if (!obj){
+             //"clear stuff"
+             setProductId("")
+             setName("")
+             setBaseunit("")
+             setInventoryId("")
+             setSellingPrice("")
+             setInvQuantity("")
+             setQAmount(null)
+             setCostprice("")
+            // setCalcAmount(null)
+ 
+         }
+         
         /*  setValue("facility", obj._id,  {
              shouldValidate: true,
              shouldDirty: true
          }) */
      }
-     useEffect(() => {
-       /*  console.log(obj)
-        console.log(billMode)
-        if( paymentmode!=="Cash" && obj){
-            const contracts=obj.billingDetails.contracts
-            let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-           console.log(contract[0].price)
-           setSellingPrice(contract[0].price)
-           console.log(sellingprice)
-       }
-         return () => {
-            
-         } */
-     }, [obj])
-
+     
      useEffect(() => {
          setCurrentUser(user)
          //console.log(currentUser)
@@ -196,12 +105,13 @@ export default function BillPrescriptionCreate(){
          }
      }, [user])
  
-     const handleUpdateTotal=async ()=>{
-        await setTotalamount(prevtotal=>Number(prevtotal) + Number(calcamount))
+     const handleUpdateTotal=()=>{
+ 
+         
+         setTotalamount(prevtotal=>Number(prevtotal) + Number(calcamount))
      }
  
      const handleChangeType=async (e)=>{
-         console.log(e.target.value)
          await setType(e.target.value)
      }
  
@@ -209,74 +119,26 @@ export default function BillPrescriptionCreate(){
          await setQAmount(null)
         // alert("Iam chaning qamount")
      }
-
      const handleClickProd=async()=>{
-       /*   console.log("amount: ",productItemI.amount)
+         console.log("amount: ",productItemI.amount)
          console.log("qamount: ",qamount)
-         console.log("calcamount: ",calcamount) */
-        if ( quantity===0||quantity===""|| productId===""){
-            toast({
-                message: 'You need to choose a product and quantity to proceed',
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              }) 
-              return 
-        }
-
+         console.log("calcamount: ",calcamount)
+ 
+         if ( quantity===0||quantity===""|| productId===""){
+             toast({
+                 message: 'You need to choose a product and quantity to proceed',
+                 type: 'is-danger',
+                 dismissible: true,
+                 pauseOnHover: true,
+               }) 
+               return 
+         }
+ 
          await setSuccess(false)
          await setProductItem(
              prevProd=>prevProd.concat(productItemI)
          )
         handleUpdateTotal()
-            // generate billing info
-            const billInfo={
-                orderInfo:{
-                    orderId:medication._id,
-                    orderObj:medication,
-                  },
-                  serviceInfo:{            
-                    price: productItemI.sellingprice,
-                    quantity: productItemI.quantity,
-                    productId: productItemI.productId,
-                    name: productItemI.name,
-                    baseunit: productItemI.baseunit,
-                    amount:productItemI.amount,
-                    billingId:productItemI.billingId,
-                    createdby:user._id,
-                  },
-                  paymentInfo:{},
-                  participantInfo:{
-                    billingFacility:medication.destination,
-                    billingFacilityName:medication.destination_name,
-                    locationId:state.StoreModule.selectedStore._id, //selected location,
-                    clientId:medication.clientId,
-                    client:medication.client,
-                    paymentmode:billMode
-                  },
-                  createdBy:user.id,
-                  billing_status:"Unpaid"
-                }
-
-        //update order
-        
-        OrderServ.patch(medication._id,{
-            order_status:"Billed",
-            billInfo,
-        }).then((resp)=>{
-           // medication=resp
-           // console.log(resp)
-             handleRow(resp) 
-            //update dispense
-
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
-        
-        //update status(billed) + action()
-        //?attached chosen product to medication
-        //dispense helper?
          setName("")
          setBaseunit("")
          setQuantity("")
@@ -286,7 +148,7 @@ export default function BillPrescriptionCreate(){
              handleAmount()
         // setCalcAmount(null)
         await setSuccess(true)
-        /* console.log(success)
+       /*  console.log(success)
         console.log(qamount)
         console.log(productItem) */
         setChangeAmount(true)
@@ -318,6 +180,9 @@ export default function BillPrescriptionCreate(){
          calcamount1=quantity*sellingprice
          await setCalcAmount(calcamount1)
          console.log(calcamount)
+ 
+        
+ 
      }
  
      useEffect( () => {
@@ -347,29 +212,11 @@ export default function BillPrescriptionCreate(){
      setCostprice()
      setProductItem([])
      }
-
-
-     const handleMedicationDone= async()=>{ //handle selected single order
-        //console.log("b4",state)
-    
-        //console.log("handlerow",ProductEntry)
-    
-       // await setSelectedMedication("")
-    
-        const    newProductEntryModule={
-            selectedMedication:{},
-            show :'create'
-        }
-      await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-       //console.log(state)
-      // ProductEntry.show=!ProductEntry.show
-    
-    }
  
      const onSubmit = async(e) =>{
          e.preventDefault();
          setMessage("")
-         //setError(false)
+         setError(false)
          setSuccess(false)
          await setProductEntry({
              
@@ -383,7 +230,7 @@ export default function BillPrescriptionCreate(){
          productEntry.createdby=user._id
          productEntry.transactioncategory="debit"
         
-          // console.log("b4 facility",productEntry);
+           console.log("b4 facility",productEntry);
            if (user.currentEmployee){
           productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
            }else{
@@ -395,7 +242,6 @@ export default function BillPrescriptionCreate(){
                }) 
                return
            }
-           
            if (state.StoreModule.selectedStore._id){
              productEntry.storeId=state.StoreModule.selectedStore._id
            }else{
@@ -408,15 +254,15 @@ export default function BillPrescriptionCreate(){
                return
  
            }
-           //console.log("b4 create",productEntry);
-        // ProductEntryServ.create(productEntry)
-         //.then((res)=>{
+           console.log("b4 create",productEntry);
+         ProductEntryServ.create(productEntry)
+         .then((res)=>{
                  //console.log(JSON.stringify(res))
-           //      resetform()
+                 resetform()
                 /*  setMessage("Created ProductEntry successfully") */
-             //    setSuccess(true)
-               //  toast({
-                  /*    message: 'ProductExit created succesfully',
+                 setSuccess(true)
+                 toast({
+                     message: 'ProductExit created succesfully',
                      type: 'is-success',
                      dismissible: true,
                      pauseOnHover: true,
@@ -437,125 +283,17 @@ export default function BillPrescriptionCreate(){
                      dismissible: true,
                      pauseOnHover: true,
                    })
-             }) */
+             })
  
        } 
  
-    // console.log("i am rendering")
-   /*   useEffect(() => {
-         setMedication(state.medicationModule.selectedMedication)
-        // console.log(medication)
-         return () => {
-             
-         }
-     }, [state])
-  */
-    const handleChangeAmount=()=>{
-        setChangeAmount((rev)=>(!rev))
-        
-    }
-
-    const newclient=async ()=>{
-        await  setProductItem([])
-    }
-
-    useEffect(() => {
-        const oldname=medication.clientname
-        console.log("oldname",oldname)
-        setSource(medication.clientname)
-
-        const newname=source
-        console.log("newname",newname)
-        if (oldname!==newname){
-            //newdispense
-        
-        setProductItem([])
-        setTotalamount(0)
-
-        }
-       
-
-        const paymentoptions= []
-        const info = medication.client.paymentinfo
-        let billme={}
-       
-        if( medication.client.paymentinfo.cash===true){
-            const details={}
-            details.detail=  info.cashDetails
-            details.type="Cash"
-            const obj={
-                name:"Cash",
-                value:"Cash",
-                detail:details,
-                type:"Cash"
-            }
-            paymentoptions.push(obj)
-            setPaymentMode("Cash")
-            billme=obj
-        }
-        if( medication.client.paymentinfo.familyCover===true){
-            const details={}
-            details.detail=  info.familyDetails
-            details.type="Family Cover"
-            const obj={
-                name:"Family Cover",
-                value:"familyCover",
-                detail:details,
-                type:"Family Cover"
-            }
-            paymentoptions.push(obj)
-            setPaymentMode("Family Cover")
-            billme=obj
-            
-        }
-        if( medication.client.paymentinfo.companyCover===true){
-            const details={}
-            details.type="Company Cover"
-            details.detail=  info.companyDetails.filter(el=>el.active===true)
-            details.detail.forEach(el=>{
-                const obj={
-                    name:"Company: " +el.companyName +"("+el.companyPlan+")",
-                    value:"companyCover",
-                    detail:el,
-                    type:"Company Cover" 
-                }
-                paymentoptions.push(obj)
-                setPaymentMode("Company: " +el.companyName +"("+el.companyPlan+")")
-               // console.log("Company: " +el.companyName +"("+el.companyPlan+")")
-               billme=obj
-            })
-        }
-
-        if( medication.client.paymentinfo.hmoCover===true){
-            
-            const details={}
-            details.type="HMO Cover"
-            details.detail=  info.hmoDetails.filter(el=>el.active===true)
-            details.detail.forEach(el=>{
-                const obj={
-                    name:"HMO: " +el.hmoName +"("+el.hmoPlan+")",
-                    value:"hmoCover",
-                    detail:el,
-                    type:"HMO Cover"
-                }
-                paymentoptions.push(obj)
-                setPaymentMode("HMO: " +el.hmoName +"("+el.hmoPlan+")")
-                //console.log("HMO: " +el.hmoName +"("+el.hmoPlan+")")
-                billme=obj
-            })
+       const handleChangeAmount=()=>{
+         setChangeAmount((rev)=>(!rev))
          
-        }
-        setPaymentOptions(paymentoptions)
-        setBillMode(billme)
-       console.log(paymentoptions)
-        console.log(billMode)
-        return () => {
-           
-        }
-    }, [medication])
-
+     }
+    // console.log("i am rendering")
+ 
      useEffect(() => {
-       // const medication =state.medicationModule.selectedMedication
          const today=new Date().toLocaleString()
          console.log(today)
          setDate(today)
@@ -565,46 +303,43 @@ export default function BillPrescriptionCreate(){
              
          }
      }, [])
-
-    useEffect(() => {
-        calcamount1=quantity*sellingprice
-         setCalcAmount(calcamount1)
-         console.log(calcamount)
-         setChangeAmount(true)
-        return () => {
-            
-        }
-    }, [quantity])
-
-// console.log("simpa")
+ 
+     useEffect(() => {
+         calcamount1=quantity*sellingprice
+          setCalcAmount(calcamount1)
+          console.log(calcamount)
+          setChangeAmount(true)
+         return () => {
+             
+         }
+     }, [quantity])
+ 
      return (
          <>
              <div className="card card-overflow">
              <div className="card-header">
                  <p className="card-header-title">
-                     Bill Product
+                     Create Product Exit: Product Exit- Sales, Dispense, Audit, Transfer out
                  </p>
-                 <button className="button is-success is-small btnheight mt-2" onClick={showDocumentation}>Documentation</button>
              </div>
              <div className="card-content ">
     
              <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit) */}
              <div className="field is-horizontal">
              <div className="field-body">
-            {/*  <div className="field">    
+             <div className="field">    
                  <div className="control">
                      <div className="select is-small">
                          <select name="type" value={type} onChange={handleChangeType} className="selectadd">
                             <option value="">Choose Type </option>
+                             <option value="Sales">Sales </option>
+                             <option value="In-house">In-House </option>
                              <option value="Dispense">Dispense</option>
-                             <option value="Bill">Bill </option> */}
-                             {/* <option value="Dispense">Dispense</option>
-                             <option value="Audit">Audit</option> */}
-                 {/*         </select>
+                             <option value="Audit">Audit</option>
+                         </select>
                      </div>
                  </div>
              </div>
- */}
              <div className="field">
                      <p className="control has-icons-left has-icons-right">
                          <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
@@ -613,24 +348,6 @@ export default function BillPrescriptionCreate(){
                          </span>                    
                      </p>
                  </div>
-                 <div className="field">    
-                 <div className="control">
-                     <div className="select is-small ">
-                         <select name="paymentmode" value={paymentmode} onChange={(e)=>handleChangeMode(e.target.value)} className="selectadd" >
-                         <option value="">Billing Mode </option>
-                           {paymentOptions.map((option,i)=>(
-                               <option key={i} value={option.details}> {option.name}</option>
-                           ))}
-                           
-                            
-                            {/*  <option value="Cash">Cash</option>
-                             <option value="Family">Family </option>
-                            <option value="Company Cover">Company Cover</option>
-                             <option value="HMO">HMO</option> */}
-                         </select>
-                     </div>
-                 </div>
-             </div>
             
              </div>
              </div> {/* horizontal end */}
@@ -677,24 +394,7 @@ export default function BillPrescriptionCreate(){
             
           {/* array of ProductEntry items */}
          
-         <label className="label is-small">Medication:</label>
-         <div className="field is-horizontal">
-             <div className="field-body">
-             <div className="field" style={{width:"40%"}}>
-                 <p className="control has-icons-left" >
-                     <input className="input is-small"  /* ref={register({ required: true })} */ disabled  name="order" value={medication.order} type="text" onChange={ e=> handleQtty(e)} placeholder="Quantity"  />
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-hashtag"></i>
-                     </span>
-                     <span className="helper is-size-7"><strong>Instruction: </strong>{medication.instruction}</span>
-                    
-                 </p>
-                 <span className="helper is-size-7"><strong>Billing Status: </strong>{medication.order_status}</span>
-             </div> 
-            
-             </div>
-             </div>
-             <label className="label is-small">Choose Product Item:</label>
+         <label className="label is-small">Add Product Items:</label>
           <div className="field is-horizontal">
              <div className="field-body">
              <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
@@ -726,13 +426,12 @@ export default function BillPrescriptionCreate(){
              </div>
              <div className="field" style={{width:"40%"}}>
                  <p className="control has-icons-left " /* style={{display:"none"}} */>
-                     <input className="input is-small"  name="qamount" disabled={changeAmount} value={calcamount} type="text"  onChange={async e=> await setCalcAmount(e.target.value)}  placeholder="Amount"  />
+                     <input className="input is-small" name="qamount" disabled={changeAmount} value={calcamount} type="text"  onChange={async e=> await setCalcAmount(e.target.value)}  placeholder="Amount"   />
                      <span className="icon is-small is-left">
                      <i className="fas fa-dollar-sign"></i>
                      </span>
                  </p>
                  <button className="button is-small is-success btnheight" onClick={handleChangeAmount}>Adjust</button>
- 
              </div> 
              <div className="field">
              <p className="control">
@@ -763,7 +462,8 @@ export default function BillPrescriptionCreate(){
                  </tfoot>
                  <tbody>
                     { productItem.map((ProductEntry, i)=>(
-                          <tr key={i}>
+ 
+                         <tr key={i}>
                          <th>{i+1}</th>
                          <td>{ProductEntry.name}</td>
                          <th>{ProductEntry.quantity}</th>
@@ -771,21 +471,23 @@ export default function BillPrescriptionCreate(){
                          <td>{ProductEntry.sellingprice}</td>
                          <td>{ProductEntry.amount}</td>
                          <td><span className="showAction"  >x</span></td>
+                         
                          </tr>
+ 
                      ))}
                  </tbody>
                  </table>
                  <div className="field mt-2 is-grouped">
                  <p className="control">
-                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handleMedicationDone}>
-                        Done
+                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={onSubmit}>
+                         Sell
                      </button>
                  </p>
-                {/*  <p className="control">
-                     <button className="button is-warning is-small" disabled={!productItem.length>0} onClick={onSubmit} >
+                 <p className="control">
+                     <button className="button is-warning is-small" disabled={!productItem.length>0} /* onClick={onSubmit} */>
                          Clear
                      </button>
-                 </p> */}
+                 </p>
                  </div>
                  </div>
             
@@ -794,29 +496,12 @@ export default function BillPrescriptionCreate(){
              
              </div>
              </div>
-             <div className={`modal ${productModal?"is-active":""}` }>
-                                    <div className="modal-background"></div>
-                                    <div className="modal-card  modalbkgrnd">
-                                        <header className="modal-card-head  btnheight">
-                                        <p className="modal-card-title">Documentation</p>
-                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
-                                        </header>
-                                        <section className="modal-card-body modalcolor">
-                                      
-                                         <Encounter standalone="true" />
-                                        </section> 
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer>  */}
-                                   </div>
-                                </div>      
          </>
      )
     
  }
 
- export  function InventorySearch({getSearchfacility,clear}) {
+export  function InventorySearch({getSearchfacility,clear}) {
     
     const productServ=client.service('inventory')
     const [facilities,setFacilities]=useState([])
@@ -979,7 +664,23 @@ export default function BillPrescriptionCreate(){
                     </div>
                 </div>
             </div>
-            
+            <div className={`modal ${productModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Choose Store</p>
+                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        {/* <StoreList standalone="true" /> */}
+                                        <ProductCreate />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>       
         </div>
     )
 }

@@ -7,6 +7,17 @@ import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict } from 'date-fns'
 import VideoConference from '../utils/VideoConference';
+import {
+    Accordion,
+    AccordionItem,
+    AccordionItemHeading,
+    AccordionItemButton,
+    AccordionItemPanel,
+} from 'react-accessible-accordion';
+
+// Demo styles, see 'Styles' section below for some notes on use.
+import 'react-accessible-accordion/dist/fancy-example.css';
+import { PrescriptionList } from '../EncounterMgt/Prescription';
 
 export default function PatientProfile () {
     const {state}=useContext(ObjectContext) //,setState
@@ -65,8 +76,8 @@ export default function PatientProfile () {
 
     useEffect(() => {
       setSelectedClient(state.ClientModule.selectedClient)
-        console.log(client)
-        console.log(selectedClient)
+       /*  console.log(client)
+        console.log(selectedClient) */
         return () => {
             
         }
@@ -132,33 +143,75 @@ export default function PatientProfile () {
                     </div>
                     <div className="card mt-1">
                         <div className="card-content p-1">
-                            <div >
-                             <label className="label is-size-7">Last Visit:</label> 
-                            {/* {clientTags} */}
-                            </div>
-                            <div>
-                            <label className="label is-size-7">Problem list:</label>
-                            {/* {specificDetails} */}
-                            </div>
-                            <div >
-                            <label className="label is-size-7">History:</label>
-                            {/* {allergies} */}
-                            </div>
-                            <div>
-                            <label className="label is-size-7">Current Medication:</label>
-                            {/* {comorbidities} */}
-                            </div>
-                            <div>
-                            <label className="label is-size-7">Drug Intolerance:</label>
-                            {/* {disabilities} */}
-                            </div>
-                            <div>
-                            <label className="label is-size-7">Tasks:</label>
-                            {/* {disabilities} */}
-                            </div>
                             
+                                <div className=" is-fullwidth vscrollable-acc pr-1">   
+                                    <Accordion allowZeroExpanded>
+                                    <AccordionItem   >
+                                            <AccordionItemHeading >
+                                                <AccordionItemButton  >
+                                                    <strong>  Last Visit </strong>
+                                                </AccordionItemButton>
+                                            </AccordionItemHeading>
+                                            <AccordionItemPanel>
+                                                <><label className="label is-size-7"></label> </>    
+                                            </AccordionItemPanel>                                          
+                                        </AccordionItem>
+                                    <AccordionItem   >
+                                            <AccordionItemHeading >
+                                                <AccordionItemButton  >
+                                                    <strong>  Drug Intolerance  </strong>
+                                                </AccordionItemButton>
+                                            </AccordionItemHeading>
+                                            <AccordionItemPanel>
+                                                <></>    
+                                            </AccordionItemPanel>                                          
+                                        </AccordionItem>
+                                        <AccordionItem   >
+                                            <AccordionItemHeading >
+                                                <AccordionItemButton  >
+                                                    <strong>  Medications  </strong>
+                                                </AccordionItemButton>
+                                            </AccordionItemHeading>
+                                            <AccordionItemPanel className="mt-1">
+                                                <PrescriptionList standalone="true"/>     
+                                            </AccordionItemPanel>                                          
+                                        </AccordionItem>
+                                        <AccordionItem   >
+                                            <AccordionItemHeading >
+                                                <AccordionItemButton  >
+                                                    <strong>  History  </strong>
+                                                </AccordionItemButton>
+                                            </AccordionItemHeading>
+                                            <AccordionItemPanel>
+                                                <></>    
+                                            </AccordionItemPanel>                                          
+                                        </AccordionItem>
+                                        <AccordionItem   >
+                                            <AccordionItemHeading >
+                                                <AccordionItemButton  >
+                                                    <strong>  Problem List  </strong>
+                                                </AccordionItemButton>
+                                            </AccordionItemHeading>
+                                            <AccordionItemPanel>
+                                                <></>    
+                                            </AccordionItemPanel>                                          
+                                        </AccordionItem>
+                                        <AccordionItem   >
+                                            <AccordionItemHeading >
+                                                <AccordionItemButton  >
+                                                    <strong>  Task  </strong>
+                                                </AccordionItemButton>
+                                            </AccordionItemHeading>
+                                            <AccordionItemPanel>
+                                                <></>    
+                                            </AccordionItemPanel>                                          
+                                        </AccordionItem>
+                                        
+                                    </Accordion>
+                                    </div>                   
+                        </div>  
                         </div>
-                        
+                        <div>                       
                     </div>
                     {/* <VideoConference /> */}
         </div>

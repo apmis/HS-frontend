@@ -10,7 +10,7 @@ import {format, formatDistanceToNowStrict } from 'date-fns'
 import  VideoConference  from '../utils/VideoConference';
 import  Prescription, { PrescriptionCreate } from './Prescription';
 
-export default function EncounterMain({nopresc}) {
+export default function DispensaryMain() {
  // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -36,7 +36,6 @@ export default function EncounterMain({nopresc}) {
     const loader = useRef(null);
     
     const standalone=false
-    
 
     const handleNewDocument= async()=>{
         await setShowModal(true)                                                                                                                                                        
@@ -240,7 +239,7 @@ export default function EncounterMain({nopresc}) {
                     <div className="level-right">
                 { !standalone &&   <div className="level-item"> 
                             <div className="level-item">
-                           {!nopresc && <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Presciption</div>}
+                            <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Presciption</div>
                                 <div className="button is-success is-small" onClick={handleNewDocument}>New Document</div>
                                 </div>
                         </div>}

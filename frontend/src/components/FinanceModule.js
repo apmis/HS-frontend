@@ -1,28 +1,30 @@
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import ClinicReport from './Clinic/ClinicReport'
-import ClinicSetup from './Clinic/ClinicSetup'
-import ClinicStore from './Clinic/ClinicStore'
-import ClinicHome from './Clinic/ClinicHome'
-import Appointments from './Clinic/Appointments'
-import Encounter from './EncounterMgt/Encounter'
-import Patients from './ClientMgt/Patient'
-import Clinic, { ClinicList } from './Clinic/Clinic'
+import FinanceReport from './Finance/FinanceReport'
+import FinanceSetup from './Finance/FinanceSetup'
+import FinanceStore from './Finance/FinanceStore'
+import FinanceHome from './Finance/FinanceHome'
+import ProductEntry from './Finance/ProductEntry'
+import ProductExit from './Finance/ProductExit'
+import Payment from './Finance/Payment'
+import Products from './Finance/Products'
+import Store, { StoreList } from './Finance/Store'
 import {UserContext,ObjectContext} from '../context'
+import BillPrescription from './Finance/BillPrescription'
 
-export default function ClinicModule() {
+export default function FinanceModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedClinic,setSelectedClinic]=useState()
+    const [selectedStore,setSelectedStore]=useState()
     const [showModal,setShowModal]=useState(false)
 
     let { path, url } = useRouteMatch();
     
     useEffect(() => {
        
-        console.log("starting up Clinic module")
-        if (!selectedClinic){
-            handleChangeClinic()
+        console.log("starting up Finance module")
+        if (!selectedStore){
+            handleChangeStore()
 
             }
          return () => {       
@@ -30,11 +32,11 @@ export default function ClinicModule() {
         }, [])
    
     useEffect(()=>{
-     setSelectedClinic(state.ClinicModule.selectedClinic)
+     setSelectedStore(state.StoreModule.selectedStore)
 
-    },[state.ClinicModule])
+    },[state.StoreModule])
 
-    const handleChangeClinic= async()=>{
+    const handleChangeStore= async()=>{
         await setShowModal(true)                                                                                                                                                        
         console.log( showModal)
     }
@@ -44,12 +46,12 @@ export default function ClinicModule() {
                
                {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
-                        <div className="container minHt">
-                            <div className="navbar-brand  minHt">
+                        <div className="container minHt ">
+                            <div className="navbar-brand minHt">
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">
-                                        Health Stack::Clinic::{selectedClinic?selectedClinic.name:""}</span>
-                                        <button className="button is-small is-info minHt" onClick={()=>handleChangeClinic()}>Change Clinic</button> 
+                                        Health Stack::Finance::{selectedStore?selectedStore.name:""}</span>
+                                        <button className="button is-small is-info" onClick={()=>handleChangeStore()}>Change Store</button> 
                                 </div>
                                 
                             {/* <div className="navbar-item">
@@ -64,29 +66,33 @@ export default function ClinicModule() {
                             <div id="navbarMenuHeroB" className="navbar-menu">
                                 <div className="navbar-end">
                                     <div className="navbar-item">
+                                        <NavLink to={`${url}/payment`}>Payment</NavLink>
+                                    </div>
+                                    <div className="navbar-item">
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/clinics`}>Clinics</NavLink>
+                                        <NavLink to={`${url}/location`}>Finance Locations</NavLink>
+                                    </div>
+                                    
+                                    {/* <div className="navbar-item">
+                                        <NavLink to={`${url}/inv-bill`}>Bill Prescription</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
-                                    </div>
-                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/appointments`}>Appointments</NavLink>
+                                        <NavLink to={`${url}/inv-Finance`}>Store Finance</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
-                                    </div> 
-                                    <div className="navbar-item">
-                                        <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
+                                        <NavLink to={`${url}/inv-entry`}>Product Entry</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/patients`}>Clients</NavLink>
+                                        <NavLink to={`${url}/inv-exit`}>Product Exit</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
+                                        <NavLink to={`${url}/inv-products`}>Products</NavLink>
                                     </div>
+                                    <div className="navbar-item">
+                                        <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
+                                    </div> */}
                                 {/* <span className="navbar-item">
                                 <div className="button is-info is-inverted">
                                     <span className="icon">
@@ -107,28 +113,34 @@ export default function ClinicModule() {
                        
                     <Switch>
                         <Route path={path} exact>
-                            <ClinicHome />
+                            <FinanceHome />
                         </Route>
-                        <Route path={`${path}/clinicsetup`} exact >
-                            <ClinicSetup />
+                        <Route path={`${path}/payment`} exact >
+                            <Payment />
                         </Route>
-                        <Route path={`${path}/appointments`} exact>
-                            <Appointments/>
+                        {/* <Route path={`${path}/inv-bill`} exact >
+                            <BillPrescription />
                         </Route>
-                        <Route path={`${path}/clinicstore`} exact>
-                            <ClinicStore />
+                        <Route path={`${path}/inv-admin`} exact >
+                            <FinanceSetup />
                         </Route>
-                        <Route path={`${path}/encounter`} exact>
-                            <Encounter/>
+                        <Route path={`${path}/inv-Finance`} exact>
+                            <FinanceStore />
                         </Route>
-                        <Route path={`${path}/patients`} exact>
-                            <Patients />
+                        <Route path={`${path}/inv-entry`} exact>
+                            <ProductEntry />
                         </Route>
-                        <Route path={`${path}/clinicreports`} exact>
-                            <ClinicReport />
+                        <Route path={`${path}/inv-exit`} exact>
+                            <ProductExit/>
                         </Route>
-                        <Route path={`${path}/clinics`} exact>
-                            <Clinic />
+                        <Route path={`${path}/inv-products`} exact>
+                            <Products />
+                        </Route>
+                        <Route path={`${path}/inv-reports`} exact>
+                            <FinanceReport />
+                        </Route> */}
+                        <Route path={`${path}/location`} exact>
+                            <Store />
                         </Route>
 
                     </Switch>
@@ -138,11 +150,11 @@ export default function ClinicModule() {
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
                                         <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Clinic</p>
+                                        <p className="modal-card-title">Choose Store</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <ClinicList standalone="true"  closeModal={()=>setShowModal(false)}/>
+                                        <StoreList standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

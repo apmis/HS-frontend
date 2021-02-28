@@ -26,7 +26,8 @@ body {
   -webkit-font-smoothing: antialiased;
   min-width: 300px;
   overflow-x: hidden;
-   overflow-y:hidden  !important;/*  scroll */
+   overflow-y:hidden  !important;/*  scroll //consider media query for mobile */
   text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  padding-bottom: 2rem;
  }

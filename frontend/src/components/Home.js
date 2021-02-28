@@ -3,6 +3,7 @@ import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-ro
 import FacilityModule from './FacilityModule'
 import InventoryModule from './InventoryModule'
 import ClinicModule from './ClinicModule'
+import FinanceModule from './FinanceModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
 import {UserContext} from '../context'
@@ -31,6 +32,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/clinic`} >
                     <ClinicModule />
+                </Route>
+                <Route path={`${path}/finance`} >
+                    <FinanceModule />
                 </Route>
             </Switch>
         </div>
@@ -128,9 +132,32 @@ function NavBar({url}){
                     </div> */}
 
                     <div role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <div className="navbar-item">
+                        <NavLink to={`${url}`}>Landing Page</NavLink> 
+                    </div>
+                    <div className="navbar-item">
+                        <NavLink to={`${url}/clinic`}>Clinic</NavLink>
+                    </div>
+                    <div className="navbar-item">
+                        <NavLink to={`${url}/inventory`}>Inventory</NavLink>
+                    </div>
+                    <div className="navbar-item">
+                        <NavLink to={`${url}/facility`}>Admin</NavLink>
+                    </div>
+                    <div className="navbar-item">
+                        <NavLink to={`${url}/finance`}>Finance</NavLink>
+                    </div>
+                    <div className="navbar-item">
+                        Front Desk
+                    </div>
+                    <hr className="navbar-divider" />
+                    <div className="navbar-item">
+                        Sign Out
+                    </div>
+                    
+                  {/*   <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span> */}
                     </div>
                 </div>
 
@@ -174,6 +201,9 @@ function NavBar({url}){
                                 </div>
                                 <div className="navbar-item">
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>
+                                </div>
+                                <div className="navbar-item">
+                                    <NavLink to={`${url}/finance`}>Finance</NavLink>
                                 </div>
                                 <div className="navbar-item">
                                     Front Desk

@@ -153,7 +153,7 @@ export default function InventoryModule() {
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <StoreList standalone="true" />
+                                        <StoreList standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

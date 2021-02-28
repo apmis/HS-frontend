@@ -11,14 +11,15 @@ var random = require('random-string-generator');
 // eslint-disable-next-line
 const searchfacility={};
 
-export default function BillPrescriptionCreate(){
+export default function PaymentCreate(){
     // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
      //const [error, setError] =useState(false)
      const [success, setSuccess] =useState(false)
      const [message,setMessage] = useState("")
      // eslint-disable-next-line
      const [facility,setFacility] = useState()
-     const ProductEntryServ=client.service('productentry')
+     const SubwalletTxServ=client.service('subwallettransactions')
+     const SubwalletServ=client.service('subwallet')
      const OrderServ=client.service('order')
      //const history = useHistory()
      const {user} = useContext(UserContext) //,setUser
@@ -27,7 +28,7 @@ export default function BillPrescriptionCreate(){
      const [type,setType] = useState("Bill")
      const [documentNo,setDocumentNo] = useState("")
      const [totalamount,setTotalamount] = useState(0)
-     const [qamount,setQAmount] = useState(null)
+     const [description,setDescription] = useState(null)
      const [productId,setProductId] = useState("")
      const [source,setSource] = useState("")
      const [date,setDate] = useState("")
@@ -47,6 +48,8 @@ export default function BillPrescriptionCreate(){
       const [billMode, setBillMode]=useState("")
       const [productModal, setProductModal]=useState(false)
       const [obj, setObj]=useState("")
+      const [amountPaid, setAmountPaid]=useState(0)
+      const [balance, setBalance]=useState(0)
      
      const {state,setState}=useContext(ObjectContext)
      const inputEl = useRef(0);
@@ -55,8 +58,8 @@ export default function BillPrescriptionCreate(){
   
 
     
-  let medication =state.medicationModule.selectedMedication
-
+  let medication =state.financeModule.selectedFinance
+  console.log(state.financeModule.state)
 
   const showDocumentation = async (value)=>{
     setProductModal(true)
@@ -136,7 +139,7 @@ export default function BillPrescriptionCreate(){
             setInventoryId("")
             setSellingPrice("")
             setInvQuantity("")
-            setQAmount(null)
+            setDescription("")
             setCostprice("")
            // setCalcAmount(null)
             return
@@ -173,6 +176,7 @@ export default function BillPrescriptionCreate(){
              shouldDirty: true
          }) */
      }
+
      useEffect(() => {
        /*  console.log(obj)
         console.log(billMode)
@@ -206,7 +210,7 @@ export default function BillPrescriptionCreate(){
      }
  
      const handleAmount= async()=>{
-         await setQAmount(null)
+         await setDescription("")
         // alert("Iam chaning qamount")
      }
 
@@ -329,6 +333,7 @@ export default function BillPrescriptionCreate(){
              totalamount,
              source,
          })
+
         setCalcAmount(quantity*sellingprice) 
          return () => {
              
@@ -406,50 +411,9 @@ export default function BillPrescriptionCreate(){
                  pauseOnHover: true,
                }) 
                return
- 
            }
-           //console.log("b4 create",productEntry);
-        // ProductEntryServ.create(productEntry)
-         //.then((res)=>{
-                 //console.log(JSON.stringify(res))
-           //      resetform()
-                /*  setMessage("Created ProductEntry successfully") */
-             //    setSuccess(true)
-               //  toast({
-                  /*    message: 'ProductExit created succesfully',
-                     type: 'is-success',
-                     dismissible: true,
-                     pauseOnHover: true,
-                   })
-                   setSuccess(false)
-                   setProductItem([])
-                   const today=new Date().toLocaleString()
-       
-                   setDate(today)
-                   const invoiceNo=random(6,'uppernumeric')
-                 setDocumentNo(invoiceNo)
-                 setType("Sales")
-             })
-             .catch((err)=>{
-                 toast({
-                     message: 'Error creating ProductExit ' + err,
-                     type: 'is-danger',
-                     dismissible: true,
-                     pauseOnHover: true,
-                   })
-             }) */
- 
        } 
- 
-    // console.log("i am rendering")
-   /*   useEffect(() => {
-         setMedication(state.medicationModule.selectedMedication)
-        // console.log(medication)
-         return () => {
-             
-         }
-     }, [state])
-  */
+
     const handleChangeAmount=()=>{
         setChangeAmount((rev)=>(!rev))
         
@@ -458,11 +422,58 @@ export default function BillPrescriptionCreate(){
     const newclient=async ()=>{
         await  setProductItem([])
     }
+    const handleAccept=async()=>{
+        let obj={
+           // toWallet:{ type: Schema.Types.ObjectId, ref:'facility', }, //receiving money
+            //fromWallet:{ type: Schema.Types.ObjectId, ref:'facility', },//sending money
+            //subwallet:{ type: Schema.Types.ObjectId, ref:'subwallet', },
+            client:medication.participantInfo.client._id,
+            organization:user.employeeData[0].facilityDetail._id,
+            category:"credit", //debit/credit
+            amount:amountPaid,
+            description: description,
+           
+            toName:user.employeeData[0].facilityDetail.facilityName,
+            fromName:medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname,
+            createdby: user._id,
+            
+           // refBill:[{ type: Schema.Types.ObjectId, ref:'bills'  }], //billid to be paid : ref invoice to pay
+           // info:{ type: Schema.Types.Mixed},
+           // status:{ type: String },
+            
+            facility: user.employeeData[0].facilityDetail._id,
+            locationId: state.LocationModule.selectedLocation._id,
+            type: "Deposit"
+
+        }
+       SubwalletTxServ.create(obj)
+       .then((resp)=>{
+           console.log(resp)
+
+        toast({
+            message: 'Deposit accepted succesfully',
+            type: 'is-success',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+          setAmountPaid(0)
+       })
+       .catch((err)=>{
+        toast({
+            message: 'Error accepting deposit ' + err,
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+
+       })
+
+    }
 
     useEffect(() => {
-        const oldname=medication.clientname
+        const oldname=medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname
         console.log("oldname",oldname)
-        setSource(medication.clientname)
+        setSource(medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname)
 
         const newname=source
         console.log("newname",newname)
@@ -473,86 +484,68 @@ export default function BillPrescriptionCreate(){
         setTotalamount(0)
 
         }
-       
+        if (state.financeModule.state){
+         setProductItem(
+            prevProd=>prevProd.concat(medication)
+        )
+        }else{
+            if(productItem.length>0){
+                setProductItem(
+                    prevProd=>prevProd.filter(el=>el._id!==medication._id)
+                )
+            }
+        }
 
         const paymentoptions= []
-        const info = medication.client.paymentinfo
+        const info = medication.participantInfo.client.paymentinfo
         let billme={}
+        getFacilities()
        
-        if( medication.client.paymentinfo.cash===true){
-            const details={}
-            details.detail=  info.cashDetails
-            details.type="Cash"
-            const obj={
-                name:"Cash",
-                value:"Cash",
-                detail:details,
-                type:"Cash"
-            }
-            paymentoptions.push(obj)
-            setPaymentMode("Cash")
-            billme=obj
-        }
-        if( medication.client.paymentinfo.familyCover===true){
-            const details={}
-            details.detail=  info.familyDetails
-            details.type="Family Cover"
-            const obj={
-                name:"Family Cover",
-                value:"familyCover",
-                detail:details,
-                type:"Family Cover"
-            }
-            paymentoptions.push(obj)
-            setPaymentMode("Family Cover")
-            billme=obj
-            
-        }
-        if( medication.client.paymentinfo.companyCover===true){
-            const details={}
-            details.type="Company Cover"
-            details.detail=  info.companyDetails.filter(el=>el.active===true)
-            details.detail.forEach(el=>{
-                const obj={
-                    name:"Company: " +el.companyName +"("+el.companyPlan+")",
-                    value:"companyCover",
-                    detail:el,
-                    type:"Company Cover" 
-                }
-                paymentoptions.push(obj)
-                setPaymentMode("Company: " +el.companyName +"("+el.companyPlan+")")
-               // console.log("Company: " +el.companyName +"("+el.companyPlan+")")
-               billme=obj
-            })
-        }
-
-        if( medication.client.paymentinfo.hmoCover===true){
-            
-            const details={}
-            details.type="HMO Cover"
-            details.detail=  info.hmoDetails.filter(el=>el.active===true)
-            details.detail.forEach(el=>{
-                const obj={
-                    name:"HMO: " +el.hmoName +"("+el.hmoPlan+")",
-                    value:"hmoCover",
-                    detail:el,
-                    type:"HMO Cover"
-                }
-                paymentoptions.push(obj)
-                setPaymentMode("HMO: " +el.hmoName +"("+el.hmoPlan+")")
-                //console.log("HMO: " +el.hmoName +"("+el.hmoPlan+")")
-                billme=obj
-            })
-         
-        }
-        setPaymentOptions(paymentoptions)
-        setBillMode(billme)
-       console.log(paymentoptions)
-        console.log(billMode)
         return () => {
            
         }
-    }, [medication])
+    }, [state.financeModule])
+
+    useEffect(() => {
+        console.log(productItem)
+        setTotalamount(0)
+        productItem.forEach(el=>{
+            setTotalamount(prevtotal=>Number(prevtotal) + Number(el.serviceInfo.amount) )
+        })
+        return () => {
+        
+        }
+    }, [productItem])
+
+    const getFacilities= async()=>{
+       
+        // console.log("here b4 server")
+        const findProductEntry= await SubwalletServ.find(
+        {query: {
+           
+            client:medication.participantInfo.client._id,
+            organization:user.employeeData[0].facilityDetail._id,
+            //storeId:state.StoreModule.selectedStore._id,
+            //clientId:state.ClientModule.selectedClient._id,
+            $limit:100,
+            $sort: {
+                createdAt: -1
+            }
+            }})
+             console.log(findProductEntry)
+
+     // console.log("balance", findProductEntry.data[0].amount)
+        if (findProductEntry.data.length>0){
+            await setBalance(findProductEntry.data[0].amount)
+        }else{
+            await setBalance(0) 
+            
+        } 
+
+      //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
+        }   
+
+
 
      useEffect(() => {
        // const medication =state.medicationModule.selectedMedication
@@ -561,8 +554,22 @@ export default function BillPrescriptionCreate(){
          setDate(today)
          const invoiceNo=random(6,'uppernumeric')
          setDocumentNo(invoiceNo)
-         return () => {
-             
+
+
+            getFacilities()
+            SubwalletServ.on('created', (obj)=>getFacilities())
+            SubwalletServ.on('updated', (obj)=>getFacilities())
+            SubwalletServ.on('patched', (obj)=>getFacilities())
+            SubwalletServ.on('removed', (obj)=>getFacilities())
+
+
+
+         return async() => {
+            const    newProductEntryModule={
+                selectedFinance:{},
+                show :'create'
+                }
+           await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
          }
      }, [])
 
@@ -582,29 +589,18 @@ export default function BillPrescriptionCreate(){
              <div className="card card-overflow">
              <div className="card-header">
                  <p className="card-header-title">
-                     Bill Product
+                     Pay Bill
                  </p>
-                 <button className="button is-success is-small btnheight mt-2" onClick={showDocumentation}>Documentation</button>
+                 <button className="button is-success is-small btnheight mt-2" >
+                    Balance: N {balance}
+                 </button>
              </div>
              <div className="card-content ">
     
-             <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit) */}
+            {/*  <form onSubmit={onSubmit}>  */}
              <div className="field is-horizontal">
              <div className="field-body">
-            {/*  <div className="field">    
-                 <div className="control">
-                     <div className="select is-small">
-                         <select name="type" value={type} onChange={handleChangeType} className="selectadd">
-                            <option value="">Choose Type </option>
-                             <option value="Dispense">Dispense</option>
-                             <option value="Bill">Bill </option> */}
-                             {/* <option value="Dispense">Dispense</option>
-                             <option value="Audit">Audit</option> */}
-                 {/*         </select>
-                     </div>
-                 </div>
-             </div>
- */}
+         
              <div className="field">
                      <p className="control has-icons-left has-icons-right">
                          <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
@@ -613,46 +609,7 @@ export default function BillPrescriptionCreate(){
                          </span>                    
                      </p>
                  </div>
-                 <div className="field">    
-                 <div className="control">
-                     <div className="select is-small ">
-                         <select name="paymentmode" value={paymentmode} onChange={(e)=>handleChangeMode(e.target.value)} className="selectadd" >
-                         <option value="">Billing Mode </option>
-                           {paymentOptions.map((option,i)=>(
-                               <option key={i} value={option.details}> {option.name}</option>
-                           ))}
-                           
-                            
-                            {/*  <option value="Cash">Cash</option>
-                             <option value="Family">Family </option>
-                            <option value="Company Cover">Company Cover</option>
-                             <option value="HMO">HMO</option> */}
-                         </select>
-                     </div>
-                 </div>
-             </div>
-            
-             </div>
-             </div> {/* horizontal end */}
-            {/*  <div className="field">
-                 <p className="control has-icons-left"> // Audit/initialization/Purchase Invoice 
-                     <input className="input is-small"  ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                     <span className="icon is-small is-left">
-                     <i className=" fas fa-user-md "></i>
-                     </span>
-                 </p>
-             </div> */}
-                <div className="field is-horizontal">
-                <div className="field-body">
-                <div className="field">
-                 <p className="control has-icons-left has-icons-right">
-                     <input className="input is-small"  /* ref={register({ required: true })} */ value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
-                     <span className="icon is-small is-left">
-                         <i className="fas fa-map-signs"></i>
-                     </span>
-                 </p>
-             </div>
-             <div className="field">
+                 <div className="field">
                  <p className="control has-icons-left">
                      <input className="input is-small" /* ref={register} */ name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
                      <span className="icon is-small is-left">
@@ -660,102 +617,104 @@ export default function BillPrescriptionCreate(){
                      </span>
                  </p>
              </div>
-             <div className="field">
-                 <p className="control has-icons-left">
-                     <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={e=>setTotalamount(e.target.value)} placeholder=" Total Amount"/>
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-coins"></i>
-                     </span>
-                 </p>
-             </div>
- 
-                 </div> 
-                 </div> 
-                
-                 </form>   
-                
+                 
             
-          {/* array of ProductEntry items */}
-         
-         <label className="label is-small">Medication:</label>
-         <div className="field is-horizontal">
-             <div className="field-body">
-             <div className="field" style={{width:"40%"}}>
-                 <p className="control has-icons-left" >
-                     <input className="input is-small"  /* ref={register({ required: true })} */ disabled  name="order" value={medication.order} type="text" onChange={ e=> handleQtty(e)} placeholder="Quantity"  />
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-hashtag"></i>
-                     </span>
-                     <span className="helper is-size-7"><strong>Instruction: </strong>{medication.instruction}</span>
-                    
-                 </p>
-                 <span className="helper is-size-7"><strong>Billing Status: </strong>{medication.order_status}</span>
-             </div> 
-            
+                </div>
              </div>
-             </div>
-             <label className="label is-small">Choose Product Item:</label>
-          <div className="field is-horizontal">
-             <div className="field-body">
-             <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                     <InventorySearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                     <p className="control has-icons-left " style={{display:"none"}}>
-                         <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
-                         <span className="icon is-small is-left">
-                         <i className="fas  fa-map-marker-alt"></i>
-                         </span>
-                     </p>
-                  {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"} 
-                 </div>
-             </div>
-         </div>
-         <div className="field is-horizontal">
+             <div className="field is-horizontal">
              <div className="field-body" >
-                 <div className="field" style={{width:"40%"}}>
-                 <p className="control has-icons-left" >
-                     <input className="input is-small"  /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={ e=> handleQtty(e)} placeholder="Quantity"  />
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-hashtag"></i>
-                     </span>
-                    
-                 </p>
-         <label >{baseunit}</label>
-             </div> 
              <div className="field">
-             <label>Amount:</label>{/* <p>{quantity*sellingprice}</p> */}
+             <label className="label is-small">Total Amount Due:</label>
              </div>
              <div className="field" style={{width:"40%"}}>
                  <p className="control has-icons-left " /* style={{display:"none"}} */>
-                     <input className="input is-small"  name="qamount" disabled={changeAmount} value={calcamount} type="text"  onChange={async e=> await setCalcAmount(e.target.value)}  placeholder="Amount"  />
+                     <input className="input is-small"  disabled={changeAmount} value={totalamount} name="totalamount"  onChange={e=>setTotalamount(e.target.value)} placeholder="Amount"  />
                      <span className="icon is-small is-left">
                      <i className="fas fa-dollar-sign"></i>
                      </span>
                  </p>
-                 <button className="button is-small is-success btnheight" onClick={handleChangeAmount}>Adjust</button>
+                
  
              </div> 
+            
+             </div>
+          </div>
+                
+               {/*   </form>   */} 
+                
+            
+          {/* array of ProductEntry items */}
+         
+         <label className="label is-small ">Payment Information:</label>
+         <div className="field is-horizontal">
+             <div className="field-body">
+             <div className="field">    
+                    <div className="control">
+                        <div className="select is-small ">
+                            <select name="paymentmode" value={paymentmode} onChange={(e)=>handleChangeMode(e.target.value)} className="selectadd" >
+                            <option value="">Payment Mode </option>
+                            
+                            <option value="Cash">Cash</option>
+                                <option value="Wallet">Wallet </option>
+                                <option value="Wallet">Bank Transfer </option>
+                                <option value="Card">Card</option>
+                                <option value="Cheque">Cheque</option> 
+                            </select>
+                        </div>
+                    </div>
+                    </div>
+             <div className="field" >
+                 <p className="control has-icons-left" >
+                     <input className="input is-small"  name="order" value={amountPaid} type="text" onChange={ e=> setAmountPaid(e.target.value)} placeholder="Quantity"  />
+                     <span className="icon is-small is-left">
+                     <i className="fas fa-hashtag"></i>
+                     </span>
+                 </p>
+             </div> 
              <div className="field">
-             <p className="control">
-                     <button className="button is-info is-small  is-pulled-right">
-                       <span className="is-small" onClick={handleClickProd}> +</span>
+                <p className="control">
+                     <button className="button is-info is-small  is-pulled-right selectadd">
+                       <span className="is-small" onClick={handleAccept}>Accept</span>
                      </button>
                  </p>
              </div>
              </div>
+             </div>
+            
+          
+         <div className="field is-horizontal pullup">
+             <div className="field-body" >
+             <div className="field">
+             <label className="label is-small">Payment Details:</label>
+             </div>
+             <div className="field" >
+                 <p className="control has-icons-left " /* style={{display:"none"}} */>
+                     <input className="input is-small"  name="description"  value={description} type="text"  onChange={async e=> await setDescription(e.target.value)}  placeholder="Payment Details"  />
+                     <span className="icon is-small is-left">
+                     <i className="fas fa-dollar-sign"></i>
+                     </span>
+                 </p>
+                
+ 
+             </div> 
+            
+             </div>
           </div>
              
-        {(productItem.length>0) && <div>
-             <label>Product Items:</label>
+        {(productItem.length>0) && <>
+            <label>Product Items:</label>
+        <div className="vscrollable-acc">
+             
           <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                  <thead>
                      <tr>
                      <th><abbr title="Serial No">S/No</abbr></th>
-                     <th><abbr title="Type">Name</abbr></th>
-                     <th><abbr title="Type">Quanitity</abbr></th>
-                     <th><abbr title="Document No">Unit</abbr></th>
-                     <th><abbr title="Cost Price">Selling Price</abbr></th>
-                     <th><abbr title="Cost Price">Amount</abbr></th>
-                     <th><abbr title="Actions">Actions</abbr></th>
+                     <th><abbr title="Category">Category</abbr></th>
+                     <th><abbr title="Description">Description</abbr></th>
+                     <th><abbr title="Amount">Amount</abbr></th>
+                     {/* <th><abbr title="Cost Price">Selling Price</abbr></th>
+                     <th><abbr title="Cost Price">Amount</abbr></th> */}
+                     {/* <th><abbr title="Actions">Actions</abbr></th> */}
                      </tr>
                  </thead>
                  <tfoot>
@@ -765,31 +724,32 @@ export default function BillPrescriptionCreate(){
                     { productItem.map((ProductEntry, i)=>(
                           <tr key={i}>
                          <th>{i+1}</th>
-                         <td>{ProductEntry.name}</td>
-                         <th>{ProductEntry.quantity}</th>
-                         <td>{ProductEntry.baseunit}</td>
-                         <td>{ProductEntry.sellingprice}</td>
-                         <td>{ProductEntry.amount}</td>
-                         <td><span className="showAction"  >x</span></td>
+                         <th>{ProductEntry.orderInfo.orderObj.order_category}</th>
+                         <td>{ProductEntry.serviceInfo.name}</td>
+                         <td>{ProductEntry.serviceInfo.amount}</td>
+                        {/*  <td>{ProductEntry.sellingprice}</td>
+                         <td>{ProductEntry.amount}</td> */}
+                        {/*  <td><span className="showAction"  >x</span></td> */}
                          </tr>
                      ))}
                  </tbody>
                  </table>
+                 </div>    
                  <div className="field mt-2 is-grouped">
-                 <p className="control">
-                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handleMedicationDone}>
-                        Done
+                    <p className="control">
+                        <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handleMedicationDone}>
+                            Pay
+                        </button>
+                    </p>
+                  {/* <p className="control">
+                     <button className="button is-info is-small" disabled={!productItem.length>0} onClick={onSubmit} >
+                         Generate Invoice
                      </button>
-                 </p>
-                {/*  <p className="control">
-                     <button className="button is-warning is-small" disabled={!productItem.length>0} onClick={onSubmit} >
-                         Clear
-                     </button>
-                 </p> */}
+                 </p>  */}
                  </div>
-                 </div>
-            
-             }
+        
+            </>
+        }   
              
              
              </div>
