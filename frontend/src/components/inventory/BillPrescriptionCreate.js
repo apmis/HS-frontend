@@ -66,6 +66,7 @@ export default function BillPrescriptionCreate(){
    // handleSearch(val)
     }
 
+
     const handleChangeMode= async(value)=>{
         console.log(value)
        await setPaymentMode(value)
@@ -155,24 +156,46 @@ export default function BillPrescriptionCreate(){
          //const billingserv=client.service('billing')
         if( billMode.type==="HMO Cover"){ //paymentmode
          let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-         console.log(contract[0].price)
-         setSellingPrice(contract[0].price)
-         console.log(sellingprice)
+         if (contract.length){
+            console.log(contract[0].price)
+            setSellingPrice(contract[0].price)
+            console.log(sellingprice)
+         }else{
+            toast({
+                message: 'Please HMO does not have cover/price for this drug. Either set drug price for HMO or try another drug or bill using cash',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              setSellingPrice(0)
+         }
+        
         
         }
         if( billMode.type==="Company Cover"){ //paymentmode
             let contract=contracts.filter(el=>el.source_org===billMode.detail.company)
+            if (contract.length){
             console.log(contract[0].price)
             setSellingPrice(contract[0].price)
             console.log(sellingprice)
            
-           }
+           }else{
+
+            toast({
+                message: 'Please company does not have cover/price for this drug. Either set drug price for Company or try another drug or bill using cash',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              setSellingPrice(0)   
+         }
           
         /*  setValue("facility", obj._id,  {
              shouldValidate: true,
              shouldDirty: true
          }) */
      }
+    }
      useEffect(() => {
        /*  console.log(obj)
         console.log(billMode)
@@ -245,7 +268,13 @@ export default function BillPrescriptionCreate(){
                     billingId:productItemI.billingId,
                     createdby:user._id,
                   },
-                  paymentInfo:{},
+                  paymentInfo:{
+                    amountDue:productItemI.amount,
+                    paidup:0,
+                    balance:productItemI.amount,
+                    paymentDetails:[]
+              
+                  },
                   participantInfo:{
                     billingFacility:medication.destination,
                     billingFacilityName:medication.destination_name,
@@ -261,7 +290,7 @@ export default function BillPrescriptionCreate(){
         //update order
         
         OrderServ.patch(medication._id,{
-            order_status:"Billed",
+            order_status:"Billed", //Billed
             billInfo,
         }).then((resp)=>{
            // medication=resp
@@ -566,7 +595,7 @@ export default function BillPrescriptionCreate(){
          }
      }, [])
 
-    useEffect(() => {
+     useEffect(() => {
         calcamount1=quantity*sellingprice
          setCalcAmount(calcamount1)
          console.log(calcamount)

@@ -53,18 +53,18 @@ export default function Payment() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-5 ">
+                <div className="column is-6 ">
                     <BillingList />
                     </div>
               
-                <div className="column is-4 ">
+                <div className="column is-6 ">
                 
                 {(state.financeModule.show ==='detail')&& <PaymentCreate/ >}
                 </div>
-                <div className="column is-3 ">
+               {/*  <div className="column is-3 ">
                 
                 {(state.financeModule.show ==='detail')&&<PatientProfile />}
-                </div>
+                </div> */}
 
             </div>                            
             </section>
@@ -115,7 +115,7 @@ export function BillingList(){
             setSelectedOrders([])
         }
 
-        console.log(e.target.checked)
+       // console.log(e.target.checked)
         order.checked=e.target.checked
         await handleSelectedClient(order.participantInfo.client)
         //handleMedicationRow(order)

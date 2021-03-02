@@ -21,6 +21,7 @@ export default function PaymentCreate(){
      const SubwalletTxServ=client.service('subwallettransactions')
      const SubwalletServ=client.service('subwallet')
      const OrderServ=client.service('order')
+     const InvoiceServ=client.service('invoice')
      //const history = useHistory()
      const {user} = useContext(UserContext) //,setUser
      // eslint-disable-next-line
@@ -43,13 +44,15 @@ export default function PaymentCreate(){
      const [productItem,setProductItem] = useState([])
       const [billingId,setBilllingId]=useState("")  
       const [changeAmount, setChangeAmount] = useState(true)
-      const [paymentmode, setPaymentMode] = useState("")
+      const [paymentmode, setPaymentMode] = useState("Cash")
       const [paymentOptions, setPaymentOptions]=useState([])
       const [billMode, setBillMode]=useState("")
       const [productModal, setProductModal]=useState(false)
       const [obj, setObj]=useState("")
       const [amountPaid, setAmountPaid]=useState(0)
       const [balance, setBalance]=useState(0)
+      const [buttonState, setButtonState]=useState(false)
+      const [partPay,setPartPay]=useState([])
      
      const {state,setState}=useContext(ObjectContext)
      const inputEl = useRef(0);
@@ -59,7 +62,7 @@ export default function PaymentCreate(){
 
     
   let medication =state.financeModule.selectedFinance
-  console.log(state.financeModule.state)
+  //console.log(state.financeModule.state)
 
   const showDocumentation = async (value)=>{
     setProductModal(true)
@@ -69,13 +72,13 @@ export default function PaymentCreate(){
    // handleSearch(val)
     }
 
-    const handleChangeMode= async(value)=>{
-        console.log(value)
+  const handleChangeMode= async(value)=>{
+        //console.log(value)
        await setPaymentMode(value)
-        console.log(paymentOptions)
+      /*   console.log(paymentOptions)
        let billm= paymentOptions.filter(el=>el.name===value)
        await setBillMode(billm)
-        console.log(billm)
+        console.log(billm) */
         // at startup
         // check payment mode options from patient financial info
         // load that to select options
@@ -89,7 +92,7 @@ export default function PaymentCreate(){
 
     }
 
-    const handleRow= async(ProductEntry)=>{
+  const handleRow= async(ProductEntry)=>{
     //console.log("b4",state)
 
     //console.log("handlerow",ProductEntry)
@@ -104,9 +107,9 @@ export default function PaymentCreate(){
    //console.log(state)
   // ProductEntry.show=!ProductEntry.show
 
-        } 
+        }  
  
-     const [productEntry,setProductEntry]=useState({
+  const [productEntry,setProductEntry]=useState({
          productitems:[],
          date,
          documentNo,
@@ -116,7 +119,7 @@ export default function PaymentCreate(){
  
      })
   
-     const productItemI={
+  const productItemI={
          productId,
          name,
          quantity,
@@ -129,7 +132,7 @@ export default function PaymentCreate(){
      }
      // consider batchformat{batchno,expirydate,qtty,baseunit}
      //consider baseunoit conversions
-     const getSearchfacility=async (obj)=>{
+  const getSearchfacility=async (obj)=>{
        await setObj(obj)
         if (!obj){
             //"clear stuff"
@@ -423,6 +426,17 @@ export default function PaymentCreate(){
         await  setProductItem([])
     }
     const handleAccept=async()=>{
+        await setButtonState(true)
+        if (paymentmode===""||amountPaid===0|| amountPaid===""){
+            toast({
+                message: 'Kindly choose payment mode or enter amount' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              await setButtonState(false)
+              return
+        }
         let obj={
            // toWallet:{ type: Schema.Types.ObjectId, ref:'facility', }, //receiving money
             //fromWallet:{ type: Schema.Types.ObjectId, ref:'facility', },//sending money
@@ -439,7 +453,7 @@ export default function PaymentCreate(){
             
            // refBill:[{ type: Schema.Types.ObjectId, ref:'bills'  }], //billid to be paid : ref invoice to pay
            // info:{ type: Schema.Types.Mixed},
-           // status:{ type: String },
+            paymentmode:paymentmode,
             
             facility: user.employeeData[0].facilityDetail._id,
             locationId: state.LocationModule.selectedLocation._id,
@@ -467,16 +481,16 @@ export default function PaymentCreate(){
           })
 
        })
-
+       await setButtonState(false)
     }
 
     useEffect(() => {
         const oldname=medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname
-        console.log("oldname",oldname)
+       // console.log("oldname",oldname)
         setSource(medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname)
 
         const newname=source
-        console.log("newname",newname)
+       // console.log("newname",newname)
         if (oldname!==newname){
             //newdispense
         
@@ -485,6 +499,14 @@ export default function PaymentCreate(){
 
         }
         if (state.financeModule.state){
+            medication.show="none"
+            medication.proposedpayment={
+                balance:0,
+                paidup:medication.paymentInfo.paidup + medication.paymentInfo.balance,
+                amount:medication.paymentInfo.balance
+            }
+            //no payment detail push
+          
          setProductItem(
             prevProd=>prevProd.concat(medication)
         )
@@ -496,9 +518,9 @@ export default function PaymentCreate(){
             }
         }
 
-        const paymentoptions= []
-        const info = medication.participantInfo.client.paymentinfo
-        let billme={}
+       // const paymentoptions= []
+        //const info = medication.participantInfo.client.paymentinfo
+        //let billme={}
         getFacilities()
        
         return () => {
@@ -506,12 +528,23 @@ export default function PaymentCreate(){
         }
     }, [state.financeModule])
 
-    useEffect(() => {
-        console.log(productItem)
+    const getTotal= async()=>{
         setTotalamount(0)
         productItem.forEach(el=>{
-            setTotalamount(prevtotal=>Number(prevtotal) + Number(el.serviceInfo.amount) )
+            if (el.show==="none"){
+                setTotalamount(prevtotal=>Number(prevtotal) + Number(el.serviceInfo.amount) )
+            }
+            if (el.show==="flex"){
+                setTotalamount(prevtotal=>Number(prevtotal) + Number(el.partPay) )
+            }
+          
+            // 
         })
+    }
+
+    useEffect(() => {
+        console.log(productItem)
+       getTotal()
         return () => {
         
         }
@@ -550,11 +583,10 @@ export default function PaymentCreate(){
      useEffect(() => {
        // const medication =state.medicationModule.selectedMedication
          const today=new Date().toLocaleString()
-         console.log(today)
+         //console.log(today)
          setDate(today)
          const invoiceNo=random(6,'uppernumeric')
          setDocumentNo(invoiceNo)
-
 
             getFacilities()
             SubwalletServ.on('created', (obj)=>getFacilities())
@@ -562,18 +594,17 @@ export default function PaymentCreate(){
             SubwalletServ.on('patched', (obj)=>getFacilities())
             SubwalletServ.on('removed', (obj)=>getFacilities())
 
-
-
          return async() => {
             const    newProductEntryModule={
                 selectedFinance:{},
                 show :'create'
                 }
            await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
+           await setPartPay([])
          }
      }, [])
 
-    useEffect(() => {
+  /*   useEffect(() => {
         calcamount1=quantity*sellingprice
          setCalcAmount(calcamount1)
          console.log(calcamount)
@@ -581,8 +612,249 @@ export default function PaymentCreate(){
         return () => {
             
         }
-    }, [quantity])
+    }, [quantity]) */
 
+    
+    const handleChangePart= async(bill, e)=>{
+        console.log(bill, e.target.value)
+        if(e.target.value==="Part"){
+            bill.show="flex"
+        setPartPay((prev)=>prev.concat(bill))
+        }
+      
+        if(e.target.value==="Full"){
+            bill.show="none"
+            
+            let item=  await productItem.find(el=>
+                el._id===bill._id
+            )
+            const   payObj={
+                amount:  item.paymentInfo.balance,
+                mode:"Full",
+                date: new Date().toLocaleString()
+            }
+            //item.partPay=""
+           // item.paymentInfo.paymentDetails.push(payObj)
+            item.proposedpayment={
+                balance:Number(item.paymentInfo.balance) - Number(payObj.amount),
+                paidup:Number(item.paymentInfo.paidup) + Number(payObj.amount),
+                amount:payObj.amount
+            }
+           // item.paymentInfo.balance=item.paymentInfo.balance - item.paymentInfo.balance
+          //  item.paymentInfo.paidup=Number(item.paymentInfo.paidup) + Number(payObj.amount)
+            getTotal()
+            setPartPay((prev)=>prev.concat(bill))
+
+        }
+        
+    }
+
+    const handlePartAmount= async(bill,e)=>{
+        
+        let partAmount = e.target.value
+       // bill.partPay=partAmount
+       //const itemList=productItem
+       if (partAmount==="" ||partAmount===0  ){
+        toast({
+            message: 'Please enter an amount as part payment',
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+        return
+       }
+       let item=  await productItem.find(el=>
+        el._id===bill._id
+        )
+    item.partPay=partAmount
+    setPartPay((prev)=>prev.concat(bill))     
+        //setProductItem(productItem)
+    }
+
+    const handleUpdate= async(bill,e)=>{
+        if (bill.partPay==="" ||bill.partPay===0||bill.partPay===undefined  ){
+            toast({
+                message: 'Please enter an amount as part payment',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+            return
+           }
+       // console.log(bill)
+        let item=  await productItem.find(el=>
+            el._id===bill._id
+        )
+       // console.log(item)
+        /* item.partPay=partAmount
+        console.log(item)
+        console.log(productItem) */
+        
+        let partAmount= item.partPay
+       
+        if (bill.show==="flex"){
+                const  payObj={
+                amount:  partAmount,
+                mode:"Part",
+                date: new Date().toLocaleString()
+            }
+           // item.paymentInfo.paymentDetails.push(payObj)
+            item.proposedpayment={
+                balance:Number(item.paymentInfo.balance) - Number(payObj.amount),
+                paidup:Number(item.paymentInfo.paidup) + Number(payObj.amount),
+                amount:payObj.amount
+            }
+            /* item.paymentInfo.balance=item.paymentInfo.balance-partAmount
+            item.paymentInfo.paidup=Number(item.paymentInfo.paidup)+ Number(partAmount) */
+
+        }
+
+        /* if (bill.show==="none"){
+            const   payObj={
+                amount:  item.paymentInfo.balance,
+                mode:"Full",
+                date: new Date().toLocaleString()
+            }
+            item.paymentInfo.paymentDetails.push(payObj)
+            item.paymentInfo.balance=item.paymentInfo.balance - item.paymentInfo.balance
+            }
+            
+ */
+        
+        getTotal()
+        setPartPay((prev)=>prev.concat(bill))
+        toast({
+            message: 'Part payment updated successfully',
+            type: 'is-success',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+
+    }
+
+    const handlePayment= async ()=>{
+           //1. check if there is sufficient amount
+           if ( totalamount>balance){
+            toast({
+                message: 'Total amount due greater than money received. Kindly top up account or reduce number of bills to be paid',
+                type: 'is-success',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+    
+              return
+           }
+          
+           
+           
+    productItem.forEach(el=>{
+            if (!el.proposedpayment.amount){
+             toast({
+                 message: 'one or more bills do not have a payment method selected',
+                 type: 'is-danger',
+                 dismissible: true,
+                 pauseOnHover: true,
+               })
+             return
+             }
+            })
+
+             //transform 
+    productItem.forEach(el=>{
+            if (el.show==="flex"){
+                    const  payObj={
+                    amount:  el.proposedpayment.amount,
+                    mode:"Part",
+                    date: new Date().toLocaleString()
+                }
+            el.paymentInfo.paymentDetails.push(payObj)
+            }
+
+            if (el.show==="none"){
+                const  payObj={
+                amount:  el.proposedpayment.amount,
+                mode:"Full",
+                date: new Date().toLocaleString()
+                }
+                el.paymentInfo.paymentDetails.push(payObj)
+                }
+
+            })
+
+        let allItems=productItem
+
+           allItems.forEach(el=>{
+
+            el.paymentInfo.balance = el.proposedpayment.balance
+            el.paymentInfo.paidup = el.proposedpayment.paidup
+            el.paymentInfo.amountpaid = el.proposedpayment.amount
+
+            if (el.paymentInfo.balance === 0){
+                el.billing_status="Fully Paid"
+            }else{
+                el.billing_status="Partially Paid"
+            }
+            el.show="none"
+            el.checked=false
+            delete el.proposedpayment
+            delete el.partPay
+           })
+           
+
+           const obj ={
+            clientId:medication.participantInfo.client._id,//sending money
+            clientName: source ,
+            client:medication.participantInfo.client,
+            facilityId:user.employeeData[0].facilityDetail._id,
+            invoiceNo:documentNo,
+            totalamount:totalamount,
+            createdby:user._id,
+            status:"Fully Paid", //billid to be paid : ref invoice to pay
+            bills:allItems,
+            balance:balance,
+            facilityName:user.employeeData[0].facilityDetail.facilityName
+           }
+
+           console.log(obj)
+
+           
+            InvoiceServ.create(obj)
+            .then( async(resp)=>{
+                setProductItem([])
+                toast({
+                    message: 'payment successful',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  const    newProductEntryModule={
+                    selectedFinance:{},
+                    show :'create'
+                }
+              await setState((prevstate)=>({...prevstate, finance:newProductEntryModule}))
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error occurred with payment' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+            })
+
+        
+           
+           //2. call single end point for billspayment?
+
+           //2.1 create subwallet transaction- debit
+
+           //2.2 update subwallet
+
+           //2.3 mark orders as paid
+
+           //2.4 mark bills as paid
+
+        }
 // console.log("simpa")
      return (
          <>
@@ -652,9 +924,8 @@ export default function PaymentCreate(){
                     <div className="control">
                         <div className="select is-small ">
                             <select name="paymentmode" value={paymentmode} onChange={(e)=>handleChangeMode(e.target.value)} className="selectadd" >
-                            <option value="">Payment Mode </option>
-                            
-                            <option value="Cash">Cash</option>
+                                <option value="">Payment Mode </option>
+                                <option value="Cash">Cash</option>
                                 <option value="Wallet">Wallet </option>
                                 <option value="Wallet">Bank Transfer </option>
                                 <option value="Card">Card</option>
@@ -665,7 +936,7 @@ export default function PaymentCreate(){
                     </div>
              <div className="field" >
                  <p className="control has-icons-left" >
-                     <input className="input is-small"  name="order" value={amountPaid} type="text" onChange={ e=> setAmountPaid(e.target.value)} placeholder="Quantity"  />
+                     <input className="input is-small"  name="order" value={amountPaid} type="text" onChange={ e=> setAmountPaid(e.target.value)} placeholder="Amount"  />
                      <span className="icon is-small is-left">
                      <i className="fas fa-hashtag"></i>
                      </span>
@@ -673,8 +944,8 @@ export default function PaymentCreate(){
              </div> 
              <div className="field">
                 <p className="control">
-                     <button className="button is-info is-small  is-pulled-right selectadd">
-                       <span className="is-small" onClick={handleAccept}>Accept</span>
+                     <button className="button is-info is-small  is-pulled-right selectadd" disabled={buttonState}>
+                       <span className="is-small" onClick={handleAccept} >Accept</span>
                      </button>
                  </p>
              </div>
@@ -711,9 +982,10 @@ export default function PaymentCreate(){
                      <th><abbr title="Serial No">S/No</abbr></th>
                      <th><abbr title="Category">Category</abbr></th>
                      <th><abbr title="Description">Description</abbr></th>
+                    
+                     <th><abbr title="Cost Price">Type</abbr></th>
                      <th><abbr title="Amount">Amount</abbr></th>
-                     {/* <th><abbr title="Cost Price">Selling Price</abbr></th>
-                     <th><abbr title="Cost Price">Amount</abbr></th> */}
+                     {/* <th><abbr title="Cost Price">Amount</abbr></th> */}
                      {/* <th><abbr title="Actions">Actions</abbr></th> */}
                      </tr>
                  </thead>
@@ -726,9 +998,32 @@ export default function PaymentCreate(){
                          <th>{i+1}</th>
                          <th>{ProductEntry.orderInfo.orderObj.order_category}</th>
                          <td>{ProductEntry.serviceInfo.name}</td>
-                         <td>{ProductEntry.serviceInfo.amount}</td>
-                        {/*  <td>{ProductEntry.sellingprice}</td>
-                         <td>{ProductEntry.amount}</td> */}
+                         <td><label className=" is-small">
+                             <input  type="radio" name={ProductEntry._id} value="Full" checked={ProductEntry.show==="none"}  onChange={(e)=>{handleChangePart(ProductEntry,e)}}/>
+                               <span > Full</span>
+                              </label> <br/>
+                              <label className=" is-small">
+                             <input type="radio" name={ProductEntry._id}  value="Part" onChange={(e)=>handleChangePart(ProductEntry,e)}/>
+                             <span> Part </span>
+                              </label>
+                              <div className="field has-addons" style={{display:`${ProductEntry.show}`}}>
+                              <div className="control">
+                                  <input  className="input selectadd" type="text" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
+                                  </div> 
+                                  <div className="control">
+                                  <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
+                                  </div>
+                                  </div>
+                             {/*  {ProductEntry.partPay} */}
+                              </td>
+                         <td>
+                            <p><strong>Balance Due:</strong>{ProductEntry.paymentInfo.balance}  ({ProductEntry.proposedpayment.balance})</p>
+                            <p><strong>Paid Up:</strong>{ProductEntry.paymentInfo.paidup} ({ProductEntry.proposedpayment.paidup })</p>
+                            <p><strong>Amount:</strong>{ProductEntry.paymentInfo.amountDue}</p>
+                         </td>
+
+                          
+                        {/* <td>{ProductEntry.amount}</td> */}
                         {/*  <td><span className="showAction"  >x</span></td> */}
                          </tr>
                      ))}
@@ -737,7 +1032,7 @@ export default function PaymentCreate(){
                  </div>    
                  <div className="field mt-2 is-grouped">
                     <p className="control">
-                        <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handleMedicationDone}>
+                        <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handlePayment}>
                             Pay
                         </button>
                     </p>
