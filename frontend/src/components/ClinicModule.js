@@ -36,7 +36,7 @@ export default function ClinicModule() {
 
     const handleChangeClinic= async()=>{
         await setShowModal(true)                                                                                                                                                        
-        console.log( showModal)
+       // console.log( showModal)
     }
 
     return (
@@ -78,9 +78,9 @@ export default function ClinicModule() {
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
                                     </div> 
-                                    <div className="navbar-item">
+                                    {/* <div className="navbar-item">
                                         <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
-                                    </div>
+                                    </div> */}
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/patients`}>Clients</NavLink>
                                     </div>

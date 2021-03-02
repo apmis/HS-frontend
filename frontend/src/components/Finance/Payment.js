@@ -216,7 +216,7 @@ export function BillingList(){
                 }
                 }})
 
-            console.log("updatedorder", findProductEntry.groupedOrder)
+            //console.log("updatedorder", findProductEntry.groupedOrder)
             await setFacilities(findProductEntry.groupedOrder)
           //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
@@ -239,7 +239,7 @@ export function BillingList(){
 
     useEffect(() => {
         //changes with checked box
-        console.log(selectedOrders)
+       // console.log(selectedOrders)
         
         return () => {
             
@@ -293,8 +293,8 @@ export function BillingList(){
                             <AccordionItem  key={Clinic.client_id}  >
                                <AccordionItemHeading >
                                     <AccordionItemButton  >
-                                    <input type = "checkbox" name={Clinic.client_id}  />  
-                                    <strong> {i+1} {Clinic.clientname} {/* with {Clinic.bills.length} Unpaid bills. */} Grand Total amount: N</strong> 
+                                    {/* <input type = "checkbox" name={Clinic.client_id}  />   */}
+                                    <strong> {i+1} {Clinic.clientname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
                                     </AccordionItemButton>
                                 </AccordionItemHeading>
                                 <AccordionItemPanel>
@@ -304,8 +304,8 @@ export function BillingList(){
                                                 <AccordionItem  key={Clinic.client_id} >
                                                     <AccordionItemHeading >
                                                     <AccordionItemButton  >
-                                                    <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} />  
-                                                         {category.catName} with {category.order.length} Unpaid bills. Total amount: N
+                                                    {/* <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} /> */}  
+                                                         {category.catName} with {category.order.length} Unpaid bills. {/* Total amount: N */}
                                                     </AccordionItemButton>
                                                     </AccordionItemHeading>
                                                     <AccordionItemPanel>

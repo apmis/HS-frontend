@@ -161,16 +161,16 @@ export default function PaymentCreate(){
          //const billingserv=client.service('billing')
         if( billMode.type==="HMO Cover"){ //paymentmode
          let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-         console.log(contract[0].price)
+       //  console.log(contract[0].price)
          setSellingPrice(contract[0].price)
-         console.log(sellingprice)
+       //  console.log(sellingprice)
         
         }
         if( billMode.type==="Company Cover"){ //paymentmode
             let contract=contracts.filter(el=>el.source_org===billMode.detail.company)
-            console.log(contract[0].price)
+         //   console.log(contract[0].price)
             setSellingPrice(contract[0].price)
-            console.log(sellingprice)
+         //   console.log(sellingprice)
            
            }
           
@@ -208,7 +208,7 @@ export default function PaymentCreate(){
      }
  
      const handleChangeType=async (e)=>{
-         console.log(e.target.value)
+         //console.log(e.target.value)
          await setType(e.target.value)
      }
  
@@ -324,7 +324,7 @@ export default function PaymentCreate(){
          setQuantity(e.target.value)
          calcamount1=quantity*sellingprice
          await setCalcAmount(calcamount1)
-         console.log(calcamount)
+       //  console.log(calcamount)
      }
  
      useEffect( () => {
@@ -462,7 +462,7 @@ export default function PaymentCreate(){
         }
        SubwalletTxServ.create(obj)
        .then((resp)=>{
-           console.log(resp)
+          // console.log(resp)
 
         toast({
             message: 'Deposit accepted succesfully',
@@ -792,7 +792,7 @@ export default function PaymentCreate(){
             if (el.paymentInfo.balance === 0){
                 el.billing_status="Fully Paid"
             }else{
-                el.billing_status="Partially Paid"
+                el.billing_status="Part Payment"
             }
             el.show="none"
             el.checked=false

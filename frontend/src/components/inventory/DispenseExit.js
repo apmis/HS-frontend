@@ -353,7 +353,76 @@ export function ProductExitCreate(){
         }
     }, [quantity])
 
-  
+    useEffect(() => {
+        if (!!medication){
+
+      
+        const oldname=medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname
+       // console.log("oldname",oldname)
+        setSource(medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname)
+
+        const newname=source
+       // console.log("newname",newname)
+        if (oldname!==newname){
+            //newdispense
+        
+        setProductItem([])
+        setTotalamount(0)
+
+        }
+        setType("Dispense")
+        if (state.financeModule.state){
+           /*  medication.show="none"
+            medication.proposedpayment={
+                balance:0,
+                paidup:medication.paymentInfo.paidup + medication.paymentInfo.balance,
+                amount:medication.paymentInfo.balance
+            } */
+            //no payment detail push
+            getTotal()
+          medication.serviceInfo.sellingprice=medication.serviceInfo.price
+          medication.serviceInfo.billinfo={
+              billid:medication._id,
+              bill_status:medication.billing_status,
+              orderId:medication.orderInfo.orderId
+          }
+          
+         setProductItem(
+            prevProd=>prevProd.concat(medication.serviceInfo)
+        )
+        }else{
+            if(productItem.length>0){
+                setProductItem(
+                    prevProd=>prevProd.filter(el=>el.productId!==medication.serviceInfo.productId)
+                )
+            }
+        }
+
+       // const paymentoptions= []
+        //const info = medication.participantInfo.client.paymentinfo
+        //let billme={}
+        getTotal()
+        
+    }
+        return () => {
+           
+        }
+    }, [state.financeModule])
+
+        const getTotal= async()=>{
+            setTotalamount(0)
+            productItem.forEach(el=>{
+                    setTotalamount(prevtotal=>Number(prevtotal) + Number(el.amount) )
+                })
+        }
+
+    useEffect(() => {
+     getTotal()
+    console.log(totalamount)
+        return () => {
+           
+        }
+    }, [productItem])
     
 
     return (
