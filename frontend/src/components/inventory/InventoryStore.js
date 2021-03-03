@@ -444,7 +444,7 @@ export function InventoryList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Inventories </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -475,7 +475,7 @@ export function InventoryList(){
                                     <tbody>
                                         {facilities.map((Inventory, i)=>(
 
-                                            <tr key={Inventory._id} onClick={()=>handleRow(Inventory)}>
+                                            <tr key={Inventory._id} onClick={()=>handleRow(Inventory)} className={Inventory._id===(selectedInventory?._id||null)?"is-selected":""} >
                                             <th>{i+1}</th>
                                             {/* <td>{Inventory.productDetail.category}</td> */}
                                             <th>{Inventory.name}</th>

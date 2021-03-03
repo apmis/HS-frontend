@@ -10,7 +10,7 @@ export default function InventorySetup() {
         <section className= "section remPadTop">
             <DocumentClass />
 
-            <div className="level">
+            {/* <div className="level">
                 <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory Admin</span></div>
             </div>
             <div className="columns ">
@@ -38,7 +38,7 @@ export default function InventorySetup() {
                 <div className="column is-3 has-background-white">
                     right
                 </div>
-            </div>                            
+            </div>   */}                          
         </section>
     )
 }

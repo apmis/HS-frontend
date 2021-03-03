@@ -8,7 +8,7 @@ import ProductEntry from './inventory/ProductEntry'
 import ProductExit from './inventory/ProductExit'
 import Dispense from './inventory/Dispensary'
 import Products from './inventory/Products'
-import Store, { StoreList } from './inventory/Store'
+import Store, { StoreList, StoreListStandalone } from './inventory/Store'
 import {UserContext,ObjectContext} from '../context'
 import BillPrescription from './inventory/BillPrescription'
 
@@ -84,14 +84,14 @@ export default function InventoryModule() {
                                         <NavLink to={`${url}/inv-entry`}>Product Entry</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-exit`}>Product Exit</NavLink>
+                                        <NavLink to={`${url}/inv-exit`}>POS</NavLink>
                                     </div>
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/inv-products`}>Products</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                   {/*  <div className="navbar-item">
                                         <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
-                                    </div>
+                                    </div> */}
                                 {/* <span className="navbar-item">
                                 <div className="button is-info is-inverted">
                                     <span className="icon">
@@ -153,7 +153,7 @@ export default function InventoryModule() {
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <StoreList standalone="true" closeModal={()=>setShowModal(false)} />
+                                        <StoreListStandalone standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

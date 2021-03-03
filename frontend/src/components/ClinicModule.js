@@ -75,18 +75,18 @@ export default function ClinicModule() {
                                      <div className="navbar-item">
                                         <NavLink to={`${url}/appointments`}>Appointments</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                  {/*   <div className="navbar-item">
                                         <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
-                                    </div> 
+                                    </div>  */}
                                     {/* <div className="navbar-item">
                                         <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
                                     </div> */}
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/patients`}>Clients</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    {/* <div className="navbar-item">
                                         <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
-                                    </div>
+                                    </div> */}
                                 {/* <span className="navbar-item">
                                 <div className="button is-info is-inverted">
                                     <span className="icon">

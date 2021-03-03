@@ -284,7 +284,7 @@ export function StoreList({standalone,closeModal}){
         }
        await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
        //console.log(state)
-       closeModal()
+       //closeModal()
 
     }
 
@@ -470,7 +470,235 @@ export function StoreList({standalone,closeModal}){
     )
     }
 
-
+    export function StoreListStandalone({standalone,closeModal}){
+        // const { register, handleSubmit, watch, errors } = useForm();
+         // eslint-disable-next-line
+         const [error, setError] =useState(false)
+          // eslint-disable-next-line
+         const [success, setSuccess] =useState(false)
+          // eslint-disable-next-line
+        const [message, setMessage] = useState("") 
+         const StoreServ=client.service('location')
+         //const history = useHistory()
+        // const {user,setUser} = useContext(UserContext)
+         const [facilities,setFacilities]=useState([])
+          // eslint-disable-next-line
+        const [selectedStore, setSelectedStore]=useState() //
+         // eslint-disable-next-line
+         const {state,setState}=useContext(ObjectContext)
+         // eslint-disable-next-line
+         const {user,setUser}=useContext(UserContext)
+     
+     
+     
+         const handleCreateNew = async()=>{
+             const    newStoreModule={
+                 selectedStore:{},
+                 show :'create'
+                 }
+            await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+            //console.log(state)
+             
+     
+         }
+         const handleRow= async(Store)=>{
+             //console.log("b4",state)
+     
+             //console.log("handlerow",Store)
+     
+             await setSelectedStore(Store)
+     
+             const    newStoreModule={
+                 selectedStore:Store,
+                 show :'detail'
+             }
+            await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+            //console.log(state)
+            closeModal()
+     
+         }
+     
+        const handleSearch=(val)=>{
+            const field='name'
+            console.log(val)
+            StoreServ.find({query: {
+                     [field]: {
+                         $regex:val,
+                         $options:'i'
+                        
+                     },
+                    facility:user.currentEmployee.facilityDetail._id || "",
+                     locationType:"Store",
+                    $limit:10,
+                     $sort: {
+                         name: 1
+                       }
+                         }}).then((res)=>{
+                     console.log(res)
+                    setFacilities(res.data)
+                     setMessage(" Store  fetched successfully")
+                     setSuccess(true) 
+                 })
+                 .catch((err)=>{
+                     console.log(err)
+                     setMessage("Error fetching Store, probable network issues "+ err )
+                     setError(true)
+                 })
+             }
+        
+             const getFacilities= async()=>{
+                 if (user.currentEmployee){
+                 
+             const findStore= await StoreServ.find(
+                     {query: {
+                         locationType:"Store",
+                         facility:user.currentEmployee.facilityDetail._id,
+                         $limit:20,
+                         $sort: {
+                             name: 1
+                         }
+                         }})
+     
+              await setFacilities(findStore.data)
+                     }
+                     else {
+                         if (user.stacker){
+                             const findStore= await StoreServ.find(
+                                 {query: {
+                                     locationType:"Store",
+                                     $limit:20,
+                                     $sort: {
+                                         name: 1
+                                     }
+                                     }})
+                 
+                         await setFacilities(findStore.data)
+     
+                         }
+                     }
+               /*   .then((res)=>{
+                     console.log(res)
+                         setFacilities(res.data)
+                         setMessage(" Store  fetched successfully")
+                         setSuccess(true)
+                     })
+                     .catch((err)=>{
+                         setMessage("Error creating Store, probable network issues "+ err )
+                         setError(true)
+                     }) */
+                 }
+                 
+                 useEffect(() => {
+                     setTimeout(() => {
+                         console.log("happy birthday")
+                         //getFacilities(user)
+                     }, 200);
+     
+                     return () => {
+                         
+     
+                     }
+                 },[])
+     
+                 useEffect(() => {
+                    
+                     if (user){
+                         getFacilities()
+                     }else{
+                         /* const localUser= localStorage.getItem("user")
+                         const user1=JSON.parse(localUser)
+                         console.log(localUser)
+                         console.log(user1)
+                         fetchUser(user1)
+                         console.log(user)
+                         getFacilities(user) */
+                     }
+                     StoreServ.on('created', (obj)=>getFacilities())
+                     StoreServ.on('updated', (obj)=>getFacilities())
+                     StoreServ.on('patched', (obj)=>getFacilities())
+                     StoreServ.on('removed', (obj)=>getFacilities())
+                     return () => {
+                     
+                     }
+                 },[])
+     
+     
+         //todo: pagination and vertical scroll bar
+     
+         return(
+             <>
+                {user?( <>  
+                     <div className="level">
+                         <div className="level-left">
+                             <div className="level-item">
+                                 <div className="field">
+                                     <p className="control has-icons-left  ">
+                                         <DebounceInput className="input is-small " 
+                                             type="text" placeholder="Search Stores"
+                                             minLength={3}
+                                             debounceTimeout={400}
+                                             onChange={(e)=>handleSearch(e.target.value)} />
+                                         <span className="icon is-small is-left">
+                                             <i className="fas fa-search"></i>
+                                         </span>
+                                     </p>
+                                 </div>
+                             </div>
+                         </div>
+                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Stores </span></div>
+                         <div className="level-right">
+                     { !standalone &&   <div className="level-item"> 
+                                 <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
+                             </div>}
+                         </div>
+     
+                     </div>
+                     <div className="table-container pullup ">
+                                     <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
+                                         <thead>
+                                             <tr>
+                                             <th><abbr title="Serial No">S/No</abbr></th>
+                                             <th>Name</th>
+                                             {/* <th><abbr title="Last Name">Store Type</abbr></th>
+                                            <th><abbr title="Profession">Profession</abbr></th>
+                                              <th><abbr title="Phone">Phone</abbr></th>
+                                             <th><abbr title="Email">Email</abbr></th>
+                                             <th><abbr title="Department">Department</abbr></th>
+                                             <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
+                                             <th><abbr title="Facility">Facility</abbr></th>*/}
+                                            { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
+                                             </tr>
+                                         </thead>
+                                         <tfoot>
+                                             
+                                         </tfoot>
+                                         <tbody>
+                                             {facilities.map((Store, i)=>(
+     
+                                                 <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
+                                                 <th>{i+1}</th>
+                                                 <th>{Store.name}</th>
+                                                 {/*<td>{Store.StoreType}</td>
+                                                 < td>{Store.profession}</td>
+                                                 <td>{Store.phone}</td>
+                                                 <td>{Store.email}</td>
+                                                 <td>{Store.department}</td>
+                                                 <td>{Store.deptunit}</td> 
+                                                 <td>{Store.facility}</td>*/}
+                                               { !standalone &&   <td><span   className="showAction"  >...</span></td>}
+                                                
+                                                 </tr>
+     
+                                             ))}
+                                         </tbody>
+                                         </table>
+                                         
+                     </div>              
+                 </>):<div>loading</div>}
+                 </>
+                   
+         )
+         }
 export function StoreDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line

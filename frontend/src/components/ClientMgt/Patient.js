@@ -122,16 +122,17 @@ export function ClientCreate(){
                     Create Client
                 </p>
             </div>
-            <div className="card-content vscrollable">
-            <p className=" is-small">
+            <div className="card-content vscrollable remPad1">
+           {/*  <p className=" is-small">
                     Kindly search Client list before creating new Clients!
-                </p>
+                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
+                <p className=" is-small">Names</p>
             <div className="field is-horizontal">
                 <div className="field-body">
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
-                            <input className="input is-small" ref={register()}  name="firstname" type="text" placeholder="First Name" />
+                            <input className="input is-small is-danger" ref={register({ required: true })}  name="firstname" type="text" placeholder="First Name" />
                             <span className="icon is-small is-left">
                                 <i className="fas fa-hospital"></i>
                             </span>                    
@@ -151,7 +152,7 @@ export function ClientCreate(){
               
                 <div className="field">
                     <p className="control has-icons-left">
-                        <input className="input is-small" ref={register()} name="lastname" type="text" placeholder="Last Name"/>
+                        <input className="input is-small is-danger" ref={register({ required: true })} name="lastname" type="text" placeholder="Last Name"/>
                         <span className="icon is-small is-left">
                         <i className=" fas fa-user-md "></i>
                         </span>
@@ -159,12 +160,13 @@ export function ClientCreate(){
                 </div>
             </div>  
         </div>
+        <p className=" is-small">Biodata</p>
         <div className="field is-horizontal">
             <div className="field-body">
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small" ref={register()} name="dob" type="text" placeholder="Date of Birth"  />
+                        <input className="input is-small is-danger" ref={register({ required: true })} name="dob" type="text" placeholder="Date of Birth"  />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -221,7 +223,7 @@ export function ClientCreate(){
                 </div> 
                 <div className="field">
                     <p className="control has-icons-left">
-                        <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
+                        <input className="input is-small is-danger" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
                         <span className="icon is-small is-left">
                         <i className="fas fa-phone-alt"></i>
                         </span>
@@ -231,7 +233,7 @@ export function ClientCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
+                        <input className="input is-small is-danger" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -239,7 +241,16 @@ export function ClientCreate(){
                 </div> 
             </div>
         </div>
-   
+        <div className="field">
+                <p className="control has-icons-left">
+                
+                    <input className="input is-small" ref={register()} name="clientTags" type="text" placeholder="Tags"  />
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>
+                </p>
+            </div> 
+        <p className=" is-small">Address</p>
             <div className="field">
                 <p className="control has-icons-left">
                 
@@ -289,6 +300,7 @@ export function ClientCreate(){
                 </div>
             </div>
         </div> 
+        <p className=" is-small">Medical Data</p>
         <div className="field is-horizontal">
             <div className="field-body">
                     <div className="field">
@@ -344,15 +356,7 @@ export function ClientCreate(){
                 </div> 
             </div>
         </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register()} name="clientTags" type="text" placeholder="Tags"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> 
+            
             <div className="field">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register()} name="specificDetails" type="text" placeholder="Specific Details about patient"  />
@@ -361,6 +365,7 @@ export function ClientCreate(){
                     </span>
                 </p>
             </div> 
+            <p className=" is-small">Next of Kin Information</p>
         <div className="field is-horizontal">
             <div className="field-body">
                 <div className="field">
@@ -687,7 +692,7 @@ export function ClientList(){
                                             <th>{Client.firstname}</th>
                                             <td>{Client.middlename}</td>
                                            < td>{Client.lastname}</td>
-                                           <td>{formatDistanceToNowStrict(new Date(Client.dob))}</td>
+                                           <td>{Client.dob && <>{formatDistanceToNowStrict(new Date(Client.dob))}</>}</td>
                                             <td>{Client.gender}</td>
                                              <td>{Client.phone}</td>
                                             <td>{Client.email}</td>

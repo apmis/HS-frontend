@@ -8,7 +8,7 @@ import ProductEntry from './Finance/ProductEntry'
 import ProductExit from './Finance/ProductExit'
 import Payment from './Finance/Payment'
 import Products from './Finance/Products'
-import Store, { StoreList } from './Finance/Store'
+import Store, { StoreList, StoreListStandalone } from './Finance/Store'
 import {UserContext,ObjectContext} from '../context'
 import BillPrescription from './Finance/BillPrescription'
 
@@ -51,7 +51,7 @@ export default function FinanceModule() {
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">
                                         Health Stack::Finance::{selectedStore?selectedStore.name:""}</span>
-                                        <button className="button is-small is-info" onClick={()=>handleChangeStore()}>Change Store</button> 
+                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>
                                 
                             {/* <div className="navbar-item">
@@ -69,10 +69,10 @@ export default function FinanceModule() {
                                         <NavLink to={`${url}/payment`}>Payment</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}`}>Home Page</NavLink> 
+                                        <NavLink to={`${url}/location`}>Finance Locations</NavLink>
                                     </div>
                                     <div className="navbar-item">
-                                        <NavLink to={`${url}/location`}>Finance Locations</NavLink>
+                                        <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
                                     
                                     {/* <div className="navbar-item">
@@ -150,11 +150,11 @@ export default function FinanceModule() {
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
                                         <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Store</p>
+                                        <p className="modal-card-title">Choose Location</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <StoreList standalone="true" closeModal={()=>setShowModal(false)} />
+                                        <StoreListStandalone standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

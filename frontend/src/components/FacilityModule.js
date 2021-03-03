@@ -37,7 +37,7 @@ export default function FacilityModule() {
                                     <div className="navbar-item">
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    <div className="navbar-item">
+                                      {/*  <div className="navbar-item">
                                         <NavLink to={`${url}/accessibility`}>User Access</NavLink>
                                     </div>
                                     <div className="navbar-item">
@@ -48,25 +48,25 @@ export default function FacilityModule() {
                                     </div>
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/dept-unit`}>Department Units</NavLink>
-                                    </div>
+                                    </div> 
+                                     <div className="navbar-item">
+                                        <NavLink to={`${url}/hsmodules`}>Modules</NavLink>
+                                    </div>*/}
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/employees`}>Employees</NavLink>
-                                    </div>
-                                    <div className="navbar-item">
-                                        <NavLink to={`${url}/facility`}>Facility</NavLink>
-                                    </div>
-                                    <div className="navbar-item">
-                                        <NavLink to={`${url}/hsmodules`}>Modules</NavLink>
                                     </div>
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/location`}>Locations</NavLink>
                                     </div>
                                     <div className="navbar-item">
+                                        <NavLink to={`${url}/facility`}>Facility</NavLink>
+                                    </div>
+                                    {/* <div className="navbar-item">
                                         <NavLink to={`${url}/roaster`}>Roaster</NavLink>
                                     </div>
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/workspace`}>Workspace</NavLink>
-                                    </div>
+                                    </div> */}
                                     
                                 {/* <span className="navbar-item">
                                 <div className="button is-info is-inverted">

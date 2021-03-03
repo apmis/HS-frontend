@@ -46,8 +46,11 @@
   padding: 0rem !important;
 }
 .remPadTop{
-  padding-top: 0rem !important;
+  padding-top: 1rem !important;
   padding-bottom: 0rem !important;
+}
+.remPad1{
+  padding: 1.0rem !important;
 }
 .btnheight{
   height: 1.2rem !important;
@@ -94,6 +97,7 @@
 width:90% !important;
 
 }
+
 
 .modalcolor{
   background-color:lightblue !important;

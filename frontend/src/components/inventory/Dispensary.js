@@ -302,7 +302,7 @@ export function DispenseList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Unpaid Bills </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Paid Prescriptions </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
