@@ -283,7 +283,7 @@ export function DispenseList(){
                                                         <th>{i+1}</th>
                                                         <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
                                                         <th>{order.order}</th>
-                                                        <td>{order.fulfilled?"Yes":"No"}</td>
+                                                        <td>{order.fulfilled==="True"?"Yes":"No"}</td>
                                                         <td>{order.order_status}</td>
                                                         <td>{order.requestingdoctor_Name}</td>
                                                         </tr>
@@ -432,7 +432,7 @@ export function DispenseDetail(){
                                            
                                             <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
                                           <th>{order.order}</th>
-                                            <td>{order.fulfilled?"Yes":"No"}</td>
+                                            <td>{order.fulfilled==="True"?"Yes":"No"}</td>
                                             <td>{order.order_status}</td>
                                             <td>{order.requestingdoctor_Name}</td>
                                             

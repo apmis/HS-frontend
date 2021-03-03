@@ -350,7 +350,7 @@ export default function EncounterMain({nopresc}) {
                                         <p className="modal-card-title">Prescription</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowPrescriptionModal(false)}></button>
                                         </header>
-                                        <section className="modal-card-body">
+                                        <section className="modal-card-body card-overflow">
                                         <Prescription standalone="true" />
                                         </section>
                                         {/* <footer className="modal-card-foot">

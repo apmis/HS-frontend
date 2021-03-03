@@ -737,7 +737,7 @@ export default function PaymentCreate(){
            if ( totalamount>balance){
             toast({
                 message: 'Total amount due greater than money received. Kindly top up account or reduce number of bills to be paid',
-                type: 'is-success',
+                type: 'is-danger',
                 dismissible: true,
                 pauseOnHover: true,
               })

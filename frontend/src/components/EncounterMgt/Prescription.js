@@ -570,7 +570,7 @@ export function PrescriptionList({standalone}){
                                             <th>{i+1}</th>
                                             <td>{/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */}<span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td>
                                             <th>{ProductEntry.order}</th>
-                                            <td>{ProductEntry.fulfilled?"Yes":"No"}</td>
+                                            <td>{ProductEntry.fulfilled==="True"?"Yes":"No"}</td>
                                             <td>{ProductEntry.order_status}</td>
                                             <td>{ProductEntry.requestingdoctor_Name}</td>
                                             {/* <td>{ProductEntry.clientId}</td> */}
