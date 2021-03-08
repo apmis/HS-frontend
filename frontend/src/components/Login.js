@@ -3,20 +3,21 @@ import client from '../feathers'
 import { useForm } from "react-hook-form";
 import {useHistory} from 'react-router-dom'
 import {UserContext} from '../context'
+import {toast} from 'bulma-toast'
 
 export default function Login() {
     const { register, handleSubmit, watch, errors } = useForm();
     const [error, setError] =useState(true)
     const [errorMessage,setErrorMessage] = useState("")
-    const userServ=client.service('/users')
+   // const userServ=client.service('/users')
     const history = useHistory()
-    const {user,setUser} = useContext(UserContext)
+    const {/* user, */setUser} = useContext(UserContext)
 
    
 const onSubmit = (data,e) =>{
         e.preventDefault();
-        setErrorMessage("")
-        setError(false)
+        /* setErrorMessage("")
+        setError(false) */
            const  email=data.email
            const password=data.password
          
@@ -26,17 +27,22 @@ const onSubmit = (data,e) =>{
             email,
             password
         }).then(async (res)=>{
-                console.log(JSON.stringify(res.user))
+               // console.log(JSON.stringify(res.user))
                 e.target.reset();
                await setUser(res.user)
-               console.log(user)
+              // console.log(user)
                localStorage.setItem("user",JSON.stringify(res.user))
                history.push("/app")
 
             })
             .catch((err)=>{
-                setErrorMessage("Error loggin in User, probable network issues "+ err )
-                setError(true)
+                //setErrorMessage("Error loggin in User, probable network issues "+ err )
+                toast({
+                    message: 'Error loggin in User, probable network issues ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
             })
 
       } 

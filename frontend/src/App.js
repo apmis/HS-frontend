@@ -1,3 +1,4 @@
+/* eslint-disable */
 //import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Route,  Switch, Redirect} from 'react-router-dom'
@@ -14,7 +15,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 
 
 function App() {
-  
+
   const [state,setState] = useState({
     facilityModule:{
       show:'create',
@@ -80,6 +81,10 @@ function App() {
       show:'create',
       selectedMedication:{}
     },
+    ServicesModule:{
+      show:'create',
+      selectedServices:{}
+    },
     financeModule:{
       show:'create',
       state:'false',
@@ -123,7 +128,7 @@ export default App;
 
 // eslint-disable-next-line 
 const ProtectedRoute =({children,...props})=>{
-  
+ // const history = useHistory()
   const {user,setUser} = useContext(UserContext)
 
  
@@ -134,9 +139,12 @@ const check=async ()=>{
       try {
         // First try to log in with an existing JWT
         const resp= await client.reAuthenticate();
-            console.log(resp)
-           const user1=await resp.user 
-           return    await setUser(resp.user)
+           // console.log(resp)
+          // const user1=await resp.user 
+              await setUser(resp.user)
+              //history.push('/app')
+
+              return
         
       } catch (error) {
         // If that errors, log in with email/password
@@ -153,9 +161,9 @@ const check=async ()=>{
    }
 }
  check().then((resp)=>{
-  console.log("testing")
+  //console.log("testing")
  })
-  
+// eslint-disable-next-line 
 }, [])
 
 

@@ -1,5 +1,6 @@
+/* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
-import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-router-dom'
+import {  useRouteMatch,  useHistory} from 'react-router-dom' //Route, Switch,Link, NavLink,
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
@@ -39,8 +40,11 @@ export default function Client() {
 
 export function ClientCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+      // eslint-disable-next-line
     const [error, setError] =useState(false)
+      // eslint-disable-next-line
     const [success, setSuccess] =useState(false)
+      // eslint-disable-next-line
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
@@ -51,7 +55,7 @@ export function ClientCreate(){
     const [currentUser,setCurrentUser] = useState()
 
 
-
+  // eslint-disable-next-line
     const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -508,6 +512,7 @@ export function ClientList(){
     }
 
    const handleSearch=(val)=>{
+         // eslint-disable-next-line
        const field='firstname'
        console.log(val)
        ClientServ.find({query: {
@@ -632,6 +637,7 @@ export function ClientList(){
                 return () => {
                 
                 }
+        // eslint-disable-next-line
             },[])
 
 
@@ -718,7 +724,9 @@ export function ClientDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const history =useHistory()
+      // eslint-disable-next-line
     let { path, url } = useRouteMatch();
+  // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
@@ -731,6 +739,7 @@ export function ClientDetail(){
    
 
    const Client =state.ClientModule.selectedClient 
+     // eslint-disable-next-line
     const client=Client
     const handleEdit= async()=>{
         const    newClientModule={
@@ -1063,7 +1072,7 @@ export function ClientDetail(){
 }
 
 export function ClientModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
+    const { register, handleSubmit, setValue,reset} = useForm(); //watch, errors,, errors 
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
     // eslint-disable-next-line 
@@ -1201,6 +1210,7 @@ export function ClientModify(){
         setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
 
         }
+          // eslint-disable-next-line
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         

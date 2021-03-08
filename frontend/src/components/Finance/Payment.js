@@ -136,7 +136,7 @@ export function BillingList(){
     }
     const handleMedicationRow= async(ProductEntry,e)=>{ //handle selected single order
         //console.log("b4",state)
-        alert("Header touched")
+       // alert("Header touched")
     
         //console.log("handlerow",ProductEntry)
        /* alert(ProductEntry.checked)*/

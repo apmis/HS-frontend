@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
@@ -5,30 +6,42 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import {ProductCreate} from './Products'
+import {FacilitySearch} from '../helpers/FacilitySearch'
+import {
+    Accordion,
+    AccordionItem,
+    AccordionItemHeading,
+    AccordionItemState,
+    AccordionItemButton,
+    AccordionItemPanel,
+} from 'react-accessible-accordion';
+
+
+// Demo styles, see 'Styles' section below for some notes on use.
+import 'react-accessible-accordion/dist/fancy-example.css';
 // eslint-disable-next-line
 const searchfacility={};
 
 
-export default function ProductEntry() {
+export default function Services() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedProductEntry,setSelectedProductEntry]=useState()
+    const [selectedServices,setSelectedServices]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Services  Module</span></div>
             </div> */}
             <div className="columns ">
             <div className="column is-6 ">
-                <ProductEntryList />
+                <ServicesList />
                 </div>
             <div className="column is-6 ">
-                {(state.ProductEntryModule.show ==='create')&&<ProductEntryCreate />}
-                {(state.ProductEntryModule.show ==='detail')&&<ProductEntryDetail  />}
-                {(state.ProductEntryModule.show ==='modify')&&<ProductEntryModify ProductEntry={selectedProductEntry} />}
+                {(state.ServicesModule.show ==='create')&&<ServicesCreate />}
+                {(state.ServicesModule.show ==='detail')&&<ServicesDetail  />}
+                {(state.ServicesModule.show ==='modify')&&<ServicesModify Services={selectedServices} />}
                
             </div>
 
@@ -39,62 +52,74 @@ export default function ProductEntry() {
     
 }
 
-export function ProductEntryCreate(){
+export function ServicesCreate(){
    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
-    const [error, setError] =useState(false)
+    const [categoryname, setCategoryName] =useState("")
     const [success, setSuccess] =useState(false)
-    const [message,setMessage] = useState("")
+    const [cash,setCash] = useState("Cash")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const ProductEntryServ=client.service('productentry')
+    const ServicesServ=client.service('billing')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
-    const [currentUser,setCurrentUser] = useState()
-    const [type,setType] = useState("Purchase Invoice")
-    const [documentNo,setDocumentNo] = useState("")
-    const [totalamount,setTotalamount] = useState("")
-    const [productId,setProductId] = useState("")
+    const [facilityId,setFacilityId] = useState("")
     const [source,setSource] = useState("")
-    const [date,setDate] = useState("")
+    const [panel,setPanel] = useState(false)
     const [name,setName] = useState("")
-    const [baseunit,setBaseunit] = useState("")
+    const [benefittingplans,setBenefittingPlans] = useState([])
     const [quantity,setQuantity] = useState()
-    const [costprice,setCostprice] = useState()
+    const [costprice,setCostprice] = useState("")
+    const [orgType,setOrgType] = useState("")
     const [productItem,setProductItem] = useState([])
+    const [plan,setPlan] = useState("")
+    const [service,setService] = useState("")
+    const [currentUser,setCurrentUser] = useState("")
+    const [panelList,setPanelList] = useState([])
+    const [successService,setSuccessService] = useState(false)
     const {state}=useContext(ObjectContext)
     
-    const [productEntry,setProductEntry]=useState({
+    const [Services,setServices]=useState({
         productitems:[],
-        date,
-        documentNo,
-        type,
-        totalamount,
+        panel,
         source,
 
     })
  
-    const productItemI={
-        productId,
+    let productItemI={
+       facilityId,
         name,
         quantity,
         costprice,
-        amount:quantity*costprice,
-        baseunit
-
+       
     }
     // consider batchformat{batchno,expirydate,qtty,baseunit}
     //consider baseunoit conversions
     const getSearchfacility=(obj)=>{
 
-        setProductId(obj._id)
-        setName(obj.name)
-        setBaseunit(obj.baseunit)
+        setFacilityId(obj._id)
+        setName(obj.facilityName)
+        setOrgType(obj.facilityType)
+        if(!obj){
+        setName("")
+        setOrgType("")
+        setFacilityId("")
+        setCostprice("")
+
+        }
         
        /*  setValue("facility", obj._id,  {
             shouldValidate: true,
             shouldDirty: true
         }) */
+    }
+
+    const getSearchService=(obj)=>{
+            setService(obj)
+        if(!obj){
+            setService("")
+        }
+            setSuccessService(false)
     }
     
     useEffect(() => {
@@ -105,108 +130,120 @@ export function ProductEntryCreate(){
         }
     }, [user])
 
-    const handleChangeType=async (e)=>{
-        await setType(e.target.value)
-    }
+
     const handleClickProd=async()=>{
+        if (productItem.length>0){
+        
+        if(!costprice || !name){
+            toast({
+                message: 'You need to enter name and price ' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              }) 
+            return
+        }
+    }else{
+        if(!costprice || !cash){
+            toast({
+                message: 'You need to enter name and price ' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              }) 
+            return
+        }
+
+    }
+        if(cash==="Cash"){
+             productItemI={
+                source_org:user.currentEmployee.facilityDetail._id,
+                source_org_name:user.currentEmployee.facilityDetail.facilityName,
+                dest_org:user.currentEmployee.facilityDetail._id,
+                dest_org_name:user.currentEmployee.facilityDetail.facilityName,
+                price:costprice,
+                billing_type:"Cash",
+                plans:benefittingplans
+             } 
+             await setCash("")
+        }else{
+            productItemI={
+               source_org:facilityId, 
+               source_org_name:name, 
+               dest_org:user.currentEmployee.facilityDetail._id,
+               dest_org_name:user.currentEmployee.facilityDetail.facilityName,
+               price:costprice,
+               billing_type:orgType==="HMO"?"HMO":"Company", 
+               plans:benefittingplans
+
+            } 
+            await setCash("")
+       }
+       
         await setSuccess(false)
         setProductItem(
             prevProd=>prevProd.concat(productItemI)
         )
         setName("")
-        setBaseunit("")
-        setQuantity("")
+        setOrgType("")
+        setFacilityId("")
         setCostprice("")
        await setSuccess(true)
-       console.log(success)
-       console.log(productItem)
+     
     }
-  //check user for facility or get list of facility  
-   /*  useEffect(()=>{
-        //setFacility(user.activeProductEntry.FacilityId)//
-      if (!user.stacker){
-          console.log(currentUser)
-           /* setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  
-
-      }
-    }) */
+ 
 
     const resetform=()=>{
-     setType("Purchase Invoice")
-    setDocumentNo("")
-    setTotalamount("")
-    setProductId("")
+  
+    setFacilityId("")
     setSource("")
-    setDate("")
+    setPanel(false)
     setName("")
-    setBaseunit()
-    setCostprice()
+  
+    setCostprice("")
     setProductItem([])
+    setCategoryName("")
+   setService("")
+    setPanelList([])
+    setPlan("")
+    setBenefittingPlans([])
+    setCash("Cash")
+    setOrgType("")
     }
 
-    const onSubmit = async(e) =>{
-        e.preventDefault();
-        setMessage("")
-        setError(false)
+    const onSubmit = async() =>{
+       // e.preventDefault();
         setSuccess(false)
-        await setProductEntry({
-            
-            date,
-            documentNo,
-            type,
-            totalamount,
-            source,
-        })
-        productEntry.productitems=productItem
-        productEntry.createdby=user._id
-        productEntry.transactioncategory="credit"
-
-          console.log("b4 facility",productEntry);
-          if (user.currentEmployee){
-         productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
-          }else{
-            toast({
-                message: 'You can not add inventory to any organization',
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              }) 
-              return
-          }
-          if (state.StoreModule.selectedStore._id){
-            productEntry.storeId=state.StoreModule.selectedStore._id
-          }else{
-            toast({
-                message: 'You need to select a store before adding inventory',
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              }) 
-              return
-
-          }
-          console.log("b4 create",productEntry);
-        ProductEntryServ.create(productEntry)
+       let data ={
+           name:source,
+           category:categoryname,
+           facility:user.currentEmployee.facilityDetail._id,
+           facilityname:user.currentEmployee.facilityDetail.facilityName,
+           panel:panel,
+           panelServices:panelList,
+           contracts:productItem,
+           createdBy:user._id
+       }
+       
+        ServicesServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 resetform()
-               /*  setMessage("Created ProductEntry successfully") */
+               /*  setMessage("Created Services successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'ProductEntry created succesfully',
+                    message: 'Service created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
                   })
                   setSuccess(false)
                   setProductItem([])
+                  setPanelList([])
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating ProductEntry ' + err,
+                    message: 'Error creating Services ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -215,6 +252,74 @@ export function ProductEntryCreate(){
 
       } 
 
+const handleBenefit=(e)=>{
+   
+    setBenefittingPlans(prevstate=>prevstate.concat(plan))
+    setPlan("")
+    }
+
+const handleRemove=(index, e)=>{
+    //console.log(index)
+
+   //setProductItem(prevstate=> prevstate.splice(i,1))
+   setProductItem(prevstate=> prevstate.filter((ProductionItem, i) => i !== index));
+   
+  /*  const newProductitem = [...productItem]
+   newProductitem.splice(i,1)
+   setProductItem(newProductitem) */
+}
+const handleAddPanel =()=>{
+   // setSuccessService(false) 
+   let newService={
+       serviceId:service._id,
+       service_name:service.name,
+       panel:service.panel
+   }
+    setPanelList(prevstate=>prevstate.concat(newService))
+    setSuccessService(true)
+    newService={}
+    setService("")
+    console.log("something added")
+    
+}
+const handleCheck= async ()=>{
+    
+    if (!categoryname){
+        toast({
+            message: 'Enter Category!',
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          }) 
+        return
+    }
+    await ServicesServ.find({
+        query:{
+            name:source,
+            facility: user.currentEmployee.facilityDetail._id,
+            category:categoryname
+        }
+    }).then((resp)=>{
+        console.log(resp)
+        if (resp.data.length>0){
+        toast({
+            message: 'Service already exist. Kindly modify it '+ resp.data ,
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          }) 
+          return
+        }
+    })
+    .catch((err)=>{
+        toast({
+            message: 'Error checking services  '+ err ,
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          }) 
+    })
+}
     
 
     return (
@@ -222,15 +327,15 @@ export function ProductEntryCreate(){
             <div className="card card-overflow">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create ProductEntry: Product Entry- Initialization, Purchase Invoice, Audit
+                    Create Services
                 </p>
             </div>
             <div className="card-content ">
    
-            <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit) */}
+            {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
             <div className="field is-horizontal">
             <div className="field-body">
-            <div className="field">    
+            {/* <div className="field">    
                 <div className="control">
                     <div className="select is-small">
                         <select name="type" value={type} onChange={handleChangeType}>
@@ -241,10 +346,20 @@ export function ProductEntryCreate(){
                         </select>
                     </div>
                 </div>
-            </div>
+            </div> */}
+             <div className="field" style={{width:"25%"}}>
+                    <p className="control has-icons-left has-icons-right"  >
+                        <input className="input is-small" /* ref={register({ required: true })} */ value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
+                        <span className="icon is-small is-left">
+                            <i className="fas fa-hospital"></i>
+                        </span>                    
+                    </p>
+                </div>
+           
+            
             <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="supplier" type="text" onChange={e=>setSource(e.target.value)} placeholder="Supplier" />
+                        <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="source" type="text" onChange={e=>setSource(e.target.value)} onBlur={handleCheck} placeholder="Name of Service" autoComplete="false" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
@@ -252,117 +367,183 @@ export function ProductEntryCreate(){
                 </div>
            
             </div>
-            </div> {/* horizontal end */}
-           {/*  <div className="field">
-                <p className="control has-icons-left"> // Audit/initialization/Purchase Invoice 
-                    <input className="input is-small"  ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div> */}
-               <div className="field is-horizontal">
+            </div> 
+         
+              
+            <div className="field is-horizontal">
                <div className="field-body">
-               <div className="field">
-                <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small"  /* ref={register({ required: true })} */ value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register} */ name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={async e=> await setTotalamount(e.target.value)} placeholder=" Total Amount"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-coins"></i>
-                    </span>
-                </p>
-            </div>
+                <div className="field">
+                    <p className="control has-icons-left has-icons-right">
+                        <label className="label is-small" >
+                        <input className="checkbox is-small"  /* ref={register({ required: true })} */ checked={panel}  name="panel" type="checkbox" onChange={e=>setPanel(e.target.checked)} /* placeholder="Date" */ />
+                    
+                        <span>Panel</span></label>
+                    </p>
+                </div>
+
+            {panel && <>
+                <div className="field">
+                    <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                        <ServiceSearch  getSearchService={getSearchService} clearService={successService} /> 
+                        <p className="control has-icons-left " style={{display:"none"}}>
+                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
+                            <span className="icon is-small is-left">
+                            <i className="fas  fa-map-marker-alt"></i>
+                            </span>
+                        </p>
+                    </div>  
+                </div>
+                <p className="control">
+                            <button className="button is-info is-small  is-pulled-right selectadd">
+                            <span className="is-small" onClick={handleAddPanel}> +</span>
+                            </button>
+                        </p>
+            </> }
 
                 </div> 
                 </div> 
-               
-                </form>   
+
+           {panelList.length>0 &&     <div>
+           <strong> Panel Items:</strong> {panelList.map((plan,i)=>(
+                        <span key={i} className="ml-1">
+                            {plan.name};
+                            </span>))}
+             </div>
+            }       
+
+              {/*   </form>    */}
                
            
-         {/* array of ProductEntry items */}
+         {/* array of Services items */}
         
-        <label className="label is-small">Add Product Items:</label>
-         <div className="field is-horizontal">
-            <div className="field-body">
-            <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                    <ProductSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                    <p className="control has-icons-left " style={{display:"none"}}>
-                        <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
+        <label className="label is-small">Add Pricing Info:</label>
+        {(productItem.length>0) ? <> 
+                <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                        <FacilitySearch  getSearchfacility={getSearchfacility} clear={success} /> 
+                        <p className="control has-icons-left " style={{display:"none"}}>
+                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id" />
+                            <span className="icon is-small is-left">
+                            <i className="fas  fa-map-marker-alt"></i>
+                            </span>
+                        </p>
+                    </div>
+                {/*  <div className="field">
+                    <p className="control has-icons-left">
+                        <input className="input is-small"  ref={register({ required: true })}  name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
                         <span className="icon is-small is-left">
-                        <i className="fas  fa-map-marker-alt"></i>
+                        <i className="fas fa-envelope"></i>
+                        </span>
+                    </p>
+        
+                </div>  */}
+                <div className="field">
+                    <p className="control has-icons-left">
+                        <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
+                        <span className="icon is-small is-left">
+                        <i className="fas fa-dollar-sign"></i>
                         </span>
                     </p>
                 </div>
                 <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-        <label >{baseunit}</label>
-            </div> 
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Cost Price"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-dollar-sign"></i>
-                    </span>
-                </p>
-            </div> 
-            <div className="field">
-            <p className="control">
-                    <button className="button is-info is-small  is-pulled-right">
-                      <span className="is-small" onClick={handleClickProd}> +</span>
-                    </button>
-                </p>
-            </div>
-            </div>
-         </div>
+                <p className="control">
+                        <button className="button is-info is-small  is-pulled-right selectadd">
+                        <span className="is-small" onClick={handleClickProd}>+</span>
+                        </button>
+                    </p>
+                        </div>
+                        </div>
+                    </div>
+             <div className="field is-horizontal">
+                <div className="field-body">
+                 <div className="field">
+                    
+                    <div className="field has-addons" /* style={{display:`${ProductEntry.show}`} }*/ >
+                              <div className="control">
+                                  <input  className="input selectadd" type="text" name="plan"  value={plan} onChange={e=>setPlan(e.target.value)} placeholder="Benefitting Plans" />
+                                  </div> 
+                                  <div className="control">
+                                  <button className="button is-info selectadd" onClick={(e)=>handleBenefit(e)}>add</button>
+                                  </div>
+                                  </div>
+                                
+                 </div>
+                 <div className="field">
+                 {benefittingplans.map((plan,i)=>(
+                        <span key={i} className="ml-1">
+                            {plan};
+                        </span>
+                     ))}
+                 </div>
+                </div>
+              </div>
+            </>:
+            <>
+              <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left">
+                            <input className="input is-small" /* ref={register({ required: true })} */ disabled name="cash" value={cash} type="text" onChange={e=>setCash(e.target.value)} /* placeholder="Cost Price" */  />
+                            <span className="icon is-small is-left">
+                            <i className="fas fa-dollar-sign"></i>
+                            </span>
+                        </p>
+                        </div>
+                    <div className="field">
+                        <p className="control has-icons-left">
+                            <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
+                            <span className="icon is-small is-left">
+                            <i className="fas fa-dollar-sign"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div className="field">
+                        <p className="control">
+                            <button className="button is-info is-small  is-pulled-right selectadd">
+                            <span className="is-small" onClick={handleClickProd}>+</span>
+                            </button>
+                        </p>
+                    </div>
+                </div>
+              </div>
+             
+
+            </> }
+          
             
        {(productItem.length>0) && <div>
-            <label>Product Items:</label>
+            <label>Prices:</label>
          <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                 <thead>
                     <tr>
                     <th><abbr title="Serial No">S/No</abbr></th>
-                    <th><abbr title="Type">Name</abbr></th>
-                    <th><abbr title="Type">Quanitity</abbr></th>
-                    <th><abbr title="Document No">Unit</abbr></th>
-                    <th><abbr title="Cost Price">Cost Price</abbr></th>
-                    <th><abbr title="Cost Price">Amount</abbr></th>
-                    <th><abbr title="Actions">Actions</abbr></th>
+                    <th><abbr title="Source Organization">Organization</abbr></th>
+                    <th><abbr title="Price">Amount</abbr></th>
+                    <th><abbr title="Billing Type">Billing Type</abbr></th>
+                    <th><abbr title="Benefitting Plans">Plans</abbr></th>
+                      {/*  <th><abbr title="Cost Price">Amount</abbr></th>*/}
+                    <th><abbr title="Actions">Actions</abbr></th> 
                     </tr>
                 </thead>
                 <tfoot>
                     
                 </tfoot>
                 <tbody>
-                   { productItem.map((ProductEntry, i)=>(
+                   { productItem.map((Services, i)=>(
 
                         <tr key={i}>
                         <th>{i+1}</th>
-                        <td>{ProductEntry.name}</td>
-                        <th>{ProductEntry.quantity}</th>
-                        <td>{ProductEntry.baseunit}</td>
-                        <td>{ProductEntry.costprice}</td>
-                        <td>{ProductEntry.amount}</td>
-                        <td><span className="showAction"  >x</span></td>
+                        <td>{Services.source_org_name}</td>
+                        <th>{Services.price}</th>
+                       <td>{Services.billing_type}</td>
+                        <td>  {Services.plans.map((plan,i)=>(
+                        <span key={i} className="ml-1">
+                            {plan};
+                        </span>
+                     ))}</td>
+                          {/*<td>{Services.amount}</td> */}
+                        <td><span className="showAction" onClick={()=>handleRemove(i)} >x</span></td>
                         
                         </tr>
 
@@ -388,7 +569,7 @@ export function ProductEntryCreate(){
    
 }
 
-export function ProductEntryList(){
+export function ServicesList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -396,12 +577,12 @@ export function ProductEntryList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const ProductEntryServ=client.service('productentry')
+    const ServicesServ=client.service('billing')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedProductEntry, setSelectedProductEntry]=useState() //
+   const [selectedServices, setSelectedServices]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -410,27 +591,27 @@ export function ProductEntryList(){
 
 
     const handleCreateNew = async()=>{
-        const    newProductEntryModule={
-            selectedProductEntry:{},
+        const    newServicesModule={
+            selectedServices:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+       await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
        //console.log(state)
         
 
     }
-    const handleRow= async(ProductEntry)=>{
+    const handleRow= async(Services)=>{
         //console.log("b4",state)
 
-        //console.log("handlerow",ProductEntry)
+        //console.log("handlerow",Services)
 
-        await setSelectedProductEntry(ProductEntry)
+        await setSelectedServices(Services)
 
-        const    newProductEntryModule={
-            selectedProductEntry:ProductEntry,
+        const    newServicesModule={
+            selectedServices:Services,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+       await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
        //console.log(state)
 
     }
@@ -438,85 +619,68 @@ export function ProductEntryList(){
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       ProductEntryServ.find({query: {
+       ServicesServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
-                storeId:state.StoreModule.selectedStore._id,
-               facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+               // storeId:state.StoreModule.selectedStore._id,
+               facility:user.currentEmployee.facilityDetail._id ,
+                $limit:20,
                 $sort: {
                     createdAt: -1
                   }
                     }}).then((res)=>{
-                console.log(res)
-               setFacilities(res.data)
-                setMessage(" ProductEntry  fetched successfully")
-                setSuccess(true) 
+               // console.log(res)
+               setFacilities(res.groupedOrder)
+                
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching ProductEntry, probable network issues "+ err )
-                setError(true)
+                toast({
+                    message: 'Error during search ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
             })
         }
    
-        const getFacilities= async()=>{
+   const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findProductEntry= await ProductEntryServ.find(
+        const findServices= await ServicesServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
-                    storeId:state.StoreModule.selectedStore._id,
-                    $limit:20,
+                   // storeId:state.StoreModule.selectedStore._id,
+                   // $limit:20,
+                //   paginate:false,
                     $sort: {
-                        createdAt: -1
+                        category: 1
                     }
                     }})
 
-         await setFacilities(findProductEntry.data)
+         await setFacilities(findServices.groupedOrder)
+         console.log(findServices)
                 }
                 else {
                     if (user.stacker){
-                        /* toast({
+                        toast({
                             message: 'You do not qualify to view this',
                             type: 'is-danger',
                             dismissible: true,
                             pauseOnHover: true,
                           }) 
-                          return */
-                        const findProductEntry= await ProductEntryServ.find(
-                            {query: {
-                                
-                                $limit:20,
-                                $sort: {
-                                    createdAt: -1
-                                }
-                                }})
-            
-                    await setFacilities(findProductEntry.data)
-
+                          return 
+                        
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" ProductEntry  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating ProductEntry, probable network issues "+ err )
-                    setError(true)
-                }) */
+        
             }
             
-            useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
-                    //getFacilities(user)
-                }, 200);
+    useEffect(() => {
+        
 
                 return () => {
                     
@@ -524,7 +688,7 @@ export function ProductEntryList(){
                 }
             },[])
 
-            useEffect(() => {
+    useEffect(() => {
                
                 if (!state.StoreModule.selectedStore){
                     toast({
@@ -545,16 +709,16 @@ export function ProductEntryList(){
                     console.log(user)
                     getFacilities(user) */
                 }
-                ProductEntryServ.on('created', (obj)=>getFacilities())
-                ProductEntryServ.on('updated', (obj)=>getFacilities())
-                ProductEntryServ.on('patched', (obj)=>getFacilities())
-                ProductEntryServ.on('removed', (obj)=>getFacilities())
+                ServicesServ.on('created', (obj)=>getFacilities())
+                ServicesServ.on('updated', (obj)=>getFacilities())
+                ServicesServ.on('patched', (obj)=>getFacilities())
+                ServicesServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
                 }
             },[])
 
-            useEffect(() => {
+    useEffect(() => {
                 getFacilities()
                 console.log("store changed")
                 return () => {
@@ -572,7 +736,7 @@ export function ProductEntryList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search ProductEntry"
+                                        type="text" placeholder="Search Services"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -583,7 +747,7 @@ export function ProductEntryList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Product Additions to Inventory </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Services </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -591,35 +755,52 @@ export function ProductEntryList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
-                                    <thead>
+                <div className=" pullup ">
+                    <div className=" is-fullwidth vscrollable pr-1">   
+                    <Accordion allowZeroExpanded >
+                        {facilities.map((Clinic, i)=>(
+                            <AccordionItem  key={Clinic.categoryname}  >
+                                <AccordionItemHeading >
+                                    <AccordionItemButton  >
+                                    {/* <input type = "checkbox" name={Clinic.client_id}  />   */}
+                                    <strong> {i+1} {Clinic.categoryname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
+                                    </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
+                                    
+                                    <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th><abbr title="Date">Date</abbr></th>
-                                        <th><abbr title="Type">Type</abbr></th>
-                                        <th>Source</th>
-                                        <th><abbr title="Document No">Document No</abbr></th>
+                                        <th><abbr title="Date">Name</abbr></th>
+                                        <th><abbr title="Type">Panel?</abbr></th>
+                                        <th>Cash Price</th>
+                                         {/*<th><abbr title="Document No">Document No</abbr></th>
                                         <th><abbr title="Total Amount">Total Amount</abbr></th>
                                         <th><abbr title="Enteredby">Entered By</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((ProductEntry, i)=>(
+                                        {Clinic.services.map((Services, i)=>(
 
-                                            <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)}>
+                                            <tr key={Services._id} onClick={()=>handleRow(Services)}>
                                             <th>{i+1}</th>
-                                            <td>{ProductEntry.date}</td>
-                                            <th>{ProductEntry.type}</th>
-                                            <td>{ProductEntry.source}</td>
-                                            <td>{ProductEntry.documentNo}</td>
-                                            <td>{ProductEntry.totalamount}</td>
-                                            <td>{ProductEntry.enteredby}</td>
-                                            <td><span className="showAction"  >...</span></td>
+                                            <td>{Services.name}</td>
+                                            <th>{Services.panel?"Yes":"No"}</th>
+                                            <td>{Services.contracts.map((el,i)=>(
+                                                el.source_org===el.dest_org &&
+                                                <p>
+                                                    {el.price} 
+                                                </p>
+                                            ))}</td>
+                                             {/*<td>{Services.documentNo}</td>
+                                            <td>{Services.totalamount}</td>
+                                            <td>{Services.enteredby}</td>
+                                            <td><span className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -627,7 +808,14 @@ export function ProductEntryList(){
                                     </tbody>
                                     </table>
                                     
-                </div>              
+                                              
+                                </AccordionItemPanel>                    
+                            </AccordionItem >
+                        ))}
+                    </Accordion >
+                    </div>  
+                </div>
+                          
             </>):<div>loading... Choose a Store</div>}
             </>
               
@@ -635,28 +823,28 @@ export function ProductEntryList(){
     }
 
 
-export function ProductEntryDetail(){
+export function ServicesDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const ProductEntryServ=client.service('/ProductEntry')
+    //const ServicesServ=client.service('/Services')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
    
 
-   const ProductEntry =state.ProductEntryModule.selectedProductEntry 
+   const Services =state.ServicesModule.selectedServices 
 
     const handleEdit= async()=>{
-        const    newProductEntryModule={
-            selectedProductEntry:ProductEntry,
+        const    newServicesModule={
+            selectedServices:Services,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+       await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
        //console.log(state)
        
     }
@@ -666,7 +854,7 @@ export function ProductEntryDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    ProductEntry Details
+                    Services Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -682,7 +870,7 @@ export function ProductEntryDetail(){
                         </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="name"> {ProductEntry.type} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Services.type} </span>
                     </td>
                     <td>
 
@@ -694,7 +882,7 @@ export function ProductEntryDetail(){
                         </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="ProductEntryType">{ProductEntry.source} </span> 
+                        <span className="is-size-7 padleft"   name="ServicesType">{Services.source} </span> 
                     </td>
                 </tr>
                 <tr>
@@ -706,7 +894,7 @@ export function ProductEntryDetail(){
                         </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="name"> {ProductEntry.date} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Services.date} </span>
                     </td>
                     <td>
                                 
@@ -719,7 +907,7 @@ export function ProductEntryDetail(){
                     </td>
                     
                     <td>
-                         <span className="is-size-7 padleft"   name="ProductEntryType">{ProductEntry.documentNo} </span> 
+                         <span className="is-size-7 padleft"   name="ServicesType">{Services.documentNo} </span> 
                     </td>
                 </tr>
                 <tr>
@@ -732,7 +920,7 @@ export function ProductEntryDetail(){
                     </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="name"> {ProductEntry.totalamount} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Services.totalamount} </span>
                     </td>
                 </tr>
 
@@ -755,15 +943,15 @@ export function ProductEntryDetail(){
                     
                 </tfoot>
                 <tbody>
-                   { ProductEntry.productitems.map((ProductEntry, i)=>(
+                   { Services.productitems.map((Services, i)=>(
 
                         <tr key={i}>
                         <th>{i+1}</th>
-                        <td>{ProductEntry.name}</td>
-                        <th>{ProductEntry.quantity}</th>
-                        <td>{ProductEntry.baseunit}</td>
-                        <td>{ProductEntry.costprice}</td>
-                        <td>{ProductEntry.amount}</td>
+                        <td>{Services.name}</td>
+                        <th>{Services.quantity}</th>
+                       {/*  <td>{Services.baseunit}</td> */}
+                        <td>{Services.costprice}</td>
+                        <td>{Services.amount}</td>
                         
                         
                         </tr>
@@ -781,7 +969,7 @@ export function ProductEntryDetail(){
                     </label>
                     </td>
                 <td>
-                <span className="is-size-7 padleft "  name="ProductEntryCity">{ProductEntry.profession}</span> 
+                <span className="is-size-7 padleft "  name="ServicesCity">{Services.profession}</span> 
                 </td>
                 </tr>
                     <tr>
@@ -793,7 +981,7 @@ export function ProductEntryDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft "  name="ProductEntryContactPhone" >{ProductEntry.phone}</span>
+                        <span className="is-size-7 padleft "  name="ServicesContactPhone" >{Services.phone}</span>
                         </td>
                   </tr>
                     <tr><td>
@@ -803,7 +991,7 @@ export function ProductEntryDetail(){
                     </span>Email:                     
                     
                          </label></td><td>
-                         <span className="is-size-7 padleft "  name="ProductEntryEmail" >{ProductEntry.email}</span>
+                         <span className="is-size-7 padleft "  name="ServicesEmail" >{Services.email}</span>
                          </td>
              
                 </tr>
@@ -814,7 +1002,7 @@ export function ProductEntryDetail(){
                     
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft "  name="ProductEntryOwner">{ProductEntry.department}</span>
+                    <span className="is-size-7 padleft "  name="ServicesOwner">{Services.department}</span>
                     </td>
                
                 </tr>
@@ -826,7 +1014,7 @@ export function ProductEntryDetail(){
                     
                 </label></td>
                 <td>
-                <span className="is-size-7 padleft "  name="ProductEntryType">{ProductEntry.deptunit}</span>
+                <span className="is-size-7 padleft "  name="ServicesType">{Services.deptunit}</span>
                 </td>
               
                 </tr> */}
@@ -835,7 +1023,7 @@ export function ProductEntryDetail(){
              <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>Category:              
-                    <span className="is-size-7 padleft "  name= "ProductEntryCategory">{ProductEntry.ProductEntryCategory}</span>
+                    <span className="is-size-7 padleft "  name= "ServicesCategory">{Services.ServicesCategory}</span>
                 </label>
                  </div> */}
 
@@ -858,7 +1046,7 @@ export function ProductEntryDetail(){
    
 }
 
-export function ProductEntryModify(){
+export function ServicesModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -867,44 +1055,44 @@ export function ProductEntryModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const ProductEntryServ=client.service('productentry')
+    const ServicesServ=client.service('billing')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const ProductEntry =state.ProductEntryModule.selectedProductEntry 
+    const Services =state.ServicesModule.selectedServices 
 
         useEffect(() => {
-            setValue("name", ProductEntry.name,  {
+            setValue("name", Services.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("ProductEntryType", ProductEntry.ProductEntryType,  {
+            setValue("ServicesType", Services.ServicesType,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", ProductEntry.profession,  {
+           /*  setValue("profession", Services.profession,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("phone", ProductEntry.phone,  {
+            setValue("phone", Services.phone,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("email", ProductEntry.email,  {
+            setValue("email", Services.email,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("department", ProductEntry.department,  {
+            setValue("department", Services.department,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("deptunit", ProductEntry.deptunit,  {
+            setValue("deptunit", Services.deptunit,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
-          /*   setValue("ProductEntryCategory", ProductEntry.ProductEntryCategory,  {
+          /*   setValue("ServicesCategory", Services.ServicesCategory,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
@@ -915,41 +1103,41 @@ export function ProductEntryModify(){
         })
 
    const handleCancel=async()=>{
-    const    newProductEntryModule={
-        selectedProductEntry:{},
+    const    newServicesModule={
+        selectedServices:{},
         show :'create'
       }
-   await setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+   await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newProductEntryModule={
-            selectedProductEntry:{},
+        const    newServicesModule={
+            selectedServices:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, ProductEntryModule:newProductEntryModule}))
+        setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
 
         }
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=ProductEntry._id
+        const dleteId=Services._id
         if (conf){
              
-        ProductEntryServ.remove(dleteId)
+        ServicesServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted ProductEntry successfully")
+               /*  setMessage("Deleted Services successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'ProductEntry deleted succesfully',
+                    message: 'Services deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -957,10 +1145,10 @@ export function ProductEntryModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting ProductEntry, probable network issues "+ err )
+               // setMessage("Error deleting Services, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting ProductEntry, probable network issues or "+ err,
+                    message: "Error deleting Services, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -979,16 +1167,16 @@ export function ProductEntryModify(){
         
         setSuccess(false)
         console.log(data)
-        data.facility=ProductEntry.facility
+        data.facility=Services.facility
           //console.log(data);
           
-        ProductEntryServ.patch(ProductEntry._id,data)
+        ServicesServ.patch(Services._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated ProductEntry successfully")
+               // setMessage("updated Services successfully")
                  toast({
-                    message: 'ProductEntry updated succesfully',
+                    message: 'Services updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -998,10 +1186,10 @@ export function ProductEntryModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating ProductEntry, probable network issues "+ err )
+                //setMessage("Error creating Services, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating ProductEntry, probable network issues or "+ err,
+                    message: "Error updating Services, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -1017,7 +1205,7 @@ export function ProductEntryModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    ProductEntry Details-Modify
+                    Services Details-Modify
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -1034,9 +1222,9 @@ export function ProductEntryModify(){
                     </label>
                     </div>
                 <div className="field">
-                <label className="label is-small">ProductEntry Type
+                <label className="label is-small">Services Type
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="ProductEntryType" type="text" placeholder="ProductEntry Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="ServicesType" type="text" placeholder="Services Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -1067,7 +1255,7 @@ export function ProductEntryModify(){
             <div className="field">
             <label className="label is-small">Email
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="ProductEntry Email"/>
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Services Email"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
@@ -1098,7 +1286,7 @@ export function ProductEntryModify(){
            {/*  <div className="field">
             <label className="label is-small">Category
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="ProductEntryCategory" type="text" placeholder="ProductEntry Category"/>
+                    <input className="input is-small" ref={register({ required: true })} name="ServicesCategory" type="text" placeholder="Services Category"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>
@@ -1135,9 +1323,9 @@ export function ProductEntryModify(){
                 
 }   
 
-export  function ProductSearch({getSearchfacility,clear}) {
+export  function ServiceSearch({getSearchService,clearService}) {
     
-    const productServ=client.service('products')
+    const productServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -1158,7 +1346,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
    const handleRow= async(obj)=>{
         await setChosen(true)
         //alert("something is chaning")
-       getSearchfacility(obj)
+       getSearchService(obj)
        
        await setSimpa(obj.name)
        
@@ -1194,6 +1382,8 @@ export  function ProductSearch({getSearchfacility,clear}) {
         setVal(value)
         if (value===""){
             setShowPanel(false)
+            getSearchService(false)
+            await setFacilities([])
             return
         }
         const field='name' //field variable
@@ -1211,15 +1401,15 @@ export  function ProductSearch({getSearchfacility,clear}) {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-              console.log("product  fetched successfully") 
-              console.log(res.data) 
+             // console.log("product  fetched successfully") 
+              //console.log(res.data) 
                 setFacilities(res.data)
                  setSearchMessage(" product  fetched successfully")
                  setShowPanel(true)
              })
              .catch((err)=>{
                 toast({
-                    message: 'Error creating ProductEntry ' + err,
+                    message: 'Error creating Services ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -1227,11 +1417,11 @@ export  function ProductSearch({getSearchfacility,clear}) {
              })
          }
         else{
-            console.log("less than 3 ")
-            console.log(val)
+           // console.log("less than 3 ")
+            //console.log(val)
             setShowPanel(false)
             await setFacilities([])
-            console.log(facilities)
+            //console.log(facilities)
         }
     }
 
@@ -1243,22 +1433,23 @@ export  function ProductSearch({getSearchfacility,clear}) {
         handleSearch(val)
     }
     useEffect(() => {
-       if (clear){
-           console.log("success has changed",clear)
+       if (clearService){
+           console.log("success has changed",clearService)
            setSimpa("")
+           
        }
         return () => {
             
         }
-    }, [clear] )
+    }, [clearService] )
     return (
         <div>
             <div className="field">
                 <div className="control has-icons-left  ">
-                    <div className={`dropdown ${showPanel?"is-active":""}`}>
-                        <div className="dropdown-trigger">
+                    <div className={`dropdown ${showPanel?"is-active":""}`}  style={{width:"100%"}}>
+                        <div className="dropdown-trigger"  style={{width:"100%"}}>
                             <DebounceInput className="input is-small " 
-                                type="text" placeholder="Search Product"
+                                type="text" placeholder="Search Services"
                                 value={simpa}
                                 minLength={3}
                                 debounceTimeout={400}
@@ -1271,9 +1462,9 @@ export  function ProductSearch({getSearchfacility,clear}) {
                             </span>
                         </div>
                         {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu" >
+                        <div className="dropdown-menu"   style={{width:"100%"}}>
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to product list</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Service does not current exist</span> </div>}
 
                               {facilities.map((facility, i)=>(
                                     
@@ -1290,23 +1481,6 @@ export  function ProductSearch({getSearchfacility,clear}) {
                     </div>
                 </div>
             </div>
-            <div className={`modal ${productModal?"is-active":""}` }>
-                                    <div className="modal-background"></div>
-                                    <div className="modal-card">
-                                        <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Store</p>
-                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
-                                        </header>
-                                        <section className="modal-card-body">
-                                        {/* <StoreList standalone="true" /> */}
-                                        <ProductCreate />
-                                        </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
-                                    </div>
-                                </div>       
         </div>
     )
 }

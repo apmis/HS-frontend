@@ -1,5 +1,6 @@
+/* eslint-disable */
 import React, {useContext, useEffect, useState} from 'react'
-import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-router-dom'
+import {Route, Switch,  useRouteMatch, /* Link, */ NavLink, useHistory} from 'react-router-dom'
 import FacilityModule from './FacilityModule'
 import InventoryModule from './InventoryModule'
 import ClinicModule from './ClinicModule'
@@ -11,7 +12,7 @@ import client from '../feathers'
 
 export default function Home() {
     let { path, url } = useRouteMatch();
-    const {user,setUser} = useContext(UserContext)
+   // const {user,setUser} = useContext(UserContext)
 
     
     //console.log(path)
@@ -85,7 +86,7 @@ function NavBar({url}){
 
         async function getFullname(){
             const zed= user.firstname+" "+user.lastname
-         const resp =   await setFullname(zed)
+           await setFullname(zed)
         // console.log(zed)
          if (user.employeeData.length){
             user.currentEmployee= user.employeeData[0] //choose the first facilty
@@ -104,12 +105,13 @@ function NavBar({url}){
          
         }
         getFullname()
-        console.log(user)
+        //console.log(user)
        /*  console.log(user.lastname)
       console.log(user) */
         return () => {
             
         }
+        // eslint-disable-next-line 
     },[] )
 
     const handleFacilityClick=()=>{ //need to implement changing facility

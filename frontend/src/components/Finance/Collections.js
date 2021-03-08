@@ -9,7 +9,7 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Inventory() {
+export default function Collections() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedInventory,setSelectedInventory]=useState()
@@ -22,7 +22,7 @@ export default function Inventory() {
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-                <InventoryList />
+                <CollectionList />
                 </div>
             <div className="column is-4 ">
                 {(state.InventoryModule.show ==='create')&&<InventoryCreate />}
@@ -266,7 +266,7 @@ export function InventoryCreate(){
    
 }
 
-export function InventoryList(){
+export function CollectionList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -274,7 +274,7 @@ export function InventoryList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const InventoryServ=client.service('inventory')
+    const InventoryServ=client.service('subwallettransactions')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
@@ -313,7 +313,7 @@ export function InventoryList(){
     }
 
    const handleSearch=(val)=>{
-       const field='name'
+       const field='fromName'
        console.log(val)
        InventoryServ.find({query: {
                 [field]: {
@@ -322,31 +322,42 @@ export function InventoryList(){
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                $limit:20,
                 $sort: {
                     createdAt: -1
                   }
                     }}).then((res)=>{
-                console.log(res)
+                //console.log(res)
                setFacilities(res.data)
-                setMessage(" Inventory  fetched successfully")
-                setSuccess(true) 
+                /* setMessage(" Inventory  fetched successfully")
+                setSuccess(true)  */
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Inventory, probable network issues "+ err )
-                setError(true)
+                toast({
+                    message: 'Error during search ' +err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+               
             })
         }
    
         const getFacilities= async()=>{
             if (user.currentEmployee){
-            
+                const DAY_MS = 30*24 * 60 * 60 * 1000;
         const findInventory= await InventoryServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
-                    storeId:state.StoreModule.selectedStore._id,
+                   // storeId:state.StoreModule.selectedStore._id,
+                    category:"credit",
+                    createdAt:{
+                        $gt: new Date().getTime() - DAY_MS //last 30days
+
+                    },
                     $limit:20,
+
                     $sort: {
                         createdAt: -1
                     }
@@ -382,16 +393,15 @@ export function InventoryList(){
             }
             
             useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
+               
+                    console.log(facilities)
                     //getFacilities(user)
-                }, 200);
-
+              
                 return () => {
                     
 
                 }
-            },[])
+            },[facilities])
 
             useEffect(() => {
                
@@ -444,7 +454,7 @@ export function InventoryList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Inventories </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Collections in last 30 days </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -457,16 +467,17 @@ export function InventoryList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
+                                        <th><abbr title="Cost Price">Date</abbr></th>
                                         {/* <th><abbr title="Category">Category</abbr></th> */}
-                                        <th>Product</th>
-                                        <th><abbr title="Quantity">Quantity</abbr></th>
-                                        <th><abbr title="Base Unit">Base Unit</abbr></th>
-                                        <th><abbr title="Stock Value">Stock Value</abbr></th>
-                                         <th><abbr title="Cost Price">Cost Price</abbr></th>
+                                        <th>Client</th>
+                                        <th><abbr title="Quantity">Amount</abbr></th>
+                                        <th><abbr title="Base Unit">Mode</abbr></th>
+                                       {/*  <th><abbr title="Stock Value">Stock Value</abbr></th>
+                                         
                                         <th><abbr title="Selling Price">Selling Price</abbr></th>
                                         <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
                                         <th><abbr title="Expiry">Expiry</abbr></th> 
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -477,16 +488,16 @@ export function InventoryList(){
 
                                             <tr key={Inventory._id} onClick={()=>handleRow(Inventory)}>
                                             <th>{i+1}</th>
-                                            {/* <td>{Inventory.productDetail.category}</td> */}
-                                            <th>{Inventory.name}</th>
-                                            <td>{Inventory.quantity}</td>
-                                            <td>{Inventory.baseunit}</td>
-                                            <td>{Inventory.stockvalue}</td>
+                                            <td>{new Date(Inventory.createdAt).toLocaleDateString('en-GB')}</td> {/*add time  */}
+                                            <th>{Inventory.fromName}</th>
+                                            <td>{Inventory.amount}</td>
+                                            <td>{Inventory.paymentmode}</td>
+                                            {/* <td>{Inventory.stockvalue}</td>
                                             <td>{Inventory.costprice}</td>
                                             <td>{Inventory.sellingprice}</td>
                                             <td>{Inventory.reorder_level}</td> 
                                             <td>{Inventory.expiry}</td>
-                                            <td><span   className="showAction"  >...</span></td>
+                                            <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 

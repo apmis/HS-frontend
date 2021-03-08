@@ -2,15 +2,16 @@ import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import FinanceReport from './Finance/FinanceReport'
 import FinanceSetup from './Finance/FinanceSetup'
-import FinanceStore from './Finance/FinanceStore'
+import Collections from './Finance/Collections'
 import FinanceHome from './Finance/FinanceHome'
-import ProductEntry from './Finance/ProductEntry'
+import ProductEntry from './Finance/Services'
 import ProductExit from './Finance/ProductExit'
 import Payment from './Finance/Payment'
 import Products from './Finance/Products'
 import Store, { StoreList, StoreListStandalone } from './Finance/Store'
 import {UserContext,ObjectContext} from '../context'
 import BillPrescription from './Finance/BillPrescription'
+import Services from './Finance/Services'
 
 export default function FinanceModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -75,13 +76,13 @@ export default function FinanceModule() {
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
                                     
+                                    <div className="navbar-item">
+                                        <NavLink to={`${url}/collections`}>Collections</NavLink>
+                                    </div>
+                                    <div className="navbar-item">
+                                        <NavLink to={`${url}/services`}>Services</NavLink>
+                                    </div>
                                     {/* <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-bill`}>Bill Prescription</NavLink>
-                                    </div>
-                                    <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-Finance`}>Store Finance</NavLink>
-                                    </div>
-                                    <div className="navbar-item">
                                         <NavLink to={`${url}/inv-entry`}>Product Entry</NavLink>
                                     </div>
                                     <div className="navbar-item">
@@ -118,13 +119,13 @@ export default function FinanceModule() {
                         <Route path={`${path}/payment`} exact >
                             <Payment />
                         </Route>
-                        {/* <Route path={`${path}/inv-bill`} exact >
-                            <BillPrescription />
+                        <Route path={`${path}/collections`} exact >
+                            <Collections />
                         </Route>
-                        <Route path={`${path}/inv-admin`} exact >
-                            <FinanceSetup />
+                       <Route path={`${path}/services`} exact >
+                            <Services />
                         </Route>
-                        <Route path={`${path}/inv-Finance`} exact>
+                          {/*<Route path={`${path}/inv-Finance`} exact>
                             <FinanceStore />
                         </Route>
                         <Route path={`${path}/inv-entry`} exact>
