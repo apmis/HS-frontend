@@ -21,15 +21,15 @@ export default function Collections() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
             </div> */}
             <div className="columns ">
-            <div className="column is-8 ">
-                <CollectionList />
+                <div className="column is-8 ">
+                    <CollectionList />
                 </div>
-            <div className="column is-4 ">
+           {/*  <div className="column is-4 ">
                 {(state.InventoryModule.show ==='create')&&<InventoryCreate />}
                 {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
                 {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}
                
-            </div>
+            </div> */}
 
             </div>                            
             </section>
@@ -443,7 +443,7 @@ export function CollectionList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Inventory"
+                                        type="text" placeholder="Search Collections"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -456,9 +456,9 @@ export function CollectionList(){
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Collections in last 30 days </span></div>
                     <div className="level-right">
-                        <div className="level-item"> 
+                        {/* <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div>
+                        </div> */}
                     </div>
 
                 </div>
