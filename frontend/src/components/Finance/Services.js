@@ -19,6 +19,7 @@ import {
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
+import { StoreModify } from '../inventory/Store';
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -136,7 +137,7 @@ export function ServicesCreate(){
         
         if(!costprice || !name){
             toast({
-                message: 'You need to enter name and price ' ,
+                message: 'You need to enter organization name and price ' ,
                 type: 'is-danger',
                 dismissible: true,
                 pauseOnHover: true,
@@ -146,7 +147,7 @@ export function ServicesCreate(){
     }else{
         if(!costprice || !cash){
             toast({
-                message: 'You need to enter name and price ' ,
+                message: 'You need to enter organization name and price ' ,
                 type: 'is-danger',
                 dismissible: true,
                 pauseOnHover: true,
@@ -213,6 +214,16 @@ export function ServicesCreate(){
 
     const onSubmit = async() =>{
        // e.preventDefault();
+       if(panel && (panelList.length===0)){
+        toast({
+            message: "Please choose services that make up panel or uncheck panel ",
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+          return   
+       }
+
         setSuccess(false)
        let data ={
            name:source,
@@ -258,8 +269,17 @@ const handleBenefit=(e)=>{
     setPlan("")
     }
 
-const handleRemove=(index, e)=>{
+const handleRemove=(index, contract)=>{
     //console.log(index)
+    if (contract.billing_type==="Cash"){
+        toast({
+            message: 'You cannot remove cash billing' ,
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+        return
+    }
 
    //setProductItem(prevstate=> prevstate.splice(i,1))
    setProductItem(prevstate=> prevstate.filter((ProductionItem, i) => i !== index));
@@ -335,18 +355,7 @@ const handleCheck= async ()=>{
             {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
             <div className="field is-horizontal">
             <div className="field-body">
-            {/* <div className="field">    
-                <div className="control">
-                    <div className="select is-small">
-                        <select name="type" value={type} onChange={handleChangeType}>
-                           <option value="">Choose Type </option>
-                            <option value="Purchase Invoice">Purchase Invoice </option>
-                            <option value="Initialization">Initialization</option>
-                            <option value="Audit">Audit</option>
-                        </select>
-                    </div>
-                </div>
-            </div> */}
+           
              <div className="field" style={{width:"25%"}}>
                     <p className="control has-icons-left has-icons-right"  >
                         <input className="input is-small" /* ref={register({ required: true })} */ value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
@@ -406,7 +415,7 @@ const handleCheck= async ()=>{
            {panelList.length>0 &&     <div>
            <strong> Panel Items:</strong> {panelList.map((plan,i)=>(
                         <span key={i} className="ml-1">
-                            {plan.name};
+                            {plan.service_name};
                             </span>))}
              </div>
             }       
@@ -543,7 +552,7 @@ const handleCheck= async ()=>{
                         </span>
                      ))}</td>
                           {/*<td>{Services.amount}</td> */}
-                        <td><span className="showAction" onClick={()=>handleRemove(i)} >x</span></td>
+                        <td><span className="showAction" onClick={()=>handleRemove(i,Services)} >x</span></td>
                         
                         </tr>
 
@@ -600,15 +609,15 @@ export function ServicesList(){
         
 
     }
-    const handleRow= async(Services)=>{
+    const handleRow= async(Service)=>{
         //console.log("b4",state)
 
         //console.log("handlerow",Services)
 
-        await setSelectedServices(Services)
+        await setSelectedServices(Service)
 
         const    newServicesModule={
-            selectedServices:Services,
+            selectedServices:Service,
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
@@ -662,7 +671,7 @@ export function ServicesList(){
                     }})
 
          await setFacilities(findServices.groupedOrder)
-         console.log(findServices)
+        // console.log(findServices)
                 }
                 else {
                     if (user.stacker){
@@ -680,35 +689,13 @@ export function ServicesList(){
             }
             
     useEffect(() => {
-        
-
-                return () => {
-                    
-
+            return () => {
                 }
             },[])
 
     useEffect(() => {
-               
-                if (!state.StoreModule.selectedStore){
-                    toast({
-                        message: 'kindly select a store',
-                        type: 'is-danger',
-                        dismissible: true,
-                        pauseOnHover: true,
-                      }) 
-                      return
-                    getFacilities()
+                 getFacilities()
 
-                }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
-                }
                 ServicesServ.on('created', (obj)=>getFacilities())
                 ServicesServ.on('updated', (obj)=>getFacilities())
                 ServicesServ.on('patched', (obj)=>getFacilities())
@@ -718,13 +705,13 @@ export function ServicesList(){
                 }
             },[])
 
-    useEffect(() => {
+ /*    useEffect(() => {
                 getFacilities()
                 console.log("store changed")
                 return () => {
                    
                 }
-            }, [state.StoreModule.selectedStore])
+            }, [state.StoreModule.selectedStore]) */
     //todo: pagination and vertical scroll bar
 
     return(
@@ -793,7 +780,7 @@ export function ServicesList(){
                                             <th>{Services.panel?"Yes":"No"}</th>
                                             <td>{Services.contracts.map((el,i)=>(
                                                 el.source_org===el.dest_org &&
-                                                <p>
+                                                <p key={i}>
                                                     {el.price} 
                                                 </p>
                                             ))}</td>
@@ -838,6 +825,7 @@ export function ServicesDetail(){
    
 
    const Services =state.ServicesModule.selectedServices 
+   /* console.log(Services) */
 
     const handleEdit= async()=>{
         const    newServicesModule={
@@ -866,11 +854,11 @@ export function ServicesDetail(){
                       <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        Type
+                       Category 
                         </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="name"> {Services.type} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Services.category} </span>
                     </td>
                     <td>
 
@@ -878,11 +866,11 @@ export function ServicesDetail(){
                     <td>
                         <label className="label is-small padleft"><span className="icon is-small is-left">
                             <i className="fas fa-map-signs"></i>
-                        </span>Supplier:
+                        </span>Name:
                         </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="ServicesType">{Services.source} </span> 
+                        <span className="is-size-7 padleft"   name="ServicesType">{Services.name} </span> 
                     </td>
                 </tr>
                 <tr>
@@ -890,27 +878,33 @@ export function ServicesDetail(){
                         <label className="label is-small"> <span className="icon is-small is-left">
                         <i className="fas fa-hospital"></i>
                         </span>                    
-                        Date:
+                        Panel:
                         </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="name"> {Services.date} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Services.panel?"Yes":"No"} </span>
                     </td>
                     <td>
                                 
                     </td>
-                    <td>
+                    <td> {Services.panel &&
                         <label className="label is-small padleft"><span className="icon is-small is-left">
                             <i className="fas fa-map-signs"></i>
-                        </span>Invoice No:
-                        </label>
+                        </span>Panel Services:
+                        </label>}
                     </td>
                     
                     <td>
-                         <span className="is-size-7 padleft"   name="ServicesType">{Services.documentNo} </span> 
+                    {Services.panel &&  <p className="is-size-7 padleft"   name="ServicesType">{Services.panelServices.length>0 &&     <p>
+                         {Services.panelServices.map((plan,i)=>(
+                        <span key={i} className="ml-1">
+                            {plan.name};
+                            </span>))}
+                        </p>
+            }     </p> }
                     </td>
                 </tr>
-                <tr>
+               {/*  <tr>
                     <td>
                 
                         <label className="label is-small"> <span className="icon is-small is-left">
@@ -922,121 +916,56 @@ export function ServicesDetail(){
                     <td>
                         <span className="is-size-7 padleft"   name="name"> {Services.totalamount} </span>
                     </td>
-                </tr>
+                </tr> */}
 
                 </tbody> 
             </table> 
-            <label className="label is-size-7 mt-2">Product Items:</label>
-         <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
+            <label className="label is-size-7 mt-2">Pricing Info:</label>
+        
+                 <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                 <thead>
                     <tr>
                     <th><abbr title="Serial No">S/No</abbr></th>
-                    <th><abbr title="Type">Name</abbr></th>
-                    <th><abbr title="Type">Quanitity</abbr></th>
-                    <th><abbr title="Document No">Unit</abbr></th>
-                    <th><abbr title="Cost Price">Cost Price</abbr></th>
-                    <th><abbr title="Cost Price">Amount</abbr></th>
-                   
+                    <th><abbr title="Source Organization">Organization</abbr></th>
+                    <th><abbr title="Price">Amount</abbr></th>
+                    <th><abbr title="Billing Type">Billing Type</abbr></th>
+                    <th><abbr title="Benefitting Plans">Plans</abbr></th>
+                      {/*  <th><abbr title="Cost Price">Amount</abbr></th>
+                    <th><abbr title="Actions">Actions</abbr></th> */}
                     </tr>
                 </thead>
                 <tfoot>
                     
                 </tfoot>
                 <tbody>
-                   { Services.productitems.map((Services, i)=>(
+                   { Services.contracts.map((Services, i)=>(
 
                         <tr key={i}>
                         <th>{i+1}</th>
-                        <td>{Services.name}</td>
-                        <th>{Services.quantity}</th>
-                       {/*  <td>{Services.baseunit}</td> */}
-                        <td>{Services.costprice}</td>
-                        <td>{Services.amount}</td>
-                        
+                        <td>{Services.source_org_name}</td>
+                        <th>{Services.price}</th>
+                       <td>{Services.billing_type}</td>
+                        <td> { (Services.plans) && Services.plans.map((plan,i)=>(
+                        <span key={i} className="ml-1">
+                            {plan};
+                        </span>
+                     ))}</td>
+                          {/*<td>{Services.amount}</td> */}
+                        {/* <td><span className="showAction" onClick={()=>handleRemove(i)} >x</span></td> */}
                         
                         </tr>
 
                     ))}
                 </tbody>
                 </table>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
-                    </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="ServicesCity">{Services.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="ServicesContactPhone" >{Services.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="ServicesEmail" >{Services.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="ServicesOwner">{Services.department}</span>
-                    </td>
-               
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="ServicesType">{Services.deptunit}</span>
-                </td>
-              
-                </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "ServicesCategory">{Services.ServicesCategory}</span>
-                </label>
-                 </div> */}
-
-            
-           
-           {/*  <div className="field mt-2">
+              <div className="field mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
             </div>
-            { error && <div className="message"> {message}</div>} */}
+          {/*    { error && <div className="message"> {message}</div>} */}
            
         </div>
         </div>
@@ -1047,7 +976,7 @@ export function ServicesDetail(){
 }
 
 export function ServicesModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
+   // const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
     // eslint-disable-next-line 
@@ -1061,22 +990,45 @@ export function ServicesModify(){
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const Services =state.ServicesModule.selectedServices 
+    const [facilityId,setFacilityId] = useState("")
+    const [source,setSource] = useState("")
+    const [panel,setPanel] = useState(false)
+    const [name,setName] = useState("")
+    const [benefittingplans,setBenefittingPlans] = useState([])
+    const [quantity,setQuantity] = useState()
+    const [costprice,setCostprice] = useState("")
+    const [orgType,setOrgType] = useState("")
+    const [productItem,setProductItem] = useState([])
+    const [plan,setPlan] = useState("")
+    const [service,setService] = useState("")
+    const [currentUser,setCurrentUser] = useState("")
+    const [panelList,setPanelList] = useState([])
+    const [successService,setSuccessService] = useState(false)
+  //  const {state}=useContext(ObjectContext)
+    const [cash,setCash] = useState("Cash")
+    const [categoryname, setCategoryName] =useState("")
+    const [facility,setFacility] = useState()
+    const [modcon,setModCon] = useState("")
+    const [yam,setYam] = useState(false) 
+    const [pos,setPos] = useState("") 
 
-        useEffect(() => {
-            setValue("name", Services.name,  {
+    let Services =state.ServicesModule.selectedServices 
+    let productItemI
+
+       /*  useEffect(() => {
+            /* setValue("name", Services.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("ServicesType", Services.ServicesType,  {
+            setValue("category", Services.category,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Services.profession,  {
+         setValue("panel", Services.panel,  {
                 shouldValidate: true,
                 shouldDirty: true
-            })
-            setValue("phone", Services.phone,  {
+            }) */
+            /*  setValue("phone", Services.phone,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
@@ -1084,7 +1036,7 @@ export function ServicesModify(){
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("department", Services.department,  {
+              setValue("department", Services.department,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
@@ -1096,26 +1048,264 @@ export function ServicesModify(){
                 shouldValidate: true,
                 shouldDirty: true
             }) */
-            
+           /*  
             return () => {
                 
             }
         })
+ */
+
+  useEffect(() => {
+    setFacilityId(modcon.source_org)
+        setName(modcon.source_org_name)
+        setCostprice(modcon.price)
+        setOrgType(modcon.billing_type)
+        setBenefittingPlans(modcon.plans)
+        setYam(true)
+     return () => {
+        
+     }
+    }, [modcon]) 
+
+        useEffect(() => {
+            //Services
+            setFacilityId("")
+            setSource(Services.name)
+            setPanel(Services.panel)
+            setName("")
+        
+            setCostprice("")
+            setProductItem(Services.contracts)
+            setCategoryName(Services.category)
+            setService("")
+            setPanelList(Services.panelServices)
+            setPlan("")
+            setBenefittingPlans([])
+            setCash("")
+            setOrgType("")
+           
+            return () => {
+               
+            }
+        }, [])
+        const handleCheck= async ()=>{
+    
+            if (!categoryname){
+                toast({
+                    message: 'Enter Category!',
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+                return
+            }
+            await ServicesServ.find({
+                query:{
+                    name:source,
+                    facility: user.currentEmployee.facilityDetail._id,
+                    category:categoryname
+                }
+            }).then((resp)=>{
+                console.log(resp)
+                if (resp.data.length>0){
+                toast({
+                    message: 'Service already exist. Kindly modify it '+ resp.data ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+                  return
+                }
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error checking services  '+ err ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+            })
+        }
+          
+        const handleClickProd=async()=>{
+            if (productItem.length>0){
+            
+            if(!costprice || !name){
+                toast({
+                    message: 'You need to enter organization name and price ' ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+                return
+            }
+        }else{
+            if(!costprice || !cash){
+                toast({
+                    message: 'You need to enter organization name and price ' ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })  
+                return
+            }
+    
+        }
+        if (!yam){
+            if(cash==="Cash"){
+                 productItemI={
+                    source_org:user.currentEmployee.facilityDetail._id,
+                    source_org_name:user.currentEmployee.facilityDetail.facilityName,
+                    dest_org:user.currentEmployee.facilityDetail._id,
+                    dest_org_name:user.currentEmployee.facilityDetail.facilityName,
+                    price:costprice,
+                    billing_type:"Cash",
+                    plans:benefittingplans
+                 } 
+                 await setCash("")
+            }else{
+                productItemI={
+                   source_org:facilityId, 
+                   source_org_name:name, 
+                   dest_org:user.currentEmployee.facilityDetail._id,
+                   dest_org_name:user.currentEmployee.facilityDetail.facilityName,
+                   price:costprice,
+                   billing_type:orgType==="HMO"?"HMO":"Company", 
+                   plans:benefittingplans
+    
+                } 
+                await setCash("")
+           }
+           
+            await setSuccess(false)
+            setProductItem(
+                prevProd=>prevProd.concat(productItemI)
+            )
+        }else{
+            productItemI={
+                source_org:facilityId, 
+                source_org_name:name, 
+                dest_org:user.currentEmployee.facilityDetail._id,
+                dest_org_name:user.currentEmployee.facilityDetail.facilityName,
+                price:costprice,
+                billing_type:orgType, 
+                plans:benefittingplans
+ 
+             } 
+             const newProductitem = [...productItem]
+             newProductitem.splice(pos,1,productItemI)
+             setProductItem(newProductitem)
+        }
+        setModCon("")
+        setYam(false) 
+        setPos("")
+            setName("")
+            setOrgType("")
+            setFacilityId("")
+            setCostprice("")
+           await setSuccess(true)
+         
+        }
+        const resetform=()=>{
+  
+            setFacilityId("")
+            setSource("")
+            setPanel(false)
+            setName("")
+          
+            setCostprice("")
+            setProductItem([])
+            setCategoryName("")
+           setService("")
+            setPanelList([])
+            setPlan("")
+            setBenefittingPlans([])
+            setCash("Cash")
+            setOrgType("")
+            }
+
+        const getSearchService=(obj)=>{
+                setService(obj)
+            if(!obj){
+                setService("")
+            }
+                setSuccessService(false)
+        }
+        const getSearchfacility=(obj)=>{
+
+            setFacilityId(obj._id)
+            setName(obj.facilityName)
+            setOrgType(obj.facilityType)
+            if(!obj){
+            setName("")
+            setOrgType("")
+            setFacilityId("")
+            setCostprice("")
+    
+            }
+            
+           /*  setValue("facility", obj._id,  {
+                shouldValidate: true,
+                shouldDirty: true
+            }) */
+        }
+        const handleBenefit=(e)=>{
+   
+            setBenefittingPlans(prevstate=>prevstate.concat(plan))
+            setPlan("")
+            }
+        
+        const handleRemove=(index, contract)=>{
+            //console.log(index)
+            if (contract.billing_type==="Cash"){
+                toast({
+                    message: 'You cannot remove cash billing' ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                return
+            }
+        
+           //setProductItem(prevstate=> prevstate.splice(i,1))
+           setProductItem(prevstate=> prevstate.filter((ProductionItem, i) => i !== index));
+           
+          /*  const newProductitem = [...productItem]
+           newProductitem.splice(i,1)
+           setProductItem(newProductitem) */
+        }
+        const handleAddPanel =()=>{
+           // setSuccessService(false) 
+           let newService={
+               serviceId:service._id,
+               service_name:service.name,
+               panel:service.panel
+           }
+            setPanelList(prevstate=>prevstate.concat(newService))
+            setSuccessService(true)
+            newService={}
+            setService("")
+            console.log("something added")
+            
+        }
+
+
+
 
    const handleCancel=async()=>{
     const    newServicesModule={
-        selectedServices:{},
-        show :'create'
+        selectedServices:Services,
+        show :'detail'
       }
    await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
    //console.log(state)
            }
 
 
-        const changeState =()=>{
+        const changeState =(resp)=>{
         const    newServicesModule={
-            selectedServices:{},
-            show :'create'
+            selectedServices:resp,
+            show :'detail'
         }
         setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
 
@@ -1162,30 +1352,50 @@ export function ServicesModify(){
             shouldValidate: true,
             shouldDirty: true
           })) */
-    const onSubmit = (data,e) =>{
-        e.preventDefault();
+    const onSubmit = () =>{
+       // e.preventDefault();
+       if(panel && (panelList.length===0)){
+        toast({
+            message: "Please choose services that make up panel or uncheck panel ",
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+          return   
+       }
         
         setSuccess(false)
+        let data ={
+            name:source,
+            category:categoryname,
+            facility:user.currentEmployee.facilityDetail._id,
+            facilityname:user.currentEmployee.facilityDetail.facilityName,
+            panel:panel,
+            panelServices:panelList,
+            contracts:productItem,
+            updatedBy:user._id
+        }
+        console.log(Services)
         console.log(data)
-        data.facility=Services.facility
+        //data.facility=Services.facility
           //console.log(data);
           
-        ServicesServ.patch(Services._id,data)
+       ServicesServ.patch(Services._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                console.log(JSON.stringify(res))
                // e.target.reset();
                // setMessage("updated Services successfully")
-                 toast({
+                  toast({
                     message: 'Services updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
                   })
                   
-                changeState()
+                changeState(res)
 
             })
-            .catch((err)=>{
+            .catch((err)=>{ 
                 //setMessage("Error creating Services, probable network issues "+ err )
                // setError(true)
                 toast({
@@ -1195,9 +1405,15 @@ export function ServicesModify(){
                     pauseOnHover: true,
                   })
             })
-
+ 
       } 
-     
+     const handleModCon=async (contract,i)=>{
+        
+         setModCon(contract)
+         setYam(true) 
+         setPos(i)
+        
+     }
       
     return (
         
@@ -1208,98 +1424,230 @@ export function ServicesModify(){
                     Services Details-Modify
                 </p>
             </div>
-            <div className="card-content vscrollable">
-           
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="field">
-                    <label className="label is-small"> Name
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input  is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                    </label>
-                    </div>
-                <div className="field">
-                <label className="label is-small">Services Type
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="ServicesType" type="text" placeholder="Services Type" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-                </label>
-                </div>
-            {/* <div className="field">
-            <label className="label is-small">Profession
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Services Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="ServicesCategory" type="text" placeholder="Services Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
-           
-           
-            </form>
             
+            <div className="card-content vscrollable">
+   
+   {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
+   <div className="field is-horizontal">
+   <div className="field-body">
+  
+    <div className="field" style={{width:"25%"}}>
+           <p className="control has-icons-left has-icons-right"  >
+               <input className="input is-small" /* ref={register({ required: true })} */ value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
+               <span className="icon is-small is-left">
+                   <i className="fas fa-hospital"></i>
+               </span>                    
+           </p>
+       </div>
+  
+   
+   <div className="field">
+           <p className="control has-icons-left has-icons-right">
+               <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="source" type="text" onChange={e=>setSource(e.target.value)} onBlur={handleCheck} placeholder="Name of Service" autoComplete="false" />
+               <span className="icon is-small is-left">
+                   <i className="fas fa-hospital"></i>
+               </span>                    
+           </p>
+       </div>
+  
+   </div>
+   </div> 
+
+     
+   <div className="field is-horizontal">
+      <div className="field-body">
+       <div className="field">
+           <p className="control has-icons-left has-icons-right">
+               <label className="label is-small" >
+               <input className="checkbox is-small"  /* ref={register({ required: true })} */ checked={panel}  name="panel" type="checkbox" onChange={e=>setPanel(e.target.checked)} /* placeholder="Date" */ />
+           
+               <span>Panel</span></label>
+           </p>
+       </div>
+
+   {panel && <>
+       <div className="field">
+           <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+               <ServiceSearch  getSearchService={getSearchService} clearService={successService} /> 
+               <p className="control has-icons-left " style={{display:"none"}}>
+                   <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
+                   <span className="icon is-small is-left">
+                   <i className="fas  fa-map-marker-alt"></i>
+                   </span>
+               </p>
+           </div>  
+       </div>
+       <p className="control">
+                   <button className="button is-info is-small  is-pulled-right selectadd">
+                   <span className="is-small" onClick={handleAddPanel}> +</span>
+                   </button>
+               </p>
+   </> }
+
+       </div> 
+       </div> 
+
+  {(panel && panelList.length>0) &&     <div>
+  <strong> Panel Items:</strong> {panelList.map((plan,i)=>(
+               <span key={i} className="ml-1">
+                   {plan.service_name};
+                   </span>))}
+    </div>
+   }       
+
+     {/*   </form>    */}
+      
+  
+{/* array of Services items */}
+
+<label className="label is-small">Add Pricing Info:</label>
+{(productItem.length>0) ? <> 
+       <div className="field is-horizontal">
+       <div className="field-body">
+           <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+               <FacilitySearch  getSearchfacility={getSearchfacility} clear={success} /> 
+               <p className="control has-icons-left " style={{display:"none"}}>
+                   <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id" />
+                   <span className="icon is-small is-left">
+                   <i className="fas  fa-map-marker-alt"></i>
+                   </span>
+               </p>
+           </div>
+       {/*  <div className="field">
+           <p className="control has-icons-left">
+               <input className="input is-small"  ref={register({ required: true })}  name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
+               <span className="icon is-small is-left">
+               <i className="fas fa-envelope"></i>
+               </span>
+           </p>
+
+       </div>  */}
+       <div className="field">
+           <p className="control has-icons-left">
+               <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
+               <span className="icon is-small is-left">
+               <i className="fas fa-dollar-sign"></i>
+               </span>
+           </p>
+       </div>
+       <div className="field">
+       <p className="control">
+               <button className="button is-info is-small  is-pulled-right selectadd">
+               <span className="is-small" onClick={handleClickProd}>+</span>
+               </button>
+           </p>
+               </div>
+               </div>
+           </div>
+    <div className="field is-horizontal">
+       <div className="field-body">
+        <div className="field">
+           
+           <div className="field has-addons" /* style={{display:`${ProductEntry.show}`} }*/ >
+                     <div className="control">
+                         <input  className="input selectadd" type="text" name="plan"  value={plan} onChange={e=>setPlan(e.target.value)} placeholder="Benefitting Plans" />
+                         </div> 
+                         <div className="control">
+                         <button className="button is-info selectadd" onClick={(e)=>handleBenefit(e)}>add</button>
+                         </div>
+                         </div>
+                       
+        </div>
+        <div className="field is-expanded pull-left">
+        {benefittingplans && benefittingplans.map((plan,i)=>(
+               <span key={i} className="ml-1">
+                   {plan};
+               </span>
+            ))}
+        </div>
+       </div>
+     </div>
+   </>:
+   <>
+     <div className="field is-horizontal">
+       <div className="field-body">
+           <div className="field">
+               <p className="control has-icons-left">
+                   <input className="input is-small" /* ref={register({ required: true })} */ disabled name="cash" value={cash} type="text" onChange={e=>setCash(e.target.value)} /* placeholder="Cost Price" */  />
+                   <span className="icon is-small is-left">
+                   <i className="fas fa-dollar-sign"></i>
+                   </span>
+               </p>
+               </div>
+           <div className="field">
+               <p className="control has-icons-left">
+                   <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
+                   <span className="icon is-small is-left">
+                   <i className="fas fa-dollar-sign"></i>
+                   </span>
+               </p>
+           </div>
+           <div className="field">
+               <p className="control">
+                   <button className="button is-info is-small  is-pulled-right selectadd">
+                   <span className="is-small" onClick={handleClickProd}>+</span>
+                   </button>
+               </p>
+           </div>
+       </div>
+     </div>
+    
+
+   </> }
+ 
+   
+{(productItem.length>0) && <div>
+   <label>Prices:</label>
+<table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
+       <thead>
+           <tr>
+           <th><abbr title="Serial No">S/No</abbr></th>
+           <th><abbr title="Source Organization">Organization</abbr></th>
+           <th><abbr title="Price">Amount</abbr></th>
+           <th><abbr title="Billing Type">Billing Type</abbr></th>
+           <th><abbr title="Benefitting Plans">Plans</abbr></th>
+             {/*  <th><abbr title="Cost Price">Amount</abbr></th>*/}
+           <th><abbr title="Actions">Actions</abbr></th> 
+           </tr>
+       </thead>
+       <tfoot>
+           
+       </tfoot>
+       <tbody>
+          { productItem.map((Services, i)=>(
+
+               <tr key={i} onClick={()=>handleModCon(Services,i)}>
+               <th>{i+1}</th>
+               <td>{Services.source_org_name}</td>
+               <th>{Services.price}</th>
+              <td>{Services.billing_type}</td>
+               <td>  {Services.plan && Services.plans.map((plan,i)=>(
+               <span key={i} className="ml-1">
+                   {plan};
+               </span>
+            ))}</td>
+                 {/*<td>{Services.amount}</td> */}
+               <td><span className="showAction" onClick={()=>handleRemove(i,Services)} >x</span>
+               </td>
+               
+               </tr>
+
+           ))}
+       </tbody>
+       </table>
+      {/*  <div className="field mt-2">
+       <p className="control">
+           <button className="button is-success is-small" disabled={!productItem.length>0} onClick={onSubmit}>
+               Create
+           </button>
+       </p>
+       </div> */}
+       </div>
+  
+   } 
             <div className="field  is-grouped mt-2" >
                 <p className="control">
-                    <button type="submit" className="button is-success is-small" onClick={handleSubmit(onSubmit)}>
+                    <button type="submit" className="button is-success is-small" onClick={onSubmit}>
                         Save
                     </button>
                 </p>
@@ -1308,19 +1656,16 @@ export function ServicesModify(){
                         Cancel
                     </button>
                 </p>
-                <p className="control">
+                {/* <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p>
+                </p> */}
             </div>
         </div>
         </div>
         </>
-    )
-   
-   
-                
+    )              
 }   
 
 export  function ServiceSearch({getSearchService,clearService}) {
