@@ -429,43 +429,7 @@ export function ClientCreate(){
             </form>
             </div>
             </div>
-                 {/*  <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
-                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
-                    <span className="icon is-small is-left">
-                    <i className="fas  fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div> */}
-         {/*   <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div> */}
+               
         </>
     )
    

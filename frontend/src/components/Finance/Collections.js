@@ -488,7 +488,7 @@ export function CollectionList(){
 
                                             <tr key={Inventory._id} onClick={()=>handleRow(Inventory)}>
                                             <th>{i+1}</th>
-                                            <td>{new Date(Inventory.createdAt).toLocaleDateString('en-GB')}</td> {/*add time  */}
+                                            <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> {/*add time  */}
                                             <th>{Inventory.fromName}</th>
                                             <td>{Inventory.amount}</td>
                                             <td>{Inventory.paymentmode}</td>
