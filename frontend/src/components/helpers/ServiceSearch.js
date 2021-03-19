@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import {FacilityCreate} from '../facility/Facility'
+import {ServicesCreate} from '../Finance/Services'
 import {
     Accordion,
     AccordionItem,
@@ -22,7 +22,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 const searchfacility={};
 
 export default function ServiceSearch({getSearchfacility,clear}) {
-    
+    const {user} = useContext(UserContext)
     const productServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
@@ -44,13 +44,12 @@ export default function ServiceSearch({getSearchfacility,clear}) {
    const handleRow= async(obj)=>{
         await setChosen(true)
         //alert("something is chaning")
-       getSearchfacility(obj)
-       
        await setSimpa(obj.name)
+       getSearchfacility(obj)
        
         // setSelectedFacility(obj)
         setShowPanel(false)
-        await setCount(2)
+      /*   await setCount(2) */
         /* const    newfacilityModule={
             selectedFacility:facility,
             show :'detail'
@@ -59,10 +58,10 @@ export default function ServiceSearch({getSearchfacility,clear}) {
    //console.log(state)
 }
     const handleBlur=async(e)=>{
-         if (count===2){
+        /*  if (count===2){
              console.log("stuff was chosen")
          }
-       
+        */
        /*  console.log("blur")
          setShowPanel(false)
         console.log(JSON.stringify(simpa))
@@ -84,7 +83,7 @@ export default function ServiceSearch({getSearchfacility,clear}) {
             await setFacilities([])
             return
         }
-        const field='facilityName' //field variable
+        const field='name' //field variable
 
        
         if (value.length>=3 ){
@@ -94,6 +93,7 @@ export default function ServiceSearch({getSearchfacility,clear}) {
                      $options:'i'
                     
                  },
+                 facility: user.currentEmployee.facilityDetail._id,
                  $limit:10,
                  $sort: {
                      createdAt: -1
@@ -143,10 +143,10 @@ export default function ServiceSearch({getSearchfacility,clear}) {
         <div>
             <div className="field">
                 <div className="control has-icons-left  ">
-                    <div className={`dropdown ${showPanel?"is-active":""}`}>
-                        <div className="dropdown-trigger">
+                    <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
+                        <div className="dropdown-trigger" style={{width:"100%"}}>
                             <DebounceInput className="input is-small " 
-                                type="text" placeholder="Search Organization"
+                                type="text" placeholder="Search Services"
                                 value={simpa}
                                 minLength={3}
                                 debounceTimeout={400}
@@ -159,15 +159,15 @@ export default function ServiceSearch({getSearchfacility,clear}) {
                             </span>
                         </div>
                         {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu" >
+                        <div className="dropdown-menu" style={{width:"100%"}} >
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to facility list</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to service list</span> </div>}
 
                               {facilities.map((facility, i)=>(
                                     
-                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
+                                    <div className="dropdown-item selectadd" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <span>{facility.name}</span>
+                                        <span>{facility.name} ({facility.category})</span>
                                         
                                     </div>
                                     
@@ -182,12 +182,12 @@ export default function ServiceSearch({getSearchfacility,clear}) {
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
                                         <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Store</p>
+                                        <p className="modal-card-title">Create Service</p>
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">
                                         {/* <StoreList standalone="true" /> */}
-                                        <FacilityCreate />
+                                        <ServicesCreate />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

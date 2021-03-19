@@ -126,6 +126,8 @@ export function BillingList(){
             state:e.target.checked
         }
       await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
+      
+      //set of checked items
       if (e.target.checked){
         await setSelectedOrders((prevstate)=>(prevstate.concat(order)))
       }else{
@@ -187,7 +189,7 @@ export function BillingList(){
                 $limit:10,
                 $sort: {
                     createdAt: -1
-                  }``
+                  }
                     }}).then((res)=>{
                // console.log(res)
                setFacilities(res.data)

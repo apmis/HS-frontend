@@ -12,9 +12,11 @@ import Store, { StoreList, StoreListStandalone } from './Finance/Store'
 import {UserContext,ObjectContext} from '../context'
 import BillPrescription from './Finance/BillPrescription'
 import Services from './Finance/Services'
+import BillService from './Finance/BillService'
 
 export default function FinanceModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
+    const {user,setUser}=useContext(UserContext)
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
     const [showModal,setShowModal]=useState(false)
@@ -27,6 +29,7 @@ export default function FinanceModule() {
         if (!selectedStore){
             handleChangeStore()
 
+
             }
          return () => {       
             }
@@ -34,6 +37,15 @@ export default function FinanceModule() {
    
     useEffect(()=>{
      setSelectedStore(state.StoreModule.selectedStore)
+
+     const    newEmployeeLocation={
+        locationName:state.StoreModule.selectedStore.name,
+        locationType:"Finance",
+        locationId:state.StoreModule.selectedStore._id,
+        facilityId:user.currentEmployee.facilityDetail._id   ,
+        facilityName:user.currentEmployee.facilityDetail.facilityName
+    }
+   setState((prevstate)=>({...prevstate, employeeLocation:newEmployeeLocation}))
 
     },[state.StoreModule])
 
@@ -82,10 +94,10 @@ export default function FinanceModule() {
                                     <div className="navbar-item">
                                         <NavLink to={`${url}/services`}>Services</NavLink>
                                     </div>
-                                    {/* <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-entry`}>Product Entry</NavLink>
+                                     <div className="navbar-item">
+                                        <NavLink to={`${url}/billservice`}>Bill Services</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                   {/* <div className="navbar-item">
                                         <NavLink to={`${url}/inv-exit`}>Product Exit</NavLink>
                                     </div>
                                     <div className="navbar-item">
@@ -125,10 +137,10 @@ export default function FinanceModule() {
                        <Route path={`${path}/services`} exact >
                             <Services />
                         </Route>
-                          {/*<Route path={`${path}/inv-Finance`} exact>
-                            <FinanceStore />
+                         <Route path={`${path}/billservice`} exact>
+                            <BillService />
                         </Route>
-                        <Route path={`${path}/inv-entry`} exact>
+                        {/* <Route path={`${path}/inv-entry`} exact>
                             <ProductEntry />
                         </Route>
                         <Route path={`${path}/inv-exit`} exact>

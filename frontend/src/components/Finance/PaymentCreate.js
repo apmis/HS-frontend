@@ -298,18 +298,7 @@ export default function PaymentCreate(){
         console.log(productItem) */
         setChangeAmount(true)
      }
-   //check user for facility or get list of facility  
-    /*  useEffect(()=>{
-         //setFacility(user.activeProductEntry.FacilityId)//
-       if (!user.stacker){
-           console.log(currentUser)
-            /* setValue("facility", user.currentEmployee.facilityDetail._id,  {
-             shouldValidate: true,
-             shouldDirty: true
-         })  
- 
-       }
-     }) */
+   
  
      const handleQtty=async(e)=>{
          if (invquantity<e.target.value){
@@ -368,6 +357,7 @@ export default function PaymentCreate(){
             selectedMedication:{},
             show :'create'
         }
+        
       await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
        //console.log(state)
       // ProductEntry.show=!ProductEntry.show
@@ -1070,6 +1060,7 @@ export default function PaymentCreate(){
      )
     
  }
+ 
 
  export  function InventorySearch({getSearchfacility,clear}) {
     

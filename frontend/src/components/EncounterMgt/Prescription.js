@@ -216,8 +216,8 @@ export function PrescriptionCreate(){
          console.log(document.documentdetail)
           document.documentname="Prescription" //state.DocumentClassModule.selectedDocumentClass.name
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
-          document.location=state.ClinicModule.selectedClinic.name+" "+state.ClinicModule.selectedClinic.locationType
-          document.locationId=state.ClinicModule.selectedClinic._id
+         document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+         document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.clientname=state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname
           document.clientobj=state.ClientModule.selectedClient

@@ -14,6 +14,7 @@ import BillPrescription from './inventory/BillPrescription'
 
 export default function InventoryModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
+    const {user,setUser}=useContext(UserContext)
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
     const [showModal,setShowModal]=useState(false)
@@ -33,6 +34,14 @@ export default function InventoryModule() {
    
     useEffect(()=>{
      setSelectedStore(state.StoreModule.selectedStore)
+     const    newEmployeeLocation={
+        locationName:state.StoreModule.selectedStore.name,
+        locationType:"Store",
+        locationId:state.StoreModule.selectedStore._id,
+        facilityId:user.currentEmployee.facilityDetail._id   ,
+        facilityName:user.currentEmployee.facilityDetail.facilityName
+    }
+   setState((prevstate)=>({...prevstate, employeeLocation:newEmployeeLocation}))
 
     },[state.StoreModule])
 

@@ -90,7 +90,18 @@ function App() {
       state:'false',
       selectedFinance:{}
     },
-    currentClients:[]
+    currentClients:[],
+    employeeLocation:{
+      locationName:"",
+      locationType:"",
+      locationId:"",
+      facilityId:"",
+      facilityName:""
+    },
+    NoteModule:{
+      show:false,
+      selectedNote:{}
+    }
 
   })
   

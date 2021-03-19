@@ -176,7 +176,7 @@ export function AppointmentCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Client
+                    Create Appointment
                 </p>
             </div>
             <div className="card-content vscrollable">

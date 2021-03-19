@@ -12,6 +12,7 @@ import {UserContext,ObjectContext} from '../context'
 
 export default function ClinicModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
+    const {user,setUser}=useContext(UserContext)
     // eslint-disable-next-line
     const [selectedClinic,setSelectedClinic]=useState()
     const [showModal,setShowModal]=useState(false)
@@ -31,6 +32,15 @@ export default function ClinicModule() {
    
     useEffect(()=>{
      setSelectedClinic(state.ClinicModule.selectedClinic)
+
+     const    newEmployeeLocation={
+        locationName:state.ClinicModule.selectedClinic.name,
+        locationType:"Clinic",
+        locationId:state.ClinicModule.selectedClinic._id,
+        facilityId:user.currentEmployee.facilityDetail._id   ,
+        facilityName:user.currentEmployee.facilityDetail.facilityName
+    }
+   setState((prevstate)=>({...prevstate, employeeLocation:newEmployeeLocation}))
 
     },[state.ClinicModule])
 

@@ -48,6 +48,9 @@
 .remPad{
   padding: 0rem !important;
 }
+.poslabel{
+  margin-top: 0.6rem;
+}
 .remPadTop{
   padding-top: 1rem !important;
   padding-bottom: 0rem !important;

@@ -264,6 +264,7 @@ export default function FacilityPopup({facilityType,closeModal}){
                     setSuccess(true)
                 })
                 .catch((err)=>{
+                   
                     setMessage("Error creating facility, probable network issues "+ err )
                     setError(true)
                 })

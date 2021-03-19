@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict } from 'date-fns'
+import ClientFinInfo from './ClientFinInfo';
+import BillServiceCreate from '../Finance/BillServiceCreate'
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -533,7 +535,7 @@ export function ClientList(){
             if (user.currentEmployee){      
             const findClient= await ClientServ.find(
                 {query: {
-                   // facility:user.currentEmployee.facilityDetail._id,
+                    facility:user.currentEmployee.facilityDetail._id,
                     $limit:20,
                     $sort: {
                         createdAt: -1
@@ -692,7 +694,8 @@ export function ClientDetail(){
     let { path, url } = useRouteMatch();
   // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
+    const [finacialInfoModal, setFinacialInfoModal] =useState(false)
+    const [billingModal, setBillingModal] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
     //const ClientServ=client.service('/Client')
@@ -715,6 +718,21 @@ export function ClientDetail(){
        
     }
  
+   const  handleFinancialInfo = ()=>{
+    setFinacialInfoModal(true)
+
+    }
+  const  handlecloseModal = () =>{
+    setFinacialInfoModal(false)
+    }
+    const  handlecloseModal1 = () =>{
+        setBillingModal(false)
+        }
+  const showBilling = () =>{
+        setBillingModal(true)
+       //history.push('/app/finance/billservice')
+        }
+
     return (
         <>
         <div className="card ">
@@ -722,6 +740,7 @@ export function ClientDetail(){
                 <p className="card-header-title">
                     Client Details
                 </p>
+                <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>
             </div>
             <div className="card-content vscrollable">
            
@@ -1004,7 +1023,7 @@ export function ClientDetail(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-info is-small" >
+                    <button className="button is-info is-small" onClick={handleFinancialInfo}>
                         Financial Info
                     </button>
                 </p>
@@ -1029,6 +1048,41 @@ export function ClientDetail(){
            
         </div>
         </div>
+        <div className={`modal ${finacialInfoModal?"is-active":""}` }>
+            <div className="modal-background"></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                <p className="modal-card-title">Financial Information</p>
+                <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                </header>
+                <section className="modal-card-body">
+                {/* <StoreList standalone="true" /> */}
+                <ClientFinInfo closeModal={handlecloseModal}/>
+                </section>
+                {/* <footer className="modal-card-foot">
+                <button className="button is-success">Save changes</button>
+                <button className="button">Cancel</button>
+                </footer> */}
+            </div>
+        </div> 
+
+            <div className={`modal ${billingModal?"is-active":""}` }>
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                    <p className="modal-card-title">Bill Client</p>
+                    <button className="delete" aria-label="close"  onClick={handlecloseModal1}></button>
+                    </header>
+                    <section className="modal-card-body">
+                    {/* <StoreList standalone="true" /> */}
+                    <BillServiceCreate closeModal={handlecloseModal1}/>
+                    </section>
+                    {/* <footer className="modal-card-foot">
+                    <button className="button is-success">Save changes</button>
+                    <button className="button">Cancel</button>
+                    </footer> */}
+                </div>
+            </div>          
         </>
     )
    
@@ -1158,8 +1212,8 @@ export function ClientModify(){
 
    const handleCancel=async()=>{
     const    newClientModule={
-        selectedClient:{},
-        show :'create'
+        selectedClient:Client,
+        show :'detail'
       }
    await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
    //console.log(state)

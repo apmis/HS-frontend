@@ -24,6 +24,7 @@ export default function EncounterMain({nopresc}) {
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
    const [selectedClinic, setSelectedClinic]=useState() //
+   const [selectedNote, setSelectedNote]=useState() 
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -63,13 +64,13 @@ export default function EncounterMain({nopresc}) {
 
         //console.log("handlerow",Clinic)
 
-        await setSelectedClinic(Clinic)
+        await setSelectedNote(Clinic)
 
-        const    newClinicModule={
-            selectedClinic:Clinic,
-            show :'detail'
+         const    newClinicModule={
+            selectedNote:Clinic,
+            show :true
         }
-       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
+       await setState((prevstate)=>({...prevstate, NoteModule:newClinicModule})) 
        //console.log(state)
        Clinic.show=!Clinic.show
 
@@ -253,9 +254,9 @@ export default function EncounterMain({nopresc}) {
                                    
                                         {facilities.map((Clinic, i)=>(
 
-                                            <div key={Clinic._id}  onClick={()=>handleRow(Clinic)}   className={Clinic._id===(selectedClinic?._id||null)?"is-selected":""}>
+                                            <div key={Clinic._id}    className={Clinic._id===(selectedNote?._id||null)?"is-selected":""}>
                                                <div className="card mt-1 hovercard">
-                                                    <header className="card-header" onClick={(Clinic)=>Clinic.show=!Clinic.show}>
+                                                    <header className="card-header"  onClick={()=>handleRow(Clinic,i)}>
                                                         <div className="card-header-title">
                                                         <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
                                                         <p className="right ml-2 mr-0">{Clinic.status} </p> 
@@ -266,7 +267,7 @@ export default function EncounterMain({nopresc}) {
                                                         </span>
                                                         </button> */}
                                                     </header>
-                                                  {Clinic.documentname!=="Prescription" &&  <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                  {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders") && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                         { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                             <div className="field is-horizontal"> 
                                                                     <div className="field-label"> 
@@ -316,10 +317,54 @@ export default function EncounterMain({nopresc}) {
                                                                 </table>
                                                                 </div>}                                                   
                                                             </div>}
+                                                        
+                                                            {Clinic.documentname==="Billed Orders" &&  
+                                                <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                        
+                                                        {(Clinic.documentdetail.length>0) && <div>
+                                                            <label>Billed Orders:</label>
+                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                    <th><abbr title="Category">Category</abbr></th>
+                                                                    <th><abbr title="Name">Name</abbr></th>
+                                                                    <th><abbr title="Quantity">Quanitity</abbr></th>
+                                                                    <th><abbr title="Unit">Unit</abbr></th>
+                                                                    <th><abbr title="Selling Price">Selling Price</abbr></th>
+                                                                    <th><abbr title="Amount">Amount</abbr></th>
+                                                                    <th><abbr title="Billing Mode">Mode</abbr></th>
+                                                                    
+                                                                    </tr>
+                                                                </thead>
+                                                                <tfoot>
+                                                                    
+                                                                </tfoot>
+                                                                <tbody>
+                                                                { Clinic.documentdetail.map((ProductEntry, i)=>(
+
+                                                                        <tr key={i}>
+                                                                        <th>{i+1}</th>
+                                                                        <td>{ProductEntry.category}</td>
+                                                                        <td>{ProductEntry.name}</td>
+                                                                        <th>{ProductEntry.quantity}</th>
+                                                                        <td>{ProductEntry.baseunit}</td>
+                                                                        <td>{ProductEntry.sellingprice}</td>
+                                                                        <td>{ProductEntry.amount}</td>
+                                                                        <td>{ProductEntry.billMode.type}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                                </table>
+                                                                </div>}                                                   
+                                                            </div>}
+                                                        
                                                     </div>                                           
                                             </div>
 
                                         ))}
+
+                                    
                                       {/* <!-- Add Ref to Load More div --> */}
                                        {/*  <div className="loading" ref={loader}>
                                                 <h2>Load More</h2>

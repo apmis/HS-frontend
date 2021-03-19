@@ -19,11 +19,13 @@ import {
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
 import { PrescriptionList } from '../EncounterMgt/Prescription';
+import BillServiceCreate from '../Finance/BillServiceCreate'
 
 export default function PatientProfile () {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedClient,setSelectedClient]=useState() 
+    const [billingModal, setBillingModal] =useState(false)
     const client =state.ClientModule.selectedClient
     const {
         firstname,
@@ -57,7 +59,7 @@ export default function PatientProfile () {
         paymentinfo
     } =state.ClientModule.selectedClient 
 
-    const {
+  /*   const {
         cash,
         cashDetails,
         familycover,
@@ -66,7 +68,7 @@ export default function PatientProfile () {
         companyDetails,
         hmocover,
         hmoDetails
-        } =state.ClientModule.selectedClient.paymentinfo
+        } =state.ClientModule.selectedClient.paymentinfo */
 
     useEffect(() => {
         
@@ -83,6 +85,13 @@ export default function PatientProfile () {
             
         }
     })
+    const  handlecloseModal1 = () =>{
+        setBillingModal(false)
+        }
+  const showBilling = () =>{
+        setBillingModal(true)
+       //history.push('/app/finance/billservice')
+        }
 
     return (
         <div>
@@ -97,12 +106,12 @@ export default function PatientProfile () {
                         <div className="media-content">
                             <p className="title is-7">{firstname} {middlename} {lastname}</p>
                             <p className="subtitle is-7 payment">
-                                {cash && "Cash"}
+                                {/* {cash && "Cash"}
                                 {familycover && "Family Cover"}
                                 {companycover && "Company Cover"}
-                                {hmocover && "HMO Cover"}
+                                {hmocover && "HMO Cover"} */}
                                 </p>
-                            
+                                <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>
                         </div>
 
                     </div>
@@ -215,6 +224,23 @@ export default function PatientProfile () {
                         <div>                       
                     </div>
                     {/* <VideoConference /> */}
+                <div className={`modal ${billingModal?"is-active":""}` }>
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                    <p className="modal-card-title">Bill Client</p>
+                    <button className="delete" aria-label="close"  onClick={handlecloseModal1}></button>
+                    </header>
+                    <section className="modal-card-body">
+                    {/* <StoreList standalone="true" /> */}
+                    <BillServiceCreate closeModal={handlecloseModal1}/>
+                    </section>
+                    {/* <footer className="modal-card-foot">
+                    <button className="button is-success">Save changes</button>
+                    <button className="button">Cancel</button>
+                    </footer> */}
+                </div>
+            </div>          
         </div>
     )
 }
