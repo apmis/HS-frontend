@@ -114,6 +114,11 @@ function NavBar({url}){
         // eslint-disable-next-line 
     },[] )
 
+    const handleLogOut=()=>{
+        client.logout()
+        history.push('/')
+    }
+
     const handleFacilityClick=()=>{ //need to implement changing facility
         const availableFacilities=[]
         if (Array.isArray(user.employeeData)&& user.employeeData.length){
@@ -153,7 +158,7 @@ function NavBar({url}){
                         Front Desk
                     </div>
                     <hr className="navbar-divider" />
-                    <div className="navbar-item">
+                    <div className="navbar-item showAction" onClick={handleLogOut}>
                         Sign Out
                     </div>
                     
@@ -207,11 +212,11 @@ function NavBar({url}){
                                 <div className="navbar-item">
                                     <NavLink to={`${url}/finance`}>Finance</NavLink>
                                 </div>
-                                <div className="navbar-item">
+                                {/* <div className="navbar-item">
                                     Front Desk
-                                </div>
+                                </div> */}
                                 <hr className="navbar-divider" />
-                                <div className="navbar-item">
+                                <div className="navbar-item showAction" onClick={handleLogOut}>
                                    Sign Out
                                 </div>
                             </div>
