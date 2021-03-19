@@ -73,7 +73,7 @@ export function InventoryCreate(){
     useEffect(()=>{
         //setFacility(user.activeInventory.FacilityId)//
       if (!user.stacker){
-          console.log(currentUser)
+          //console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
             shouldValidate: true,
             shouldDirty: true
@@ -87,7 +87,7 @@ export function InventoryCreate(){
         setError(false)
         setSuccess(false)
          // data.createdby=user._id
-          console.log(data);
+          //console.log(data);
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
@@ -312,9 +312,9 @@ export function InventoryList(){
 
     }
 
-   const handleSearch=(val)=>{
+        const handleSearch=(val)=>{
        const field='name'
-       console.log(val)
+       //console.log(val)
        InventoryServ.find({query: {
                 [field]: {
                     $regex:val,
@@ -327,7 +327,7 @@ export function InventoryList(){
                     createdAt: -1
                   }
                     }}).then((res)=>{
-                console.log(res)
+                //console.log(res)
                setFacilities(res.data)
                 setMessage(" Inventory  fetched successfully")
                 setSuccess(true) 
@@ -342,17 +342,17 @@ export function InventoryList(){
         const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findInventory= await InventoryServ.find(
-                {query: {
-                    facility:user.currentEmployee.facilityDetail._id,
-                    storeId:state.StoreModule.selectedStore._id,
-                    $limit:20,
-                    $sort: {
-                        createdAt: -1
-                    }
-                    }})
-
-         await setFacilities(findInventory.data)
+            const findInventory= await InventoryServ.find(
+                    {query: {
+                        facility:user.currentEmployee.facilityDetail._id,
+                        storeId:state.StoreModule.selectedStore._id,
+                        $limit:20,
+                        $sort: {
+                            createdAt: -1
+                        }
+                        }})
+                        //console.log("this is data", findInventory)
+            await setFacilities(findInventory.data)
                 }
                 else {
                     if (user.stacker){
@@ -381,7 +381,7 @@ export function InventoryList(){
                 }) */
             }
             
-            useEffect(() => {
+           /*  useEffect(() => {
                 setTimeout(() => {
                     console.log("happy birthday")
                     //getFacilities(user)
@@ -391,7 +391,7 @@ export function InventoryList(){
                     
 
                 }
-            },[])
+            },[]) */
 
             useEffect(() => {
                
@@ -481,8 +481,8 @@ export function InventoryList(){
                                             <th>{Inventory.name}</th>
                                             <td>{Inventory.quantity}</td>
                                             <td>{Inventory.baseunit}</td>
-                                            <td>{Inventory.stockvalue}</td>
-                                            <td>{Inventory.costprice}</td>
+                                            <td>{Inventory.stockvalue.toLocaleString('en-US', {maximumFractionDigits:2})}</td>
+                                            <td>{Inventory.costprice.toFixed(2)}</td>
                                             <td>{Inventory.sellingprice}</td>
                                             <td>{Inventory.reorder_level}</td> 
                                             <td>{Inventory.expiry}</td>
@@ -518,7 +518,7 @@ export function InventoryDetail(){
    
 
    const Inventory =state.InventoryModule.selectedInventory 
-   console.log("selected",Inventory)
+   //console.log("selected",Inventory)
 
    
   const getFacilities= async()=>{
@@ -533,7 +533,7 @@ export function InventoryDetail(){
             }
             }})
 
-        console.log(findProductEntry)
+        //console.log(findProductEntry)
        }
     
        useEffect(() => {
@@ -636,21 +636,21 @@ export function InventoryDetail(){
                         Set Price
                     </button>
                 </p>
-                <p className="control">
-                    <button className="button is-danger is-small"  /*  onClick={handleSetPrice} */>
+               {/*  <p className="control">
+                    <button className="button is-danger is-small"   onClick={handleSetPrice}>
                         Audit
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-info is-small" /* onClick={handleEdit} */>
+                    <button className="button is-info is-small" onClick={handleEdit} >
                         Transaction History
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" /* onClick={handleEdit} */>
+                    <button className="button is-warning is-small"  onClick={handleEdit} >
                         Reorder Level
                     </button>
-                </p>
+                </p> */}
             </div>
             { error && <div className="message"> {message}</div>}
            
@@ -694,7 +694,7 @@ export function InventoryModify(){
                 shouldDirty: true
             })
             await setBillService(service)
-            console.log(contractSel,service)
+            //console.log(contractSel,service)
     }
  
         useEffect(() => {
@@ -712,7 +712,7 @@ export function InventoryModify(){
         show :'detail'
       }
         await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-   //console.log(state)
+   ////console.log(state)
            }
 
 
@@ -734,7 +734,7 @@ export function InventoryModify(){
              
         InventoryServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                ////console.log(JSON.stringify(res))
                 reset();
                /*  setMessage("Deleted Inventory successfully")
                 setSuccess(true)
@@ -772,7 +772,7 @@ export function InventoryModify(){
         e.preventDefault();
         
         setSuccess(false)
-        console.log(data)
+        //console.log(data)
        // data.facility=Inventory.facility
           //console.log(data);
           const contractSel= billservice.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
@@ -907,9 +907,9 @@ export  function ProductSearch({getSearchfacility,clear}) {
    //console.log(state)
 }
     const handleBlur=async(e)=>{
-         if (count===2){
-             console.log("stuff was chosen")
-         }
+        /*  if (count===2){
+            // console.log("stuff was chosen")
+         } */
        
        /*  console.log("blur")
          setShowPanel(false)
@@ -940,7 +940,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-              console.log("facility  fetched successfully") 
+              //console.log("facility  fetched successfully") 
                 setFacilities(res.data)
                  setSearchMessage(" facility  fetched successfully")
                  setShowPanel(true)
@@ -952,11 +952,11 @@ export  function ProductSearch({getSearchfacility,clear}) {
              })
          }
         else{
-            console.log("less than 3 ")
-            console.log(val)
+            //console.log("less than 3 ")
+            //console.log(val)
             setShowPanel(false)
             await setFacilities([])
-            console.log(facilities)
+            //console.log(facilities)
         }
     }
     useEffect(() => {

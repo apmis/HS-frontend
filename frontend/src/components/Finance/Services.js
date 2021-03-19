@@ -641,7 +641,7 @@ export function ServicesList(){
                     createdAt: -1
                   }
                     }}).then((res)=>{
-               // console.log(res)
+                console.log(res)
                setFacilities(res.groupedOrder)
                 
             })
@@ -669,7 +669,7 @@ export function ServicesList(){
                         category: 1
                     }
                     }})
-
+                    console.log(findServices)
          await setFacilities(findServices.groupedOrder)
         // console.log(findServices)
                 }
