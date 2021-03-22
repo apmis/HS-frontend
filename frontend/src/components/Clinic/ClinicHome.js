@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React ,{useState,useEffect,useContext} from 'react'
 import Store, { StoreList } from './Clinic'
 import {UserContext,ObjectContext} from '../../context'

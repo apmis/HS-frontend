@@ -46,6 +46,7 @@ function NavBar({url}){
     const [fullname, setFullname]=useState("")
     const [userFacility, setUserFacility]=useState()
     const {user,setUser} = useContext(UserContext)
+    const [showmenu, setShowMenu]=useState(false)
     const history =useHistory()
     
     const reAuth =  async() =>{
@@ -128,64 +129,40 @@ function NavBar({url}){
         }
         console.log(availableFacilities)
     }
+    const handleBurger=()=>{
+        //showmenu=!showmenu
+       //alert(showmenu)
+        setShowMenu(prev=>(!prev))
+    }
     if (!user) return 'Loading...'
     return(
         <div>
            <nav className="navbar is-small minHt has-background-info" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand minHt">
-                    <div className="navbar-item is-size-5 minHt" onClick={handleFacilityClick}> <strong>{userFacility ||""} </strong> </div>
+                    <div className="navbar-item is-size-5 minHt" onClick={handleFacilityClick}> 
+                        <strong>{userFacility ||""} </strong> 
+                    </div>
                     {/* <div className="navbar-item" href="https://bulma.io">
                     <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
                     </div> */}
 
-                    <div role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                    <div className="navbar-item">
-                        <NavLink to={`${url}`}>Landing Page</NavLink> 
-                    </div>
-                    <div className="navbar-item">
-                        <NavLink to={`${url}/clinic`}>Clinic</NavLink>
-                    </div>
-                    <div className="navbar-item">
-                        <NavLink to={`${url}/inventory`}>Inventory</NavLink>
-                    </div>
-                    <div className="navbar-item">
-                        <NavLink to={`${url}/facility`}>Admin</NavLink>
-                    </div>
-                    <div className="navbar-item">
-                        <NavLink to={`${url}/finance`}>Finance</NavLink>
-                    </div>
-                    <div className="navbar-item">
-                        Front Desk
-                    </div>
-                    <hr className="navbar-divider" />
-                    <div className="navbar-item showAction" onClick={handleLogOut}>
-                        Sign Out
-                    </div>
+                    <a role="button" className="navbar-burger minHt" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample"  onClick={handleBurger} >
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span> 
+                    </a>
                     
-                  {/*   <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span> */}
-                    </div>
                 </div>
 
-                <div id="navbarBasicExample" className="navbar-menu minHt">
+                <div  className={`navbar-menu minHt  has-background-info ${showmenu?"is-active":""}`}   id="navbarBasicExample">
                     <div className="navbar-start">
-                    {/* <div className="navbar-item">
-                        Home
-                    </div>
-
-                    <div className="navbar-item">
-                        Documentation
-                    </div> */}
-
-                    
                     </div>
 
                     <div className="navbar-end">
-                    <div className="navbar-item has-dropdown is-hoverable">
-                        <div className="navbar-link">
+                    <div className="navbar-item has-dropdown is-hoverable  has-background-info">
+                        <div className="navbar-link is-arrowless  ">
                         
-                            <div className="button is-info is-inverted minHt">
+                            <div className="button is-info is-inverted minHt ">
                                 <span className="icon">
                                 <i className="fa fa-user-md"></i>
                                 </span>
@@ -197,19 +174,19 @@ function NavBar({url}){
                         </div>
 
                             <div className="navbar-dropdown bckcolor">
-                                <div className="navbar-item">
+                                <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}`}>Landing Page</NavLink> 
                                 </div>
-                                <div className="navbar-item">
+                                <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/clinic`}>Clinic</NavLink>
                                 </div>
-                                <div className="navbar-item">
+                                <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/inventory`}>Inventory</NavLink>
                                 </div>
-                                <div className="navbar-item">
+                                <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>
                                 </div>
-                                <div className="navbar-item">
+                                <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/finance`}>Finance</NavLink>
                                 </div>
                                 {/* <div className="navbar-item">

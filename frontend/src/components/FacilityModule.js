@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable */
+import React ,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import CareTeam from './facility/CareTeam'
 import Department from './facility/Department'
@@ -13,7 +14,12 @@ import Workspace from './facility/Workspace'
 import Accessibility from './facility/Accessibility'
 
 export default function FacilityModule() {
+    const [showmenu, setShowMenu]=useState(false)
     let { path, url } = useRouteMatch();
+    const handleBurger=()=>{
+       
+        setShowMenu(prev=>(!prev))
+    }
     return (
             <section className="section has-background-info remPad">
                {/*  <div className=""> */}
@@ -26,45 +32,45 @@ export default function FacilityModule() {
                             {/* <div className="navbar-item">
                                 <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
                             </div> */}
-                                <span className="navbar-burger" data-target="navbarMenuHeroB">
+                                <span className="navbar-burger minHt" data-target="navbarMenuHeroB" onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
                                     <span></span>
                                 </span>
                             </div>
-                            <div id="navbarMenuHeroB" className="navbar-menu">
-                                <div className="navbar-end">
-                                    <div className="navbar-item">
+                            <div id="navbarMenuHeroB" className={`navbar-menu minHt  has-background-info ${showmenu?"is-active":""}`}>
+                                <div className={`navbar-end ${showmenu?"bckcolor":""}`}>
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                      {/*  <div className="navbar-item">
+                                      {/*  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/accessibility`}>User Access</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/careteam`}>Care Teams</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/department`}>Department</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/dept-unit`}>Department Units</NavLink>
                                     </div> 
-                                     <div className="navbar-item">
+                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/hsmodules`}>Modules</NavLink>
                                     </div>*/}
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/employees`}>Employees</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/location`}>Locations</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/facility`}>Facility</NavLink>
                                     </div>
-                                    {/* <div className="navbar-item">
+                                    {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/roaster`}>Roaster</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/workspace`}>Workspace</NavLink>
                                     </div> */}
                                     

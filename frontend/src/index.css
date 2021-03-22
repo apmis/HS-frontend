@@ -31,3 +31,10 @@ body {
   text-rendering: optimizeLegibility;
   padding-bottom: 2rem;
  }
+ @media only screen and (max-width: 1024px) {
+   html{
+    overflow-y:auto  !important;
+    overflow-x: auto;
+   }
+   
+  }

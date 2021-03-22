@@ -19,8 +19,7 @@ export default function SignUp() {
               setErrorMessage("Passwords not identical")
               setError(true)
               return
-          }
-        
+          }       
           delete data.password2
           console.log(data);
           userServ.create(data)

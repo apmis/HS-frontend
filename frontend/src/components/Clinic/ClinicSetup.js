@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {toast} from 'bulma-toast'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
 import Draggable from 'react-draggable';
 import { Jutsu } from 'react-jutsu'

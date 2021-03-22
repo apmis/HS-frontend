@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import ClinicReport from './Clinic/ClinicReport'
@@ -16,7 +17,7 @@ export default function ClinicModule() {
     // eslint-disable-next-line
     const [selectedClinic,setSelectedClinic]=useState()
     const [showModal,setShowModal]=useState(false)
-
+    const [showmenu, setShowMenu]=useState(false)
     let { path, url } = useRouteMatch();
     
     useEffect(() => {
@@ -48,6 +49,11 @@ export default function ClinicModule() {
         await setShowModal(true)                                                                                                                                                        
        // console.log( showModal)
     }
+    const handleBurger=()=>{
+       
+        setShowMenu(prev=>(!prev))
+    }
+
 
     return (
             <section className="section has-background-info remPad">
@@ -59,45 +65,45 @@ export default function ClinicModule() {
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">
                                         Health Stack::Clinic::{selectedClinic?selectedClinic.name:""}</span>
-                                        <button className="button is-small is-info minHt" onClick={()=>handleChangeClinic()}>Change Clinic</button> 
+                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeClinic()}>Change Clinic</button> 
                                 </div>
                                 
                             {/* <div className="navbar-item">
                                 <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
                             </div> */}
-                                <span className="navbar-burger" data-target="navbarMenuHeroB">
+                                <span className="navbar-burger minHt" data-target="navbarMenuHeroB"  onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
                                     <span></span>
                                 </span>
                             </div>
-                            <div id="navbarMenuHeroB" className="navbar-menu">
-                                <div className="navbar-end">
-                                    <div className="navbar-item">
+                            <div id="navbarMenuHeroB" className={`navbar-menu minHt  has-background-info ${showmenu?"is-active":""}`}>
+                                <div className={`navbar-end ${showmenu?"bckcolor":""}`}>
+                                    <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinics`}>Clinics</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
                                     </div>
-                                     <div className="navbar-item">
+                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/appointments`}>Appointments</NavLink>
                                     </div>
-                                  {/*   <div className="navbar-item">
+                                  {/*   <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
                                     </div>  */}
-                                    {/* <div className="navbar-item">
+                                    {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
                                     </div> */}
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/patients`}>Clients</NavLink>
                                     </div>
-                                    {/* <div className="navbar-item">
+                                    {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
                                     </div> */}
-                                {/* <span className="navbar-item">
+                                {/* <span className="navbar-item" onClick={handleBurger}>
                                 <div className="button is-info is-inverted">
                                     <span className="icon">
                                     <i className="fab fa-github"></i>

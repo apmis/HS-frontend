@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-router-dom'
 import client from '../../feathers'

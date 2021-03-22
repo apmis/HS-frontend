@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useState,useContext, useEffect} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';

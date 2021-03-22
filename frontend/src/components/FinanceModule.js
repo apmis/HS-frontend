@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import FinanceReport from './Finance/FinanceReport'
@@ -20,6 +21,7 @@ export default function FinanceModule() {
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
     const [showModal,setShowModal]=useState(false)
+    const [showmenu, setShowMenu]=useState(false)
 
     let { path, url } = useRouteMatch();
     
@@ -54,6 +56,11 @@ export default function FinanceModule() {
         console.log( showModal)
     }
 
+    const handleBurger=()=>{
+        
+        setShowMenu(prev=>(!prev))
+    }
+
     return (
             <section className="section has-background-info remPad">
                
@@ -70,31 +77,31 @@ export default function FinanceModule() {
                             {/* <div className="navbar-item">
                                 <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
                             </div> */}
-                                <span className="navbar-burger" data-target="navbarMenuHeroB">
+                                <span className="navbar-burger minHt" data-target="navbarMenuHeroB" onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
                                     <span></span>
                                 </span>
                             </div>
-                            <div id="navbarMenuHeroB" className="navbar-menu">
-                                <div className="navbar-end">
-                                    <div className="navbar-item">
+                            <div id="navbarMenuHeroB" className={`navbar-menu minHt  has-background-info ${showmenu?"is-active":""}`}>
+                                <div className={`navbar-end ${showmenu?"bckcolor":""}`}>
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/payment`}>Payment</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/location`}>Finance Locations</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
                                     
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/collections`}>Collections</NavLink>
                                     </div>
-                                    <div className="navbar-item">
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/services`}>Services</NavLink>
                                     </div>
-                                     <div className="navbar-item">
+                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/billservice`}>Bill Services</NavLink>
                                     </div>
                                    {/* <div className="navbar-item">
