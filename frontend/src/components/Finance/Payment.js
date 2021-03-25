@@ -174,17 +174,35 @@ export function BillingList(){
        const field='name'
        //console.log(val)
        BillServ.find({query: {
-                order: {
-                    $regex:val,
-                    $options:'i'
-                   
-                },
-                order_status: {
-                    $regex:val,
-                    $options:'i'
-                   
-                },
-                order_category:"Prescription",
+        'participantInfo.paymentmode.detail.principalName': {
+            $regex:val,
+            $options:'i'
+        
+        },
+           /*  $or:[
+                {
+           
+                } ,
+                {
+            'orderInfo.orderObj.clientname': {
+                        $regex:val,
+                        $options:'i'
+                    
+                    }
+                }
+                ], */
+                
+                //order_category:"Prescription",
+             $or:[
+                    {
+                       'participantInfo.paymentmode.type':"Cash"
+                    },
+                    {
+                       'participantInfo.paymentmode.type':"Family Cover"
+                    }
+                ],
+                'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
+                billing_status:"Unpaid",  // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
@@ -193,7 +211,7 @@ export function BillingList(){
                   }
                     }}).then((res)=>{
                // console.log(res)
-               setFacilities(res.data)
+               setFacilities(res.groupedOrder)
                 setMessage(" ProductEntry  fetched successfully")
                 setSuccess(true) 
             })
@@ -208,7 +226,14 @@ export function BillingList(){
             // console.log("here b4 server")
     const findProductEntry= await BillServ.find(
             {query: {
-                'participantInfo.paymentmode.type':"Cash",
+                $or:[
+                    {
+                       'participantInfo.paymentmode.type':"Cash"
+                    },
+                    {
+                       'participantInfo.paymentmode.type':"Family Cover"
+                    }
+                ],
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
                 billing_status:"Unpaid",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
@@ -270,7 +295,7 @@ export function BillingList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Medications"
+                                        type="text" placeholder="Search Bills"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />

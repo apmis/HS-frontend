@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-//import PaymentCreate from './PaymentCreate'
+import PaymentCreate from '../Finance/PaymentCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
@@ -23,12 +23,11 @@ import {
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-import { ProductExitCreate } from './DispenseExit';
 //import BillPrescriptionCreate from './BillPrescriptionCreate';
 
 
 
-export default function Dispense() {
+export default function Payment() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -56,12 +55,12 @@ export default function Dispense() {
             </div> */}
             <div className="columns ">
                 <div className="column is-6 ">
-                    <DispenseList />
+                    <PharmacyBillingList />
                     </div>
               
                 <div className="column is-6 ">
                 
-                {(state.financeModule.show ==='detail')&& <ProductExitCreate />}
+                {(state.financeModule.show ==='detail')&& <PaymentCreate/ >}
                 </div>
                {/*  <div className="column is-3 ">
                 
@@ -75,7 +74,7 @@ export default function Dispense() {
     
 }
 
-export function DispenseList(){
+export function PharmacyBillingList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -128,6 +127,8 @@ export function DispenseList(){
             state:e.target.checked
         }
       await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
+      
+      //set of checked items
       if (e.target.checked){
         await setSelectedOrders((prevstate)=>(prevstate.concat(order)))
       }else{
@@ -138,7 +139,7 @@ export function DispenseList(){
     }
     const handleMedicationRow= async(ProductEntry,e)=>{ //handle selected single order
         //console.log("b4",state)
-        alert("Header touched")
+       // alert("Header touched")
     
         //console.log("handlerow",ProductEntry)
        /* alert(ProductEntry.checked)*/
@@ -173,26 +174,45 @@ export function DispenseList(){
        const field='name'
        //console.log(val)
        BillServ.find({query: {
-                order: {
-                    $regex:val,
-                    $options:'i'
-                   
-                },
-                order_status: {
-                    $regex:val,
-                    $options:'i'
-                   
-                },
-                order_category:"Prescription",
+        'participantInfo.paymentmode.detail.principalName': {
+            $regex:val,
+            $options:'i'
+        
+        },
+           /*  $or:[
+                {
+           
+                } ,
+                {
+            'orderInfo.orderObj.clientname': {
+                        $regex:val,
+                        $options:'i'
+                    
+                    }
+                }
+                ], */
+                
+                //order_category:"Prescription",
+             $or:[
+                    {
+                       'participantInfo.paymentmode.type':"Cash"
+                    },
+                    {
+                       'participantInfo.paymentmode.type':"Family Cover"
+                    }
+                ],
+                'orderInfo.orderObj.order_category':"Prescription",
+                'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
+                billing_status:"Unpaid",  // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
                 $sort: {
                     createdAt: -1
-                  }``
+                  }
                     }}).then((res)=>{
                // console.log(res)
-               setFacilities(res.data)
+               setFacilities(res.groupedOrder)
                 setMessage(" ProductEntry  fetched successfully")
                 setSuccess(true) 
             })
@@ -207,30 +227,25 @@ export function DispenseList(){
             // console.log("here b4 server")
     const findProductEntry= await BillServ.find(
             {query: {
-                /* $or:[
+                $or:[
                     {
                        'participantInfo.paymentmode.type':"Cash"
                     },
                     {
                        'participantInfo.paymentmode.type':"Family Cover"
                     }
-                ], */
+                ],
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                billing_status:{
-                    $ne: "Unpaid"
-                },
-               'orderInfo.orderObj.fulfilled':{
-                $ne:"True"
-               },
-                //billing_status:"Fully Paid",
-               // fulfilled:false,  
+                billing_status:"Unpaid",  // need to set this finally
+                //storeId:state.StoreModule.selectedStore._id,
+                //clientId:state.ClientModule.selectedClient._id,
                 $limit:100,
                 $sort: {
-                    updatedAt: 1
+                    createdAt: -1
                 }
                 }})
 
-            console.log("updatedorder", findProductEntry.groupedOrder)
+            //console.log("updatedorder", findProductEntry.groupedOrder)
             await setFacilities(findProductEntry.groupedOrder)
           //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
@@ -247,31 +262,13 @@ export function DispenseList(){
             BillServ.on('patched', (obj)=>getFacilities())
             BillServ.on('removed', (obj)=>getFacilities())
             return () => {
-              cleanup()
             
             }
             },[])
 
-    const cleanup =async ()=>{
-        const    newClientModule={
-            selectedClient:{},
-            show :'create'
-        }
-       await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
-
-       const    newProductEntryModule={
-        selectedFinance:{},
-        show :'create',
-        state:""
-    }
-  await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
-
-
-    }
-
     useEffect(() => {
         //changes with checked box
-        console.log(selectedOrders)
+       // console.log(selectedOrders)
         
         return () => {
             
@@ -299,7 +296,7 @@ export function DispenseList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Medications"
+                                        type="text" placeholder="Search Bills"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -310,7 +307,7 @@ export function DispenseList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Paid Prescriptions </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Unpaid Bills </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -325,7 +322,7 @@ export function DispenseList(){
                             <AccordionItem  key={Clinic.client_id}  >
                                <AccordionItemHeading >
                                     <AccordionItemButton  >
-                                   {/*  <input type = "checkbox" name={Clinic.client_id}  />  */} 
+                                    {/* <input type = "checkbox" name={Clinic.client_id}  />   */}
                                     <strong> {i+1} {Clinic.clientname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
                                     </AccordionItemButton>
                                 </AccordionItemHeading>
@@ -336,8 +333,8 @@ export function DispenseList(){
                                                 <AccordionItem  key={Clinic.client_id} >
                                                     <AccordionItemHeading >
                                                     <AccordionItemButton  >
-                                                   {/*  <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} />   */}
-                                                         {category.catName} with {category.order.length} Paid bill(s). {/* Total amount: N */}
+                                                    {/* <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} /> */}  
+                                                         {category.catName} with {category.order.length} Unpaid bills. {/* Total amount: N */}
                                                     </AccordionItemButton>
                                                     </AccordionItemHeading>
                                                     <AccordionItemPanel>

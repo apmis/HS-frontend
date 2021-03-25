@@ -7,8 +7,8 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-import BillDispenseCreate from './BillPrescriptionCreate'
-import PatientProfile from '../ClientMgt/PatientProfile'
+//import BillDispenseCreate from './BillPrescriptionCreate'
+//import PatientProfile from '../ClientMgt/PatientProfile'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
 //const searchfacility={};
@@ -23,6 +23,8 @@ import {
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
 
+
+//fetching billed prescription for client
 export default function ClientBilledPrescription({selectedClient}){
     // const { register, handleSubmit, watch, errors } = useForm();
      // eslint-disable-next-line
@@ -44,7 +46,7 @@ export default function ClientBilledPrescription({selectedClient}){
      const [selectedMedication, setSelectedMedication] =useState("")
 
 
-     console.log(selectedClient)
+    // console.log(selectedClient)
  
      const handleSelectedClient= async(Client)=>{
          // await setSelectedClient(Client)
@@ -140,7 +142,7 @@ export default function ClientBilledPrescription({selectedClient}){
                  }
                  }})
  
-             console.log("clientorders", findProductEntry)
+            // console.log("clientorders", findProductEntry)
              await setClientOrders(findProductEntry.data)
              //await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
              }   
