@@ -10,6 +10,7 @@ import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict } from 'date-fns'
 import ClientFinInfo from './ClientFinInfo';
 import BillServiceCreate from '../Finance/BillServiceCreate'
+import {AppointmentCreate} from '../Clinic/Appointments'
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -559,29 +560,8 @@ export function ClientList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Client  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Client, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
-    /* useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
-                    //getFacilities(user)
-                }, 200);
-
-                return () => {
-                    
-
-                }
-            },[]) */
 
     useEffect(() => {
                
@@ -696,6 +676,7 @@ export function ClientDetail(){
     const [error, setError] =useState(false) //, 
     const [finacialInfoModal, setFinacialInfoModal] =useState(false)
     const [billingModal, setBillingModal] =useState(false)
+    const [appointmentModal, setAppointmentModal] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
     //const ClientServ=client.service('/Client')
@@ -718,20 +699,30 @@ export function ClientDetail(){
        
     }
  
-   const  handleFinancialInfo = ()=>{
+    const  handleFinancialInfo = ()=>{
     setFinacialInfoModal(true)
 
     }
-  const  handlecloseModal = () =>{
+    const  handlecloseModal = () =>{
     setFinacialInfoModal(false)
     }
+
     const  handlecloseModal1 = () =>{
         setBillingModal(false)
         }
-  const showBilling = () =>{
+
+    const  handlecloseModal2 = () =>{
+            setAppointmentModal(false)
+            }
+
+    const showBilling = () =>{
         setBillingModal(true)
        //history.push('/app/finance/billservice')
         }
+
+    const handleSchedule =()=>{
+        setAppointmentModal(true)
+    }
 
     return (
         <>
@@ -1028,7 +1019,7 @@ export function ClientDetail(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" >
+                    <button className="button is-warning is-small" onClick={handleSchedule}>
                         Schedule appointment
                     </button>
                 </p>
@@ -1075,14 +1066,31 @@ export function ClientDetail(){
                     </header>
                     <section className="modal-card-body">
                     {/* <StoreList standalone="true" /> */}
-                    <BillServiceCreate closeModal={handlecloseModal1}/>
+                    < BillServiceCreate closeModal={handlecloseModal1}/>
                     </section>
                     {/* <footer className="modal-card-foot">
                     <button className="button is-success">Save changes</button>
                     <button className="button">Cancel</button>
                     </footer> */}
                 </div>
-            </div>          
+            </div>  
+            <div className={`modal ${appointmentModal?"is-active":""}` }>
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                    <p className="modal-card-title">Set Appointment</p>
+                    <button className="delete" aria-label="close"  onClick={handlecloseModal2}></button>
+                    </header>
+                    <section className="modal-card-body">
+                    {/* <StoreList standalone="true" /> */}
+                    <AppointmentCreate  closeModal={handlecloseModal2}/>
+                    </section>
+                    {/* <footer className="modal-card-foot">
+                    <button className="button is-success">Save changes</button>
+                    <button className="button">Cancel</button>
+                    </footer> */}
+                </div>
+            </div>                  
         </>
     )
    

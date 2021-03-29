@@ -7,7 +7,10 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import { formatDistanceToNowStrict, format } from 'date-fns'
+import { formatDistanceToNowStrict, format, subDays,addDays } from 'date-fns'
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -60,9 +63,10 @@ export function AppointmentCreate(){
    // const [appointment_reason,setAppointment_reason]= useState()
     const [appointment_status,setAppointment_status]=useState("")
     const [appointment_type, setAppointment_type]=useState("")
+  
     const [chosen, setChosen]=useState()
 
-
+    let appointee  //  =state.ClientModule.selectedClient 
    /*  const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -171,6 +175,16 @@ export function AppointmentCreate(){
 
       } 
 
+    useEffect(() => {
+        getSearchfacility(state.ClientModule.selectedClient )
+        
+        /* appointee=state.ClientModule.selectedClient 
+        console.log(appointee.firstname) */
+        return () => {
+           
+        }
+    }, [state.ClientModule.selectedClient ])
+
     return (
         <>
             
@@ -180,17 +194,16 @@ export function AppointmentCreate(){
                     Create Appointment
                 </p>
             </div>
-            <div className="card-content vscrollable">
-           {/*  <p className=" is-small">
-                    Kindly search Client list before creating new Clients!
-                </p> */}
+            <div className="card-content vscrollable remPad1">
+          
             <form onSubmit={handleSubmit(onSubmit)}>
-            <input name="start_time" ref={register ({ required: true })} type="datetime-local" />
-           
             <label className="label is-small">Client:</label>
          <div className="field is-horizontal">
             <div className="field-body">
-            <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+          {state.ClientModule.selectedClient.firstname !==undefined ? <> 
+              <label className="label is-size-7" > {state.ClientModule.selectedClient.firstname} {state.ClientModule.selectedClient .lastname}</label>
+               </> 
+               : <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
                     <ClientSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                     <p className="control has-icons-left " style={{display:"none"}}>
                         <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={clientId} name="ClientId" type="text" onChange={e=>setClientId(e.target.value)} placeholder="Product Id" />
@@ -199,9 +212,13 @@ export function AppointmentCreate(){
                         </span>
                     </p>
                  {/* {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"}  */}
-                </div>
+                </div>}
             </div>
         </div>
+        <div className="field">
+            <input name="start_time" ref={register ({ required: true })} type="datetime-local" />
+        </div>
+           
         <div className="field">    
                 <div className="control">
                     <div className="select is-small">
@@ -272,43 +289,7 @@ export function AppointmentCreate(){
             </form>
             </div>
             </div>
-                 {/*  <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
-                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
-                    <span className="icon is-small is-left">
-                    <i className="fas  fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div> */}
-         {/*   <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div> */}
+                
         </>
     )
    
@@ -332,7 +313,7 @@ export function ClientList(){
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
-    
+    const [startDate, setStartDate] = useState(new Date())
     const [selectedAppointment,setSelectedAppointment]=useState()
 
 
@@ -344,6 +325,11 @@ export function ClientList(){
             }
         await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
        //console.log(state)
+       const newClient={
+        selectedClient:{},
+        show :'create'
+        }
+        await setState((prevstate)=>({...prevstate, ClientModule:newClient}))
         } 
 
     
@@ -355,6 +341,7 @@ export function ClientList(){
         }
        await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
     }
+    //console.log(state.employeeLocation)
 
    const handleSearch=(val)=>{
        const field='firstname'
@@ -372,27 +359,28 @@ export function ClientList(){
                     { middlename: {
                         $regex:val,
                         $options:'i' 
-                    }},
+                    }}, 
                     { phone: {
                         $regex:val,
                         $options:'i' 
                     }},
-                    { clientTags: {
+                    { appointment_type: {
                         $regex:val,
                         $options:'i' 
                     }},
-                    { mrn: {
+                    { appointment_status: {
                         $regex:val,
                         $options:'i' 
                     }},
-                    { specificDetails: {
+                    {appointment_reason: {
                         $regex:val,
                         $options:'i' 
                     }},
+                    
                 ],
-              
+                locationId:state.employeeLocation.locationId,
               facility:user.currentEmployee.facilityDetail._id, // || "",
-                $limit:10,
+                $limit:20,
                 $sort: {
                     createdAt: -1
                   }
@@ -413,8 +401,9 @@ export function ClientList(){
             if (user.currentEmployee){      
             const findClient= await ClientServ.find(
                 {query: {
-                   // facility:user.currentEmployee.facilityDetail._id,
-                    $limit:20,
+                    facility:user.currentEmployee.facilityDetail._id,
+                    locationId:state.employeeLocation.locationId,
+                    $limit:100,
                     $sort: {
                         createdAt: -1
                     }
@@ -426,7 +415,6 @@ export function ClientList(){
                     if (user.stacker){
                         const findClient= await ClientServ.find(
                             {query: {
-                                
                                 $limit:20,
                                 $sort: {
                                     createdAt: -1
@@ -437,29 +425,8 @@ export function ClientList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Client  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Client, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
-    /* useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
-                    //getFacilities(user)
-                }, 200);
-
-                return () => {
-                    
-
-                }
-            },[]) */
 
     useEffect(() => {
                
@@ -478,12 +445,50 @@ export function ClientList(){
                 ClientServ.on('updated', (obj)=>getFacilities())
                 ClientServ.on('patched', (obj)=>getFacilities())
                 ClientServ.on('removed', (obj)=>getFacilities())
+                const newClient={
+                    selectedClient:{},
+                    show :'create'
+                    }
+                 setState((prevstate)=>({...prevstate, ClientModule:newClient}))
                 return () => {
                 
                 }
             },[])
+const handleCalendarClose = async ()=>{
+    const findClient= await ClientServ.find(
+        {query: {
+            start_time:{
+                $gt:subDays(startDate,1),
+                $lt:addDays(startDate,1)
+            },
+            facility:user.currentEmployee.facilityDetail._id,
+            locationId:state.employeeLocation.locationId,
+            $limit:100,
+            $sort: {
+                createdAt: -1
+            }
+            }})
 
+        await setFacilities(findClient.data)
+}
 
+const handleDate=async (date)=>{
+    setStartDate(date)
+    
+}
+
+    useEffect(() => {
+        if (!!startDate){
+        
+            handleCalendarClose()
+        }else{
+            getFacilities()
+        }
+        
+        return () => {
+            
+        }
+    }, [startDate])
     //todo: pagination and vertical scroll bar
 
     return(
@@ -505,6 +510,17 @@ export function ClientList(){
                                 </p>
                             </div>
                         </div>
+                   
+                    <div className="level-item">
+                        <DatePicker 
+                            selected={startDate} 
+                            onChange={date => handleDate(date)} 
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Filter Appointments By Date"
+                            isClearable
+                            />
+                        {/* <input name="filter_time"  ref={register ({ required: true })}  type="datetime-local" /> */}
+                    </div>
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Appointments </span></div>
                     <div className="level-right">
@@ -525,12 +541,12 @@ export function ClientList(){
                                        <th><abbr title="Last Name">Last Name</abbr></th>
                                        <th><abbr title="Age">Age</abbr></th>
                                         <th><abbr title="Gender">Gender</abbr></th> 
-                                        <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
+                                        {/* <th><abbr title="Phone">Phone</abbr></th>
+                                        <th><abbr title="Email">Email</abbr></th> */}
                                         <th><abbr title="Type">Type</abbr></th>
                                         <th><abbr title="Status">Status</abbr></th>
                                         <th><abbr title="Reason">Reason</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -547,12 +563,12 @@ export function ClientList(){
                                            < td>{Client.lastname}</td>
                                            < td>{formatDistanceToNowStrict(new Date(Client.dob))}</td>
                                             <td>{Client.gender}</td>
-                                             <td>{Client.phone}</td>
-                                            <td>{Client.email}</td>
+                                            {/*  <td>{Client.phone}</td>
+                                            <td>{Client.email}</td> */}
                                             <td>{Client.appointment_type}</td>
                                             <td>{Client.appointment_status}</td>
                                             <td>{Client.appointment_reason}</td>
-                                            <td><span   className="showAction"  >...</span></td>
+                                            {/* <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -566,8 +582,6 @@ export function ClientList(){
               
     )
     }
-
-
 
 export function ClientDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
@@ -607,6 +621,7 @@ export function ClientDetail(){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+       //modify appointment
         history.push('/app/clinic/encounter')
     }
  
@@ -895,24 +910,10 @@ export function ClientDetail(){
             <div className="field is-grouped  mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
-                        Edit Details
+                        Edit Appointment Details
                     </button>
                 </p>
-              {/*   <p className="control">
-                    <button className="button is-info is-small" >
-                        Financial Info
-                    </button>
-                </p>
-                <p className="control">
-                    <button className="button is-warning is-small" >
-                        Schedule appointment
-                    </button>
-                </p> */}
-               {/*  <p className="control">
-                    <button className="button is-danger is-small" >
-                        Check into Clinic 
-                    </button>
-                </p> */}
+             
                 <p className="control">
                     <button className="button is-link is-small" onClick={()=>handleAttend()} >
                         Attend to Client
@@ -939,119 +940,89 @@ export function ClientModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const ClientServ=client.service('client')
+    const ClientServ=client.service('appointments')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
     const [selectedClient,setSelectedClient]=useState()
     const [selectedAppointment,setSelectedAppointment]=useState()
+    const [appointment_status,setAppointment_status]=useState("")
+    const [appointment_type, setAppointment_type]=useState("")
 
     const Client =state.AppointmentModule.selectedAppointment
+    console.log(Client)
 
-        useEffect(() => {
-            setValue("firstname", Client.firstname,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("middlename", Client.middlename,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-             setValue("lastname", Client.lastname,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("phone", Client.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", Client.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("dob", Client.dob,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("gender", Client.gender,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) 
-             setValue("profession", Client.profession,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) 
-            setValue("address", Client.address,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("city", Client.city,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-             setValue("state", Client.state,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("country", Client.country,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("nok_name", Client.nok_name,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("nok_email", Client.nok_email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("nok_phoneno", Client.nokphoneno,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) 
-             setValue("lga", Client.lga,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) 
-            setValue("bloodgroup", Client.bloodgroup,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("genotype", Client.genotype,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-             setValue("disabilities", Client.disabilities,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("specificDetails", Client.specificDetails,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("clientTags", Client.clientTags,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("mrn", Client.mrn,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("comorbidities", Client.comorbidities,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) 
-             setValue("allergies", Client.allergies,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) 
-           
-            
-            return () => {
-                
-            }
+    useEffect(() => {
+        setValue("firstname", Client.firstname,  {
+            shouldValidate: true,
+            shouldDirty: true
         })
+        setValue("middlename", Client.middlename,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+            setValue("lastname", Client.lastname,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("phone", Client.phone,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("email", Client.email,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("dob", Client.dob,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("gender", Client.gender,  {
+            shouldValidate: true,
+            shouldDirty: true
+        }) 
+            setValue("ClientId", Client.clientId,  {
+            shouldValidate: true,
+            shouldDirty: true
+        }) 
+        setValue("appointment_reason", Client.appointment_reason,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("appointment_status", Client.appointment_status,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+            setValue("appointment_type", Client.appointment_type,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("start_time", format(new Date(Client.start_time),"yyyy-MM-dd'T'HH:mm:ss"),  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+       
+        return () => {
+            
+        }
+    })
+    const handleChangeType=async (e)=>{
+       // await setAppointment_type(e.target.value)
+        setValue("appointment_type", e.target.value,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        
+    }
+
+    const handleChangeStatus=async (e)=>{
+       // await setAppointment_status(e.target.value)
+        setValue("appointment_status", e.target.value,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+    }
 
    const handleCancel=async()=>{
     const    newClientModule={
@@ -1109,10 +1080,6 @@ export function ClientModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
@@ -1159,283 +1126,70 @@ export function ClientModify(){
                     Client Details-Modify
                 </p>
             </div>
-            <div className="card-content vscrollable">
+            <div className="card-content vscrollable remPad1">
            
             <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="field is-horizontal">
-        <div className="field-body">
+       {/* ===================================================== */}
+       <label className="label is-small">Client:</label>
+         
             <div className="field">
-                <p className="control has-icons-left has-icons-right">
-                    <label className="label is-size-7"   >First Name </label> <input className="input is-small" ref={register()} name="firstname" type="text"placeholder="First Name " />
-                    <span className="icon is-small is-left">
-                        <i className="nop-hospital"></i>
-                    </span>                    
-                </p>
+              <label className="label is-size-7" > {Client.firstname} {Client.lastname}</label>
             </div>
-
-
-            <div className="field">
-                <p className="control has-icons-left has-icons-right">
-                <label className="label is-size-7"   > Middle Name </label><input className="input is-small" ref={register()} name="middlename" type="text" placeholder="Middle Name " />
-                <span className="icon is-small is-left">
-                    <i className="nop-map-signs"></i>
-                </span>
-                
-                </p>
-            </div>
-
+      
         <div className="field">
-            <p className="control has-icons-left">
-                <label className="label is-size-7"  >Last Name</label><input className="input is-small" ref={register()} name="lastname" type="text"placeholder="Last Name " />
-                <span className="icon is-small is-left">
-                <i className=" nop-user-md "></i>
-                </span>
-            </p>
+            <input name="start_time" ref={register ({ required: true })} type="datetime-local" defaultValue={format(new Date(Client.start_time),"yyyy-MM-dd'T'HH:mm:ss")} />
         </div>
-        </div>  
-        </div>
-        
-        <div className="field is-horizontal">
-        <div className="field-body">
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Date of Birth  </label><input className="input is-small" ref={register()} name="dob" type="text"placeholder="Date of Birth " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Gender  </label><input className="input is-small" ref={register()} name="gender" type="text"placeholder="Gender  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Marital Status  </label><input className="input is-small" ref={register()} name="maritalstatus" type="text"placeholder="Marital Status  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  > Records Number </label><input className="input is-small" ref={register()} name="mrn" type="text"placeholder="Records Number  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        </div>
-        </div>
-        <div className="field is-horizontal">
-        <div className="field-body">
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Religion</label><input className="input is-small" ref={register()} name="religion" type="text"placeholder="Religion " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Profession  </label><input className="input is-small" ref={register()} name="profession" type="text" placeholder="Profession" />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-                <label className="label is-size-7"  > Phone No</label><input className="input is-small" ref={register()} name="phone" type="text" placeholder=" Phone No " />
-                <span className="icon is-small is-left">
-                <i className="nop-phone-alt"></i>
-                </span>
-            </p>
-        </div>
-
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Email  </label><input className="input is-small" ref={register()} name="email" type="email"placeholder="Email  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        </div>
-        </div>
-
-        <div className="field">
-        <p className="control has-icons-left">
-
-            <label className="label is-size-7"  >Residential Address  </label><input className="input is-small" ref={register()} name="address" type="text" placeholder="Residential Address  " />
-            <span className="icon is-small is-left">
-            <i className="nop-envelope"></i>
-            </span>
-        </p>
-        </div> 
-        <div className="field is-horizontal">
-        <div className="field-body">
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Town/City  </label><input className="input is-small" ref={register()} name="city" type="text" placeholder="Town/City  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Local Govt Area  </label><input className="input is-small" ref={register()} name="lga" type="text"placeholder="Local Govt Area  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >State  </label><input className="input is-small" ref={register()} name="state" type="text"placeholder="State" />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Country  </label><input className="input is-small" ref={register()} name="country" type="text" placeholder="Country  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div>
-        </div>
-        </div> 
-        <div className="field is-horizontal">
-        <div className="field-body">
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <label className="label is-size-7"  >Blood Group </label><input className="input is-small" ref={register()} name="bloodgroup" type="text"placeholder="Blood Group " />
-                    <span className="icon is-small is-left">
-                    <i className="nop-envelope"></i>
-                    </span>
-                </p>
-            </div> 
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <label className="label is-size-7"  >Genotype  </label><input className="input is-small" ref={register()} name="genotype" type="text" placeholder="Genotype " />
-                    <span className="icon is-small is-left">
-                    <i className="nop-envelope"></i>
-                    </span>
-                </p>
-            </div> 
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <label className="label is-size-7" >Disabilities  </label><input className="input is-small" ref={register()}  name="disabilities" type="text"placeholder="Disabilities  " />
-                    <span className="icon is-small is-left">
-                    <i className="nop-envelope"></i>
-                    </span>
-                </p>
-            </div> 
-        </div> 
-        </div>  
-
-        <div className="field is-horizontal">
-        <div className="field-body">
-
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Allergies  </label><input className="input is-small" ref={register()} name="allergies" type="text"placeholder="Allergies  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Co-mobidities </label><input className="input is-small" ref={register()} name="comorbidities" type="text"placeholder="Co-mobidities " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div> 
-        </div>
-        </div>
-        <div className="field">
-        <p className="control has-icons-left">
-
-            <label className="label is-size-7"  >Tags  </label><input className="input is-small" ref={register()} name="clientTags" type="text" placeholder="Tags " />
-            <span className="icon is-small is-left">
-            <i className="nop-envelope"></i>
-            </span>
-        </p>
-        </div> 
-        <div className="field">
-        <p className="control has-icons-left">
-            <label className="label is-size-7"  >Specific Details about client  </label><input className="input is-small" ref={register()} name="specificDetails" type="text"placeholder="Specific Details about client " />
-            <span className="icon is-small is-left">
-            <i className="nop-envelope"></i>
-            </span>
-        </p>
-        </div> 
-        <div className="field is-horizontal">
-        <div className="field-body">
-        <div className="field">
-            <p className="control has-icons-left">
-                <label className="label is-size-7"  >Next of Kin Full Name</label><input className="input is-small" ref={register()} name="nok_name" type="text"placeholder="Next of Kin Full Name " />
-                <span className="icon is-small is-left">
-                <i className="nop-clinic-medical"></i>
-                </span>
-            </p>
-        </div>
-        <div className="field">
-            <p className="control has-icons-left">
-                <label className="label is-size-7" >Phone Number</label><input className="input is-small" ref={register()}  name="nok_phoneno" type="text"placeholder=" " />
-                <span className="icon is-small is-left">
-                <i className="nop-clinic-medical"></i>
-                </span>
-            </p>
-        </div> 
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  >Next of Kin Email  </label><input className="input is-small" ref={register()} name="nok_email" type="email"placeholder="Next of Kin Email  " />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div>
-        <div className="field">
-            <p className="control has-icons-left">
-            
-                <label className="label is-size-7"  > Relationship  </label><input className="input is-small" ref={register()} name="nok_relationship" type="text" placeholder="Next of Kin Relationship" />
-                <span className="icon is-small is-left">
-                <i className="nop-envelope"></i>
-                </span>
-            </p>
-        </div>
-        </div>
-        </div> 
            
+        <div className="field">    
+                <div className="control">
+                    <div className="select is-small">
+                        <select name="type" /* value={appointment_type} */  name = "appointment_type" ref={register ({ required: true })}  onChange={handleChangeType}>
+                           <option value="">Choose Appointment Type  </option>
+                            <option value="New">New</option>
+                            <option value="Followup">Followup</option>
+                            <option value="Readmission with 24hrs">Readmission with 24hrs</option>
+                            <option value="Annual Checkup">Annual Checkup</option>
+                            <option value="Walk in">Walk-in</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        <div className="field">    
+                <div className="control">
+                    <div className="select is-small">
+                        <select name="appointment_status" ref={register ({ required: true })} /* value={appointment_status} */ onChange={handleChangeStatus}>
+                           <option value="">Appointment Status  </option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Checked In">Checked In</option>
+                            <option value="Vitals Taken">Vitals Taken</option>
+                            <option value="With Nurse">With Nurse</option>
+                            <option value="With Doctor">With Doctor</option>
+                            <option value="No Show">No Show</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Billed">Billed</option>
+                        </select>
+                    </div>
+                </div>
+        </div>
+        <div className="field">
+            <p className="control has-icons-left has-icons-right">
+                <input className="input is-small" ref={register()}  name="appointment_reason" type="text" placeholder="Reason For Appointment" />
+                <span className="icon is-small is-left">
+                    <i className="fas fa-hospital"></i>
+                </span>                    
+            </p>
+        </div>
+        <div className="field " style={{display:"none"}} >
+            <p className="control has-icons-left has-icons-right">
+                <input className="input is-small" ref={register()}  name="billingservice" type="text" placeholder="Billing service" />
+                <span className="icon is-small is-left">
+                    <i className="fas fa-hospital"></i>
+                </span>                    
+            </p>
+        </div>
+        {/* ======================================= */}
+
            
             </form>
             
