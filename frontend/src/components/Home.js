@@ -5,6 +5,7 @@ import FacilityModule from './FacilityModule'
 import InventoryModule from './InventoryModule'
 import ClinicModule from './ClinicModule'
 import FinanceModule from './FinanceModule'
+import LaboratoryModule from './LaboratoryModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
 import {UserContext} from '../context'
@@ -36,6 +37,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/finance`} >
                     <FinanceModule />
+                </Route>
+                <Route path={`${path}/labs`} >
+                    <LaboratoryModule />
                 </Route>
             </Switch>
         </div>
@@ -188,6 +192,9 @@ function NavBar({url}){
                                 </div>
                                 <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/finance`}>Finance</NavLink>
+                                </div>
+                                <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/labs`}>Laboratory</NavLink>
                                 </div>
                                 {/* <div className="navbar-item">
                                     Front Desk

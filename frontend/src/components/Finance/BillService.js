@@ -230,6 +230,13 @@ export function BillsList(){
              BillServ.on('updated', (obj)=>getFacilities())
              BillServ.on('patched', (obj)=>getFacilities())
              BillServ.on('removed', (obj)=>getFacilities())
+
+             const newClient={
+                selectedClient:"",
+                show :'create'
+                }
+             setState((prevstate)=>({...prevstate, ClientModule:newClient}))
+
              return () => {
              
              }

@@ -11,7 +11,7 @@ import {format, formatDistanceToNowStrict } from 'date-fns'
 import  VideoConference  from '../utils/VideoConference';
 import  Prescription, { PrescriptionCreate } from './Prescription';
 
-export default function EncounterMain({nopresc}) {
+export default function DispensaryMain() {
  // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -25,7 +25,6 @@ export default function EncounterMain({nopresc}) {
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
    const [selectedClinic, setSelectedClinic]=useState() //
-   const [selectedNote, setSelectedNote]=useState() 
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -38,7 +37,6 @@ export default function EncounterMain({nopresc}) {
     const loader = useRef(null);
     
     const standalone=false
-    
 
     const handleNewDocument= async()=>{
         await setShowModal(true)                                                                                                                                                        
@@ -65,13 +63,13 @@ export default function EncounterMain({nopresc}) {
 
         //console.log("handlerow",Clinic)
 
-        await setSelectedNote(Clinic)
+        await setSelectedClinic(Clinic)
 
-         const    newClinicModule={
-            selectedNote:Clinic,
-            show :true
+        const    newClinicModule={
+            selectedClinic:Clinic,
+            show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, NoteModule:newClinicModule})) 
+       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
        Clinic.show=!Clinic.show
 
@@ -146,15 +144,42 @@ export default function EncounterMain({nopresc}) {
 
                     }
                 }
-         
+          /*   .then((res)=>{
+                console.log(res)
+                    setFacilities(res.data)
+                    setMessage(" Clinic  fetched successfully")
+                    setSuccess(true)
+                })
+                .catch((err)=>{
+                    setMessage("Error creating Clinic, probable network issues "+ err )
+                    setError(true)
+                }) */
             }
-          
+            
+           /*  useEffect(() => {
+                setTimeout(() => {
+                    console.log("happy birthday")
+                    //getFacilities(user)
+                }, 200);
 
- useEffect(() => {
+                return () => {
+                    
+
+                }
+            },[]) */
+
+            useEffect(() => {
                 getFacilities()
                 if (user){
                     
                 }else{
+                    /* const localUser= localStorage.getItem("user")
+                    const user1=JSON.parse(localUser)
+                    console.log(localUser)
+                    console.log(user1)
+                    fetchUser(user1)
+                    console.log(user)
+                    getFacilities(user) */
                 }
                 ClinicServ.on('created', (obj)=>getFacilities(page))
                 ClinicServ.on('updated', (obj)=>getFacilities(page))
@@ -176,7 +201,6 @@ export default function EncounterMain({nopresc}) {
                 
                 }
             },[])
-            
            /*  useEffect(() => {
                 // here we simulate adding new posts to List
                 getFacilities()
@@ -214,10 +238,9 @@ export default function EncounterMain({nopresc}) {
                     </div>
                    {/*  <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div> */}
                     <div className="level-right">
-                   {!standalone &&   <div className="level-item"> 
-                        <div className="level-item">
-                           {!nopresc && 
-                                <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Presciption</div>}
+                { !standalone &&   <div className="level-item"> 
+                            <div className="level-item">
+                            <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Presciption</div>
                                 <div className="button is-success is-small" onClick={handleNewDocument}>New Document</div>
                                 </div>
                         </div>}
@@ -230,9 +253,9 @@ export default function EncounterMain({nopresc}) {
                                    
                                         {facilities.map((Clinic, i)=>(
 
-                                            <div key={Clinic._id}    className={Clinic._id===(selectedNote?._id||null)?"is-selected":""}>
+                                            <div key={Clinic._id}  onClick={()=>handleRow(Clinic)}   className={Clinic._id===(selectedClinic?._id||null)?"is-selected":""}>
                                                <div className="card mt-1 hovercard">
-                                                    <header className="card-header"  onClick={()=>handleRow(Clinic,i)}>
+                                                    <header className="card-header" onClick={(Clinic)=>Clinic.show=!Clinic.show}>
                                                         <div className="card-header-title">
                                                         <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
                                                         <p className="right ml-2 mr-0">{Clinic.status} </p> 
@@ -243,7 +266,7 @@ export default function EncounterMain({nopresc}) {
                                                         </span>
                                                         </button> */}
                                                     </header>
-                                                  {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders") && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                  {Clinic.documentname!=="Prescription" &&  <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                         { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                             <div className="field is-horizontal"> 
                                                                     <div className="field-label"> 
@@ -293,54 +316,10 @@ export default function EncounterMain({nopresc}) {
                                                                 </table>
                                                                 </div>}                                                   
                                                             </div>}
-                                                        
-                                                            {Clinic.documentname==="Billed Orders" &&  
-                                                <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
-                                                        
-                                                        {(Clinic.documentdetail.length>0) && <div>
-                                                            <label>Billed Orders:</label>
-                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th><abbr title="Serial No">S/No</abbr></th>
-                                                                    <th><abbr title="Category">Category</abbr></th>
-                                                                    <th><abbr title="Name">Name</abbr></th>
-                                                                    <th><abbr title="Quantity">Quanitity</abbr></th>
-                                                                    <th><abbr title="Unit">Unit</abbr></th>
-                                                                    <th><abbr title="Selling Price">Selling Price</abbr></th>
-                                                                    <th><abbr title="Amount">Amount</abbr></th>
-                                                                    <th><abbr title="Billing Mode">Mode</abbr></th>
-                                                                    
-                                                                    </tr>
-                                                                </thead>
-                                                                <tfoot>
-                                                                    
-                                                                </tfoot>
-                                                                <tbody>
-                                                                { Clinic.documentdetail.map((ProductEntry, i)=>(
-
-                                                                        <tr key={i}>
-                                                                        <th>{i+1}</th>
-                                                                        <td>{ProductEntry.category}</td>
-                                                                        <td>{ProductEntry.name}</td>
-                                                                        <th>{ProductEntry.quantity}</th>
-                                                                        <td>{ProductEntry.baseunit}</td>
-                                                                        <td>{ProductEntry.sellingprice}</td>
-                                                                        <td>{ProductEntry.amount}</td>
-                                                                        <td>{ProductEntry.billMode.type}</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                                </table>
-                                                                </div>}                                                   
-                                                            </div>}
-                                                        
                                                     </div>                                           
                                             </div>
 
                                         ))}
-
-                                    
                                       {/* <!-- Add Ref to Load More div --> */}
                                        {/*  <div className="loading" ref={loader}>
                                                 <h2>Load More</h2>
@@ -364,22 +343,22 @@ export default function EncounterMain({nopresc}) {
                                         </footer> */}
                                     </div>
                                 </div>
-                <div className={`modal ${showPrescriptionModal?"is-active":""}` }>
-                    <div className="modal-background"></div>
-                    <div className="modal-card larger">
-                        <header className="modal-card-head">
-                        <p className="modal-card-title">Prescription</p>
-                        <button className="delete" aria-label="close"  onClick={()=>setShowPrescriptionModal(false)}></button>
-                        </header>
-                        <section className="modal-card-body card-overflow">
-                        <Prescription standalone="true" />
-                        </section>
-                        {/* <footer className="modal-card-foot">
-                        <button className="button is-success">Save changes</button>
-                        <button className="button">Cancel</button>
-                        </footer> */}
-                    </div>
-                </div>                            
+                                <div className={`modal ${showPrescriptionModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card larger">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Prescription</p>
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowPrescriptionModal(false)}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        <Prescription standalone="true" />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>                            
         </div>
     )
 }
