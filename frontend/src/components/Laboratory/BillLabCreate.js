@@ -8,11 +8,12 @@ import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {ProductCreate} from './Products'
 import Encounter from '../EncounterMgt/Encounter';
+import  ServiceSearch  from '../helpers/ServiceSearch';
 var random = require('random-string-generator');
 // eslint-disable-next-line
 const searchfacility={};
 
-export default function BillPrescriptionCreate(){
+export default function BillLabCreate(){
     // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
      //const [error, setError] =useState(false)
      const [success, setSuccess] =useState(false)
@@ -36,7 +37,7 @@ export default function BillPrescriptionCreate(){
      const [name,setName] = useState("")
      const [inventoryId,setInventoryId] = useState("")
      const [baseunit,setBaseunit] = useState("")
-     const [quantity,setQuantity] = useState("")
+     const [quantity,setQuantity] = useState(1)
      const [sellingprice,setSellingPrice] = useState("")
      const [costprice,setCostprice] = useState(0)
      const [invquantity,setInvQuantity] = useState("")
@@ -215,83 +216,37 @@ export default function BillPrescriptionCreate(){
     }
      // consider batchformat{batchno,expirydate,qtty,baseunit}
      //consider baseunoit conversions
-     const getSearchfacility=async (obj1)=>{
+     const getSearchfacility=async (service)=>{
         // console.log(obj)
        
-        if (!obj1){
+        if (!service){
             //"clear stuff"
             setProductId("")
             setName("")
             setBaseunit("")
             setInventoryId("")
-            setSellingPrice("")
+            setSellingPrice(0)
             setInvQuantity("")
             setQAmount(null)
             setCostprice("")
             setContracts("")
             setCategory("")
+            setInventoryId("")
             setBilllingId("")
-            setObjService("")
            // setCalcAmount(null)
             return
         }
  
-         setProductId(obj1.productId)
-         setName(obj1.name)
-         setBaseunit(obj1.baseunit)
-         setInventoryId(obj1.inventoryId)
-         setSellingPrice(obj1.sellingprice) //modify this based on billing mode
-         setInvQuantity(obj1.quantity)
-         setCostprice(obj1.costprice)
-         setBilllingId(obj1.billingId)
-         setContracts(obj1.billingDetails.contracts)
-         setCategory("Prescription") //obj1.billingDetails.category
-         await setObj(obj1)
-        await setObjService(obj.billingDetails)
-        // const contracts=obj.billingDetails.contracts
-         //const billingserv=client.service('billing')
-         //just did this
-        /* if( billMode.type==="HMO Cover"){ //paymentmode
-         let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-         if (contract.length){
-            console.log(contract[0].price)
-            setSellingPrice(contract[0].price)
-            console.log(sellingprice)
-         }else{
-            toast({
-                message: 'Please HMO does not have cover/price for this drug. Either set drug price for HMO or try another drug or bill using cash',
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              })
-              setSellingPrice(0)
-         }
-        
-        
-        }
-        if( billMode.type==="Company Cover"){ //paymentmode
-            let contract=contracts.filter(el=>el.source_org===billMode.detail.company)
-            if (contract.length){
-            console.log(contract[0].price)
-            setSellingPrice(contract[0].price)
-            console.log(sellingprice)
-           
-           }else{
+        setContracts(service.contracts)
+         setProductId(service.productId)
+         setName(service.name)
+         setCategory(service.category) //Lab Order
+         setBaseunit(service.baseunit)
+         setInventoryId(service.inventoryId)
+         setBilllingId(service._id)
+         await setObj(service)
 
-            toast({
-                message: 'Please company does not have cover/price for this drug. Either set drug price for Company or try another drug or bill using cash',
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              })
-              setSellingPrice(0)   
-         }
-          
-        /*  setValue("facility", obj._id,  {
-             shouldValidate: true,
-             shouldDirty: true
-         }) */
-         /*} */
+       
     }
      useEffect(() => {
        /*  console.log(obj)
@@ -434,7 +389,7 @@ export default function BillPrescriptionCreate(){
      }) */
  
      const handleQtty=async(e)=>{
-         if (invquantity<e.target.value){
+        /*  if (invquantity<e.target.value){
              toast({
                  message: 'You can not sell more quantity than exist in inventory ' ,
                  type: 'is-danger',
@@ -442,10 +397,13 @@ export default function BillPrescriptionCreate(){
                  pauseOnHover: true,
                })
              return
-         }
+         } */
          setQuantity(e.target.value)
-         calcamount1=quantity*sellingprice
-         await setCalcAmount(calcamount1)
+         if (e.target.vlue===""){
+            setQuantity(1)
+         }
+        /*  calcamount1=quantity*sellingprice
+         await setCalcAmount(calcamount1) */
          //console.log(calcamount)
      }
  
@@ -929,7 +887,7 @@ export default function BillPrescriptionCreate(){
                      <span className="icon is-small is-left">
                      <i className="fas fa-hashtag"></i>
                      </span>
-                     <span className="helper is-size-7"><strong>Instruction: </strong>{medication.instruction}</span>
+                    {/*  <span className="helper is-size-7"><strong>Instruction: </strong>{medication.instruction}</span> */}
                     
                  </p>
                  <span className="helper is-size-7"><strong>Billing Status: </strong>{medication.order_status}</span>
@@ -937,18 +895,18 @@ export default function BillPrescriptionCreate(){
             
              </div>
              </div>
-             <label className="label is-small">Choose Product Item:</label>
+             <label className="label is-small">Choose Service Item:</label>
           <div className="field is-horizontal">
              <div className="field-body">
              <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                     <InventorySearch  getSearchfacility={getSearchfacility} clear={success} /> 
+                     <ServiceSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                      <p className="control has-icons-left " style={{display:"none"}}>
                          <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
                          <span className="icon is-small is-left">
                          <i className="fas  fa-map-marker-alt"></i>
                          </span>
                      </p>
-                  {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"} 
+                 {/*  {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"}  */}
                  </div>
              </div>
          </div>
@@ -989,15 +947,18 @@ export default function BillPrescriptionCreate(){
              
         {(productItem.length>0) && <div>
              <label>Product Items:</label>
+             <div class="table-container">
           <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                  <thead>
                      <tr>
                      <th><abbr title="Serial No">S/No</abbr></th>
+                     <th><abbr title="Category">Category</abbr></th>
                      <th><abbr title="Type">Name</abbr></th>
                      <th><abbr title="Type">Quanitity</abbr></th>
                      <th><abbr title="Document No">Unit</abbr></th>
                      <th><abbr title="Cost Price">Selling Price</abbr></th>
                      <th><abbr title="Cost Price">Amount</abbr></th>
+                     <th><abbr title="Billing Mode">Mode</abbr></th>
                      <th><abbr title="Actions">Actions</abbr></th>
                      </tr>
                  </thead>
@@ -1008,16 +969,19 @@ export default function BillPrescriptionCreate(){
                     { productItem.map((ProductEntry, i)=>(
                           <tr key={i}>
                          <th>{i+1}</th>
+                         <td>{ProductEntry.category}</td>
                          <td>{ProductEntry.name}</td>
                          <th>{ProductEntry.quantity}</th>
                          <td>{ProductEntry.baseunit}</td>
                          <td>{ProductEntry.sellingprice}</td>
                          <td>{ProductEntry.amount}</td>
+                         <td>{ProductEntry.billMode.type}</td>
                          <td><span className="showAction"  >x</span></td>
                          </tr>
                      ))}
                  </tbody>
                  </table>
+                 </div>
                  <div className="field mt-2 is-grouped">
                  <p className="control">
                      <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handleMedicationDone}>

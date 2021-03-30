@@ -236,6 +236,7 @@ export function PharmacyBillingList(){
                     }
                 ],
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
+                'orderInfo.orderObj.order_category':"Prescription",
                 billing_status:"Unpaid",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,

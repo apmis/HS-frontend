@@ -10,7 +10,7 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Store() {
+export default function Labs() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
@@ -92,7 +92,7 @@ export function StoreCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-          data.locationType="Store"
+          data.locationType="Laboratory"
         StoreServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -100,7 +100,7 @@ export function StoreCreate(){
                /*  setMessage("Created Store successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Store created succesfully',
+                    message: 'Laboratory created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -109,7 +109,7 @@ export function StoreCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Store ' + err,
+                    message: 'Error creating Laboratory ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -123,7 +123,7 @@ export function StoreCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Store
+                    Create Laboratory
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -139,7 +139,7 @@ export function StoreCreate(){
                 </div> */}
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Store" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Laboratory" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -299,7 +299,7 @@ export function StoreList({standalone,closeModal}){
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                locationType:"Store",
+                locationType:"Laboratory",
                $limit:10,
                 $sort: {
                     name: 1
@@ -322,7 +322,7 @@ export function StoreList({standalone,closeModal}){
             
         const findStore= await StoreServ.find(
                 {query: {
-                    locationType:"Store",
+                    locationType:"Laboratory",
                     facility:user.currentEmployee.facilityDetail._id,
                     $limit:20,
                     $sort: {
@@ -336,7 +336,7 @@ export function StoreList({standalone,closeModal}){
                     if (user.stacker){
                         const findStore= await StoreServ.find(
                             {query: {
-                                locationType:"Store",
+                                locationType:"Laboratory",
                                 $limit:20,
                                 $sort: {
                                     name: 1
@@ -416,7 +416,7 @@ export function StoreList({standalone,closeModal}){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Stores </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Laboratory </span></div>
                     <div className="level-right">
                 { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -529,7 +529,7 @@ export function StoreList({standalone,closeModal}){
                         
                      },
                     facility:user.currentEmployee.facilityDetail._id || "",
-                     locationType:"Store",
+                     locationType:"Laboratory",
                     $limit:10,
                      $sort: {
                          name: 1
@@ -552,7 +552,7 @@ export function StoreList({standalone,closeModal}){
                  
              const findStore= await StoreServ.find(
                      {query: {
-                         locationType:"Store",
+                         locationType:"Laboratory",
                          facility:user.currentEmployee.facilityDetail._id,
                          $limit:20,
                          $sort: {
@@ -566,7 +566,7 @@ export function StoreList({standalone,closeModal}){
                          if (user.stacker){
                              const findStore= await StoreServ.find(
                                  {query: {
-                                     locationType:"Store",
+                                     locationType:"Laboratory",
                                      $limit:20,
                                      $sort: {
                                          name: 1
@@ -646,7 +646,7 @@ export function StoreList({standalone,closeModal}){
                                  </div>
                              </div>
                          </div>
-                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Stores </span></div>
+                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Laboratory </span></div>
                          <div className="level-right">
                      { !standalone &&   <div className="level-item"> 
                                  <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -731,7 +731,7 @@ export function StoreDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Store Details
+                   Laboratory Details
                 </p>
             </div>
             <div className="card-content vscrollable">

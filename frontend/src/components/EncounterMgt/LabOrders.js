@@ -13,7 +13,7 @@ import {format, formatDistanceToNowStrict } from 'date-fns'
 const searchfacility={};
 
 
-export default function Prescription() {
+export default function LabOrders() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -26,10 +26,10 @@ export default function Prescription() {
             </div> */}
             <div className="columns ">
             <div className="column is-6 ">
-                <PrescriptionList />
+                <LabOrdersList />
                 </div>
             <div className="column is-6 ">
-                {(state.OrderModule.show ==='create')&&<PrescriptionCreate />}
+                {(state.OrderModule.show ==='create')&&<LabOrdersCreate />}
                 {(state.OrderModule.show ==='detail')&&<ProductEntryDetail  />}
                 {(state.OrderModule.show ==='modify')&&<ProductEntryModify ProductEntry={selectedProductEntry} />}
                
@@ -42,7 +42,7 @@ export default function Prescription() {
     
 }
 
-export function PrescriptionCreate(){
+export function LabOrdersCreate(){
    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
@@ -64,7 +64,7 @@ export function PrescriptionCreate(){
     const [destination,setDestination] = useState('')
     const [destinationId,setDestinationId] = useState('')
     const [destinationModal,setDestinationModal] = useState(false)
-    const [medication,setMedication] = useState()
+    const [test,setTest] = useState()
     const [instruction,setInstruction] = useState()
     const [productItem,setProductItem] = useState([])
     const {state}=useContext(ObjectContext)
@@ -87,7 +87,7 @@ export function PrescriptionCreate(){
     const productItemI={
       /*   productId,
         name, */
-        medication,
+        test,
         destination,
         instruction,
         destinationId
@@ -100,15 +100,14 @@ export function PrescriptionCreate(){
     //consider baseunoit conversions
     const getSearchfacility=(obj)=>{
 
-        setInstruction(obj.instruction)
-        setMedication(obj.medication)
-
         if (!obj){
             //"clear stuff"
             setInstruction("")
-            setMedication("")
+            setTest("")
            
         }
+        setInstruction(obj.instruction)
+        setTest(obj.test)
        // setBaseunit(obj.baseunit)
         
        /*  setValue("facility", obj._id,  {
@@ -148,9 +147,9 @@ export function PrescriptionCreate(){
     }
     const handleClickProd=async()=>{
         await setSuccess(false)
-        if (!(productItemI.medication && productItemI.medication.length>0 )){
+        if (!(productItemI.test && productItemI.test.length>0 )){
             toast({
-                message: 'medication can not be empty ' ,
+                message: 'Test can not be empty ' ,
                 type: 'is-danger',
                 dismissible: true,
                 pauseOnHover: true,
@@ -161,7 +160,7 @@ export function PrescriptionCreate(){
             prevProd=>prevProd.concat(productItemI)
         )
         setName("")
-        setMedication("")
+        setTest("")
         setInstruction("")
         setDestination( user.currentEmployee.facilityDetail.facilityName)
         setDestinationId( user.currentEmployee.facilityDetail._id)
@@ -195,7 +194,7 @@ export function PrescriptionCreate(){
     setSource("")
     setDate("")
     setName("")
-    setMedication("")
+    setTest("")
     setInstruction("")
     setProductItem([])
     }
@@ -215,7 +214,7 @@ export function PrescriptionCreate(){
           }
          document.documentdetail=productItem
          console.log(document.documentdetail)
-          document.documentname="Prescription" //state.DocumentClassModule.selectedDocumentClass.name
+          document.documentname="Lab Orders" //state.DocumentClassModule.selectedDocumentClass.name
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
          document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
          document.locationId=state.employeeLocation.locationId
@@ -243,7 +242,7 @@ export function PrescriptionCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Prescription ' + err,
+                    message: 'Error creating LabOrders ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -265,7 +264,7 @@ export function PrescriptionCreate(){
             <div className="card card-overflow">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Prescription
+                    Create Lab Orders
                 </p>
             </div>
             <div className="card-content ">
@@ -276,13 +275,13 @@ export function PrescriptionCreate(){
            
          {/* array of ProductEntry items */}
         
-        <label className="label is-small">Add Medication:</label>
+        <label className="label is-small">Add Test:</label>
          <div className="field is-horizontal">
             <div className="field-body">
              <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */  > 
-                    <MedicationHelperSearch  getSearchfacility={getSearchfacility} clear={success} />  
+                    <TestHelperSearch  getSearchfacility={getSearchfacility} clear={success} />  
                   <p className="control has-icons-left " style={{display:"none"}}>
-                        <input className="input is-small"  /* ref={register ({ required: true }) }  */   value={medication} name="medication" type="text" onChange={e=>setMedication(e.target.value)} placeholder="medication" />
+                        <input className="input is-small"  /* ref={register ({ required: true }) }  */   value={test} name="test" type="text" onChange={e=>setTest(e.target.value)} placeholder="test" />
                         <span className="icon is-small is-left">
                         <i className="fas  fa-map-marker-alt"></i>
                         </span>
@@ -290,7 +289,7 @@ export function PrescriptionCreate(){
                 </div>
                {/*  <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="medication" value={medication} type="text" onChange={e=>setMedication(e.target.value)} placeholder="medication"  />
+                    <input className="input is-small" ref={register({ required: true })} name="test" value={test} type="text" onChange={e=>setTest(e.target.value)} placeholder="test"  />
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
@@ -310,15 +309,15 @@ export function PrescriptionCreate(){
          </div>
          <div className="field is-horizontal">
             <div className="field-body">
-         <div className="field">
+         {/* <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" /* ref={register({ required: true })} */ name="instruction" value={instruction} type="text" onChange={e=>setInstruction(e.target.value)} placeholder="Instructions/Note"  />
+                    <input className="input is-small"  ref={register({ required: true })}  name="instruction" value={instruction} type="text" onChange={e=>setInstruction(e.target.value)} placeholder="Instructions/Note"  />
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
                 </p>
        
-            </div>  
+            </div>   */}
             <div className="field">
                 <p className="control has-icons-left">
                     <input className="input is-small " disabled /* ref={register({ required: true })} */ name="destination" value={destination===user.currentEmployee.facilityDetail.facilityName?"In-house":destination} type="text" onChange={e=>setDestination(e.target.value)} placeholder="Destination Pharmacy"  />
@@ -333,13 +332,13 @@ export function PrescriptionCreate(){
             </div> 
 
        {(productItem.length>0) && <div>
-            <label className="label is-size-7">Medications:</label>
+            <label className="label is-size-7">Lab Orders:</label>
          <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                 <thead>
                     <tr>
                     <th><abbr title="Serial No">S/No</abbr></th>
                    {/*  <th><abbr title="Type">Name</abbr></th> */}
-                    <th><abbr title="Medication">Medication</abbr></th>
+                    <th><abbr title="Test">Test</abbr></th>
                     <th><abbr title="Destination">Destination</abbr></th>
                      {/*<th><abbr title="Cost Price">Cost Price</abbr></th>
                     <th><abbr title="Cost Price">Amount</abbr></th> */}
@@ -355,7 +354,7 @@ export function PrescriptionCreate(){
                         <tr key={i}>
                         <th>{i+1}</th>
                         {/* <td>{ProductEntry.name}</td> */}
-                        <td>{ProductEntry.medication}<br/>
+                        <td>{ProductEntry.test}<br/>
                         <span className="help">{ProductEntry.instruction}</span></td>
                        <td>{ProductEntry.destination===user.currentEmployee.facilityDetail.facilityName?"In-house":ProductEntry.destination}</td>
                          {/* <td>{ProductEntry.costprice}</td>
@@ -389,7 +388,7 @@ export function PrescriptionCreate(){
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                            <FacilityPopup facilityType="Pharmacy"  closeModal={handlecloseModal}/>
+                                            <FacilityPopup facilityType="Laboratory"  closeModal={handlecloseModal}/>
                                         {/* <StoreList standalone="true" /> */}
                                        {/*  <ProductCreate /> */}
                                         </section>
@@ -404,7 +403,7 @@ export function PrescriptionCreate(){
    
 }
 
-export function PrescriptionList({standalone}){
+export function LabOrdersList({standalone}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -465,7 +464,7 @@ export function PrescriptionList({standalone}){
                     $options:'i'
                    
                 }}],
-                order_category:"Prescription",
+                order_category:"Lab Order",
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
@@ -491,7 +490,7 @@ export function PrescriptionList({standalone}){
             console.log(state.ClientModule.selectedClient._id)
              const findProductEntry= await OrderServ.find(
                 {query: {
-                    order_category:"Prescription",
+                    order_category:"Lab Order",
                     //destination: user.currentEmployee.facilityDetail._id,
                    
                     //storeId:state.StoreModule.selectedStore._id,
@@ -528,7 +527,7 @@ export function PrescriptionList({standalone}){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Medications"
+                                        type="text" placeholder="Search tests"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -539,7 +538,7 @@ export function PrescriptionList({standalone}){
                             </div>
                         </div>
                     </div>
-                   {!standalone && (<><div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Prescriptions </span></div>
+                   {!standalone && (<><div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Lab Orders </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -553,7 +552,7 @@ export function PrescriptionList({standalone}){
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th><abbr title="Date">Date</abbr></th>
-                                        <th><abbr title="Order">Medication</abbr></th>
+                                        <th><abbr title="Order">Test</abbr></th>
                                         <th>Fulfilled</th>
                                         <th><abbr title="Status">Status</abbr></th>
                                         <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
@@ -575,7 +574,7 @@ export function PrescriptionList({standalone}){
                                             <td>{ProductEntry.order_status}</td>
                                             <td>{ProductEntry.requestingdoctor_Name}</td>
                                             {/* <td>{ProductEntry.clientId}</td> */}
-                                          {!standalone &&  <td><span className="showAction"  >...</span></td>}
+                                            {!standalone &&  <td><span className="showAction"  >...</span></td>}
                                            
                                             </tr>
 
@@ -1090,9 +1089,9 @@ export function ProductEntryModify(){
                 
 }   
 
-export  function MedicationHelperSearch({getSearchfacility,clear}) {
+export  function TestHelperSearch({getSearchfacility,clear}) {
     
-    const productServ=client.service('medicationhelper')
+    const productServ=client.service('labhelper')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -1117,7 +1116,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
        getSearchfacility(obj)
   
        
-       await  setSimpa(obj.medication)
+       await  setSimpa(obj.test)
       
         // setSelectedFacility(obj)
         setShowPanel(false)
@@ -1154,7 +1153,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
             getSearchfacility(false)
             return
         }
-        const field='medication' //field variable
+        const field='test' //field variable
 
        
         if (value.length>=3 ){
@@ -1178,7 +1177,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
                     }else{
                         setShowPanel(false)
                         getSearchfacility({
-                            medication:value,
+                            test:value,
                             instruction:""
                         })
                     }
@@ -1186,7 +1185,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
              })
              .catch((err)=>{
                 toast({
-                    message: 'Error fetching medication ' + err,
+                    message: 'Error fetching test ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -1231,7 +1230,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
                     <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
                         <div className="dropdown-trigger" style={{width:"100%"}}>
                             <DebounceInput className="input is-small " 
-                                type="text" placeholder="Search Order"
+                                type="text" placeholder="Search Product"
                                 value={simpa}
                                 minLength={3}
                                 debounceTimeout={400}
@@ -1252,7 +1251,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
                                     
                                     <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <span>{facility.medication}</span> // <span>{facility.instruction}</span>
+                                        <span>{facility.test}</span> 
                                     </div>
                                     
                                     ))}

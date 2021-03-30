@@ -8,11 +8,11 @@ import LaboratoryHome from './Laboratory/LaboratoryHome'
 import ProductEntry from './Laboratory/ProductEntry'
 import ProductExit from './Laboratory/ProductExit'
 import Dispense from './Laboratory/Dispensary'
-import Products from './Laboratory/Products'
-import PharmacyPayment from './Laboratory/PharmacyPayment'
-import Store, { StoreList, StoreListStandalone } from './Laboratory/Labs'
+import LabReport from './Laboratory/LabReport'
+import LabPayment from './Laboratory/LabPayment'
+import Labs, { StoreList, StoreListStandalone } from './Laboratory/Labs'
 import {UserContext,ObjectContext} from '../context'
-import BillPrescription from './Laboratory/BillPrescription'
+import BillLab from './Laboratory/BillLab'
 
 export default function LaboratoryModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -67,7 +67,7 @@ export default function LaboratoryModule() {
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">
                                         Health Stack::Inventory::{selectedStore?selectedStore.name:""}</span>
-                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Store</button> 
+                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>
                                 
                             {/* <div className="navbar-item">
@@ -85,18 +85,19 @@ export default function LaboratoryModule() {
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-stores`}>Stores</NavLink>
+                                        <NavLink to={`${url}/labs`}>Labs</NavLink>
+                                    </div>
+                                    
+                                    <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/lab-bill`}>Bill Lab Orders</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-dispense`}>Dispensary</NavLink>
+                                        <NavLink to={`${url}/lab-payment`}>Payment</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-bill`}>Bill Prescription</NavLink>
+                                        <NavLink to={`${url}/lab-result`}>Lab Result</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-payment`}>Payment</NavLink>
-                                    </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                    {/*  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
@@ -108,7 +109,7 @@ export default function LaboratoryModule() {
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-products`}>Products</NavLink>
                                     </div>
-                                   {/*  <div className="navbar-item"  onClick={handleBurger}>
+                                   <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
                                     </div> */}
                                 {/* <span className="navbar-item">
@@ -133,12 +134,10 @@ export default function LaboratoryModule() {
                         <Route path={path} exact>
                             <LaboratoryHome />
                         </Route>
-                        <Route path={`${path}/inv-dispense`} exact >
+                        {/* <Route path={`${path}/inv-dispense`} exact >
                             <Dispense />
                         </Route>
-                        <Route path={`${path}/inv-bill`} exact >
-                            <BillPrescription />
-                        </Route>
+                      
                         <Route path={`${path}/inv-admin`} exact >
                             <InventorySetup />
                         </Route>
@@ -153,15 +152,18 @@ export default function LaboratoryModule() {
                         </Route>
                         <Route path={`${path}/inv-products`} exact>
                             <Products />
+                        </Route>*/}
+                        <Route path={`${path}/lab-result`} exact>
+                            <LabReport />
+                        </Route> 
+                        <Route path={`${path}/lab-bill`} exact >
+                            <BillLab />
                         </Route>
-                        <Route path={`${path}/inv-reports`} exact>
-                            <InventoryReport />
+                        <Route path={`${path}/labs`} exact>
+                            <Labs />
                         </Route>
-                        <Route path={`${path}/inv-stores`} exact>
-                            <Store />
-                        </Route>
-                        <Route path={`${path}/inv-payment`} exact>
-                            <PharmacyPayment />
+                        <Route path={`${path}/lab-payment`} exact>
+                            <LabPayment />
                         </Route>
 
                     </Switch>
@@ -171,7 +173,7 @@ export default function LaboratoryModule() {
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
                                         <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Store</p>
+                                        <p className="modal-card-title">Choose Location</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">

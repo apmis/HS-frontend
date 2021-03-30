@@ -912,7 +912,7 @@ export default function BillServiceCreate(){
                  <p className="control has-icons-left " /* style={{display:"none"}} */>
                      <input className="input is-small"  name="qamount" disabled={changeAmount} value={calcamount} type="text"  onChange={async e=> await setCalcAmount(e.target.value)}  placeholder="Amount"  />
                      <span className="icon is-small is-left">
-                     <i className="fas fa-dollar-sign"></i>
+                     <i className="fas fa-hashtag"></i>
                      </span>
                  </p>
                  <button className="button is-small is-success btnheight" onClick={handleChangeAmount}>Adjust</button>
@@ -930,6 +930,7 @@ export default function BillServiceCreate(){
     
         {(productItem.length>0) && <div>
              <label>Service Items:</label>
+             <div class="table-container">
           <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                  <thead>
                      <tr>
@@ -963,6 +964,7 @@ export default function BillServiceCreate(){
                      ))}
                  </tbody>
                  </table>
+                 </div>
                  <div className="field mt-2 is-grouped">
                  <p className="control">
                      <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handleCreateBill}>

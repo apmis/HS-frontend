@@ -25,7 +25,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 
 
 //fetching billed prescription for client
-export default function ClientBilledPrescription({selectedClient}){
+export default function ClientBilledLab({selectedClient}){
     // const { register, handleSubmit, watch, errors } = useForm();
      // eslint-disable-next-line
      const [error, setError] =useState(false)
@@ -104,7 +104,7 @@ export default function ClientBilledPrescription({selectedClient}){
                  },
                  order_status:"Billed",  
                  clientId:selectedClient,
-                 order_category:"Prescription",
+                 order_category:"Lab Order",
                 // storeId:state.StoreModule.selectedStore._id,
                 //facility:user.currentEmployee.facilityDetail._id || "",
                  $limit:10,
@@ -128,7 +128,7 @@ export default function ClientBilledPrescription({selectedClient}){
              // console.log("here b4 server")
      const findProductEntry= await OrderServ.find(
              {query: {
-                 order_category:"Prescription",
+                 order_category:"Lab Order",
                  fulfilled:"False",
                  destination: user.currentEmployee.facilityDetail._id,
                  order_status:"Billed",  
@@ -208,7 +208,7 @@ export default function ClientBilledPrescription({selectedClient}){
                              <AccordionItem  >
                                 <AccordionItemHeading >
                                 <AccordionItemButton  >
-                                       {/*  {i+1}  {Clinic.clientname} with  */ } {clientOrders.length} billed medication(s)  
+                                       {/*  {i+1}  {Clinic.clientname} with  */ } {clientOrders.length} billed test(s)  
                                  </AccordionItemButton>
                                  </AccordionItemHeading>
                                  <AccordionItemPanel>
@@ -217,7 +217,7 @@ export default function ClientBilledPrescription({selectedClient}){
                                                  <tr>
                                                      <th><abbr title="Serial No">S/No</abbr></th>
                                                      <th><abbr title="Date">Date</abbr></th>
-                                                     <th><abbr title="Order">Medication</abbr></th>
+                                                     <th><abbr title="Order">Test</abbr></th>
                                                      <th>Fulfilled</th>
                                                      <th><abbr title="Status">Status</abbr></th>
                                                      <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
