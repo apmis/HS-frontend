@@ -39,7 +39,7 @@ export default function LaboratoryModule() {
      setSelectedStore(state.StoreModule.selectedStore)
      const    newEmployeeLocation={
         locationName:state.StoreModule.selectedStore.name,
-        locationType:"Store",
+        locationType:state.StoreModule.selectedStore.locationType,
         locationId:state.StoreModule.selectedStore._id,
         facilityId:user.currentEmployee.facilityDetail._id   ,
         facilityName:user.currentEmployee.facilityDetail.facilityName
@@ -66,7 +66,7 @@ export default function LaboratoryModule() {
                             <div className="navbar-brand minHt">
                                 <div className="navbar-item ">
                                     <span className="is-size-6 has-text-weight-medium">
-                                        Health Stack::Inventory::{selectedStore?selectedStore.name:""}</span>
+                                        Health Stack::Laboratory::{selectedStore?selectedStore.name:""}</span>
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>
                                 

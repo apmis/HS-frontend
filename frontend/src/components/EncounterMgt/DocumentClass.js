@@ -74,7 +74,7 @@ export function DocumentClassCreate(){
     useEffect(()=>{
         //setFacility(user.activeDocumentClass.FacilityId)//
       if (!user.stacker){
-          console.log(currentUser)
+         // console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
             shouldValidate: true,
             shouldDirty: true
@@ -222,8 +222,8 @@ export function DocumentClassList({standalone}){
                     $options:'i'
                    
                 },
-               facility:user.currentEmployee.facilityDetail._id || "",
-                locationType:"DocumentClass",
+               facility:user.currentEmployee.facilityDetail._id,
+                /* locationType:"DocumentClass", */
                $limit:10,
                 $sort: {
                     name: 1
@@ -246,8 +246,8 @@ export function DocumentClassList({standalone}){
             
         const findDocumentClass= await DocumentClassServ.find(
                 {query: {
-                    /* locationType:"DocumentClass",
-                    facility:user.currentEmployee.facilityDetail._id, */
+                    /* locationType:"DocumentClass",*/
+                    facility:user.currentEmployee.facilityDetail._id, 
                     $limit:20,
                     $sort: {
                         name: 1
@@ -448,14 +448,14 @@ export function DocumentClassDetail(){
                         </td>
                     </tr>
                     <tr>
-                    <td>
+                   {/*  <td>
                 <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>Location Type:
                     </label></td>
                     <td>
                     <span className="is-size-7 padleft"   name="DocumentClassType">{DocumentClass.locationType} </span> 
-                    </td>
+                    </td> */}
                 </tr>
                   {/*   <tr>
                     <td>
@@ -720,7 +720,7 @@ export function DocumentClassModify(){
                     </p>
                     </label>
                     </div>
-                <div className="field">
+                {/* <div className="field">
                 <label className="label is-small">Location Type
                     <p className="control has-icons-left has-icons-right">
                     <input className="input is-small " ref={register({ required: true })} disabled name="DocumentClassType" type="text" placeholder="DocumentClass Type" />
@@ -730,7 +730,7 @@ export function DocumentClassModify(){
                     
                 </p>
                 </label>
-                </div>
+                </div> */}
             {/* <div className="field">
             <label className="label is-small">Profession
                 <p className="control has-icons-left">
