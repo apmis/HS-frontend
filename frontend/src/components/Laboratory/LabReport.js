@@ -490,13 +490,13 @@ export function LabNoteCreate(){
     const handleChangePart=async (e)=>{
         console.log(e.target.value)
         await setReportStatus(e.target.value)
-
+git
     }
 
     useEffect(() => {
 
         console.log(order.resultDetail.status)
-        if (bill_report_status!=="Pending"){
+        if (order.resultDetail.status!=="Pending"){
         setValue("Finding", order.resultDetail.documentdetail.Finding,  {
             shouldValidate: true,
             shouldDirty: true
