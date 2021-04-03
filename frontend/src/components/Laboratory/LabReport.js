@@ -505,8 +505,9 @@ export function LabNoteCreate(){
             shouldValidate: true,
             shouldDirty: true
         })
-    }
         setReportStatus(order.report_status)
+    }
+        
         return () => {
             
         }
