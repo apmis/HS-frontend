@@ -60,7 +60,7 @@ export default function LabReport() {
               
                 <div className="column is-6 ">
                 
-                {(state.financeModule.show ==='detail')&&  <ClinicalNoteCreate />}
+                {(state.financeModule.show ==='detail')&&  <LabNoteCreate />}
                 </div>
                {/*  <div className="column is-3 ">  <ReportCreate />
                 
@@ -140,9 +140,14 @@ export function LabOrderList(){
     const handleMedicationRow= async(order)=>{
         
         await setSelectedFinance(order)
+        // grab report
+        // if draft show create/modify
+        //if final: show final
+       // console.log(order)
         const    newProductEntryModule={
             selectedFinance:order,
             show :'detail',
+            report_status:order.report_status
            
         }
       await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
@@ -238,7 +243,7 @@ export function LabOrderList(){
                 }
                 }})
 
-            console.log("bills", findProductEntry.data)
+        //    console.log("bills", findProductEntry.data)
             await setFacilities(findProductEntry.data)
           //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
@@ -319,19 +324,16 @@ export function LabOrderList(){
                                     <th><abbr title="Amount">Amount</abbr></th>
                                 {/*  <th>Fulfilled</th> */}
                                     <th><abbr title="Status">Payment Status</abbr></th>
-                                    <th><abbr title="Status">Result Status</abbr></th>
-                                    
+                                    <th><abbr title="Status">Result Status</abbr></th> 
                                 </tr>
                         </thead>
                         <tbody>
                             { facilities.map((order, i)=>(
-
                                 <tr key={order._id}  onClick={()=>handleMedicationRow(order)} className={order._id===(selectedFinance?._id||null)?"is-selected":""}>                                         
-                                <th> {i+1}</th>
+                                <th>{i+1}</th>
                                 <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td>  {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
                                 <th>{order.orderInfo.orderObj.clientname}</th>{/* client name */}
-                                <th>{order.serviceInfo.name}</th>{/* test name */}
-                                {/*  <td>{order.fulfilled==="True"?"Yes":"No"}</td> */}
+                                <th>{order.serviceInfo.name}</th>{/* test name */} {/*  <td>{order.fulfilled==="True"?"Yes":"No"}</td> */}
                                 <td>{order.serviceInfo.amount}</td>
                                 <td>{order.billing_status}</td>
                                 <td>{order.report_status}</td>
@@ -346,21 +348,23 @@ export function LabOrderList(){
     )
 }
 
-export function ClinicalNoteCreate(){
+export function LabNoteCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const ClientServ=client.service('clinicaldocument')
+    const ClientServ=client.service('labresults')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const {state}=useContext(ObjectContext)
+    const [reportStatus,setReportStatus] = useState("Draft")
+    const {state, setState}=useContext(ObjectContext)
 
     const order=state.financeModule.selectedFinance
+    const bill_report_status=state.financeModule.report_status
 
     const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
@@ -389,14 +393,14 @@ export function ClinicalNoteCreate(){
       }
     })
 
-    const onSubmit = (data,e) =>{
+    const onSubmit = async(data,e) =>{
         e.preventDefault();
         setMessage("")
         setError(false)
         setSuccess(false)
         let document={}
          // data.createdby=user._id
-          console.log(data);
+        //  console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
@@ -409,8 +413,10 @@ export function ClinicalNoteCreate(){
           document.client=order.orderInfo.orderObj.clientId
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
-          document.status="completed"
-          console.log(document)
+          document.status=reportStatus
+          document.billId=order._id
+        //  console.log(document)
+        //  console.log(order)
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -422,14 +428,41 @@ export function ClinicalNoteCreate(){
               })
               return
           }
-        ClientServ.create(document)
+
+        if (bill_report_status==="Pending"){
+            ClientServ.create(document)
+            .then((res)=>{
+                  
+                    e.target.reset();
+                  
+                    setSuccess(true)
+                    toast({
+                        message: 'Lab Result created succesfully',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                      setSuccess(false)
+                })
+                .catch((err)=>{
+                    toast({
+                        message: 'Error creating Lab Result ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                })  
+        }
+
+        if (bill_report_status==="Draft"){
+         ClientServ.patch(order.resultDetail._id, document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+              
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
+              
                 setSuccess(true)
                 toast({
-                    message: 'Lab Result created succesfully',
+                    message: 'Lab Result updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -438,14 +471,46 @@ export function ClinicalNoteCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Lab Result ' + err,
+                    message: 'Error updating Lab Result ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
                   })
-            })
-
+            }) 
+        }
+        const    newProductEntryModule={
+            selectedFinance:order,
+            show :'show',
+           // report_status:order.report_status
+           
+        }
+      await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
       } 
+
+    const handleChangePart=async (e)=>{
+        console.log(e.target.value)
+        await setReportStatus(e.target.value)
+
+    }
+
+    useEffect(() => {
+
+        console.log(order.resultDetail.status)
+
+        setValue("Finding", order.resultDetail.documentdetail.Finding,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("Recommendation", order.resultDetail.documentdetail.Recommendation,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+       
+        setReportStatus(order.resultDetail.status)
+        return () => {
+            
+        }
+    }, [order])
 
     return (
         <>
@@ -468,7 +533,7 @@ export function ClinicalNoteCreate(){
                 <div className="field-body">
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
-                            <textarea className="textarea is-small" ref={register()}  name="Finding" type="text" placeholder="Findings" />                 
+                            <textarea className="textarea is-small" ref={register()}  name="Finding" type="text" placeholder="Findings" disabled={bill_report_status==="Final"}/>                 
                         </p>
                     </div>
                     </div>
@@ -477,23 +542,32 @@ export function ClinicalNoteCreate(){
                 <div className="field-body">
                     <div className="field">
                         <div className="control has-icons-left has-icons-right">
-                        <textarea className="textarea is-small" ref={register()}  name="Recommendation" type="text" placeholder="Recommendation" />
+                        <textarea className="textarea is-small" ref={register()}  name="Recommendation" type="text" placeholder="Recommendation" disabled={bill_report_status==="Final"}/>
                         </div>
                     </div>
                     </div>
                     </div>
-               
-        <div className="field  is-grouped mt-2" >
+                    <div className="field">
+                    <label className=" is-small">
+                             <input  type="radio" name="status" value="Draft"   checked={reportStatus==="Draft"} onChange={(e)=>{handleChangePart(e)}} disabled={bill_report_status==="Final"}/>
+                               <span > Draft</span>
+                              </label> <br/>
+                              <label className=" is-small">
+                             <input type="radio" name="status"  value="Final"   checked={reportStatus==="Final"} onChange={(e)=>handleChangePart(e)} disabled={bill_report_status==="Final"}/>
+                             <span> Final </span>
+                              </label>
+                              </div> 
+             <div className="field  is-grouped mt-2" >
                 <p className="control">
-                    <button type="submit" className="button is-success is-small" >
-                        Save
+                    <button type="submit" className="button is-success is-small" disabled={bill_report_status==="Final"} >
+                    {bill_report_status==="Pending"? "Save":"Update"}
                     </button>
                 </p>
-                <p className="control">
+               {/*  <p className="control">
                     <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
                         Cancel
                     </button>
-                </p>
+                </p> */}
                
             </div>
      

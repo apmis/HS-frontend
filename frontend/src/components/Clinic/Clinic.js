@@ -359,10 +359,7 @@ export function ClinicList({standalone,closeModal}){
             }
             
             useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
-                    //getFacilities(user)
-                }, 200);
+               
 
                 return () => {
                     

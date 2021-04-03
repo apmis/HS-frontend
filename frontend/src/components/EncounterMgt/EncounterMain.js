@@ -92,7 +92,7 @@ export default function EncounterMain({nopresc}) {
               // facility:user.currentEmployee.facilityDetail._id || "",
                // locationType:"Clinic",
                client:state.ClientModule.selectedClient._id,
-               $limit:10,
+               $limit:50,
                 $sort: {
                     name: 1
                   }
@@ -119,7 +119,7 @@ export default function EncounterMain({nopresc}) {
                     //locationType:"Clinic",
                     //facility:user.currentEmployee.facilityDetail._id,
                     client:state.ClientModule.selectedClient._id,
-                    $limit:20,
+                    $limit:50,
                    /*  $skip:page*limit, */
                     $sort: {
                         createdAt: -1
@@ -250,7 +250,7 @@ export default function EncounterMain({nopresc}) {
                                                         </span>
                                                         </button> */}
                                                     </header>
-                                                  {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders") && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders") && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                         { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                             <div className="field is-horizontal"> 
                                                                     <div className="field-label"> 
@@ -334,7 +334,7 @@ export default function EncounterMain({nopresc}) {
                                                                 </div>}                                                   
                                                             </div>}
                                                      
-                                                            {Clinic.documentname==="Billed Orders" &&  
+                                                {Clinic.documentname==="Billed Orders" &&  
                                                 <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                         
                                                         {(Clinic.documentdetail.length>0) && <div>

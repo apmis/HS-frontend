@@ -32,7 +32,7 @@ export default function LaboratoryModule() {
 
             }
          return () => {       
-            }
+            } 
         }, [])
    
     useEffect(()=>{

@@ -341,8 +341,8 @@ export default function PaymentCreate(){
      setSource("")
      setDate("")
      setName("")
-     setBaseunit()
-     setCostprice()
+     setBaseunit("")
+     setCostprice("")
      setProductItem([])
      }
 

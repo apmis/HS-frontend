@@ -358,18 +358,7 @@ export function StoreList({standalone,closeModal}){
                     setError(true)
                 }) */
             }
-            
-            useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
-                    //getFacilities(user)
-                }, 200);
-
-                return () => {
-                    
-
-                }
-            },[])
+           
 
             useEffect(() => {
                
@@ -589,17 +578,7 @@ export function StoreList({standalone,closeModal}){
                      }) */
                  }
                  
-                 useEffect(() => {
-                     setTimeout(() => {
-                         console.log("happy birthday")
-                         //getFacilities(user)
-                     }, 200);
-     
-                     return () => {
-                         
-     
-                     }
-                 },[])
+                 
      
                  useEffect(() => {
                     

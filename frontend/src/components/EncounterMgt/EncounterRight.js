@@ -14,8 +14,10 @@ export default function EncounterRight() {
         <div>
           {(state.DocumentClassModule.selectedDocumentClass.name==='Vital Signs') &&  <VitalSignCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Clinical Note') &&   <ClinicalNoteCreate />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Lab Result') &&   <LabNoteCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Prescription') &&   <PrescriptionCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Diagnostic Request') &&   <LabrequestCreate />}
+          
         </div>
     )
 }
@@ -454,6 +456,185 @@ export function ClinicalNoteCreate(){
             </div> 
         </div> 
                
+        <div className="field  is-grouped mt-2" >
+                <p className="control">
+                    <button type="submit" className="button is-success is-small" >
+                        Save
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
+                        Cancel
+                    </button>
+                </p>
+               
+            </div>
+     
+            </form>
+            </div>
+            </div>
+                 
+        </>
+    )
+   
+}
+
+export function LabNoteCreate(){
+    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const [error, setError] =useState(false)
+    const [success, setSuccess] =useState(false)
+    const [message,setMessage] = useState("")
+    // eslint-disable-next-line
+    const [facility,setFacility] = useState()
+    const ClientServ=client.service('clinicaldocument')
+    //const history = useHistory()
+    const {user} = useContext(UserContext) //,setUser
+    // eslint-disable-next-line
+    const [currentUser,setCurrentUser] = useState()
+    const {state}=useContext(ObjectContext)
+
+    const order=state.financeModule.selectedFinance
+
+    const getSearchfacility=(obj)=>{
+        setValue("facility", obj._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+    }
+    
+    useEffect(() => {
+        setCurrentUser(user)
+        //console.log(currentUser)
+        return () => {
+        
+        }
+    }, [user])
+
+  //check user for facility or get list of facility  
+    useEffect(()=>{
+        //setFacility(user.activeClient.FacilityId)//
+      if (!user.stacker){
+       /*    console.log(currentUser)
+        setValue("facility", user.currentEmployee.facilityDetail._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })  */
+      }
+    })
+
+    const onSubmit = (data,e) =>{
+        e.preventDefault();
+        setMessage("")
+        setError(false)
+        setSuccess(false)
+        let document={}
+         // data.createdby=user._id
+          console.log(data);
+          if (user.currentEmployee){
+          document.facility=user.currentEmployee.facilityDetail._id 
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          }
+         document.documentdetail=data
+          document.documentname= "Lab Result"
+         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
+          document.client=state.ClientModule.selectedClient._id
+          document.createdBy=user._id
+          document.createdByname=user.firstname+ " "+user.lastname
+          document.status="completed"
+          console.log(document)
+
+          if (
+            document.location===undefined ||!document.createdByname || !document.facilityname ){
+            toast({
+                message: ' Documentation data missing, requires location and facility details' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              return
+          }
+        ClientServ.create(document)
+        .then((res)=>{
+                //console.log(JSON.stringify(res))
+                e.target.reset();
+               /*  setMessage("Created Client successfully") */
+                setSuccess(true)
+                toast({
+                    message: 'Lab Result created succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  setSuccess(false)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error creating Lab Result ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            })
+
+      } 
+const handleChangePart=(e)=>{
+    console.log(e)
+}
+    return (
+        <>
+            <div className="card ">
+            <div className="card-header">
+                <p className="card-header-title">
+                    Lab Result
+                </p>
+            </div>
+            <div className="card-content vscrollable remPad1">
+
+              {/*   <label className="label is-size-7">
+                  Client:  {order.orderInfo.orderObj.clientname}
+                </label>
+                <label className="label is-size-7">
+                 Test:  {order.serviceInfo.name}
+                </label> */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <input className="input is-small" ref={register()}  name="Investigation" type="text" placeholder="Investigation" />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-hospital"></i>
+                            </span>                    
+                        </p>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Finding" type="text" placeholder="Findings" />                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <div className="control has-icons-left has-icons-right">
+                        <textarea className="textarea is-small" ref={register()}  name="Recommendation" type="text" placeholder="Recommendation" />
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                   {/*  <div className="field">
+                    <label className=" is-small">
+                             <input  type="radio" name="status" value="Draft" checked onChange={(e)=>{handleChangePart(e)}}/>
+                               <span > Draft</span>
+                              </label> <br/>
+                              <label className=" is-small">
+                             <input type="radio" name="status"  value="Final" onChange={(e)=>handleChangePart(e)}/>
+                             <span> Final </span>
+                              </label>
+                              </div>  */}
         <div className="field  is-grouped mt-2" >
                 <p className="control">
                     <button type="submit" className="button is-success is-small" >

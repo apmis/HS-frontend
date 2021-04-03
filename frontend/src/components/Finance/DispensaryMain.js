@@ -155,18 +155,7 @@ export default function DispensaryMain() {
                     setError(true)
                 }) */
             }
-            
-           /*  useEffect(() => {
-                setTimeout(() => {
-                    console.log("happy birthday")
-                    //getFacilities(user)
-                }, 200);
-
-                return () => {
-                    
-
-                }
-            },[]) */
+          
 
             useEffect(() => {
                 getFacilities()
