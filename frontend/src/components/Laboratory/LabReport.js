@@ -496,7 +496,7 @@ export function LabNoteCreate(){
     useEffect(() => {
 
         console.log(order.resultDetail.status)
-
+        if (bill_report_status!=="Pending"){
         setValue("Finding", order.resultDetail.documentdetail.Finding,  {
             shouldValidate: true,
             shouldDirty: true
@@ -505,7 +505,7 @@ export function LabNoteCreate(){
             shouldValidate: true,
             shouldDirty: true
         })
-       
+    }
         setReportStatus(order.resultDetail.status)
         return () => {
             
