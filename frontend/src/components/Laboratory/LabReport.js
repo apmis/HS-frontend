@@ -550,7 +550,7 @@ export function LabNoteCreate(){
                     </div>
                     <div className="field">
                     <label className=" is-small">
-                             <input  type="radio" name="status" value="Draft"   checked={reportStatus==="Draft"} onChange={(e)=>{handleChangePart(e)}} disabled={bill_report_status==="Final"}/>
+                             <input  type="radio" name="status" value="Draft"   checked={reportStatus==="Draft"||reportStatus==="Pending"} onChange={(e)=>{handleChangePart(e)}} disabled={bill_report_status==="Final"}/>
                                <span > Draft</span>
                               </label> <br/>
                               <label className=" is-small">
