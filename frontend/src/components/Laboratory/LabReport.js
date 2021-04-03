@@ -506,7 +506,7 @@ export function LabNoteCreate(){
             shouldDirty: true
         })
     }
-        setReportStatus(order.resultDetail.status)
+        setReportStatus(order.report_status)
         return () => {
             
         }
