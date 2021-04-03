@@ -490,7 +490,7 @@ export function LabNoteCreate(){
     const handleChangePart=async (e)=>{
         console.log(e.target.value)
         await setReportStatus(e.target.value)
-git
+
     }
 
     useEffect(() => {
