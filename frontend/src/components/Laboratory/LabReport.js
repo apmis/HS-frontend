@@ -495,8 +495,8 @@ git
 
     useEffect(() => {
 
-        console.log(order.resultDetail.status)
-        if (order.resultDetail.status!=="Pending"){
+       // console.log(order.resultDetail.status)
+        if (order.report_status !=="Pending"){
         setValue("Finding", order.resultDetail.documentdetail.Finding,  {
             shouldValidate: true,
             shouldDirty: true
