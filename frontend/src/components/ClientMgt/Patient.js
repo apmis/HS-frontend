@@ -240,7 +240,7 @@ export function ClientCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small is-danger" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
+                        <input className="input is-small " ref={register()} name="email" type="email" placeholder="Email"  />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -622,9 +622,9 @@ export function ClientList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
+                                        <th><abbr title="Last Name">Last Name</abbr></th>
                                         <th>First Name</th>
                                         <th><abbr title="Middle Name">Middle Name</abbr></th>
-                                       <th><abbr title="Last Name">Last Name</abbr></th>
                                        <th><abbr title="Age">Age</abbr></th>
                                         <th><abbr title="Gender">Gender</abbr></th> 
                                         <th><abbr title="Phone">Phone</abbr></th>
@@ -640,10 +640,10 @@ export function ClientList(){
                                         {facilities.map((Client, i)=>(
 
                                             <tr key={Client._id} onClick={()=>handleRow(Client)}  className={Client._id===(selectedClient?._id||null)?"is-selected":""}>
-                                            <th>{i+1}</th>
-                                            <th>{Client.firstname}</th>
+                                            <td>{i+1}</td>
+                                            <th>{Client.lastname}</th>
+                                            <td>{Client.firstname}</td>
                                             <td>{Client.middlename}</td>
-                                           < td>{Client.lastname}</td>
                                            <td>{Client.dob && <>{formatDistanceToNowStrict(new Date(Client.dob))}</>}</td>
                                             <td>{Client.gender}</td>
                                              <td>{Client.phone}</td>
@@ -1023,11 +1023,11 @@ export function ClientDetail(){
                         Schedule appointment
                     </button>
                 </p>
-                <p className="control">
+               {/*  <p className="control">
                     <button className="button is-danger is-small" >
                         Check into Clinic 
                     </button>
-                </p>
+                </p> */}
                 <p className="control">
                     <button className="button is-link is-small" onClick={()=>{history.push('/app/clinic/encounter')}} >
                         Attend to Client
