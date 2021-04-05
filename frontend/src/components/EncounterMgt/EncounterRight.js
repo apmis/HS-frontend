@@ -73,6 +73,26 @@ export function VitalSignCreate(){
         let document={}
          // data.createdby=user._id
           console.log(data);
+        if (!!data.Height && !!data.Weight){
+            data.BMI=Number(data.Weight)/((Number(data.Height))**2)
+            console.log(data.Height,data.Weight)
+           
+                if (data.BMI>=30){
+                    data.BMI_Status="Obese"
+                }
+                if (data.BMI>=25 && data.BMI<=29.9){
+                    data.BMI_Status="Overweight"
+                }
+                if (data.BMI>=18.5&& data.BMI<=24.9){
+                    data.BMI_Status="Normal Weight"
+                }
+                if (data.BMI< 18.5){
+                    data.BMI_Status="Underweight "
+                }
+                console.log(data.BMI, data.BMI_Status)
+           // return
+        }
+        
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
@@ -129,7 +149,7 @@ export function VitalSignCreate(){
                 <div className="field-body">
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
-                            <input className="input is-small" ref={register()}  name="temperature" type="text" placeholder="temperature" />
+                            <input className="input is-small" ref={register()}  name="Temperature" type="text" placeholder="Temperature" />
                             <span className="icon is-small is-left">
                                 <i className="fas fa-hospital"></i>
                             </span>                    
@@ -139,7 +159,7 @@ export function VitalSignCreate(){
                 
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register()}  name="pulse" type="text" placeholder="pulse" />
+                        <input className="input is-small" ref={register()}  name="Pulse" type="text" placeholder="Pulse" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-map-signs"></i>
                         </span>
@@ -152,7 +172,7 @@ export function VitalSignCreate(){
                 <div className="field-body">   
                 <div className="field">
                     <p className="control has-icons-left">
-                        <input className="input is-small" ref={register()} name="respiratory_rate" type="text" placeholder="Respiratory rate"/>
+                        <input className="input is-small" ref={register()} name="Respiratory_rate" type="text" placeholder="Respiratory rate"/>
                         <span className="icon is-small is-left">
                         <i className=" fas fa-user-md "></i>
                         </span>
@@ -161,7 +181,7 @@ export function VitalSignCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small" ref={register()} name="random_glucose" type="text" placeholder="Blood Glucose"  />
+                        <input className="input is-small" ref={register()} name="Random_glucose" type="text" placeholder="Blood Glucose"  />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -174,7 +194,7 @@ export function VitalSignCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small" ref={register()} name="systolic_BP" type="text" placeholder="Systolic BP"  />
+                        <input className="input is-small" ref={register()} name="Systolic_BP" type="text" placeholder="Systolic BP"  />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -183,7 +203,7 @@ export function VitalSignCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small" ref={register()} name="diastolic_BP" type="text" placeholder="Diastolic_BP"  />
+                        <input className="input is-small" ref={register()} name="Diastolic_BP" type="text" placeholder="Diastolic_BP"  />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -205,7 +225,7 @@ export function VitalSignCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small" ref={register()} name="pain" type="text" placeholder="Pain"  />
+                        <input className="input is-small" ref={register()} name="Pain" type="text" placeholder="Pain"  />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -215,6 +235,24 @@ export function VitalSignCreate(){
         </div>
         <div className="field is-horizontal">
             <div className="field-body">
+            <div className="field">
+                    <p className="control has-icons-left">
+                    
+                        <input className="input is-small" ref={register()} name="Height" type="text" placeholder="Height (m)"  />
+                        <span className="icon is-small is-left">
+                        <i className="fas fa-envelope"></i>
+                        </span>
+                    </p>
+                </div> 
+                <div className="field">
+                    <p className="control has-icons-left">
+                    
+                        <input className="input is-small" ref={register()} name="Weight" type="text" placeholder="Weight (Kg)"  />
+                        <span className="icon is-small is-left">
+                        <i className="fas fa-envelope"></i>
+                        </span>
+                    </p>
+                </div> 
                 
             </div> 
         </div> 
