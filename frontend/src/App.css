@@ -88,8 +88,12 @@
   margin-bottom: 1rem;
 }
 .vscrollable{
-  overflow-y: auto;
+  overflow-y: auto  !important;
   max-height: 80vh ; /* 550px */
+}
+.vscrol{
+  overflow-y: auto  !important;
+  max-height: 40vh ; /* 550px */
 }
 .vscrollable-acc{
   overflow-y: auto;

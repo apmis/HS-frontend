@@ -60,8 +60,8 @@ export function ProductEntryCreate(){
     const [date,setDate] = useState("")
     const [name,setName] = useState("")
     const [baseunit,setBaseunit] = useState("")
-    const [quantity,setQuantity] = useState()
-    const [costprice,setCostprice] = useState()
+    const [quantity,setQuantity] = useState("")
+    const [costprice,setCostprice] = useState("")
     const [productItem,setProductItem] = useState([])
     const {state}=useContext(ObjectContext)
     
@@ -110,6 +110,15 @@ export function ProductEntryCreate(){
         await setType(e.target.value)
     }
     const handleClickProd=async()=>{
+        if(!productId||!quantity||!costprice){
+            toast({
+                message: 'Kindly choose Product,price and quantity',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              }) 
+              return
+        }
         await setSuccess(false)
         setProductItem(
             prevProd=>prevProd.concat(productItemI)
@@ -118,9 +127,9 @@ export function ProductEntryCreate(){
         setBaseunit("")
         setQuantity("")
         setCostprice("")
-       await setSuccess(true)
-       console.log(success)
-       console.log(productItem)
+        await setSuccess(true)
+      // console.log(success)
+     //  console.log(productItem)
     }
   //check user for facility or get list of facility  
    /*  useEffect(()=>{
@@ -165,7 +174,7 @@ export function ProductEntryCreate(){
         productEntry.createdby=user._id
         productEntry.transactioncategory="credit"
 
-          console.log("b4 facility",productEntry);
+          //console.log("b4 facility",productEntry);
           if (user.currentEmployee){
          productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }else{
@@ -189,7 +198,7 @@ export function ProductEntryCreate(){
               return
 
           }
-          console.log("b4 create",productEntry);
+          //console.log("b4 create",productEntry);
         ProductEntryServ.create(productEntry)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -215,7 +224,10 @@ export function ProductEntryCreate(){
             })
 
       } 
-
+    const removeEntity=(entity,i)=>{
+    //console.log(entity)
+        setProductItem(prev=>prev.filter((obj,index)=>index!==i ))
+    }
     
 
     return (
@@ -309,6 +321,10 @@ export function ProductEntryCreate(){
                         </span>
                     </p>
                 </div>
+                </div>
+                </div>
+                <div className="field is-horizontal">
+            <div className="field-body">
                 <div className="field">
                 <p className="control has-icons-left">
                     <input className="input is-small" /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
@@ -328,7 +344,7 @@ export function ProductEntryCreate(){
             </div> 
             <div className="field">
             <p className="control">
-                    <button className="button is-info is-small  is-pulled-right">
+                    <button className="button is-info is-small  is-pulled-right minHt">
                       <span className="is-small" onClick={handleClickProd}> +</span>
                     </button>
                 </p>
@@ -338,6 +354,7 @@ export function ProductEntryCreate(){
             
        {(productItem.length>0) && <div>
             <label>Product Items:</label>
+            <div className="table-container  vscrol" id="scrollableDiv">
          <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                 <thead>
                     <tr>
@@ -363,13 +380,14 @@ export function ProductEntryCreate(){
                         <td>{ProductEntry.baseunit}</td>
                         <td>{ProductEntry.costprice}</td>
                         <td>{ProductEntry.amount}</td>
-                        <td><span className="showAction"  >x</span></td>
+                        <td onClick={()=>removeEntity(ProductEntry,i)}><span className="showAction"  >x</span></td>
                         
                         </tr>
 
                     ))}
                 </tbody>
                 </table>
+                </div>
                 <div className="field mt-2">
                 <p className="control">
                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={onSubmit}>
@@ -438,7 +456,7 @@ export function ProductEntryList(){
 
    const handleSearch=(val)=>{
        const field='name'
-       console.log(val)
+       //console.log(val)
        ProductEntryServ.find({query: {
                 [field]: {
                     $regex:val,
@@ -452,13 +470,13 @@ export function ProductEntryList(){
                     createdAt: -1
                   }
                     }}).then((res)=>{
-                console.log(res)
+               // console.log(res)
                setFacilities(res.data)
                 setMessage(" ProductEntry  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
-                console.log(err)
+              //  console.log(err)
                 setMessage("Error fetching ProductEntry, probable network issues "+ err )
                 setError(true)
             })
@@ -554,7 +572,7 @@ export function ProductEntryList(){
 
             useEffect(() => {
                 getFacilities()
-                console.log("store changed")
+              //  console.log("store changed")
                 return () => {
                    
                 }
@@ -600,7 +618,7 @@ export function ProductEntryList(){
                                         <th><abbr title="Document No">Document No</abbr></th>
                                         <th><abbr title="Total Amount">Total Amount</abbr></th>
                                         <th><abbr title="Enteredby">Entered By</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -617,7 +635,7 @@ export function ProductEntryList(){
                                             <td>{ProductEntry.documentNo}</td>
                                             <td>{ProductEntry.totalamount}</td>
                                             <td>{ProductEntry.enteredby}</td>
-                                            <td><span className="showAction"  >...</span></td>
+                                          {/*   <td><span className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -976,7 +994,7 @@ export function ProductEntryModify(){
         e.preventDefault();
         
         setSuccess(false)
-        console.log(data)
+       // console.log(data)
         data.facility=ProductEntry.facility
           //console.log(data);
           
@@ -1171,10 +1189,10 @@ export  function ProductSearch({getSearchfacility,clear}) {
    //console.log(state)
 }
     const handleBlur=async(e)=>{
-         if (count===2){
+         /* if (count===2){
              console.log("stuff was chosen")
          }
-       
+        */
        /*  console.log("blur")
          setShowPanel(false)
         console.log(JSON.stringify(simpa))
@@ -1209,8 +1227,8 @@ export  function ProductSearch({getSearchfacility,clear}) {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-              console.log("product  fetched successfully") 
-              console.log(res.data) 
+             // console.log("product  fetched successfully") 
+             // console.log(res.data) 
                 setFacilities(res.data)
                  setSearchMessage(" product  fetched successfully")
                  setShowPanel(true)
@@ -1225,11 +1243,11 @@ export  function ProductSearch({getSearchfacility,clear}) {
              })
          }
         else{
-            console.log("less than 3 ")
-            console.log(val)
+           // console.log("less than 3 ")
+           // console.log(val)
             setShowPanel(false)
             await setFacilities([])
-            console.log(facilities)
+           // console.log(facilities)
         }
     }
 
@@ -1242,7 +1260,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
     }
     useEffect(() => {
        if (clear){
-           console.log("success has changed",clear)
+          // console.log("success has changed",clear)
            setSimpa("")
        }
         return () => {
@@ -1253,8 +1271,8 @@ export  function ProductSearch({getSearchfacility,clear}) {
         <div>
             <div className="field">
                 <div className="control has-icons-left  ">
-                    <div className={`dropdown ${showPanel?"is-active":""}`}>
-                        <div className="dropdown-trigger">
+                    <div className={`dropdown ${showPanel?"is-active":""} wt100`}>
+                        <div className="dropdown-trigger wt100">
                             <DebounceInput className="input is-small " 
                                 type="text" placeholder="Search Product"
                                 value={simpa}
@@ -1269,15 +1287,15 @@ export  function ProductSearch({getSearchfacility,clear}) {
                             </span>
                         </div>
                         {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu" >
+                        <div className="dropdown-menu wt100" >
                             <div className="dropdown-content">
                           { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to product list</span> </div>}
 
                               {facilities.map((facility, i)=>(
                                     
-                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
+                                    <div className="dropdown-item " key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <span>{facility.name}</span>
+                                        <span>{facility.name}</span><span>({facility.baseunit})</span>
                                         
                                     </div>
                                     

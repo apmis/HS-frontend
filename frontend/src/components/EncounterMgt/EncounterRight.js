@@ -72,10 +72,10 @@ export function VitalSignCreate(){
         setSuccess(false)
         let document={}
          // data.createdby=user._id
-          console.log(data);
+         // console.log(data);
         if (!!data.Height && !!data.Weight){
             data.BMI=Number(data.Weight)/((Number(data.Height))**2)
-            console.log(data.Height,data.Weight)
+          //  console.log(data.Height,data.Weight)
            
                 if (data.BMI>=30){
                     data.BMI_Status="Obese"

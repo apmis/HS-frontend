@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
+import InfiniteScroll from "react-infinite-scroll-component";
+
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -74,11 +76,6 @@ export function ProductCreate(){
     useEffect(()=>{
         //setFacility(user.activeProduct.FacilityId)//
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -156,77 +153,7 @@ export function ProductCreate(){
                     </span>
                 </p>
             </div>
-             {/*<div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
            
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> */}
-          {/*  <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
-                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
-                    <span className="icon is-small is-left">
-                    <i className="fas  fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div> */}
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
@@ -261,6 +188,9 @@ export function ProductList(){
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
+    const [page, setPage] = useState(0) 
+    const [limit, setLimit] = useState(10) 
+    const [total, setTotal] = useState(0) 
 
 
 
@@ -300,7 +230,7 @@ export function ProductList(){
                    
                 },
               // facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                $limit:100,
                 $sort: {
                     createdAt: -1
                   }
@@ -317,26 +247,31 @@ export function ProductList(){
             })
         }
    
-        const getFacilities= async()=>{
+const getFacilities= async()=>{
             if (user.currentEmployee){
+            //    console.log(page,limit)
             
         const findProduct= await ProductServ.find(
                 {query: {
                    // facility:user.currentEmployee.facilityDetail._id,
-                    $limit:20,
+                    $limit:limit,
+                    $skip:page * limit,
                     $sort: {
                         createdAt: -1
                     }
                     }})
-
-         await setFacilities(findProduct.data)
+        await setFacilities(prevstate=>prevstate.concat(findProduct.data))
+        await setTotal(findProduct.total)
+       // console.log(findProduct)
+        setPage(page=>page+1)
+        // await setFacilities(findProduct.data) original
                 }
                 else {
                     if (user.stacker){
                         const findProduct= await ProductServ.find(
                             {query: {
                                 
-                                $limit:20,
+                                $limit:200,
                                 $sort: {
                                     createdAt: -1
                                 }
@@ -413,19 +348,21 @@ export function ProductList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                <div className="table-container pullup vscrol" id="scrollableDiv">
+                <InfiniteScroll
+            dataLength={facilities.length}
+            next={getFacilities}
+            hasMore={total>facilities.length}
+            loader={<h4>Loading...</h4>}
+            scrollableTarget="scrollableDiv"
+          >
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth  ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
                                         
                                        <th><abbr title="Base Unit">Base Unit</abbr></th>
-                                         {/* <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
-                                        <th><abbr title="Facility">facility</abbr></th>*/}
                                         <th><abbr title="Last Name">Product Category</abbr></th>
                                         <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
@@ -433,19 +370,15 @@ export function ProductList(){
                                     <tfoot>
                                         
                                     </tfoot>
-                                    <tbody>
+                                    <tbody > 
                                         {facilities.map((Product, i)=>(
 
                                             <tr key={Product._id} onClick={()=>handleRow(Product)}>
                                             <th>{i+1}</th>
                                             <th>{Product.name}</th>
                                             <td>{Product.baseunit}</td>
-                                           < td>{Product.category}</td>
-                                             {/*<td>{Product.phone}</td>
-                                            <td>{Product.email}</td>
-                                            <td>{Product.department}</td>
-                                            <td>{Product.deptunit}</td> 
-                                            <td>{Product.facility}</td>*/}
+                                            <td>{Product.category}</td>
+                                             
                                             <td><span   className="showAction"  >...</span></td>
                                            
                                             </tr>
@@ -453,7 +386,7 @@ export function ProductList(){
                                         ))}
                                     </tbody>
                                     </table>
-                                    
+                  </InfiniteScroll>                  
                 </div>              
             </>):<div>loading</div>}
             </>
