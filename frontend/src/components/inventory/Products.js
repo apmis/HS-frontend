@@ -85,7 +85,7 @@ export function ProductCreate(){
         setError(false)
         setSuccess(false)
          // data.createdby=user._id
-          console.log(data);
+         // console.log(data);
           if (user.currentEmployee){
         // data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
@@ -189,8 +189,9 @@ export function ProductList(){
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
     const [page, setPage] = useState(0) 
-    const [limit, setLimit] = useState(10) 
+    const [limit, setLimit] = useState(20) 
     const [total, setTotal] = useState(0) 
+    const [restful, setRestful] = useState(true) 
 
 
 
@@ -230,13 +231,16 @@ export function ProductList(){
                    
                 },
               // facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:100,
+                $limit:20,
                 $sort: {
-                    createdAt: -1
+                    name: 1
                   }
                     }}).then((res)=>{
-                console.log(res)
+               // console.log(res)
+
                setFacilities(res.data)
+               setTotal(res.total)
+
                 setMessage(" Product  fetched successfully")
                 setSuccess(true) 
             })
@@ -307,17 +311,30 @@ const getFacilities= async()=>{
                     fetchUser(user1)
                     console.log(user)
                     getFacilities(user) */
+                   // setFacilities(prevstate=>prevstate.concat(findProduct.data)
                 }
-                ProductServ.on('created', (obj)=>getFacilities())
-                ProductServ.on('updated', (obj)=>getFacilities())
-                ProductServ.on('patched', (obj)=>getFacilities())
-                ProductServ.on('removed', (obj)=>getFacilities())
+                
+               ProductServ.on('created', (obj)=>rest())
+                ProductServ.on('updated', (obj)=>rest())
+                ProductServ.on('patched', (obj)=>rest())
+                ProductServ.on('removed', (obj)=>rest())
                 return () => {
                 
                 }
             },[])
 
-
+            const rest = async ()=>{
+               // console.log("starting rest")
+               await setRestful(true)
+                  await  setPage(0) 
+                  //await  setLimit(2) 
+                  await    setTotal(0) 
+                  await  setFacilities([])
+                 await getFacilities()
+                 //await  setPage(0) 
+                 await setRestful(false)
+        
+            }
     //todo: pagination and vertical scroll bar
 
     return(
@@ -348,7 +365,7 @@ const getFacilities= async()=>{
                     </div>
 
                 </div>
-                <div className="table-container pullup vscrol" id="scrollableDiv">
+                <div className="table-container pullup vscrola" id="scrollableDiv">
                 <InfiniteScroll
             dataLength={facilities.length}
             next={getFacilities}

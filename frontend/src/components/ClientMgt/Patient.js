@@ -617,8 +617,8 @@ export function ClientList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                <div className="table-container pullup  vscrol">
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth  ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>

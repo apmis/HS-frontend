@@ -7,6 +7,11 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {ProductCreate} from './Products'
+import { formatDistanceToNowStrict, format, subDays,addDays } from 'date-fns'
+import DatePicker from "react-datepicker";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+import "react-datepicker/dist/react-datepicker.css";
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -65,7 +70,7 @@ export function ProductEntryCreate(){
     const [productItem,setProductItem] = useState([])
     const {state}=useContext(ObjectContext)
     
-    const [productEntry,setProductEntry]=useState({
+   /*  const [productEntry,setProductEntry]=useState({
         productitems:[],
         date,
         documentNo,
@@ -74,7 +79,7 @@ export function ProductEntryCreate(){
         source,
 
     })
- 
+  */
     const productItemI={
         productId,
         name,
@@ -131,18 +136,11 @@ export function ProductEntryCreate(){
       // console.log(success)
      //  console.log(productItem)
     }
-  //check user for facility or get list of facility  
-   /*  useEffect(()=>{
-        //setFacility(user.activeProductEntry.FacilityId)//
-      if (!user.stacker){
-          console.log(currentUser)
-           /* setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  
-
-      }
-    }) */
+    const handleDate=async (date)=>{
+        setDate(date)
+        
+    }
+    
 
     const resetform=()=>{
      setType("Purchase Invoice")
@@ -152,8 +150,8 @@ export function ProductEntryCreate(){
     setSource("")
     setDate("")
     setName("")
-    setBaseunit()
-    setCostprice()
+    setBaseunit("")
+    setCostprice("")
     setProductItem([])
     }
 
@@ -162,14 +160,25 @@ export function ProductEntryCreate(){
         setMessage("")
         setError(false)
         setSuccess(false)
-        await setProductEntry({
+        if (!date){
+          
+            toast({
+                message: 'Kindly choose date',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              }) 
+              return
+          }
+
+        let productEntry={
             
             date,
             documentNo,
             type,
             totalamount,
             source,
-        })
+        }
         productEntry.productitems=productItem
         productEntry.createdby=user._id
         productEntry.transactioncategory="credit"
@@ -266,23 +275,23 @@ export function ProductEntryCreate(){
            
             </div>
             </div> {/* horizontal end */}
-           {/*  <div className="field">
-                <p className="control has-icons-left"> // Audit/initialization/Purchase Invoice 
-                    <input className="input is-small"  ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div> */}
+           
                <div className="field is-horizontal">
                <div className="field-body">
                <div className="field">
-                <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small"  /* ref={register({ required: true })} */ value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
+                <div className="control has-icons-left has-icons-right">
+                <DatePicker 
+                            selected={date} 
+                            onChange={date => handleDate(date)} 
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Pick Date"
+                            //isClearable
+                            />
+                  {/*   <input className="input is-small"   ref={register({ required: true })}  value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
-                    </span>
-                </p>
+                    </span> */}
+                </div>
             </div>
             <div className="field">
                 <p className="control has-icons-left">
@@ -425,8 +434,11 @@ export function ProductEntryList(){
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
-
-
+    const [page, setPage] = useState(0) 
+    const [limit, setLimit] = useState(20) 
+    const [total, setTotal] = useState(0) 
+    const [restful, setRestful] = useState(true) 
+    const [next, setNext] = useState(false) 
 
     const handleCreateNew = async()=>{
         const    newProductEntryModule={
@@ -454,24 +466,37 @@ export function ProductEntryList(){
 
     }
 
-   const handleSearch=(val)=>{
-       const field='name'
+   const handleSearch=async(val)=>{
+       const field='source'
        //console.log(val)
        ProductEntryServ.find({query: {
-                [field]: {
-                    $regex:val,
-                    $options:'i'
-                   
-                },
+              $or:[
+                  {
+                    source: {
+                        $regex:val,
+                        $options:'i'  
+                    }
+                  },
+                  {
+                    type:{
+                        $regex:val,
+                        $options:'i' 
+                    }
+                  }
+                 
+
+              ],
+                
                 storeId:state.StoreModule.selectedStore._id,
                facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                $limit:100,
                 $sort: {
                     createdAt: -1
                   }
                     }}).then((res)=>{
-               // console.log(res)
+               //console.log(res)
                setFacilities(res.data)
+               setTotal(res.total)
                 setMessage(" ProductEntry  fetched successfully")
                 setSuccess(true) 
             })
@@ -480,32 +505,37 @@ export function ProductEntryList(){
                 setMessage("Error fetching ProductEntry, probable network issues "+ err )
                 setError(true)
             })
-        }
+    }
    
-        const getFacilities= async()=>{
+    const getFacilities= async()=>{
             if (user.currentEmployee){
-            
+         
         const findProductEntry= await ProductEntryServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
                     storeId:state.StoreModule.selectedStore._id,
-                    $limit:20,
+                    $limit:limit,
+                    $skip:page * limit,
+                   /*  $limit:20, */
                     $sort: {
                         createdAt: -1
                     }
                     }})
 
-         await setFacilities(findProductEntry.data)
+        
+        await setTotal(findProductEntry.total)
+        await setFacilities(prevstate=>prevstate.concat(findProductEntry.data))
+        if (findProductEntry.total> findProductEntry.skip){
+            setNext(true)
+          
+              setPage(page=>page+1)
+           } else{
+            setNext(false)  
+           }    
                 }
                 else {
                     if (user.stacker){
-                        /* toast({
-                            message: 'You do not qualify to view this',
-                            type: 'is-danger',
-                            dismissible: true,
-                            pauseOnHover: true,
-                          }) 
-                          return */
+                      
                         const findProductEntry= await ProductEntryServ.find(
                             {query: {
                                 
@@ -519,65 +549,130 @@ export function ProductEntryList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" ProductEntry  fetched successfully")
-                    setSuccess(true)
+        
+    }
+
+    const getNewFacilities= async()=>{
+                if (user.currentEmployee){
+              
+            const findProductEntry= await ProductEntryServ.find(
+                    {query: {
+                        facility:user.currentEmployee.facilityDetail._id,
+                        storeId:state.StoreModule.selectedStore._id,
+                        $limit:limit,
+                        //$skip:page * limit,
+                       /*  $limit:20, */
+                        $sort: {
+                            createdAt: -1
+                        }
+                        }}).then((resp)=>{
+                            setTotal(resp.total)
+                            setFacilities(resp.data)
+                            if (resp.total> resp.data.length){
+                                setNext(true)
+                               
+                                  setPage(page=>page+1)
+                               } else{
+                                setNext(false)  
+                               }    
+
+                        })
+                        .catch((err)=>{
+                            console.log(err) 
+                        })
+            }
+            else {
+                     if (user.stacker){
+                        
+                        const findProductEntry= await ProductEntryServ.find(
+                            {query: {
+                                
+                                $limit:20,
+                                $sort: {
+                                    createdAt: -1
+                                }
+                                }})
+            
+                    await setFacilities(findProductEntry.data)
+                
+                    }
+                }
+            
+    }
+            
+    const getUpdatedFacilities= async()=>{
+       
+        const findProductEntry= await ProductEntryServ.find(  
+            {query: {
+                facility:user.currentEmployee.facilityDetail._id,
+                storeId:state.employeeLocation.locationId,
+                $limit:limit,
+             
+                $sort: {
+                    createdAt: -1
+                }
+                }}).then((resp)=>{
+                   
+                    setTotal(resp.total)
+                    updatelist(resp.data)
+                    //setFacilities(resp.data)
+                    if (resp.total> resp.data.length){
+                        setNext(true)
+                          setPage(page=>page+1)
+                       } else{
+                        setNext(false)  
+                       }    
+
                 })
                 .catch((err)=>{
-                    setMessage("Error creating ProductEntry, probable network issues "+ err )
-                    setError(true)
-                }) */
-            }
-            
-            useEffect(() => {
-                
-
-                return () => {
-                    
-
-                }
-            },[])
-
-            useEffect(() => {
+                    console.log(err) 
+                })
+    }
+  
+    useEffect(() => {
                
-                if (!state.StoreModule.selectedStore){
-                    toast({
-                        message: 'kindly select a store',
-                        type: 'is-danger',
-                        dismissible: true,
-                        pauseOnHover: true,
-                      }) 
-                      return
-                    getFacilities()
+        if (!state.StoreModule.selectedStore){
+            toast({
+                message: 'kindly select a store',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+                }) 
+                return
+          //  getFacilities()
 
-                }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
-                }
-                ProductEntryServ.on('created', (obj)=>getFacilities())
-                ProductEntryServ.on('updated', (obj)=>getFacilities())
-                ProductEntryServ.on('patched', (obj)=>getFacilities())
-                ProductEntryServ.on('removed', (obj)=>getFacilities())
-                return () => {
-                
-                }
-            },[])
+        }
+        ProductEntryServ.on('created', (obj)=>getUpdatedFacilities())
+        ProductEntryServ.on('updated', (obj)=>getUpdatedFacilities())
+        ProductEntryServ.on('patched', (obj)=>getUpdatedFacilities())
+        ProductEntryServ.on('removed', (obj)=>getUpdatedFacilities())
+        return () => {
+           
+        }
+    },[])
 
-            useEffect(() => {
-                getFacilities()
-              //  console.log("store changed")
-                return () => {
-                   
-                }
-            }, [state.StoreModule.selectedStore])
+    const updatelist=async(data)=>{
+       await setFacilities(data)
+    }
+    const updates=()=>{
+       // setFacilities([])
+        rest1()
+    }
+
+    useEffect(() => {
+        rest1()
+        return () => {
+            
+        }
+    }, [state.StoreModule.selectedStore._id])
     //todo: pagination and vertical scroll bar
+  
+
+    const rest1 = async ()=>{
+       setPage(0) 
+       setTotal(0) 
+       getNewFacilities()
+    }
 
     return(
         <>
@@ -588,7 +683,7 @@ export function ProductEntryList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search ProductEntry"
+                                        type="text" placeholder="Search Type or Source"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -607,7 +702,16 @@ export function ProductEntryList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup ">
+
+                <div className="table-container pullup vscrola" id="scrollableDiv">
+              
+                  <InfiniteScroll
+                        dataLength={facilities.length}
+                        next={getFacilities}
+                        hasMore={ total>facilities.length}
+                        loader={<h4>Loading...</h4>}
+                        scrollableTarget="scrollableDiv"
+                    > 
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
@@ -617,7 +721,7 @@ export function ProductEntryList(){
                                         <th>Source</th>
                                         <th><abbr title="Document No">Document No</abbr></th>
                                         <th><abbr title="Total Amount">Total Amount</abbr></th>
-                                        <th><abbr title="Enteredby">Entered By</abbr></th>
+                                        {/* <th><abbr title="Enteredby">Entered By</abbr></th> */} 
                                         {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
@@ -629,12 +733,12 @@ export function ProductEntryList(){
 
                                             <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)}>
                                             <th>{i+1}</th>
-                                            <td>{ProductEntry.date}</td>
+                                            <td>{ProductEntry.date?<>{format(new Date(ProductEntry.date),"dd-MM-yy HH:mm")}</>:""}</td>
                                             <th>{ProductEntry.type}</th>
                                             <td>{ProductEntry.source}</td>
                                             <td>{ProductEntry.documentNo}</td>
                                             <td>{ProductEntry.totalamount}</td>
-                                            <td>{ProductEntry.enteredby}</td>
+                                          {/*   <td>{ProductEntry.enteredby}</td> */}
                                           {/*   <td><span className="showAction"  >...</span></td> */}
                                            
                                             </tr>
@@ -642,13 +746,14 @@ export function ProductEntryList(){
                                         ))}
                                     </tbody>
                                     </table>
+                                 </InfiniteScroll>   
                                     
                 </div>              
             </>):<div>loading... Choose a Store</div>}
             </>
               
     )
-    }
+}
 
 
 export function ProductEntryDetail(){
@@ -722,7 +827,7 @@ export function ProductEntryDetail(){
                         </label>
                     </td>
                     <td>
-                        <span className="is-size-7 padleft"   name="name"> {ProductEntry.date} </span>
+                        <span className="is-size-7 padleft"   name="name"> {format(new Date(ProductEntry.date),"dd-MM-yy HH:mm")} </span>
                     </td>
                     <td>
                                 
@@ -787,84 +892,7 @@ export function ProductEntryDetail(){
                     ))}
                 </tbody>
                 </table>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
-                    </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="ProductEntryCity">{ProductEntry.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="ProductEntryContactPhone" >{ProductEntry.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
             
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="ProductEntryEmail" >{ProductEntry.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="ProductEntryOwner">{ProductEntry.department}</span>
-                    </td>
-               
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="ProductEntryType">{ProductEntry.deptunit}</span>
-                </td>
-              
-                </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "ProductEntryCategory">{ProductEntry.ProductEntryCategory}</span>
-                </label>
-                 </div> */}
-
-            
-           
-           {/*  <div className="field mt-2">
-                <p className="control">
-                    <button className="button is-success is-small" onClick={handleEdit}>
-                        Edit
-                    </button>
-                </p>
-            </div>
-            { error && <div className="message"> {message}</div>} */}
            
         </div>
         </div>
@@ -900,30 +928,7 @@ export function ProductEntryModify(){
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", ProductEntry.profession,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("phone", ProductEntry.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", ProductEntry.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("department", ProductEntry.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", ProductEntry.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("ProductEntryCategory", ProductEntry.ProductEntryCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
+    
             
             return () => {
                 
@@ -985,11 +990,6 @@ export function ProductEntryModify(){
         }
     }
         
-
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
@@ -1060,67 +1060,7 @@ export function ProductEntryModify(){
                 </p>
                 </label>
                 </div>
-            {/* <div className="field">
-            <label className="label is-small">Profession
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="ProductEntry Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="ProductEntryCategory" type="text" placeholder="ProductEntry Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
+           
            
            
             </form>
@@ -1189,22 +1129,7 @@ export  function ProductSearch({getSearchfacility,clear}) {
    //console.log(state)
 }
     const handleBlur=async(e)=>{
-         /* if (count===2){
-             console.log("stuff was chosen")
-         }
-        */
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
+       
     }
     const handleSearch=async(value)=>{
         setVal(value)

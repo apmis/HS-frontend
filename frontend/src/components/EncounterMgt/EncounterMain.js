@@ -396,7 +396,7 @@ export default function EncounterMain({nopresc}) {
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <DocumentClassList standalone="true" />
+                                        <DocumentClassList standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

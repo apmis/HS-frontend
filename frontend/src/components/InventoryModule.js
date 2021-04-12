@@ -50,7 +50,7 @@ export default function InventoryModule() {
 
     const handleChangeStore= async()=>{
         await setShowModal(true)                                                                                                                                                        
-        console.log( showModal)
+       // console.log( showModal)
     }
     const handleBurger=()=>{
        

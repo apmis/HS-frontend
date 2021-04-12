@@ -153,6 +153,18 @@ export function ProductEntryCreate(){
         setMessage("")
         setError(false)
         setSuccess(false)
+
+        if (!date){
+          
+               toast({
+                   message: 'Kindly choose date',
+                   type: 'is-danger',
+                   dismissible: true,
+                   pauseOnHover: true,
+                 }) 
+                 return
+             }
+
         await setProductEntry({
             
             date,

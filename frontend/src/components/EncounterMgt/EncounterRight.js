@@ -573,7 +573,7 @@ export function LabNoteCreate(){
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
           }
          document.documentdetail=data
-          document.documentname= "Lab Result"
+          document.documentname=`${data.Investigation} Result`  //"Lab Result"
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId

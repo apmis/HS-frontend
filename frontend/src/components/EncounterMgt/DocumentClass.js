@@ -166,7 +166,7 @@ export function DocumentClassCreate(){
    
 }
 
-export function DocumentClassList({standalone}){
+export function DocumentClassList({standalone,closeModal}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -210,6 +210,9 @@ export function DocumentClassList({standalone}){
         }
        await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
        //console.log(state)
+       if (standalone){
+           closeModal()
+       }
 
     }
 

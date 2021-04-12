@@ -95,6 +95,14 @@
   overflow-y: auto  !important;
   max-height: 40vh ; /* 550px */
 }
+.vscrola{
+  overflow-y: auto  !important;
+  max-height: 70vh ; /* 550px */
+}
+.vscrolar{
+  overflow-y: auto  !important;
+  max-height: 30vh ; /* 550px */
+}
 .vscrollable-acc{
   overflow-y: auto;
   overflow-x: hidden;

@@ -516,7 +516,7 @@ const handleDate=async (date)=>{
                             selected={startDate} 
                             onChange={date => handleDate(date)} 
                             dateFormat="dd/MM/yyyy"
-                            placeholderText="Filter Appointments By Date"
+                            placeholderText="Filter By Date"
                             isClearable
                             />
                         {/* <input name="filter_time"  ref={register ({ required: true })}  type="datetime-local" /> */}
