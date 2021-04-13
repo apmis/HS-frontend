@@ -349,7 +349,9 @@ export function InventoryList(){
     const getInventories= async()=>{
             if (user.currentEmployee){
             
-              
+              if (page===1){
+                  setPage(2)
+              }
             const allInventory= await InventoryServ.find(
                     {query: {
                         facility:user.currentEmployee.facilityDetail._id,
@@ -364,10 +366,11 @@ export function InventoryList(){
            // await setFacilities(findInventory.data)
           // await setFacilities(prevstate=>prevstate.concat(allInventory.data))
            await setTotal(allInventory.total)
-           updatelist(allInventory.data)
+         
            if (allInventory.total > facilities.length){
             await  setPage(page=>page++)
            }
+           updatelist(allInventory.data)
           // pages++
         // console.log(findProduct)
             //
@@ -472,6 +475,13 @@ export function InventoryList(){
                
             }
     }, [state.StoreModule.selectedStore])
+
+    useEffect(() => {
+       console.log(page)
+        return () => {
+           
+        }
+    }, [page])
 
     //todo: pagination and vertical scroll bar
 
