@@ -11,7 +11,7 @@ const socket=io(herok, {
     forceNew: true
   })
 const client=feathers()
-client.configure(socketio(socket))
+client.configure(socketio(socket,{timeout:50000}))
 client.configure(authentication({
     storage:window.localStorage
 }))
