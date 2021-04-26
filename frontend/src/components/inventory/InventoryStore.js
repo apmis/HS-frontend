@@ -7,6 +7,11 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import InfiniteScroll from "react-infinite-scroll-component";
+import DatePicker from "react-datepicker";
+import { formatDistanceToNowStrict, format, subDays,addDays } from 'date-fns'
+
+import "react-datepicker/dist/react-datepicker.css";
+
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -31,6 +36,7 @@ export default function Inventory() {
                 {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
                 {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}
                 {(state.InventoryModule.show ==='reorder')&&<InventoryReorder Inventory={selectedInventory} />}
+                {(state.InventoryModule.show ==='batch')&&<InventoryBatches Inventory={selectedInventory} />}
             </div>
 
             </div>                            
@@ -362,7 +368,7 @@ export function InventoryList(){
                             name: 1
                         }
                         }})
-                        console.log("this is data", allInventory)
+                        //console.log("this is data", allInventory)
            // await setFacilities(findInventory.data)
           // await setFacilities(prevstate=>prevstate.concat(allInventory.data))
            await setTotal(allInventory.total)
@@ -456,7 +462,7 @@ export function InventoryList(){
     },[])
 
     const rest = async ()=>{
-        console.log("starting rest")
+        //console.log("starting rest")
        setPage(0) 
        setTotal(0) 
        getNewInventories()
@@ -506,11 +512,11 @@ export function InventoryList(){
                         </div>
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory </span></div>
-                    <div className="level-right">
+                    {/* <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
 
@@ -537,7 +543,7 @@ export function InventoryList(){
                             <th><abbr title="Selling Price">Selling Price</abbr></th>
                             <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
                             <th><abbr title="Expiry">Expiry</abbr></th> 
-                            <th><abbr title="Actions">Actions</abbr></th>
+                            {/* <th><abbr title="Actions">Actions</abbr></th> */}
                             </tr>
                         </thead>
                         <tfoot>
@@ -560,8 +566,8 @@ export function InventoryList(){
                                 <td>{Inventory.costprice.toFixed(2)}</td>
                                 <td>{Inventory.sellingprice}</td>
                                 <td>{Inventory.reorder_level}</td> 
-                                <td>{Inventory.expiry}</td>
-                                <td><span   className="showAction"  >...</span></td>
+                                <td style={{backgroundColor:Inventory.expiry?"red":""}} >{Inventory.expiry?"Exist":""}</td>
+                                {/* <td><span className="showAction"  >...</span></td> */}
                                 
                                 </tr>
 
@@ -636,6 +642,15 @@ export function InventoryDetail(){
        //console.log(state)
        
     }
+    const handleBatch= async()=>{
+        const    newInventoryModule={
+            selectedInventory:Inventory,
+            show :'batch'
+        }
+       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+       //console.log(state)
+       
+    }
     return (
         <>
         <div className="card ">
@@ -674,12 +689,12 @@ export function InventoryDetail(){
                     <button className="button is-danger is-small"   onClick={handleSetPrice}>
                         Audit
                     </button>
-                </p>
-                <p className="control">
-                    <button className="button is-info is-small" onClick={handleEdit} >
-                        Transaction History
-                    </button>
                 </p>*/}
+                <p className="control">
+                    <button className="button is-info is-small" onClick={handleBatch} >
+                        Batches
+                    </button>
+                </p>
                 <p className="control">
                     <button className="button is-warning is-small"  onClick={handleReorder} >
                         Reorder Level
@@ -743,7 +758,7 @@ export function InventoryModify(){
    
     const    newInventoryModule={
         selectedInventory:{},
-        show :'detail'
+        show :'details'
       }
         await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
    ////console.log(state)
@@ -1054,6 +1069,242 @@ export function InventoryReorder(){
    
    
                 
+} 
+
+export function InventoryBatches(){
+    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
+    // eslint-disable-next-line 
+    const [error, setError] =useState(false)
+    // eslint-disable-next-line 
+    const [success, setSuccess] =useState(false)
+    // eslint-disable-next-line 
+    const [message,setMessage] = useState("")
+    const [billservice,setBillService] = useState()
+    // eslint-disable-next-line 
+    const InventoryServ=client.service('inventory')
+    //const history = useHistory()
+     // eslint-disable-next-line
+    const {user} = useContext(UserContext)
+    const {state,setState} = useContext(ObjectContext)
+    const billServ=client.service('billing')
+    const [batchNo,setBatchNo] = useState("")
+    const [quantity,setQuantity] = useState("")
+    const [expirydate,setExpiryDate] = useState("")
+    const [facilities,setFacilities] = useState([])
+    const [productItem,setProductItem] = useState([])
+
+    const Inventory =state.InventoryModule.selectedInventory // set inventory
+   // setProductItem(Inventory.batches)
+   // console.log(Inventory)
+   //
+ 
+        useEffect(() => {
+           setProductItem(Inventory.batches)
+     
+            return () => {
+                
+            }
+        },[])
+
+        const handleClickProd=async()=>{
+            if(!batchNo||!quantity||!expirydate){
+                toast({
+                    message: 'Kindly enter Batch Number,expiry date and quantity',
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+                  return
+            }
+            let productItemI={
+                batchNo,
+                expirydate,
+                quantity
+            }
+          //  await setSuccess(false)
+            setProductItem(
+                prevProd=>prevProd.concat(productItemI)
+            )
+            setBatchNo("")
+            setQuantity("")
+            setExpiryDate("")
+           // await setSuccess(true)
+            // setBaseunit("")
+          // console.log(success)
+         //  console.log(productItem)
+        }
+
+   const handleCancel=async()=>{
+   
+    const    newInventoryModule={
+        selectedInventory:{},
+        show :'details'
+      }
+        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+   ////console.log(state)
+           }
+
+
+        const changeState =()=>{
+            const    newInventoryModule={
+                selectedInventory:{},
+                show :'details'
+            }
+        setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+
+        }
+
+    const onSubmit = (data,e) =>{
+        e.preventDefault();
+      
+        setSuccess(false)
+          InventoryServ.patch(Inventory._id,{
+              batches:productItem
+          })
+        .then((res)=>{
+                
+                 toast({
+                    message: 'Batch updated succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  
+                changeState()
+
+            })
+            .catch((err)=>{
+             
+                toast({
+                    message: "Error updating Batch, probable network issues or "+ err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            }) 
+
+      } 
+
+    const handleBatchdel=(obj, i)=>{
+        let confirm=window.confirm("Are you sure you want to delete this batch?")
+        if (confirm){
+           // setProductItem(prev=>prev.filter((obj,index)=>index!==i ))
+            setProductItem(obj=>obj.filter((el,index)=>index!==i))
+        }
+    }
+     
+      
+    return (
+        
+        <>
+        <div className="card  card-overflow">
+            <div className="card-header">
+                <p className="card-header-title">
+                   Batches for {Inventory.name} {/* per {Inventory.baseunit} */}
+                </p>
+            </div>
+            <div className="card-content vscrollable">
+           
+             
+            <div className="field is-horizontal">
+            <div className="field-body">
+                <div className="field">
+                    <p className="control ">
+                        <input className="input is-small" /* ref={register({ required: true })} */ name="batchNo" value={batchNo} type="text" onChange={e=>setBatchNo(e.target.value)} placeholder="Batch Number"  />
+                        {/* <span className="icon is-small is-left">
+                        <i className="fas fa-envelope"></i>
+                        </span> has-icons-left */}
+                    </p>
+        
+                </div> 
+                <div className="field">
+                    <DatePicker 
+                        selected={expirydate} 
+                        onChange={date => setExpiryDate(date)} 
+                        dateFormat="MM/yyyy"
+                        placeholderText="Expiry Date"
+                    /*  isClearable */
+                        />
+                    
+                </div> 
+                <div className="field">
+                    <p className="control ">
+                        <input className="input is-small" /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
+                        {/* <span className="icon is-small is-left">
+                        <i className="fas fa-envelope"></i>
+                        </span> has-icons-left */}
+                    </p>
+                <label >{Inventory.baseunit}</label>
+                </div> 
+            
+                <div className="field">
+                <p className="control">
+                        <button className="button is-info is-small  is-pulled-right minHt">
+                        <span className="is-small" onClick={handleClickProd}> +</span>
+                        </button>
+                    </p>
+                </div>
+            </div>
+         </div>
+            <div>
+            <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                    <thead>
+                                        <tr>
+                                        <th><abbr title="Serial No">S/No</abbr></th>
+                                        <th><abbr title="Batch">Batch</abbr></th>
+                                        <th><abbr title="Quantity">Quantity</abbr></th>
+                                        <th>Expiry Date</th>
+                                        {/*<th><abbr title="Document No">Document No</abbr></th>
+                                        <th><abbr title="Total Amount">Total Amount</abbr></th>
+                                         <th><abbr title="Enteredby">Entered By</abbr></th> */} 
+                                        <th><abbr title="Actions">Actions</abbr></th> 
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                    <tbody>
+                                        {productItem.map((ProductEntry, i)=>(
+
+                                            <tr key={i}  style={{backgroundColor:ProductEntry.expiry?"red":""}} >
+                                            <th>{i+1}</th>
+                                            <td>{ProductEntry.batchNo}</td>
+                                            <td>{ProductEntry.quantity}</td>
+                                            <th>{ProductEntry.expirydate?<>{format(new Date(ProductEntry.expirydate),"MM-yyyy")}</>:""}</th>
+                                            {/*<td>{ProductEntry.documentNo}</td>
+                                            <td>{ProductEntry.totalamount}</td>
+                                             <td>{ProductEntry.enteredby}</td> */}
+                                          <td onClick={()=>handleBatchdel(ProductEntry,i)}><span className="showAction"  >x</span></td>
+                                           
+                                            </tr>
+
+                                        ))}
+                                    </tbody>
+                                    </table>
+            </div> 
+            
+            <div className="field  is-grouped mt-2" >
+                <p className="control">
+                    <button type="submit" className="button is-success is-small" onClick={handleSubmit(onSubmit)}>
+                        Save
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-warning is-small" onClick={handleCancel}>
+                        Cancel
+                    </button>
+                </p>
+               {/*  <p className="control">
+                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
+                       Delete
+                    </button>
+                </p> */}
+            </div>
+        </div>
+        </div>
+        </>
+    )
+             
 } 
 
 export  function ProductSearch({getSearchfacility,clear}) {

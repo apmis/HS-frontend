@@ -38,7 +38,7 @@ function App() {
       selectedStore:{}
     },
     InventoryModule:{
-      show:'detail',
+      show:'details',
       selectedInventory:{}
     },
     ProductEntryModule:{

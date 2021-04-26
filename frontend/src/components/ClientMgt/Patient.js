@@ -11,6 +11,7 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import ClientFinInfo from './ClientFinInfo';
 import BillServiceCreate from '../Finance/BillServiceCreate'
 import {AppointmentCreate} from '../Clinic/Appointments'
+import InfiniteScroll from "react-infinite-scroll-component";
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -456,6 +457,9 @@ export function ClientList(){
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
+    const [page, setPage] = useState(0) 
+    const [limit, setLimit] = useState(50) 
+    const [total, setTotal] = useState(0) 
 
 
 
@@ -512,6 +516,7 @@ export function ClientList(){
                         $regex:val,
                         $options:'i' 
                     }},
+                    { gender: val},
                 ],
               
               facility:user.currentEmployee.facilityDetail._id, // || "",
@@ -537,13 +542,16 @@ export function ClientList(){
             const findClient= await ClientServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
-                    $limit:20,
+                    $limit:limit,
+                    $skip:page * limit,
                     $sort: {
                         createdAt: -1
                     }
                     }})
 
-         await setFacilities(findClient.data)
+         await setFacilities(prevstate=>prevstate.concat(findClient.data))
+         await setTotal(findClient.total)
+         setPage(page=>page+1)
                 }
                 else {
                     if (user.stacker){
@@ -576,16 +584,27 @@ export function ClientList(){
                     console.log(user)
                     getFacilities(user) */
                 }
-                ClientServ.on('created', (obj)=>getFacilities())
-                ClientServ.on('updated', (obj)=>getFacilities())
-                ClientServ.on('patched', (obj)=>getFacilities())
-                ClientServ.on('removed', (obj)=>getFacilities())
+                ClientServ.on('created', (obj)=>rest ())
+                ClientServ.on('updated', (obj)=>rest ())
+                ClientServ.on('patched', (obj)=>rest ())
+                ClientServ.on('removed', (obj)=>rest ())
                 return () => {
                 
                 }
         // eslint-disable-next-line
             },[])
-
+            const rest = async ()=>{
+                // console.log("starting rest")
+               // await setRestful(true)
+                   await  setPage(0) 
+                   //await  setLimit(2) 
+                   await    setTotal(0) 
+                   await  setFacilities([])
+                  await getFacilities()
+                  //await  setPage(0) 
+                //  await setRestful(false)
+         
+             }
 
     //todo: pagination and vertical scroll bar
 
@@ -617,7 +636,14 @@ export function ClientList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup  vscrol">
+                <div className="table-container pullup  vscrola"  id="scrollableDiv">
+                <InfiniteScroll
+                        dataLength={facilities.length}
+                        next={getFacilities}
+                        hasMore={total>facilities.length}
+                        loader={<h4>Loading...</h4>}
+                        scrollableTarget="scrollableDiv"
+                    >
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth  ">
                                     <thead>
                                         <tr>
@@ -656,7 +682,7 @@ export function ClientList(){
                                         ))}
                                     </tbody>
                                     </table>
-                                    
+                                    </InfiniteScroll>                  
                 </div>              
             </>):<div>loading</div>}
             </>

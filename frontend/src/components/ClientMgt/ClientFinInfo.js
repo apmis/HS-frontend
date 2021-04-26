@@ -205,7 +205,7 @@ export default function ClientFinInfo({closeModal}){
              </div> 
              <div className="field" >
                  <p className="control has-icons-left" >
-                     <input className="input is-small"  name="oclientid" value={clientId} type="text" onChange={ e=> setClientId(e.target.value)} placeholder=" Organization's Client Identifier "  />
+                     <input className="input is-small"  name="clientid" value={clientId} type="text" onChange={ e=> setClientId(e.target.value)} placeholder=" Organization's Client Identifier "  />
                      <span className="icon is-small is-left">
                      <i className="fas fa-hashtag"></i>
                      </span>
