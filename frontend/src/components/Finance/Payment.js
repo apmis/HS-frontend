@@ -60,10 +60,9 @@ export default function Payment() {
               
                 <div className="column is-6 ">
                 
-                {(state.financeModule.show ==='detail')&& <PaymentCreate/ >}
+                {(state.financeModule.show ==='detail')&& <PaymentCreate />}
                 </div>
                {/*  <div className="column is-3 ">
-                
                 {(state.financeModule.show ==='detail')&&<PatientProfile />}
                 </div> */}
 
@@ -210,7 +209,7 @@ export function BillingList(){
                     createdAt: -1
                   }
                     }}).then((res)=>{
-               // console.log(res)
+                console.log(res)
                setFacilities(res.groupedOrder)
                 setMessage(" ProductEntry  fetched successfully")
                 setSuccess(true) 
@@ -329,7 +328,7 @@ export function BillingList(){
                                     <div className=" is-fullwidth vscrollable pr-1">   
                                         <Accordion allowZeroExpanded>
                                             {Clinic.bills.map((category, i)=>(
-                                                <AccordionItem  key={Clinic.client_id} >
+                                                <AccordionItem  key={i} >
                                                     <AccordionItemHeading >
                                                     <AccordionItemButton  >
                                                     {/* <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} /> */}  

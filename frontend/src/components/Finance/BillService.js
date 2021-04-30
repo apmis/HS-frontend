@@ -214,7 +214,7 @@ export function BillsList(){
                  }
                  }})
  
-             //console.log("updatedorder", findProductEntry.groupedOrder)
+             console.log("updatedorder", findProductEntry.groupedOrder)
              await setFacilities(findProductEntry.groupedOrder)
            //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
              }   
@@ -306,7 +306,7 @@ export function BillsList(){
                                      <div className=" is-fullwidth vscrollable pr-1">   
                                          <Accordion allowZeroExpanded>
                                              {Clinic.bills.map((category, i)=>(
-                                                 <AccordionItem  key={Clinic.client_id} >
+                                                 <AccordionItem  key={i} >
                                                      <AccordionItemHeading >
                                                      <AccordionItemButton  >
                                                      {/* <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} /> */}  

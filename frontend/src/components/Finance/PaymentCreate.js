@@ -30,7 +30,7 @@ export default function PaymentCreate(){
      const [type,setType] = useState("Bill")
      const [documentNo,setDocumentNo] = useState("")
      const [totalamount,setTotalamount] = useState(0)
-     const [description,setDescription] = useState(null)
+     const [description,setDescription] = useState("")
      const [productId,setProductId] = useState("")
      const [source,setSource] = useState("")
      const [date,setDate] = useState("")
@@ -451,7 +451,11 @@ export default function PaymentCreate(){
             type: "Deposit"
 
         }
-       SubwalletTxServ.create(obj)
+        let confirm = window.confirm(`Are you sure you want to accept ${obj.amount} from ${obj.fromName}`)
+        if (confirm){
+
+      
+       await SubwalletTxServ.create(obj)
        .then((resp)=>{
           // console.log(resp)
 
@@ -472,6 +476,7 @@ export default function PaymentCreate(){
           })
 
        })
+    }
        await setButtonState(false)
     }
 

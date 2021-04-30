@@ -494,31 +494,39 @@ export default function BillServiceCreate(){
             console.log(document,serviceList)
             
         
+        let confirm =window.confirm(`You are about to bill ${document.clientname} for ${serviceList.length} service(s)?`)
+    if (confirm){
+            await BillCreateServ.create({
+                document,
+                serviceList
+            }).then((res)=>{
+                        setSuccess(true)
+                        toast({
+                            message: 'Billed Orders created succesfully',
+                            type: 'is-success',
+                            dismissible: true,
+                            pauseOnHover: true,
+                            })
+                            setSuccess(false)
+                            setProductItem([])
+                            setCalcAmount(0);
+                            const today=new Date().toLocaleString()
+                            //console.log(today)
+                            setDate(today)
+                            const invoiceNo=random(6,'uppernumeric')
+                            setDocumentNo(invoiceNo)
 
-
-    BillCreateServ.create({
-        document,
-        serviceList
-    }).then((res)=>{
-                   setSuccess(true)
-                   toast({
-                       message: 'Billed Orders created succesfully',
-                       type: 'is-success',
-                       dismissible: true,
-                       pauseOnHover: true,
-                     })
-                     setSuccess(false)
-                     setProductItem([])
-               })
-               .catch((err)=>{
-                   toast({
-                       message: 'Error creating Billed Orders ' + err,
-                       type: 'is-danger',
-                       dismissible: true,
-                       pauseOnHover: true,
-                     })
-               }) 
+                    })
+                    .catch((err)=>{
+                        toast({
+                            message: 'Error creating Billed Orders ' + err,
+                            type: 'is-danger',
+                            dismissible: true,
+                            pauseOnHover: true,
+                            })
+                    }) 
    
+            }
 
 
 
@@ -689,6 +697,7 @@ export default function BillServiceCreate(){
 
 
      useEffect(() => {
+         console.log("startup")
        // const medication =state.medicationModule.selectedMedication
          const today=new Date().toLocaleString()
          //console.log(today)
@@ -696,6 +705,13 @@ export default function BillServiceCreate(){
          const invoiceNo=random(6,'uppernumeric')
          setDocumentNo(invoiceNo)
          return () => {
+            console.log("closeup")
+            const today=new Date().toLocaleString()
+            //console.log(today)
+            setDate(today)
+            const invoiceNo=random(6,'uppernumeric')
+            setDocumentNo(invoiceNo)
+            setCalcAmount(0)
              
          }
      }, [])
@@ -753,6 +769,10 @@ export default function BillServiceCreate(){
            
         }
     }, [state.ClientModule.selectedClient ])
+
+    const handleRemoveBill=(item,index)=>{
+        setProductItem(prev=>prev.filter((el,i)=>i!==index))
+    }
 
 // console.log("simpa")
      return (
@@ -959,7 +979,7 @@ export default function BillServiceCreate(){
                          <td>{ProductEntry.sellingprice}</td>
                          <td>{ProductEntry.amount}</td>
                          <td>{ProductEntry.billMode.type}</td>
-                         <td><span className="showAction"  >x</span></td>
+                         <td onClick={()=>handleRemoveBill(ProductEntry,i)}><span className="showAction"  >x</span></td>
                          </tr>
                      ))}
                  </tbody>

@@ -216,6 +216,7 @@ export function DispenseList(){
                     }
                 ], */
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
+                'orderInfo.orderObj.order_category':"Prescription",
                 billing_status:{
                     $ne: "Unpaid"
                 },
