@@ -552,6 +552,7 @@ export function ClientList(){
          await setFacilities(prevstate=>prevstate.concat(findClient.data))
          await setTotal(findClient.total)
          console.log(user.currentEmployee.facilityDetail._id, state)
+         console.log(facilities)
          setPage(page=>page+1)
                 }
                 else {
@@ -606,7 +607,12 @@ export function ClientList(){
                 //  await setRestful(false)
          
              }
-
+             useEffect(() => {
+                console.log(facilities)
+                 return () => {
+                    
+                 }
+             }, [facilities])
     //todo: pagination and vertical scroll bar
 
     return(
