@@ -91,6 +91,9 @@
   overflow-y: auto  !important;
   max-height: 80vh ; /* 550px */
 }
+.vht{
+  height:4.0em !important;
+}
 .vscrol{
   overflow-y: auto  !important;
   max-height: 40vh ; /* 550px */

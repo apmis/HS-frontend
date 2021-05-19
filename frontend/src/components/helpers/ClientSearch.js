@@ -112,7 +112,7 @@ export  function ClientSearch({getSearchfacility,clear}) {
                     }},
                 ],
               
-                 //facility: user.currentEmployee.facilityDetail._id,
+                 facility: user.currentEmployee.facilityDetail._id,
                  //storeId: state.StoreModule.selectedStore._id,
                  $limit:10,
                  $sort: {
@@ -184,7 +184,7 @@ export  function ClientSearch({getSearchfacility,clear}) {
 
                               {facilities.map((facility, i)=>(
                                     
-                                    <div className="dropdown-item selectadd" key={facility._id} onClick={()=>handleRow(facility)}>
+                                    <div className="dropdown-item selectadd vht" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
                                         <div ><span>{facility.firstname}</span>
                                         <span className="padleft">{facility.middlename}</span>
@@ -193,9 +193,10 @@ export  function ClientSearch({getSearchfacility,clear}) {
                                         <span className="padleft">{facility.gender}</span>
                                         <span className="padleft">{facility.profession}</span>
                                         <span className="padleft">{facility.phone}</span>
-                                        <span className="padleft">{facility.email}</span>
+                                        {/* <span className="padleft">{facility.email}</span> */}
                                         </div>
-                                       
+                                        <hr/>
+                                        <br />
                                     </div>
                                     
                                     ))}
