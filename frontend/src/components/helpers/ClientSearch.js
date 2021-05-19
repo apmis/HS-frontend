@@ -195,7 +195,7 @@ export  function ClientSearch({getSearchfacility,clear}) {
                                         <span className="padleft">{facility.phone}</span>
                                         {/* <span className="padleft">{facility.email}</span> */}
                                         </div>
-                                        <hr/>
+                            
                                         <br />
                                     </div>
                                     

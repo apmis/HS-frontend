@@ -551,8 +551,8 @@ export function ClientList(){
 
          await setFacilities(prevstate=>prevstate.concat(findClient.data))
          await setTotal(findClient.total)
-         console.log(user.currentEmployee.facilityDetail._id, state)
-         console.log(facilities)
+         //console.log(user.currentEmployee.facilityDetail._id, state)
+         //console.log(facilities)
          setPage(page=>page+1)
                 }
                 else {
@@ -608,7 +608,7 @@ export function ClientList(){
          
              }
              useEffect(() => {
-                console.log(facilities)
+                //console.log(facilities)
                  return () => {
                     
                  }
