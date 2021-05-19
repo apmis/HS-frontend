@@ -7,6 +7,7 @@ import {DocumentClassList} from './DocumentClass'
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
+import AsthmaIntake from './AsthmaIntake';
 
 export default function EncounterRight() {
     const {state,setState}=useContext(ObjectContext)
@@ -17,6 +18,7 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='Lab Result') &&   <LabNoteCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Prescription') &&   <PrescriptionCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Diagnostic Request') &&   <LabrequestCreate />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Adult Intake Questionnaire') &&   <AsthmaIntake />}
           
         </div>
     )

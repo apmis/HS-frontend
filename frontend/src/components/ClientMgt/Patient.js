@@ -520,7 +520,7 @@ export function ClientList(){
                 ],
               
               facility:user.currentEmployee.facilityDetail._id, // || "",
-                $limit:10,
+                $limit:limit,
                 $sort: {
                     createdAt: -1
                   }
@@ -551,6 +551,7 @@ export function ClientList(){
 
          await setFacilities(prevstate=>prevstate.concat(findClient.data))
          await setTotal(findClient.total)
+         console.log(user.currentEmployee.facilityDetail._id, state)
          setPage(page=>page+1)
                 }
                 else {

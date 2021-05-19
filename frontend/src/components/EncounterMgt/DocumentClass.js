@@ -244,7 +244,7 @@ export function DocumentClassList({standalone,closeModal}){
             })
         }
    
-        const getFacilities= async()=>{
+    const getFacilities= async()=>{
             if (user.currentEmployee){
             
         const findDocumentClass= await DocumentClassServ.find(
@@ -285,30 +285,19 @@ export function DocumentClassList({standalone,closeModal}){
                     setError(true)
                 }) */
             }
-            
-         
+     
 
-            useEffect(() => {
-                getFacilities()
-              /*   if (user){
-                  
-                }else{ */
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
-               /*  } */
-                DocumentClassServ.on('created', (obj)=>getFacilities())
-                DocumentClassServ.on('updated', (obj)=>getFacilities())
-                DocumentClassServ.on('patched', (obj)=>getFacilities())
-                DocumentClassServ.on('removed', (obj)=>getFacilities())
-                return () => {
-                
-                }
-            },[])
+    useEffect(() => {
+        getFacilities()
+            
+            DocumentClassServ.on('created', (obj)=>getFacilities())
+            DocumentClassServ.on('updated', (obj)=>getFacilities())
+            DocumentClassServ.on('patched', (obj)=>getFacilities())
+            DocumentClassServ.on('removed', (obj)=>getFacilities())
+            return () => {
+            
+            }
+        },[])
 
 
     //todo: pagination and vertical scroll bar
@@ -414,6 +403,10 @@ export function DocumentClassDetail(){
        //console.log(state)
        
     }
+            
+    const handleCreateForm=async()=>{
+        
+    }    
  
     return (
         <>
@@ -441,92 +434,22 @@ export function DocumentClassDetail(){
                         </td>
                     </tr>
                     <tr>
-                   {/*  <td>
-                <label className="label is-small"><span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>Location Type:
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft"   name="DocumentClassType">{DocumentClass.locationType} </span> 
-                    </td> */}
-                </tr>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
-                    </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="DocumentClassCity">{DocumentClass.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="DocumentClassContactPhone" >{DocumentClass.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="DocumentClassEmail" >{DocumentClass.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="DocumentClassOwner">{DocumentClass.department}</span>
-                    </td>
                
                 </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="DocumentClassType">{DocumentClass.deptunit}</span>
-                </td>
-              
-                </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-DocumentClass-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "DocumentClassCategory">{DocumentClass.DocumentClassCategory}</span>
-                </label>
-                 </div> */}
-
             </tbody> 
             </table> 
            
-            <div className="field mt-2">
+            <div className="field is-grouped mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
+                {/* <p className="control">
+                    <button className="button is-info is-small" onClick={handleCreateForm}>
+                        Create Form
+                    </button>
+                </p> */}
             </div>
             { error && <div className="message"> {message}</div>}
            
