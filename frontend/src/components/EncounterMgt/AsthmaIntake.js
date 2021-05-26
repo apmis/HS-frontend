@@ -20,6 +20,11 @@ export default function AsthmaIntake() {
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
+    const [allergy,setAllergy] = useState("")
+    const [reaction,setReaction] = useState("")
+    const [allergine,setAllergine] = useState("")
+    const [allergies,setAllergies] = useState([])
+    const [dataset,setDataset] = useState()
     const {state}=useContext(ObjectContext)
 
     const order=state.financeModule.selectedFinance
@@ -58,13 +63,15 @@ export default function AsthmaIntake() {
         setSuccess(false)
         let document={}
          // data.createdby=user._id
-          console.log(data);
+          console.log(data)
+          data.Allergy_Skin_Test=allergies
+        
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
           }
          document.documentdetail=data
-          document.documentname=`${data.Investigation} Result`  //"Lab Result"
+          document.documentname="Adult Asthma Questionnaire"  //"Lab Result"
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
@@ -88,6 +95,7 @@ export default function AsthmaIntake() {
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
+                setAllergies([])
                /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
@@ -108,13 +116,42 @@ export default function AsthmaIntake() {
             })
 
       } 
-const handleChangePart=(e)=>{
-    console.log(e)
-}
-const handleChangeType=async (e)=>{
-   // await setAppointment_type(e.target.value)
-   console.log(e)
-}
+        const handleChangePart=async (e)=>{
+            //console.log(e)
+            //const (name, value) = e.target
+            let {name, value}= e.target
+            console.log(name,value)
+        await   setDataset((prev ) => ({...prev, [name]:value}))
+        //  console.log(dataset)
+
+        }
+        const handleChangeType=async (e)=>{
+        // await setAppointment_type(e.target.value)
+        console.log(e)
+        }
+
+        const handleAllergy=async (e)=>{
+            //console.log(e)
+            //const (name, value) = e.target
+            const {name, value}= e.target
+            console.log(name,value)
+           // [name]=value
+         await   setAllergy((prev ) => ({...prev, [name]:value}))
+          console.log(allergy)
+
+        }
+    const handleAdd = ()=>{
+        let allergy = {
+            allergine:allergine,
+            reaction:reaction
+        } 
+        setAllergies((prev)=>([...prev, allergy]))
+        setAllergy({})
+        setReaction("")
+        setAllergine("")
+
+    }
+
     return (
         <>
         <div className="card ">
@@ -134,58 +171,134 @@ const handleChangeType=async (e)=>{
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
                         <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Date" type="text" placeholder="Date" />
+                            <input className="input is-small"   ref={register} name="Date" type="text" placeholder="Date"  />
                                       
                         </p>
                 </div>
                 <div className="field">
                         <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Name" type="text" placeholder="Name or Initials" />
+                            <input className="input is-small"   ref={register} name="Name" type="text" placeholder="Name or Initials" />
                                       
                         </p>
                 </div>
                 <div className="field">
                         <p className="control ">
-                            <input className="input is-small" ref={register()}  name="DOB" type="text" placeholder="Date of Birth" />
+                            <input className="input is-small"   ref={register} name="DOB" type="text" placeholder="Date of Birth" />
                                       
                         </p>
                 </div>
                 <div className="field">
-                        <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Gender" type="text" placeholder="Gender" />
-                                      
+                <label>4. Gender</label> 
+                                <label className=" is-small ml-2">
+                                        <input  type="radio" ref={register} name="Gender"  value="Male"   onChange={(e)=>{handleChangePart(e)}}/>
+                                            <span > Male</span>
+                                </label> 
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Gender"   value="Female"  onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Female</span>
+                                </label>
+                </div>
+                
+                
+                <div className="field">
+                    <label >5. Race</label> 
+                    <label className=" is-small ml-2">
+                            <input  type="radio" ref={register} name="Race"  value="African"  onChange={(e)=>{handleChangePart(e)}}/>
+                                <span > African</span>
+                    </label> 
+                    <label className=" is-small ml-2">
+                        <input type="radio" ref={register} name="Race"   value="Caucasian"  onChange={(e)=>handleChangePart(e)}/>
+                        <span>Caucasian</span>
+                    </label>
+                    <label className=" is-small ml-2">
+                        <input type="radio" ref={register} name="Race"   value="Indian"  onChange={(e)=>handleChangePart(e)}/>
+                        <span>Indian </span>
+                    </label>
+                    <label className=" is-small ml-2">
+                        <input type="radio" ref={register} name="Race"   value="Others"   onChange={(e)=>handleChangePart(e)}/>
+                        <span>Others </span>
+                    </label>
+                    <p className="control ">
+                            <input className="input is-small"   ref={register} name="Others_race" type="text" placeholder="Highest Level of Education" />           
                         </p>
+                </div>
+               
+                <div className="field">
+                        
+                        <label >6. Marital Status</label> 
+                                <label className=" is-small ml-2">
+                                        <input  type="radio"  ref={register} name="Marital_Status" value="Single" onChange={(e)=>{handleChangePart(e)}}/>
+                                            <span > Single</span>
+                                </label> 
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Marital_Status"  value="Married" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Married</span>
+                                </label>
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Marital_Status"  value="Widowed" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Widowed </span>
+                                </label>
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Marital_Status"  value="Divorced" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Divorced </span>
+                                </label>
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Marital_Status"  value="Separated" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Separated </span>
+                                </label>
                 </div>
                 <div className="field">
                         <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Race" type="text" placeholder="Race" />
-                                      
-                        </p>
-                </div>
-                <div className="field">
-                        <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Marital_Status" type="text" placeholder="Marital Status" />
-                                      
-                        </p>
-                </div>
-                <div className="field">
-                        <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Occupation" type="text" placeholder="Occupation" />
+                            <input className="input is-small"   ref={register} name="Occupation" type="text" placeholder="Occupation" />
                                       
                         </p>
                 </div>
                 <div className="field ">
+                       
+                        <label >8. Highest Level of Education</label> 
+                                <label className=" is-small ml-2">
+                                        <input  type="radio" ref={register} name="Education" value="Uneducated" onChange={(e)=>{handleChangePart(e)}}/>
+                                            <span > Uneducated</span>
+                                </label> 
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Education"  value="Primary School" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Primary School</span>
+                                </label>
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Education"  value="Secondary School" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Secondary School </span>
+                                </label>
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Education"  value="Post-Secondary School (Diploma /Degree)" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Post-Secondary School (Diploma /Degree) </span>
+                                </label>
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Education"  value="Others" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Others (Specify) </span>
+                                </label>
                         <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Education" type="text" placeholder="Highest Level of Education" />           
+                            <input className="input is-small"   ref={register} name="others_education" type="text" placeholder="Highest Level of Education" />           
                         </p>
                 </div>
                 <h3><b>Symptoms</b></h3>
                 <h4>A. Cough</h4>
                 <div className="field">
                  <label>9. Were you ever bothered, or are you currently bothered by a cough?</label> 
-                        <p className="control ">
-                            <input className="input is-small" ref={register()}  name="cough" type="text" placeholder="Cough" />           
-                        </p>
+                 <div className="field">
+                                <label className=" is-small">
+                                        <input  type="radio" ref={register} name="Cough" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                            <span > Yes</span>
+                                </label> 
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Cough"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>No </span>
+                                </label>
+                                <label className=" is-small ml-2">
+                                    <input type="radio" ref={register} name="Cough"  value="Uncertain" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>Uncertain </span>
+                                </label>
+                    </div>
+                    
                 </div>
                 <div className="field">
                 <label> 10. Has your cough been triggered by any of the following conditions?</label>
@@ -196,11 +309,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                    <input  type="radio" ref={register} name="Cough_exercise" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_exercise"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -213,11 +326,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_coldair" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_coldair"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -230,11 +343,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_dust" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_dust"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -247,11 +360,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_mould" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_mould"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -264,11 +377,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_weather" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_weather"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -281,11 +394,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_cats" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_cats"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -298,11 +411,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_dogs" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_dogs"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -315,11 +428,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_otheranimal" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_otheranimal"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -332,11 +445,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_sleep" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_sleep"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -349,11 +462,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_aspirin" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_aspirin"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -366,18 +479,18 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cough_other" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cough_other"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
                            
                         </div>
                         <p className="control ">
-                            <input className="input is-small" ref={register()}  name="specify_other_cough" type="text" placeholder="Specify" />
+                            <input className="input is-small"   ref={register} name="specify_cough_other" type="text" placeholder="Specify" />
                                       
                         </p>
                     </div>
@@ -387,33 +500,33 @@ const handleChangeType=async (e)=>{
                  <label>11. Has your chest ever sounded wheezy or whistling?</label> 
                     <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
-                                    <span>No </span>
+                                    <input type="radio" ref={register} name="Wheeze"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <span>No</span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Uncertain" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze"  value="Uncertain" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Uncertain </span>
                                 </label>
                     </div>
                 </div>
                 <div className="field">
-                <label> 10. Has your cough been triggered by any of the following conditions?</label>
-                    <div className="field is-horizontal">
+                <label> 12. Have you ever had wheeze on exposure to any of the following?</label>
+                <div className="field is-horizontal">
                         <div className="field-body ml-3">  
                             <div className="field">
                                 <label className="is-small"> (a) Exercise</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                    <input  type="radio" ref={register} name="Wheeze_exercise" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_exercise"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -426,11 +539,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_coldair" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_coldair"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -443,11 +556,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_dust" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_dust"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -460,11 +573,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_mould" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_mould"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -477,11 +590,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_weather" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_weather"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -494,11 +607,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_cats" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_cats"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -511,11 +624,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_dogs" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_dogs"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -528,11 +641,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_otheranimal" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_otheranimal"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -545,11 +658,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_sleep" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_sleep"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -562,11 +675,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_aspirin" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_aspirin"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -579,53 +692,54 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Wheeze_other" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Wheeze_other"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
+                           
                         </div>
                         <p className="control ">
-                                <input className="input is-small" ref={register()}  name="specify_other_wheeze" type="text" placeholder="Specify" />           
+                            <input className="input is-small"   ref={register} name="specify_wheeze_other" type="text" placeholder="Specify" />
+                                      
                         </p>
                     </div>
-                   
                 </div>
                 <h4>C. Shortness of breath</h4>
                 <div className="field">
                  <label>13. Have you ever been bothered by shortness of breath when hurrying on flat ground or walking up a slight hill?</label> 
                     <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Uncertain" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness"  value="Uncertain" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Uncertain </span>
                                 </label>
                     </div>
                 </div>
                 <div className="field">
                 <label>14. Have you ever had shortness of breath with exposure to any of the following circumstances?</label>
-                    <div className="field is-horizontal">
+                <div className="field is-horizontal">
                         <div className="field-body ml-3">  
                             <div className="field">
                                 <label className="is-small"> (a) Exercise</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
+                                    <input  type="radio" ref={register} name="Shortness_exercise" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_exercise"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -638,11 +752,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_coldair" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_coldair"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -655,11 +769,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_dust" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_dust"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -672,11 +786,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_mould" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_mould"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -689,11 +803,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_weather" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_weather"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -706,11 +820,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_cats" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_cats"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -723,11 +837,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_dogs" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_dogs"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -740,11 +854,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_otheranimal" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_otheranimal"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -757,11 +871,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_sleep" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_sleep"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -774,11 +888,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_aspirin" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_aspirin"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -791,53 +905,54 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Shortness_other" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Shortness_other"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
+                           
                         </div>
                         <p className="control ">
-                                <input className="input is-small" ref={register()}  name="specify_other_shortness" type="text" placeholder="Specify" />           
+                            <input className="input is-small"   ref={register} name="specify_Shortness_other" type="text" placeholder="Specify" />
+                                      
                         </p>
                     </div>
-                   
                 </div>
                 <h4>D. Tightness in Chest</h4>
                 <div className="field">
                  <label>15. Have you ever been bothered by a tightness in your chest when hurrying on flat ground or walking up a slight hill?</label> 
                     <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Uncertain" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness"  value="Uncertain" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Uncertain </span>
                                 </label>
                     </div>
                 </div>
                 <div className="field">
-                <label>14. Have you ever had  tightness in your chest with exposure to any of the following circumstances?</label>
-                    <div className="field is-horizontal">
+                <label>16. Have you ever had  tightness in your chest with exposure to any of the following circumstances?</label>
+                <div className="field is-horizontal">
                         <div className="field-body ml-3">  
                             <div className="field">
                                 <label className="is-small"> (a) Exercise</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                    <input  type="radio" ref={register} name="Tightness_exercise" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_exercise"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -850,11 +965,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_coldair" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_coldair"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -867,11 +982,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_dust" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_dust"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -884,11 +999,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_mould" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_mould"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -901,11 +1016,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_weather" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_weather"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -918,11 +1033,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_cats" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_cats"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -935,11 +1050,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_dogs" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_dogs"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -952,11 +1067,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_otheranimal" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_otheranimal"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -969,11 +1084,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_sleep" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_sleep"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -986,11 +1101,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_aspirin" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_aspirin"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1003,21 +1118,23 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tightness_other" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tightness_other"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
+                           
                         </div>
                         <p className="control ">
-                                <input className="input is-small" ref={register()}  name="specify_other_tightness" type="text" placeholder="Specify" />           
+                            <input className="input is-small"   ref={register} name="specify_Tightness_other" type="text" placeholder="Specify" />
+                                      
                         </p>
                     </div>
-                   
                 </div>
+              
                 <h4>Asthma History</h4>
                 <div className="field is-horizontal">
                         <div className="field-body ml-3">  
@@ -1026,11 +1143,11 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Asthma" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Asthma"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1043,7 +1160,7 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="age_diagnosis" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="age_diagnosis" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -1055,15 +1172,15 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Asthma_Confirmed" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Asthma_Confirmed"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Asthma_Confirmed"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Not Sure </span>
                                 </label>
                             </div>
@@ -1076,15 +1193,15 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Visit_Doctor" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Visit_Doctor"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Visit_Doctor"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Not Sure </span>
                                 </label>
                             </div>
@@ -1098,7 +1215,7 @@ const handleChangeType=async (e)=>{
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="times_visit" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="times_visit" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -1111,15 +1228,15 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Casualty" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Casualty"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Casualty"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Not Sure </span>
                                 </label>
                             </div>
@@ -1132,7 +1249,7 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="times_12months" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="times_12months" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -1144,15 +1261,15 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Hospitalized" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Hospitalized"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Hospitalized"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Not Sure </span>
                                 </label>
                             </div>
@@ -1165,15 +1282,15 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Herbal" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Herbal"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Herbal"  value="Not Sure" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Not Sure </span>
                                 </label>
                             </div>
@@ -1189,11 +1306,11 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Bronchodilator_inhaler" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Bronchodilator_inhaler"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1206,11 +1323,11 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Steroid_inhaler" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Steroid_inhaler"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1223,11 +1340,11 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Bronchodilator_nebulised" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Bronchodilator_nebulised"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1240,11 +1357,11 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Oral_steroid" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Oral_steroid"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1257,11 +1374,11 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Oral_bronchodilators" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Oral_bronchodilators"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1275,17 +1392,17 @@ doctor's office, because of an asthma attack?</label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Other_Medication" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Other_Medication"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
                         </div>
                         <p className="control ">
-                                <input className="input is-small" ref={register()}  name="specify_other_medication" type="text" placeholder="Specify" />           
+                                <input className="input is-small"   ref={register} name="specify_other_medication" type="text" placeholder="Specify" />           
                         </p>
                     </div>
                    
@@ -1298,7 +1415,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="age_diagnosis" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="age_diagnosis" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -1310,15 +1427,15 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="No" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Smoked" value="No" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > No</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Yes (in the past)" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Smoked"  value="Yes (in the past)" onChange={(e)=>handleChangePart(e)}/>
                                     <span>Yes (in the past) </span>
                                 </label>
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="Yes (Currently) " onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Smoked"  value="Yes (Currently) " onChange={(e)=>handleChangePart(e)}/>
                                     <span>Yes (Currently) </span>
                                 </label>
                             </div>
@@ -1334,11 +1451,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Chest_pain" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Chest_pain"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1351,11 +1468,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Haemoptysis" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Haemoptysis"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1368,11 +1485,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Sputum" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Sputum"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1389,11 +1506,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Dyspnoea_on_exertion" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Dyspnoea_on_exertion"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1406,11 +1523,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Palpitation" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Palpitation"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1423,11 +1540,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Orthopnoea" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Orthopnoea"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1440,11 +1557,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Paroxysmal_Nocturnal_Dyspnoea" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Paroxysmal_Nocturnal_Dyspnoea"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1457,11 +1574,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Leg_swelling" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Leg_swelling"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1478,11 +1595,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Nausea" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Nausea"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1495,11 +1612,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Vomiting" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Vomiting"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1512,11 +1629,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Abdominal_pain" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Abdominal_pain"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1529,11 +1646,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Abdominal_swelling" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Abdominal_swelling"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1546,11 +1663,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Diarrhoea" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Diarrhoea"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1563,11 +1680,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Constipation" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Constipation"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1584,11 +1701,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Dysuria" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Dysuria"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1601,11 +1718,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Urge_incontinence" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Urge_incontinence"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1618,11 +1735,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Terminal_dribbling" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Terminal_dribbling"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1635,11 +1752,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Haematuria" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Haematuria"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1656,11 +1773,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Headache" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Headache"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1673,11 +1790,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Dizziness" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Dizziness"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1690,11 +1807,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Seizures" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Seizures"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1707,11 +1824,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Tremors" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Tremors"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1728,11 +1845,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Polyuria" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Polyuria"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1745,11 +1862,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Polydipsia" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Polydipsia"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1762,11 +1879,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Polyphagia" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Polyphagia"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1779,12 +1896,12 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Weight_loss" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                             
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Weight_loss"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1797,11 +1914,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Abnormal_Weight_gain" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Abnormal_Weight_gain"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1814,11 +1931,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Heat_intolerance" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Heat_intolerance"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1831,11 +1948,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Cold_intolerance" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Cold_intolerance"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1851,11 +1968,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Ear_ache" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Ear_ache"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1868,11 +1985,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Ear_Discharges" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Ear_Discharges"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1885,11 +2002,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Snoring" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Snoring"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1902,11 +2019,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Dysphagia" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Dysphagia"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1921,7 +2038,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="height" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="height" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -1933,7 +2050,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="Weight" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="Weight" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -1945,11 +2062,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Palour" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Palour"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1962,11 +2079,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="Jaundice" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="Jaundice"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1979,11 +2096,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="status" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name=" Cyanosis" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="status"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name=" Cyanosis"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -1996,7 +2113,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="height" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="height" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2008,7 +2125,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="Blood_Pressure" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="Blood_Pressure" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2019,7 +2136,7 @@ injection, such as prednisone </label>
                         <label className="is-small">Other Cardiovascular system findings</label>
                     </div>
                     <div className="field">
-                            <textarea className="textarea wt100 is-small" ref={register()}  name="Cardiovascular_findings" type="text" placeholder="Specify" />           
+                            <textarea className="textarea wt100 is-small"   ref={register} name="Cardiovascular_findings" type="text" placeholder="Specify" />           
                         
                     </div>
                        
@@ -2030,7 +2147,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="respiraatory_rate" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="respiraatory_rate" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2042,7 +2159,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="oxygen_saturation" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="oxygen_saturation" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2054,11 +2171,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="wheeze" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="wheeze_finding" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="wheeze"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="wheeze_finding"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2071,11 +2188,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="crackles" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="crackles" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="crackles"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="crackles"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2085,7 +2202,7 @@ injection, such as prednisone </label>
                         <label className="is-small">Other Respirtory findings</label>
                     </div>
                     <div className="field">
-                            <textarea className="textarea wt100 is-small" ref={register()}  name="respiratory_findings" type="text" placeholder="Specify" />           
+                            <textarea className="textarea wt100 is-small"   ref={register} name="respiratory_findings" type="text" placeholder="Specify" />           
                         
                     </div> 
                     <div className="field is-horizontal">
@@ -2095,11 +2212,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="urticaria" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="urticaria" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="urticaria"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="urticaria"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2112,11 +2229,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="rash" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="rash" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="rash"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="rash"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2129,11 +2246,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="hypopigmentation" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="hypopigmentation" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="hypopigmentation"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="hypopigmentation"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2146,11 +2263,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="hyperpigmentation" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="hyperpigmentation" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="hyperpigmentation"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="hyperpigmentation"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2160,7 +2277,7 @@ injection, such as prednisone </label>
                         <label className="is-small">Other skin findings</label>
                     </div>
                     <div className="field">
-                            <textarea className="textarea wt100 is-small" ref={register()}  name="skin_findings" type="text" placeholder="Specify" />           
+                            <textarea className="textarea wt100 is-small"   ref={register} name="skin_findings" type="text" placeholder="Specify" />           
                         
                     </div>  
                     <div className="field is-horizontal">
@@ -2170,11 +2287,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="hepatomegaly" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="hepatomegaly" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="hepatomegaly"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="hepatomegaly"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2187,11 +2304,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="splenomegaly" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="splenomegaly" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="splenomegaly"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="splenomegaly"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2204,11 +2321,11 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <label className=" is-small">
-                                        <input  type="radio" name="ascites" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
+                                        <input  type="radio" ref={register} name="ascites" value="Yes" onChange={(e)=>{handleChangePart(e)}}/>
                                             <span > Yes</span>
                                 </label> 
                                 <label className=" is-small ml-2">
-                                    <input type="radio" name="ascites"  value="No" onChange={(e)=>handleChangePart(e)}/>
+                                    <input type="radio" ref={register} name="ascites"  value="No" onChange={(e)=>handleChangePart(e)}/>
                                     <span>No </span>
                                 </label>
                             </div>
@@ -2219,14 +2336,14 @@ injection, such as prednisone </label>
                         <label className="is-small">Other GIT findings</label>
                     </div>
                     <div className="field">
-                            <textarea className="textarea wt100 is-small" ref={register()}  name="GIT_findings" type="text" placeholder="Specify" />           
+                            <textarea className="textarea wt100 is-small"   ref={register} name="GIT_findings" type="text" placeholder="Specify" />           
                         
                     </div> 
                     <div className="field">
                         <label className="is-small">Other Physical examination findings</label>
                     </div>
                     <div className="field">
-                            <textarea className="textarea wt100 is-small" ref={register()}  name="physical_exam_findings" type="text" placeholder="Specify" />           
+                            <textarea className="textarea wt100 is-small"   ref={register} name="physical_exam_findings" type="text" placeholder="Specify" />           
                         
                     </div> 
                     <h3><b>Investigations</b></h3>
@@ -2243,12 +2360,12 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="PCV_absolute" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="PCV_absolute" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="PCV_percentage" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="PCV_percentage" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2260,12 +2377,12 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="WBC_absolute" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="WBC_absolute" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="WBC_percentage" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="WBC_percentage" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2277,12 +2394,12 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="NEUTROPHIL_absolute" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="NEUTROPHIL_absolute" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="NEUTROPHIL_percentage" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="NEUTROPHIL_percentage" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2294,12 +2411,12 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="LYMPHOCYTE_absolute" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="LYMPHOCYTE_absolute" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="LYMPHOCYTE_percentage" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="LYMPHOCYTE_percentage" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2311,12 +2428,12 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="EOSINOPHIL_absolute" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="EOSINOPHIL_absolute" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="EOSINOPHIL_percentage" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="EOSINOPHIL_percentage" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2328,12 +2445,12 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="BASOPHIL_absolute" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="BASOPHIL_absolute" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="BASOPHIL_percentage" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="BASOPHIL_percentage" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2345,60 +2462,207 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="MONOCYTE_absolute" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="MONOCYTE_absolute" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small" ref={register()}  name="MONOCYTE_percentage" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"   ref={register} name="MONOCYTE_percentage" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
                     </div>
+                    <h4>SPIROMETRY</h4>
+                    <div className="field is-horizontal">
+                    
+                    <div className="field-body ml-6"> <div className="field ml-2"><h4>VALUE</h4></div></div>
+                    <div className="field-body "> <div className="field ml-2"><h4>PERCENTAGE PREDICTED</h4></div></div>
+                    </div>
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">FEV1</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FEV1_value" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FEV1_value" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">FVC</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FVC_value" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FVC_percentage_predicted" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">FEV1%</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FEV1_percent_value" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FEV1_precent_percentage_predicted" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">FEF25-75</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FEF25-75_value" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FEF25-75_percentage_predicted" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">PEFR</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="PEFR_value" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="PEFR_percentage_predicted" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>ALLERGY SKIN TESTING</h4>
+                    <input className="input is-small is-hidden"   ref={register} name="Allergy_Skin_Test" type="text" placeholder="Specify" />  
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small"> ALLERGINE</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"  value={allergine} /* ref={register} */ onChange={(e)=>{setAllergine(e.target.value)}} name="allergine" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">REACTION</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"  value={reaction}  /* ref={register} */ onChange={(e)=>{setReaction(e.target.value)}}  name="reaction" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        </div>
+                        <div className="field">
+                        <div className="control">
+                            <div  className="button is-success is-small selectadd" onClick={handleAdd}>
+                               Add
+                            </div>
+                         </div>
+                        </div>
+                    </div>
+                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                        <thead>
+                            <tr>
+                            <th><abbr title="Serial No">S/No</abbr></th>
+                        
+                            <th><abbr title="Type"> ALLERGINE</abbr></th>
+                            <th><abbr title="Destination">REACTION</abbr></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            
+                        </tfoot>
+                        <tbody>
+                        { allergies.map((ProductEntry, i)=>(
+
+                                <tr key={i}>
+                                <th>{i+1}</th>
+                                <td>{ProductEntry.allergine}</td> 
+                                <td>{ProductEntry.reaction}</td>                                                                     
+                                </tr>
+
+                            ))}
+                        </tbody>
+                        </table>
+                        <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">SERUM IGE LEVEL</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="IGE_Level" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="field is-horizontal">
+                        <div className="field-body ml-3">  
+                            <div className="field">
+                                <label className="is-small">FRACTION EXHALED NITRIC OXIDE (FeNO)</label>
+                            </div>
+                            <div className="field">
+                                <p className="control ">
+                                    <input className="input is-small"   ref={register} name="FeNo" type="text" placeholder="Specify" />           
+                                </p>
+                            </div>
+                           
+                        </div>
+                    </div>
+
+
                        {/*  <p className="control ">
-                            <input className="input is-small" ref={register()}  name="Education" type="text" placeholder="Hihest Level of Education" />           
+                            <input className="input is-small"   ref={register} name="Education" type="text" placeholder="Hihest Level of Education" />           
                         </p> */}
                
-               {/* <div className="field">
+              {/*  <div className="field">
                     <label className=" is-small">
-                        <input  type="radio" name="status" value="Draft" checked onChange={(e)=>{handleChangePart(e)}}/>
+                        <input  type="radio" ref={register} name="status" value="Draft" checked onChange={(e)=>{handleChangePart(e)}}/>
                         <span > Draft</span>
                     </label> <br/>
                     <label className=" is-small">
-                        <input type="radio" name="status"  value="Final" onChange={(e)=>handleChangePart(e)}/>
+                        <input type="radio" ref={register} name="status"  value="Final" onChange={(e)=>handleChangePart(e)}/>
                         <span> Final </span>
                     </label>
-                </div>  */}
-               {/* <div className="field is-horizontal">
-                <div className="field-body">
-                    <div className="field">
-                        <p className="control ">
-                            <textarea className="textarea is-small" ref={register()}  name="Finding" type="text" placeholder="Findings" />                 
-                        </p>
-                    </div>
-                    </div>
-                    </div>
-            <div className="field is-horizontal">
-                <div className="field-body">
-                    <div className="field">
-                        <div className="control ">
-                        <textarea className="textarea is-small" ref={register()}  name="Recommendation" type="text" placeholder="Recommendation" />
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-        
-
-     <div className="field">
-                <label className=" is-small">
-                        <input  type="radio" name="status" value="Draft" checked onChange={(e)=>{handleChangePart(e)}}/>
-                               <span > Draft</span>
-                </label> <br/>
-                <label className=" is-small">
-                    <input type="radio" name="status"  value="Final" onChange={(e)=>handleChangePart(e)}/>
-                    <span> Final </span>
-                </label>
-        </div> */}
+                </div>   */}
+              
         <div className="field  is-grouped mt-2" >
                 <p className="control">
                     <button type="submit" className="button is-success is-small" >
@@ -2421,5 +2685,7 @@ injection, such as prednisone </label>
     )
    
 }
+
+
 
 

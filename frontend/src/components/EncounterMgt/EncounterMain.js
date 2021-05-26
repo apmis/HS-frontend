@@ -239,7 +239,8 @@ export default function EncounterMain({nopresc}) {
 
                                             <div key={Clinic._id}    className={Clinic._id===(selectedNote?._id||null)?"is-selected":""}>
                                                <div className="card mt-1 hovercard">
-                                                    <header className="card-header"  onClick={()=>handleRow(Clinic,i)}>
+                                                    {/* header */}
+                                                <header className="card-header"  onClick={()=>handleRow(Clinic,i)}>
                                                         <div className="card-header-title">
                                                         <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
                                                         <p className="right ml-2 mr-0">{Clinic.status} </p> 
@@ -250,132 +251,288 @@ export default function EncounterMain({nopresc}) {
                                                         </span>
                                                         </button> */}
                                                     </header>
-                                                {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders") && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
-                                                        { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
-                                                            <div className="field is-horizontal"> 
-                                                                    <div className="field-label"> 
-                                                                        <label className="label is-size-7" key={i}>
-                                                                            {keys}:
-                                                                            </label>
+
+                                                        {/* is not prescription,billed orders, or lab order or asthma docs */}
+                                                        {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders" 
+                                                        && Clinic.documentname!=="Adult Asthma Questionnaire" 
+                                                        && Clinic.documentname!=="Pediatric Pulmonology Form") 
+                                                         && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                                { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                                    <div className="field is-horizontal"> 
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                            </div>                                                 
                                                                     </div>
-                                                                    <div className="field-body"> 
-                                                                        <div className="field" >
-                                                                            {value}   
-                                                                        </div>  
-                                                                    </div>                                                 
-                                                            </div>
-                                                            ))
-                                                        }
-                                                </div>}
-                                                {Clinic.documentname==="Prescription" &&  
-                                                <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
-                                                        
-                                                        {(Clinic.documentdetail.length>0) && <div>
-                                                            <label>Medications:</label>
-                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                                                                <thead>
-                                                                    <tr>
-                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                    ))
+                                                                }
+                                                        </div>}
+                                                    {/* is  Pediatric Pulmonology Form  */}
+                                                    {Clinic.documentname==="Pediatric Pulmonology Form" &&  
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                             { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                              <>  
+                                                              { value.length>0 &&  <>
+                                                                {(keys !=="Allergy_Skin_Test" && 
+                                                                keys !=="Presenting_Complaints") && 
+                                                                    <div className="field is-horizontal"> 
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                            </div>                                                 
+                                                                    </div>}
+                                                                    { keys ==="Allergy_Skin_Test" &&
+                                                                        <div id="skintest">
+                                                                        {(Clinic.documentdetail.Allergy_Skin_Test.length>0) && <div>
+                                                                            <label className="label is-size-7">Allergy_Skin_Test:</label>
+                                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-5 ml-5 ">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                                
+                                                                                    <th><abbr title="Type">Allergine</abbr></th>
+                                                                                    <th><abbr title="Destination">Reaction</abbr></th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tfoot>
+                                                                                    
+                                                                                </tfoot>
+                                                                                <tbody>
+                                                                                { Clinic.documentdetail.Allergy_Skin_Test.map((ProductEntry, i)=>(
+        
+                                                                                        <tr key={i}>
+                                                                                        <th>{i+1}</th>
+                                                                                        <td>{ProductEntry.allergine}</td> 
+                                                                                        <td>{ProductEntry.reaction}</td>                                                                     
+                                                                                        </tr>
+        
+                                                                                    ))}
+                                                                                </tbody>
+                                                                                </table>
+                                                                                </div>} 
+                                                                                </div>  
+                                                                                }
+                                                                     { keys ==="Presenting_Complaints" &&
+                                                                        <div id="Presenting_Complaints">
+                                                                        {(Clinic.documentdetail.Presenting_Complaints.length>0) && <div>
+                                                                            <label className="label is-size-7">Presenting_Complaints:</label>
+                                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-5 ml-5 ">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                                
+                                                                                    <th><abbr title="Type">Symptoms</abbr></th>
+                                                                                    <th><abbr title="Destination">Duration</abbr></th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tfoot>
+                                                                                    
+                                                                                </tfoot>
+                                                                                <tbody>
+                                                                                { Clinic.documentdetail.Presenting_Complaints.map((ProductEntry, i)=>(
+        
+                                                                                        <tr key={i}>
+                                                                                        <th>{i+1}</th>
+                                                                                        <td>{ProductEntry.symptom}</td> 
+                                                                                        <td>{ProductEntry.duration}</td>                                                                     
+                                                                                        </tr>
+        
+                                                                                    ))}
+                                                                                </tbody>
+                                                                                </table>
+                                                                                </div>} 
+                                                                                </div>  
+                                                                                }
+                                                                    
+                                                                    </>}</>
+
+                                                                    ))
+                                                                }
+                                                                                                            
+                                                        </div>}
+
+
+
+                                                          {/* is  Adult asthma questionaire,  */}
+                                                          {Clinic.documentname==="Adult Asthma Questionnaire" &&  
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                             { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                               <>  
+                                                               { value.length>0 &&  <>
+                                                                { keys !=="Allergy_Skin_Test"?
+                                                                    <div className="field is-horizontal"> 
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                            </div>                                                 
+                                                                    </div>:
+                                                                        <div id="skintest">
+                                                                        {(Clinic.documentdetail.Allergy_Skin_Test.length>0) && <div>
+                                                                            <label className="label is-size-7">Allergy_Skin_Test:</label>
+                                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-5 ml-5 ">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                                
+                                                                                    <th><abbr title="Type">Allergine</abbr></th>
+                                                                                    <th><abbr title="Destination">Reaction</abbr></th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tfoot>
+                                                                                    
+                                                                                </tfoot>
+                                                                                <tbody>
+                                                                                { Clinic.documentdetail.Allergy_Skin_Test.map((ProductEntry, i)=>(
+        
+                                                                                        <tr key={i}>
+                                                                                        <th>{i+1}</th>
+                                                                                        <td>{ProductEntry.allergine}</td> 
+                                                                                        <td>{ProductEntry.reaction}</td>                                                                     
+                                                                                        </tr>
+        
+                                                                                    ))}
+                                                                                </tbody>
+                                                                                </table>
+                                                                                </div>} 
+                                                                                </div>  
+                                                                    
+                                                                    }</>
+                                                                }</> 
+                                                                ))
+                                                                }
+                                                                                                            
+                                                        </div>}
+                                                    
+                                                        {/* is  prescription,  */}
+                                                        {Clinic.documentname==="Prescription" &&  
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                                 
-                                                                    <th><abbr title="Type">Medication</abbr></th>
-                                                                    <th><abbr title="Destination">Destination</abbr></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tfoot>
-                                                                    
-                                                                </tfoot>
-                                                                <tbody>
-                                                                { Clinic.documentdetail.map((ProductEntry, i)=>(
+                                                                {(Clinic.documentdetail.length>0) && <div>
+                                                                    <label>Medications:</label>
+                                                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                        <thead>
+                                                                            <tr>
+                                                                            <th><abbr title="Serial No">S/No</abbr></th>
+                                                                        
+                                                                            <th><abbr title="Type">Medication</abbr></th>
+                                                                            <th><abbr title="Destination">Destination</abbr></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tfoot>
+                                                                            
+                                                                        </tfoot>
+                                                                        <tbody>
+                                                                        { Clinic.documentdetail.map((ProductEntry, i)=>(
 
-                                                                        <tr key={i}>
-                                                                        <th>{i+1}</th>
-                                                                        {/* <td>{ProductEntry.name}</td> */}
-                                                                        <td>{ProductEntry.medication}<br/>
-                                                                        <span className="help is-size-7">{ProductEntry.instruction}</span></td> 
-                                                                        <td>{ProductEntry.destination}</td>                                                                     
-                                                                        </tr>
+                                                                                <tr key={i}>
+                                                                                <th>{i+1}</th>
+                                                                                {/* <td>{ProductEntry.name}</td> */}
+                                                                                <td>{ProductEntry.medication}<br/>
+                                                                                <span className="help is-size-7">{ProductEntry.instruction}</span></td> 
+                                                                                <td>{ProductEntry.destination}</td>                                                                     
+                                                                                </tr>
 
-                                                                    ))}
-                                                                </tbody>
-                                                                </table>
-                                                                </div>}                                                   
-                                                            </div>}
-                                                {Clinic.documentname==="Lab Orders" &&  
-                                                <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
-                                                        
-                                                        {(Clinic.documentdetail.length>0) && <div>
-                                                            <label>Tests:</label>
-                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                                                                <thead>
-                                                                    <tr>
-                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                            ))}
+                                                                        </tbody>
+                                                                        </table>
+                                                                        </div>}                                                   
+                                                                    </div>}
+                                                    
+                                                        {/* is  lab orders,  */}
+                                                        {Clinic.documentname==="Lab Orders" &&  
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                                 
-                                                                    <th><abbr title="Test">Test</abbr></th>
-                                                                    <th><abbr title="Destination">Destination</abbr></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tfoot>
-                                                                    
-                                                                </tfoot>
-                                                                <tbody>
-                                                                { Clinic.documentdetail.map((ProductEntry, i)=>(
+                                                                {(Clinic.documentdetail.length>0) && <div>
+                                                                    <label>Tests:</label>
+                                                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                        <thead>
+                                                                            <tr>
+                                                                            <th><abbr title="Serial No">S/No</abbr></th>
+                                                                        
+                                                                            <th><abbr title="Test">Test</abbr></th>
+                                                                            <th><abbr title="Destination">Destination</abbr></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tfoot>
+                                                                            
+                                                                        </tfoot>
+                                                                        <tbody>
+                                                                        { Clinic.documentdetail.map((ProductEntry, i)=>(
 
-                                                                        <tr key={i}>
-                                                                        <th>{i+1}</th>
-                                                                        {/* <td>{ProductEntry.name}</td> */}
-                                                                        <td>{ProductEntry.test}<br/>
-                                                                        {/* <span className="help is-size-7">{ProductEntry.instruction}</span> */}</td> 
-                                                                        <td>{ProductEntry.destination}</td>                                                                     
-                                                                        </tr>
+                                                                                <tr key={i}>
+                                                                                <th>{i+1}</th>
+                                                                                {/* <td>{ProductEntry.name}</td> */}
+                                                                                <td>{ProductEntry.test}<br/>
+                                                                                {/* <span className="help is-size-7">{ProductEntry.instruction}</span> */}</td> 
+                                                                                <td>{ProductEntry.destination}</td>                                                                     
+                                                                                </tr>
 
-                                                                    ))}
-                                                                </tbody>
-                                                                </table>
-                                                                </div>}                                                   
-                                                            </div>}
-                                                     
-                                                {Clinic.documentname==="Billed Orders" &&  
-                                                <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
-                                                        
-                                                        {(Clinic.documentdetail.length>0) && <div>
-                                                            <label>Billed Orders:</label>
-                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th><abbr title="Serial No">S/No</abbr></th>
-                                                                    <th><abbr title="Category">Category</abbr></th>
-                                                                    <th><abbr title="Name">Name</abbr></th>
-                                                                    <th><abbr title="Quantity">Quanitity</abbr></th>
-                                                                    <th><abbr title="Unit">Unit</abbr></th>
-                                                                    <th><abbr title="Selling Price">Selling Price</abbr></th>
-                                                                    <th><abbr title="Amount">Amount</abbr></th>
-                                                                    <th><abbr title="Billing Mode">Mode</abbr></th>
-                                                                    
-                                                                    </tr>
-                                                                </thead>
-                                                                <tfoot>
-                                                                    
-                                                                </tfoot>
-                                                                <tbody>
-                                                                { Clinic.documentdetail.map((ProductEntry, i)=>(
+                                                                            ))}
+                                                                        </tbody>
+                                                                        </table>
+                                                                        </div>}                                                   
+                                                                    </div>}
+                                                            {/* is  billed orders,  */}  
+                                                        {Clinic.documentname==="Billed Orders" &&  
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
+                                                                
+                                                                {(Clinic.documentdetail.length>0) && <div>
+                                                                    <label>Billed Orders:</label>
+                                                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th><abbr title="Serial No">S/No</abbr></th>
+                                                                            <th><abbr title="Category">Category</abbr></th>
+                                                                            <th><abbr title="Name">Name</abbr></th>
+                                                                            <th><abbr title="Quantity">Quanitity</abbr></th>
+                                                                            <th><abbr title="Unit">Unit</abbr></th>
+                                                                            <th><abbr title="Selling Price">Selling Price</abbr></th>
+                                                                            <th><abbr title="Amount">Amount</abbr></th>
+                                                                            <th><abbr title="Billing Mode">Mode</abbr></th>
+                                                                            
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tfoot>
+                                                                            
+                                                                        </tfoot>
+                                                                        <tbody>
+                                                                        { Clinic.documentdetail.map((ProductEntry, i)=>(
 
-                                                                        <tr key={i}>
-                                                                        <th>{i+1}</th>
-                                                                        <td>{ProductEntry.category}</td>
-                                                                        <td>{ProductEntry.name}</td>
-                                                                        <th>{ProductEntry.quantity}</th>
-                                                                        <td>{ProductEntry.baseunit}</td>
-                                                                        <td>{ProductEntry.sellingprice}</td>
-                                                                        <td>{ProductEntry.amount}</td>
-                                                                        <td>{ProductEntry.billMode.type}</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                                </table>
-                                                                </div>}                                                   
-                                                            </div>}
-                                                        
-                                                    </div>                                           
+                                                                                <tr key={i}>
+                                                                                <th>{i+1}</th>
+                                                                                <td>{ProductEntry.category}</td>
+                                                                                <td>{ProductEntry.name}</td>
+                                                                                <th>{ProductEntry.quantity}</th>
+                                                                                <td>{ProductEntry.baseunit}</td>
+                                                                                <td>{ProductEntry.sellingprice}</td>
+                                                                                <td>{ProductEntry.amount}</td>
+                                                                                <td>{ProductEntry.billMode.type}</td>
+                                                                                </tr>
+                                                                            ))}
+                                                                        </tbody>
+                                                                        </table>
+                                                                        </div>}                                                   
+                                                                    </div>}
+                                                                
+                                                </div>                                           
                                             </div>
 
                                         ))}

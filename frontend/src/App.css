@@ -72,6 +72,9 @@
   margin-top: -1.5rem;
   cursor: pointer;
 }
+.pullups{
+  margin-top: -0.75rem;
+}
 .selectadd{
   height:2.0em !important;
   font-size:0.75rem !important;
