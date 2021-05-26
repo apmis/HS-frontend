@@ -99,7 +99,7 @@ export default function AsthmaIntake() {
                /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Lab Result created succesfully',
+                    message: 'Adult Asthma Questionnaire created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -108,7 +108,7 @@ export default function AsthmaIntake() {
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Lab Result ' + err,
+                    message: 'Error creating Adult Asthma Questionnaire ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
