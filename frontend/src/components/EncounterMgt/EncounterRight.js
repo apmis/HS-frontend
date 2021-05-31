@@ -12,6 +12,7 @@ import PulmonologyIntake from './Pulmonology';
 
 export default function EncounterRight() {
     const {state,setState}=useContext(ObjectContext)
+    console.log(state.DocumentClassModule.selectedDocumentClass)
     return (
         <div>
           {(state.DocumentClassModule.selectedDocumentClass.name==='Vital Signs') &&  <VitalSignCreate />}
@@ -21,6 +22,8 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='Diagnostic Request') &&   <LabrequestCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Adult Asthma Questionnaire') &&   <AsthmaIntake />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Pediatric Pulmonology Form') &&   <PulmonologyIntake />}
+         {( typeof state.DocumentClassModule.selectedDocumentClass.document !=='undefined' ) &&( typeof state.DocumentClassModule.selectedDocumentClass.document.documentType !=='undefined' ) && (state.DocumentClassModule.selectedDocumentClass.document.documentType==='Diagnostic Result') &&   <LabNoteCreate />} 
+          
           
         </div>
     )
@@ -39,8 +42,28 @@ export function VitalSignCreate(){
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
+    const [docStatus,setDocStatus] = useState("Draft")
 
+    let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
 
+    
+    useEffect(() => {
+        if( !!draftDoc && draftDoc.status==="Draft"){
+
+           Object.entries(draftDoc.documentdetail).map(([keys,value],i)=>(
+               setValue(keys, value,  {
+                   shouldValidate: true,
+                   shouldDirty: true
+               })
+
+           ))
+          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
+          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+   }
+        return () => {
+            draftDoc={}
+        }
+    }, [draftDoc])
 
     const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
@@ -93,7 +116,7 @@ export function VitalSignCreate(){
                 if (data.BMI< 18.5){
                     data.BMI_Status="Underweight "
                 }
-                console.log(data.BMI, data.BMI_Status)
+              //  console.log(data.BMI, data.BMI_Status)
            // return
         }
         
@@ -109,8 +132,49 @@ export function VitalSignCreate(){
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
-          document.status="completed"
-          console.log(document)
+          document.status=docStatus==="Draft"?"Draft":"completed"
+
+          if (
+            document.location===undefined ||!document.createdByname || !document.facilityname ){
+            toast({
+                message: ' Documentation data missing, requires location and facility details' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              return
+          }
+
+         // console.log(document)
+         let confirm = window.confirm(`You are about to save this document ${ document.documentname} ?`)
+         if (confirm){
+           if (!!draftDoc &&  draftDoc.status==="Draft"){
+               ClientServ.patch(draftDoc._id, document)
+               .then((res)=>{
+                   //console.log(JSON.stringify(res))
+                   e.target.reset();
+                   setDocStatus("Draft")
+                  // setAllergies([])
+                  /*  setMessage("Created Client successfully") */
+                   setSuccess(true)
+                   toast({
+                       message: 'Documentation updated succesfully',
+                       type: 'is-success',
+                       dismissible: true,
+                       pauseOnHover: true,
+                     })
+                     setSuccess(false)
+               })
+               .catch((err)=>{
+                   toast({
+                       message: 'Error updating Documentation ' + err,
+                       type: 'is-danger',
+                       dismissible: true,
+                       pauseOnHover: true,
+                     })
+               })
+
+           }else{
         ClientServ.create(document)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -133,8 +197,19 @@ export function VitalSignCreate(){
                     pauseOnHover: true,
                   })
             })
+        }
+     }
 
-      } 
+    } 
+
+      const handleChangeStatus=async (e)=>{
+        // await setAppointment_type(e.target.value)
+       
+        setDocStatus(e.target.value)
+
+        //console.log(e.target.value)
+
+        }
 
     return (
         <>
@@ -260,6 +335,16 @@ export function VitalSignCreate(){
                 
             </div> 
         </div> 
+        <div className="field">
+                    <label className=" is-small">
+                        <input  type="radio"  checked={docStatus==="Draft"} name="status" value="Draft"  onChange={(e)=>{handleChangeStatus(e)}}/>
+                        <span > Draft</span>
+                    </label> <br/>
+                    <label className=" is-small">
+                        <input type="radio" checked={docStatus==="Final"} name="status"  value="Final" onChange={(e)=>handleChangeStatus(e)}/>
+                        <span> Final </span>
+                    </label>
+                </div>  
                
         <div className="field  is-grouped mt-2" >
                 <p className="control">
@@ -268,7 +353,7 @@ export function VitalSignCreate(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
+                    <button className="button is-warning is-small" type="reset">
                         Cancel
                     </button>
                 </p>
@@ -297,8 +382,27 @@ export function ClinicalNoteCreate(){
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
+    const [docStatus,setDocStatus] = useState("Draft")
 
+    let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
 
+    useEffect(() => {
+        if( !!draftDoc && draftDoc.status==="Draft"){
+
+           Object.entries(draftDoc.documentdetail).map(([keys,value],i)=>(
+               setValue(keys, value,  {
+                   shouldValidate: true,
+                   shouldDirty: true
+               })
+
+           ))
+          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
+          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+   }
+        return () => {
+            draftDoc={}
+        }
+    }, [draftDoc])
 
     const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
@@ -334,7 +438,7 @@ export function ClinicalNoteCreate(){
         setSuccess(false)
         let document={}
          // data.createdby=user._id
-          console.log(data);
+          //console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
@@ -347,8 +451,8 @@ export function ClinicalNoteCreate(){
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
-          document.status="completed"
-          console.log(document)
+          document.status=docStatus==="Draft"?"Draft":"completed"
+          //console.log(document)
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -360,6 +464,36 @@ export function ClinicalNoteCreate(){
               })
               return
           }
+        
+          let confirm = window.confirm(`You are about to save this document ${ document.documentname} ?`)
+          if (confirm){
+            if (!!draftDoc &&  draftDoc.status==="Draft"){
+                ClientServ.patch(draftDoc._id, document)
+                .then((res)=>{
+                    //console.log(JSON.stringify(res))
+                    e.target.reset();
+                    setDocStatus("Draft")
+                   // setAllergies([])
+                   /*  setMessage("Created Client successfully") */
+                    setSuccess(true)
+                    toast({
+                        message: 'Documentation updated succesfully',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                      setSuccess(false)
+                })
+                .catch((err)=>{
+                    toast({
+                        message: 'Error updating Documentation ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                })
+ 
+            }else{
         ClientServ.create(document)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -384,7 +518,16 @@ export function ClinicalNoteCreate(){
             })
 
       } 
+    }
+}
+const handleChangeStatus=async (e)=>{
+    // await setAppointment_type(e.target.value)
+   
+    setDocStatus(e.target.value)
 
+    //console.log(e.target.value)
+
+    }
     return (
         <>
             <div className="card ">
@@ -441,62 +584,20 @@ export function ClinicalNoteCreate(){
                     <div className="control has-icons-left">
                     
                         <textarea className="textarea is-small " ref={register()} name="Plan" type="text" placeholder="Plan"  />
-                        {/* <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span> */}
+   
                     </div>
-              {/*   </div> 
-            </div>   */}
         </div>
-       {/*  <div className="field is-horizontal">
-            <div className="field-body">
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="systolic_BP" type="text" placeholder="Systolic BP"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="diastolic_BP" type="text" placeholder="Diastolic_BP"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                </div> 
-                </div> 
-            <div className="field is-horizontal">
-             <div className="field-body">
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="SPO2" type="text" placeholder="SPO2"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-                <div className="field">
-                    <p className="control has-icons-left">
-                    
-                        <input className="input is-small" ref={register()} name="pain" type="text" placeholder="Pain"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-                </div> 
-            </div>
-        </div> */}
-        <div className="field is-horizontal">
-            <div className="field-body">
-                
-            </div> 
-        </div> 
+      
+         <div className="field">
+                    <label className=" is-small">
+                        <input  type="radio"  checked={docStatus==="Draft"} name="status" value="Draft"  onChange={(e)=>{handleChangeStatus(e)}}/>
+                        <span > Draft</span>
+                    </label> <br/>
+                    <label className=" is-small">
+                        <input type="radio" checked={docStatus==="Final"} name="status"  value="Final" onChange={(e)=>handleChangeStatus(e)}/>
+                        <span> Final </span>
+                    </label>
+                </div>  
                
         <div className="field  is-grouped mt-2" >
                 <p className="control">
@@ -505,7 +606,7 @@ export function ClinicalNoteCreate(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
+                    <button className="button is-warning is-small" type="reset">
                         Cancel
                     </button>
                 </p>
@@ -535,7 +636,27 @@ export function LabNoteCreate(){
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
 
-    const order=state.financeModule.selectedFinance
+    const [docStatus,setDocStatus] = useState("Draft")
+
+    let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
+
+    useEffect(() => {
+        if( !!draftDoc && draftDoc.status==="Draft"){
+
+           Object.entries(draftDoc.documentdetail).map(([keys,value],i)=>(
+               setValue(keys, value,  {
+                   shouldValidate: true,
+                   shouldDirty: true
+               })
+
+           ))
+          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
+          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+   }
+        return () => {
+            draftDoc={}
+        }
+    }, [draftDoc])
 
     const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
@@ -571,21 +692,22 @@ export function LabNoteCreate(){
         setSuccess(false)
         let document={}
          // data.createdby=user._id
-          console.log(data);
+          //console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
           }
          document.documentdetail=data
           document.documentname=`${data.Investigation} Result`  //"Lab Result"
+          document.documentType="Diagnostic Result"
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
-          document.status="completed"
-          console.log(document)
+          document.status=docStatus==="Draft"?"Draft":"completed"
+         // console.log(document)
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -597,6 +719,35 @@ export function LabNoteCreate(){
               })
               return
           }
+          let confirm = window.confirm(`You are about to save this document ${ document.documentname} ?`)
+          if (confirm){
+            if (!!draftDoc &&  draftDoc.status==="Draft"){
+                ClientServ.patch(draftDoc._id, document)
+                .then((res)=>{
+                    //console.log(JSON.stringify(res))
+                    e.target.reset();
+                    setDocStatus("Draft")
+                   // setAllergies([])
+                   /*  setMessage("Created Client successfully") */
+                    setSuccess(true)
+                    toast({
+                        message: 'Documentation updated succesfully',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                      setSuccess(false)
+                })
+                .catch((err)=>{
+                    toast({
+                        message: 'Error updating Documentation ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                })
+ 
+            }else{
         ClientServ.create(document)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -621,6 +772,18 @@ export function LabNoteCreate(){
             })
 
       } 
+    }
+
+} 
+
+const handleChangeStatus=async (e)=>{
+    // await setAppointment_type(e.target.value)
+   
+    setDocStatus(e.target.value)
+
+    //console.log(e.target.value)
+
+    }
 const handleChangePart=(e)=>{
     console.log(e)
 }
@@ -667,16 +830,17 @@ const handleChangePart=(e)=>{
                     </div>
                     </div>
                     </div>
-                   {/*  <div className="field">
+                    <div className="field">
                     <label className=" is-small">
-                             <input  type="radio" name="status" value="Draft" checked onChange={(e)=>{handleChangePart(e)}}/>
-                               <span > Draft</span>
-                              </label> <br/>
-                              <label className=" is-small">
-                             <input type="radio" name="status"  value="Final" onChange={(e)=>handleChangePart(e)}/>
-                             <span> Final </span>
-                              </label>
-                              </div>  */}
+                        <input  type="radio"  checked={docStatus==="Draft"} name="status" value="Draft"  onChange={(e)=>{handleChangeStatus(e)}}/>
+                        <span > Draft</span>
+                    </label> <br/>
+                    <label className=" is-small">
+                        <input type="radio" checked={docStatus==="Final"} name="status"  value="Final" onChange={(e)=>handleChangeStatus(e)}/>
+                        <span> Final </span>
+                    </label>
+                </div>  
+                
         <div className="field  is-grouped mt-2" >
                 <p className="control">
                     <button type="submit" className="button is-success is-small" >
@@ -684,7 +848,7 @@ const handleChangePart=(e)=>{
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
+                    <button className="button is-warning is-small" type="reset">
                         Cancel
                     </button>
                 </p>
@@ -904,7 +1068,7 @@ export function PrescriptionCreate(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
+                    <button className="button is-warning is-small" type="reset">
                         Cancel
                     </button>
                 </p>
@@ -1123,7 +1287,7 @@ export function LabrequestCreate(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
+                    <button className="button is-warning is-small" type="reset">
                         Cancel
                     </button>
                 </p>

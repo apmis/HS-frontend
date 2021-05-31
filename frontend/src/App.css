@@ -122,6 +122,12 @@ width:90% !important;
 
 }
 
+.sbut{
+  height: 1rem !important;
+  width: 1rem !important;
+  font-size: xx-small !important;
+  }
+
 
 .modalcolor{
   background-color:lightblue !important;

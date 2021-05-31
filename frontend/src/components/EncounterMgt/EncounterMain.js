@@ -11,6 +11,7 @@ import {format, formatDistanceToNowStrict } from 'date-fns'
 import  VideoConference  from '../utils/VideoConference';
 import  Prescription, { PrescriptionCreate } from './Prescription';
 import LabOrders from './LabOrders';
+import { useReactToPrint } from 'react-to-print';
 
 export default function EncounterMain({nopresc}) {
  // const { register, handleSubmit, watch, errors } = useForm();
@@ -34,6 +35,8 @@ export default function EncounterMain({nopresc}) {
     const [showModal,setShowModal]=useState(false)
     const [showPrescriptionModal,setShowPrescriptionModal]=useState(false)
     const [showLabModal,setShowLabModal]=useState(false)
+    const componentRef = useRef();
+    const refsArray = useRef([]);
     
     // tracking on which page we currently are
     const [page, setPage] = useState(0);
@@ -67,16 +70,30 @@ export default function EncounterMain({nopresc}) {
         //console.log("b4",state)
 
         //console.log("handlerow",Clinic)
+        if (Clinic.status==="completed"){
+            await setSelectedNote(Clinic)
 
-        await setSelectedNote(Clinic)
-
-         const    newClinicModule={
-            selectedNote:Clinic,
-            show :true
-        }
-       await setState((prevstate)=>({...prevstate, NoteModule:newClinicModule})) 
+            const    newClinicModule={
+                selectedNote:Clinic,
+                show :true
+            }
+        await setState((prevstate)=>({...prevstate, NoteModule:newClinicModule})) 
        //console.log(state)
        Clinic.show=!Clinic.show
+        }else{
+            let documentobj={}
+            documentobj.name=Clinic.documentname
+            documentobj.facility=Clinic.facility
+            documentobj.document=Clinic
+          //  alert("I am in draft mode : " + Clinic.documentname)
+            const    newDocumentClassModule={
+                selectedDocumentClass:documentobj,
+                //state.DocumentClassModule.selectedDocumentClass.name
+                show :'detail'
+            }
+           await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
+        }
+
 
     }
 
@@ -131,7 +148,7 @@ export default function EncounterMain({nopresc}) {
                 alert("skip:",ulimit )
                 console.log("skip:",ulimit ) */
             await setFacilities(findClinic.data)
-            console.log(findClinic.data)
+           // console.log(findClinic.data)
            /*  } */
                 }
                 else {
@@ -153,7 +170,16 @@ export default function EncounterMain({nopresc}) {
             }
     const handleLabOrders =async()=>{
         await setShowLabModal(true)    
-    }      
+    }   
+
+  /*   const handlePrint =async()=>{
+        window.print();
+        console.log("simpa")
+    }    */   
+   /*  const handlePrint =(i)=> useReactToPrint({
+        content: () => refsArray.current[i]
+      });
+     */
 
  useEffect(() => {
                 getFacilities()
@@ -196,6 +222,30 @@ export default function EncounterMain({nopresc}) {
                         
                     }
                 } */
+    const handleDelete=(doc)=>{
+       // console.log(doc)
+        let confirm = window.confirm(`You are about to delete a document: ${doc.documentname} created on ${format(new Date(doc.createdAt),'dd-MM-yy')} ?`)
+        if (confirm){
+        ClinicServ.remove(doc._id)
+        .then((res)=>{
+            toast({
+                message: 'Adult Asthma Questionnaire deleted succesfully',
+                type: 'is-success',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              setSuccess(false)
+        })
+        .catch((err)=>{
+            toast({
+                message: 'Error deleting Adult Asthma Questionnaire ' + err,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+        })
+     }
+    }
 
     return (
         <div>
@@ -237,25 +287,26 @@ export default function EncounterMain({nopresc}) {
                                    
                                         {facilities.map((Clinic, i)=>(
 
-                                            <div key={Clinic._id}    className={Clinic._id===(selectedNote?._id||null)?"is-selected":""}>
+                                            <div key={Clinic._id}    className={Clinic._id===(selectedNote?._id||null)?"is-selected":""}  >
                                                <div className="card mt-1 hovercard">
                                                     {/* header */}
-                                                <header className="card-header"  onClick={()=>handleRow(Clinic,i)}>
-                                                        <div className="card-header-title">
+                                                <header className="card-header"  >
+                                                        <div className="card-header-title" onClick={()=>handleRow(Clinic,i)}>
                                                         <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
                                                         <p className="right ml-2 mr-0">{Clinic.status} </p> 
                                                         </div>
-                                                       {/*  <button className="card-header-icon" aria-label="more options">
-                                                        <span className="icon">
-                                                            <i className="fas fa-angle-down" aria-hidden="true"></i>
-                                                        </span>
-                                                        </button> */}
+                                                        <button className="button  sbut" aria-label="more options" onClick={()=>handleDelete (Clinic)}>
+                                                            <span>x</span>
+                                                        </button> 
+                                                        {/* <button className="button  sbut" aria-label="more options" onClick={()=>handlePrint(i) }>
+                                                            <span>Print</span>
+                                                        </button>  */}
                                                     </header>
 
                                                         {/* is not prescription,billed orders, or lab order or asthma docs */}
                                                         {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders" 
                                                         && Clinic.documentname!=="Adult Asthma Questionnaire" 
-                                                        && Clinic.documentname!=="Pediatric Pulmonology Form") 
+                                                        && Clinic.documentname!=="Pediatric Pulmonology Form") &&  Clinic.status!=="Draft"
                                                          && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                                 { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                                     <div className="field is-horizontal"> 
@@ -274,7 +325,7 @@ export default function EncounterMain({nopresc}) {
                                                                 }
                                                         </div>}
                                                     {/* is  Pediatric Pulmonology Form  */}
-                                                    {Clinic.documentname==="Pediatric Pulmonology Form" &&  
+                                                    {Clinic.documentname==="Pediatric Pulmonology Form" &&  Clinic.status!=="Draft" &&
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                              { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                               <>  
@@ -366,7 +417,7 @@ export default function EncounterMain({nopresc}) {
 
 
                                                           {/* is  Adult asthma questionaire,  */}
-                                                          {Clinic.documentname==="Adult Asthma Questionnaire" &&  
+                                                          {Clinic.documentname==="Adult Asthma Questionnaire" &&  Clinic.status!=="Draft" &&
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                              { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                                <>  

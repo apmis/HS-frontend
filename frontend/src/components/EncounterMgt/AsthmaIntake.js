@@ -26,8 +26,28 @@ export default function AsthmaIntake() {
     const [allergies,setAllergies] = useState([])
     const [dataset,setDataset] = useState()
     const {state}=useContext(ObjectContext)
+    const [docStatus,setDocStatus] = useState("Draft")
 
-    const order=state.financeModule.selectedFinance
+    let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
+  
+
+    useEffect(() => {
+        if( !!draftDoc && draftDoc.status==="Draft"){
+
+           Object.entries(draftDoc.documentdetail).map(([keys,value],i)=>(
+               setValue(keys, value,  {
+                   shouldValidate: true,
+                   shouldDirty: true
+               })
+
+           ))
+          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
+           setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+   }
+        return () => {
+            draftDoc={}
+        }
+    }, [draftDoc])
 
     const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
@@ -63,7 +83,7 @@ export default function AsthmaIntake() {
         setSuccess(false)
         let document={}
          // data.createdby=user._id
-          console.log(data)
+          //console.log(data)
           data.Allergy_Skin_Test=allergies
         
           if (user.currentEmployee){
@@ -78,8 +98,8 @@ export default function AsthmaIntake() {
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
-          document.status="completed"
-          console.log(document)
+          document.status=docStatus==="Draft"?"Draft":"completed"
+          //console.log(document)
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -91,6 +111,35 @@ export default function AsthmaIntake() {
               })
               return
           }
+
+          let confirm = window.confirm(`You are about to save this document ${ document.documentname} ?`)
+          if (confirm){
+            if (!!draftDoc &&  draftDoc.status==="Draft"){
+                ClientServ.patch(draftDoc._id, document)
+                .then((res)=>{
+                    //console.log(JSON.stringify(res))
+                    e.target.reset();
+                    setAllergies([])
+                   /*  setMessage("Created Client successfully") */
+                    setSuccess(true)
+                    toast({
+                        message: 'Adult Asthma Questionnaire updated succesfully',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                      setSuccess(false)
+                })
+                .catch((err)=>{
+                    toast({
+                        message: 'Error updating Adult Asthma Questionnaire ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                })
+
+            }else{
         ClientServ.create(document)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -114,7 +163,8 @@ export default function AsthmaIntake() {
                     pauseOnHover: true,
                   })
             })
-
+        }
+        }
       } 
         const handleChangePart=async (e)=>{
             //console.log(e)
@@ -129,6 +179,14 @@ export default function AsthmaIntake() {
         // await setAppointment_type(e.target.value)
         console.log(e)
         }
+        const handleChangeStatus=async (e)=>{
+            // await setAppointment_type(e.target.value)
+           
+            setDocStatus(e.target.value)
+    
+            //console.log(e.target.value)
+    
+            }
 
         const handleAllergy=async (e)=>{
             //console.log(e)
@@ -2652,16 +2710,16 @@ injection, such as prednisone </label>
                             <input className="input is-small"   ref={register} name="Education" type="text" placeholder="Hihest Level of Education" />           
                         </p> */}
                
-              {/*  <div className="field">
+               <div className="field">
                     <label className=" is-small">
-                        <input  type="radio" ref={register} name="status" value="Draft" checked onChange={(e)=>{handleChangePart(e)}}/>
+                        <input  type="radio"  checked={docStatus==="Draft"} name="status" value="Draft"  onChange={(e)=>{handleChangeStatus(e)}}/>
                         <span > Draft</span>
                     </label> <br/>
                     <label className=" is-small">
-                        <input type="radio" ref={register} name="status"  value="Final" onChange={(e)=>handleChangePart(e)}/>
+                        <input type="radio" checked={docStatus==="Final"} name="status"  value="Final" onChange={(e)=>handleChangeStatus(e)}/>
                         <span> Final </span>
                     </label>
-                </div>   */}
+                </div>  
               
         <div className="field  is-grouped mt-2" >
                 <p className="control">
@@ -2670,7 +2728,7 @@ injection, such as prednisone </label>
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
+                    <button className="button is-warning is-small" type="reset">
                         Cancel
                     </button>
                 </p>

@@ -21,7 +21,10 @@ const VideoConference = () => {
     setRoom(client._id)
     setName(user.firstname)
     if (room && name) setCall(true)
+    alert(`Kindly share link with client and other collaborators: https://meet.jit.si/${client._id}`)
   }
+
+ 
  
   return call ? (
     <Draggable>
