@@ -47,11 +47,13 @@ export function ClientAccount(){
     // eslint-disable-next-line
     const [facility,setFacility] = useState([])
     const InventoryServ=client.service('subwallettransactions')
+    const SubwalletServ=client.service('subwallet')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
+    const [balance, setBalance]=useState(0)
 
 
     const clientSel= state.SelectedClient.client
@@ -85,6 +87,7 @@ export function ClientAccount(){
 
     useEffect(() => {
         getaccountdetails()
+        getBalance()
         return () => {
            
         }
@@ -127,6 +130,33 @@ export function ClientAccount(){
             })
     }
 
+    const getBalance=async ()=>{
+        const findProductEntry= await SubwalletServ.find(
+            {query: {
+               
+                client:clientSel.client,
+                organization:user.currentEmployee.facilityDetail._id,
+                //storeId:state.StoreModule.selectedStore._id,
+                //clientId:state.ClientModule.selectedClient._id,
+                $limit:100,
+                $sort: {
+                    createdAt: -1
+                }
+                }})
+                 console.log(findProductEntry)
+    
+         // console.log("balance", findProductEntry.data[0].amount)
+            if (findProductEntry.data.length>0){
+                await setBalance(findProductEntry.data[0].amount)
+            }else{
+                await setBalance(0) 
+                
+            } 
+    
+          //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
+            }   
+    
+
     const onSubmit = (data,e) =>{
         e.preventDefault();
         setMessage("")
@@ -140,14 +170,18 @@ export function ClientAccount(){
         
 
       } 
+    
 
     return (
         <>
             <div className="card cardheight">
                 <div className="card-header">
                     <p className="card-header-title">
-                        Account Details: Patient Name //current balance
+                        Account Details: {facility[0]?.fromName}
                     </p>
+                    <button className="button is-success is-small btnheight mt-2" >
+                    Current Balance: N {balance}
+                 </button>
                 </div>
                 <div className="card-content ">
                 
@@ -162,10 +196,10 @@ export function ClientAccount(){
                                     Credit
                                 </p>
                             </div>
-                            <div className="card-content vscrollable">
+                            <div className="card-content vscrollable mx-0.5">
                                    
                                     <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable mx-0.5">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
@@ -219,10 +253,10 @@ export function ClientAccount(){
                                 Debit
                                 </p>
                             </div>
-                            <div className="card-content vscrollable">
+                            <div className="card-content vscrollable mx-0.5">
                                    
                                     <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable  is-scrollable ">
+                                <table className="table is-striped is-narrow is-hoverable  is-scrollable mx-0.5">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
