@@ -5,6 +5,7 @@ import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
+import ModuleList from './ModuleList'
 import {toast} from 'bulma-toast'
 // eslint-disable-next-line
 const searchfacility={};
@@ -343,16 +344,7 @@ export function EmployeeList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Employee  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Employee, probable network issues "+ err )
-                    setError(true)
-                }) */
+         
             }
             
             useEffect(() => {
@@ -379,7 +371,12 @@ export function EmployeeList(){
                 }
                 EmployeeServ.on('created', (obj)=>getFacilities())
                 EmployeeServ.on('updated', (obj)=>getFacilities())
-                EmployeeServ.on('patched', (obj)=>getFacilities())
+                EmployeeServ.on('patched', 
+                    (obj)=>{
+                        getFacilities()
+                        //console.log(facilities.filter(el=>(el._id=selectedEmployee._id)))
+
+                })
                 EmployeeServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
@@ -429,8 +426,8 @@ export function EmployeeList(){
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
                                         <th><abbr title="Departmental Unit">Departmental Unit</abbr></th>
-                                        <th><abbr title="Facility">Facility</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                       {/*  <th><abbr title="Facility">Facility</abbr></th>
+                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -441,15 +438,15 @@ export function EmployeeList(){
 
                                             <tr key={Employee._id} onClick={()=>handleRow(Employee)}>
                                             <th>{i+1}</th>
-                                            <th>{Employee.firstname}</th>
-                                            <td>{Employee.lastname}</td>
-                                            <td>{Employee.profession}</td>
-                                            <td>{Employee.phone}</td>
-                                            <td>{Employee.email}</td>
-                                            <td>{Employee.department}</td>
-                                            <td>{Employee.deptunit}</td>
-                                            <td>{Employee.facility}</td>
-                                            <td><span   className="showAction"  >...</span></td>
+                                            <th>{Employee?.firstname}</th>
+                                            <td>{Employee?.lastname}</td>
+                                            <td>{Employee?.profession}</td>
+                                            <td>{Employee?.phone}</td>
+                                            <td>{Employee?.email}</td>
+                                            <td>{Employee?.department}</td>
+                                            <td>{Employee?.deptunit}</td>
+                                            {/* <td>{Employee.facility}</td>
+                                            <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -476,6 +473,7 @@ export function EmployeeDetail(){
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
+    const [showRoles, setShowRoles] = useState("") 
 
    
 
@@ -489,6 +487,12 @@ export function EmployeeDetail(){
        await setState((prevstate)=>({...prevstate, EmployeeModule:newEmployeeModule}))
        //console.log(state)
        
+    }
+    const handleRoles=()=>{
+        setShowRoles(true)
+    }
+    const handlecloseModal =()=>{
+        setShowRoles(false)
     }
  
     return (
@@ -512,7 +516,7 @@ export function EmployeeDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-medium "   name="EmployeeName"> {Employee.firstname} </span>
+                        <span className="is-medium "   name="EmployeeName"> {Employee?.firstname} </span>
                         </td>
                     </tr>
                     <tr>
@@ -522,7 +526,7 @@ export function EmployeeDetail(){
                     </span>Last Name:
                     </label></td>
                     <td>
-                    <span className="is-small "  name="EmployeeAddress">{Employee.lastname} </span> 
+                    <span className="is-small "  name="EmployeeAddress">{Employee?.lastname} </span> 
                     </td>
                 </tr>
                     <tr>
@@ -535,7 +539,7 @@ export function EmployeeDetail(){
                     </label>
                     </td>
                 <td>
-                <span className="is-small "  name="EmployeeCity">{Employee.profession}</span> 
+                <span className="is-small "  name="EmployeeCity">{Employee?.profession}</span> 
                 </td>
                 </tr>
                     <tr>
@@ -547,7 +551,7 @@ export function EmployeeDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-small "  name="EmployeeContactPhone" >{Employee.phone}</span>
+                        <span className="is-small "  name="EmployeeContactPhone" >{Employee?.phone}</span>
                         </td>
                   </tr>
                     <tr><td>
@@ -557,7 +561,7 @@ export function EmployeeDetail(){
                     </span>Email:                     
                     
                          </label></td><td>
-                         <span className="is-small "  name="EmployeeEmail" >{Employee.email}</span>
+                         <span className="is-small "  name="EmployeeEmail" >{Employee?.email}</span>
                          </td>
              
                 </tr>
@@ -568,7 +572,7 @@ export function EmployeeDetail(){
                     
                     </label></td>
                     <td>
-                    <span className="is-small "  name="EmployeeOwner">{Employee.department}</span>
+                    <span className="is-small "  name="EmployeeOwner">{Employee?.department}</span>
                     </td>
                
                 </tr>
@@ -580,7 +584,7 @@ export function EmployeeDetail(){
                     
                 </label></td>
                 <td>
-                <span className="is-small "  name="EmployeeType">{Employee.deptunit}</span>
+                <span className="is-small "  name="EmployeeType">{Employee?.deptunit}</span>
                 </td>
               
                 </tr>
@@ -594,18 +598,43 @@ export function EmployeeDetail(){
                  </div> */}
 
 
+        <div className="field mt-2 is-grouped"> 
            
-            <div className="field">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
+         
+          
+                <p className="control">
+                    <button className="button is-info is-small" onClick={handleRoles}>
+                        Set Roles
+                    </button>
+                </p>
+         
             </div>
             { error && <div className="message"> {message}</div>}
             </fieldset>
         </div>
         </div>
+        <div className={`modal ${showRoles?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card">
+                                        <header className="modal-card-head minHt">
+                                        <p className="modal-card-title">Employee Roles</p>
+                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        {/* <StoreList standalone="true" /> */}
+                                        <ModuleList handlecloseModal={handlecloseModal}/>
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>  
         </>
     )
    
@@ -883,6 +912,7 @@ export function EmployeeModify(){
             </div>
         </div>
         </div>
+             
         </>
     )
    

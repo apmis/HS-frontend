@@ -181,21 +181,21 @@ function NavBar({url}){
                                 <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}`}>Landing Page</NavLink> 
                                 </div>
-                                <div className="navbar-item" onClick={handleBurger} >
+                                {(user.currentEmployee?.roles.includes('Clinic')||user.currentEmployee?.roles.length===0 )&&  <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/clinic`}>Clinic</NavLink>
-                                </div>
-                                <div className="navbar-item" onClick={handleBurger} >
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Inventory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/inventory`}>Inventory</NavLink>
-                                </div>
-                                <div className="navbar-item" onClick={handleBurger} >
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>
-                                </div>
-                                <div className="navbar-item" onClick={handleBurger} >
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Finance')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/finance`}>Finance</NavLink>
-                                </div>
-                                <div className="navbar-item" onClick={handleBurger} >
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/labs`}>Laboratory</NavLink>
-                                </div>
+                                </div>}
                                 {/* <div className="navbar-item">
                                     Front Desk
                                 </div> */}

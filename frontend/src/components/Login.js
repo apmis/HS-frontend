@@ -30,7 +30,7 @@ const onSubmit = (data,e) =>{
                // console.log(JSON.stringify(res.user))
                 e.target.reset();
                await setUser(res.user)
-              // console.log(user)
+              //console.log(user)
                localStorage.setItem("user",JSON.stringify(res.user))
                history.push("/app")
 
