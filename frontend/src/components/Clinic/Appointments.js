@@ -1319,7 +1319,7 @@ export  function ClientSearch({getSearchfacility,clear}) {
                     }},
                 ],
               
-                 //facility: user.currentEmployee.facilityDetail._id,
+                 facility: user.currentEmployee.facilityDetail._id,
                  //storeId: state.StoreModule.selectedStore._id,
                  $limit:10,
                  $sort: {

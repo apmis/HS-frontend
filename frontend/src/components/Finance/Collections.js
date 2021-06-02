@@ -22,15 +22,15 @@ export default function Collections() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-8 ">
+                <div className="column is-5 ">
                     <CollectionList />
                 </div>
-           {/*  <div className="column is-4 ">
-                {(state.InventoryModule.show ==='create')&&<InventoryCreate />}
-                {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
-                {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}
+           <div className="column is-7 ">
+                { (state.SelectedClient.show ==='detail') && <ClientAccount />}
+                {/*  {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
+                {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}*/}
                
-            </div> */}
+            </div> 
 
             </div>                            
             </section>
@@ -39,27 +39,28 @@ export default function Collections() {
     
 }
 
-export function InventoryCreate(){
+export function ClientAccount(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
-    const [facility,setFacility] = useState()
-    const InventoryServ=client.service('inventory')
+    const [facility,setFacility] = useState([])
+    const InventoryServ=client.service('subwallettransactions')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
+    const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
 
 
-
+    const clientSel= state.SelectedClient.client
     const getSearchfacility=(obj)=>{
-        
+      /*   
         setValue("facility", obj._id,  {
             shouldValidate: true,
             shouldDirty: true
-        })
+        }) */
     }
     
     useEffect(() => {
@@ -71,7 +72,7 @@ export function InventoryCreate(){
     }, [user])
 
   //check user for facility or get list of facility  
-    useEffect(()=>{
+   /*  useEffect(()=>{
         //setFacility(user.activeInventory.FacilityId)//
       if (!user.stacker){
           console.log(currentUser)
@@ -80,7 +81,51 @@ export function InventoryCreate(){
             shouldDirty: true
         }) 
       }
-    })
+    }) */
+
+    useEffect(() => {
+        getaccountdetails()
+        return () => {
+           
+        }
+    }, [clientSel])
+
+
+
+    const getaccountdetails=()=>{
+        InventoryServ.find({query: {
+            facility:user.currentEmployee.facilityDetail._id,
+            client:clientSel.client,
+           // storeId:state.StoreModule.selectedStore._id,
+           // category:"credit",
+            
+            $sort: {
+                createdAt: -1
+            }
+            }})
+        .then((res)=>{
+                console.log(res)
+                setFacility(res.data)
+                //e.target.reset();
+               /*  setMessage("Created Inventory successfully") */
+               // setSuccess(true)
+                toast({
+                    message: 'Account details succesful',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                 // setSuccess(false)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error getting account details ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            })
+    }
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
@@ -92,175 +137,146 @@ export function InventoryCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        InventoryServ.create(data)
-        .then((res)=>{
-                //console.log(JSON.stringify(res))
-                e.target.reset();
-               /*  setMessage("Created Inventory successfully") */
-                setSuccess(true)
-                toast({
-                    message: 'Inventory created succesfully',
-                    type: 'is-success',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-                  setSuccess(false)
-            })
-            .catch((err)=>{
-                toast({
-                    message: 'Error creating Inventory ' + err,
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-            })
+        
 
       } 
 
     return (
         <>
-            <div className="card ">
-            <div className="card-header">
-                <p className="card-header-title">
-                    Create Inventory: Product Entry- Initialization, Purchase Invoice, Audit
-                </p>
-            </div>
-            <div className="card-content vscrollable">
-   
-            <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="field">    
-                <div class="control">
-                    <div class="select is-small">
-                        <select>
-                            <option>Purchase Invoice </option>
-                            <option>Initialization</option>
-                            <option>Audit</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left"> {/* Audit/initialization/Purchase Invoice */}
-                    <input className="input is-small" ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div>
-                <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="supplier" type="text" placeholder="Supplier" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
+            <div className="card cardheight">
+                <div className="card-header">
+                    <p className="card-header-title">
+                        Account Details: Patient Name //current balance
                     </p>
                 </div>
-                <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="date" type="text" placeholder="Date" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div>
-            
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="totalamount" type="text" placeholder=" Total Amount"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-           
-         {/* array of inventory items */}
-         <p className="control">
-                    <button className="button is-info is-small  is-pulled-right">
-                      <span className="is-small"> +</span>
-                    </button>
-                </p>
-           <div className="field"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                <ProductSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } /* add array no */ name="productId" type="text" placeholder="Product Id" />
-                    <span className="icon is-small is-left">
-                    <i className="fas  fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div>
-           
-               <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="quantity" type="text" placeholder="Quantity"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                <label className="label is-small">Base Unit</label>
-            </div> 
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="costprice" type="text" placeholder="Cost Price"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> 
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
+                <div className="card-content ">
+                
+           {/*  <div className="level"> vscrollable
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
+            </div> */}
+            <div className="columns ">
+                <div className="column is-6 ">
+                    <div className="card cardht80">
+                            <div className="card-header">
+                                <p className="card-header-title">
+                                    Credit
+                                </p>
                             </div>
-                        </div>   
+                            <div className="card-content vscrollable">
+                                   
+                                    <div className="table-container pullup ">
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                    <thead>
+                                        <tr>
+                                        <th><abbr title="Serial No">S/No</abbr></th>
+                                        <th><abbr title="Cost Price">Date</abbr></th>
+                                        <th><abbr title="Quantity">Amount</abbr></th>
+                                        <th><abbr title="Base Unit">Mode</abbr></th>
+                                       {/*  <th><abbr title="Stock Value">Stock Value</abbr></th>
+                                         
+                                        <th><abbr title="Selling Price">Selling Price</abbr></th>
+                                        <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
+                                        <th><abbr title="Expiry">Expiry</abbr></th> 
+                                        <th><abbr title="Actions">Actions</abbr></th> */}
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                    <tbody>
+                                        {facility.map((Inventory, i)=>(
+                                        <>
+                                        {Inventory.category==="credit" && 
+                                            <tr key={Inventory._id} >
+                                            <th>{i+1}</th>
+                                            <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> {/*add time  */}
+                                            
+                                            <td>{Inventory.amount}</td>
+                                            <td>{Inventory.paymentmode}</td>
+                                            {/* <td>{Inventory.stockvalue}</td>
+                                            <td>{Inventory.costprice}</td>
+                                            <td>{Inventory.sellingprice}</td>
+                                            <td>{Inventory.reorder_level}</td> 
+                                            <td>{Inventory.expiry}</td>
+                                            <td><span   className="showAction"  >...</span></td> */}
+                                           
+                                            </tr>
+                                             }
+                                             </>
+                                        ))}
+                                    </tbody>
+                                    </table>
+                                    
+                </div>              
+                                   
+                            </div>
                     </div>
                 </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
-            <div className="field">
-                <p className="control">
-                    <button className="button is-success is-small">
-                        Create
-                    </button>
-                </p>
-            </div>
+           <div className="column is-6 ">
+                <div className="card cardht80">
+                            <div className="card-header">
+                                <p className="card-header-title">
+                                Debit
+                                </p>
+                            </div>
+                            <div className="card-content vscrollable">
+                                   
+                                    <div className="table-container pullup ">
+                                <table className="table is-striped is-narrow is-hoverable  is-scrollable ">
+                                    <thead>
+                                        <tr>
+                                        <th><abbr title="Serial No">S/No</abbr></th>
+                                        <th><abbr title="Cost Price">Date</abbr></th>
+                                         <th><abbr title="Description">Description</abbr></th> 
+                                        
+                                        <th><abbr title="Quantity">Amount</abbr></th>
+                                        <th><abbr title="Base Unit">Mode</abbr></th>
+                                       {/*  <th><abbr title="Stock Value">Stock Value</abbr></th>
+                                         
+                                        <th><abbr title="Selling Price">Selling Price</abbr></th>
+                                        <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
+                                        <th><abbr title="Expiry">Expiry</abbr></th> 
+                                        <th><abbr title="Actions">Actions</abbr></th> */}
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                    <tbody>
+                                        {facility.map((Inventory, i)=>(
+                                        <>
+                                          {Inventory.category==="debit" && <tr key={Inventory._id} >
+                                            <th>{i+1}</th>
+                                            <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> {/*add time  */}
+                                            <th>{Inventory.description}</th>
+                                            <td>{Inventory.amount}</td>
+                                            <td>{Inventory.paymentmode}</td>
+                                            {/* <td>{Inventory.stockvalue}</td>
+                                            <td>{Inventory.costprice}</td>
+                                            <td>{Inventory.sellingprice}</td>
+                                            <td>{Inventory.reorder_level}</td> 
+                                            <td>{Inventory.expiry}</td>
+                                            <td><span   className="showAction"  >...</span></td> */}
+                                           
+                                            </tr>
+
+                                            }
+                                        </>
+                                        ))}
+                                    </tbody>
+                                    </table>
+                                    
+                </div>              
+                                    
+                            </div>
+                    </div>
+               
+            </div> 
+
+            </div>                            
+           
             
-            </form>
-            </div>
+                </div>
             </div>
         </>
     )
@@ -305,10 +321,10 @@ export function CollectionList(){
         await setSelectedInventory(Inventory)
 
         const    newInventoryModule={
-            selectedInventory:Inventory,
+            client:Inventory,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+       await setState((prevstate)=>({...prevstate, SelectedClient:newInventoryModule}))
        //console.log(state)
 
     }
@@ -357,8 +373,6 @@ export function CollectionList(){
                         $gt: new Date().getTime() - DAY_MS //last 30days
 
                     },
-                    $limit:20,
-
                     $sort: {
                         createdAt: -1
                     }
@@ -487,7 +501,7 @@ export function CollectionList(){
                                     <tbody>
                                         {facilities.map((Inventory, i)=>(
 
-                                            <tr key={Inventory._id} onClick={()=>handleRow(Inventory)}>
+                                            <tr key={Inventory._id} onClick={()=>handleRow(Inventory)} className={Inventory._id===(selectedInventory?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> {/*add time  */}
                                             <th>{Inventory.fromName}</th>

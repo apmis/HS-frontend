@@ -282,8 +282,8 @@ export default function EncounterMain({nopresc}) {
 
                 </div>
                 
-                <div className=" pullup ">
-                                <div className=" is-fullwidth vscrollable pr-1">
+                <div className=" pullup mb-2">
+                                <div className=" is-fullwidth vscrollable pr-1 ">
                                    
                                         {facilities.map((Clinic, i)=>(
 

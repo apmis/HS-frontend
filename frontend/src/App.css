@@ -128,7 +128,15 @@ width:90% !important;
   font-size: xx-small !important;
   }
 
-
+.cardheight{
+   max-height:87vh !important;
+   padding-bottom: 2rem;
+  
+}
+.cardht80{
+  height:80vh;
+  margin-bottom: 3rem;
+}
 .modalcolor{
   background-color:lightblue !important;
 }

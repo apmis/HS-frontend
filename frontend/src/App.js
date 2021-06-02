@@ -101,6 +101,10 @@ function App() {
     NoteModule:{
       show:false,
       selectedNote:{}
+    },
+    SelectedClient:{
+      client:{},
+      show:'create'
     }
 
   })
