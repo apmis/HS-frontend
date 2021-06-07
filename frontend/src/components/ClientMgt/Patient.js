@@ -93,7 +93,7 @@ export function ClientCreate(){
         setError(false)
         setSuccess(false)
          // data.createdby=user._id
-          console.log(data);
+        //  console.log(data);
           if (user.currentEmployee){
           data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }

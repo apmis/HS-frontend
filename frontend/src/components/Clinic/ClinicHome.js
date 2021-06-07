@@ -28,6 +28,7 @@ export default function InventoryHome() {
                     <h2 className="subtitle">
                         Have fun working today!
                     </h2>
+                   
                     </div>
                 </div>
             </section>                  

@@ -47,6 +47,7 @@ export function ClinicCreate(){
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
     const ClinicServ=client.service('location')
+    
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
@@ -250,6 +251,9 @@ export function ClinicList({standalone,closeModal}){
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
     const ClinicServ=client.service('location')
+    const oldpeopleServ=client.service('oldapmispeople')
+    const oldpatientServ=client.service('oldapmispatient')
+    const foremost=client.service('foremost')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
@@ -297,7 +301,7 @@ export function ClinicList({standalone,closeModal}){
                     $options:'i'
                    
                 },
-               facility:user.currentEmployee.facilityDetail._id || "",
+               facility:user.currentEmployee.facilityDetail._id || "" ,
                 locationType:"Clinic",
                $limit:10,
                 $sort: {
@@ -392,6 +396,33 @@ export function ClinicList({standalone,closeModal}){
 
     //todo: pagination and vertical scroll bar
 
+     const handleLoad=async ()=>{
+         console.log("something") //5bb5f0538a2a1e386cc10b2e
+        let people=[]
+         //1.create blank database
+            // oldpeopleServ.create({})
+            // oldpatientServ.create({})
+            //delete default
+         //find foremost base patients
+         const findClinic= await oldpatientServ.find(
+            {query: {
+               
+                facilityId:"5bb5f0538a2a1e386cc10b2e"
+               
+                }}).then((resp)=>{
+                    console.log(resp)
+                   
+                    })
+                  
+                .catch((err)=>console.log(err))
+
+                console.log("done")
+    // await setFacilities(findClinic.data)
+         //take their clients
+         //save into healthstack vs import
+         //replace facility id for foremost
+     }
+
     return(
         <>
            {user?( <>  
@@ -411,6 +442,9 @@ export function ClinicList({standalone,closeModal}){
                                 </p>
                             </div>
                         </div>
+                      {/*   <button className="button" onClick={handleLoad}>
+                        load data
+                    </button> */}
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div>
                     <div className="level-right">
