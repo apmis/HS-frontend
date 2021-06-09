@@ -334,7 +334,7 @@ export function EmployeeList(){
                         const findEmployee= await EmployeeServ.find(
                             {query: {
                                 
-                                $limit:20,
+                                $limit:100,
                                 $sort: {
                                     createdAt: -1
                                 }
