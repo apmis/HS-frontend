@@ -84,9 +84,9 @@ export default function LaboratoryModule() {
                                     <div className="navbar-item"   onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                    {/* <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/labs`}>Labs</NavLink>
-                                    </div>
+                                    </div> */}
                                     
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/lab-bill`}>Bill Lab Orders</NavLink>

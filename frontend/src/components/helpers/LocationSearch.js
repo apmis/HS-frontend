@@ -11,9 +11,9 @@ import { formatDistanceToNowStrict, format } from 'date-fns'
 //const searchfacility={};
 
 
-export function ClientSearch({getSearchfacility,clear}) {
+export  default function LocationSearch({id,getSearchfacility,clear}) {
     
-    const ClientServ=client.service('client')
+    const ClientServ=client.service('location')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -33,12 +33,28 @@ export function ClientSearch({getSearchfacility,clear}) {
    const {state}=useContext(ObjectContext)
     const [productModal,setProductModal]=useState(false)
 
+   const getInitial=async(id)=>{
+    if(!!id){
+    await ClientServ.get(id).then((resp)=>{
+        handleRow(resp)
+    })
+    .catch((err)=>console.log(err))
+    }
+   }
+
+    useEffect(() => {
+        getInitial(id)
+        return () => {
+            
+        }
+    }, [])
+
    const handleRow= async(obj)=>{
         await setChosen(true)
         //alert("something is chaning")
        getSearchfacility(obj)
        
-       await setSimpa(obj.firstname + " "+ obj.middlename+ " "+obj.lastname + " "+obj.gender+" "+obj.phone )
+       await setSimpa(obj.name + " "+ obj.locationType )
        
         // setSelectedFacility(obj)
         setShowPanel(false)
@@ -77,20 +93,21 @@ export function ClientSearch({getSearchfacility,clear}) {
             return
         }
         const field='name' //field variable
-
+        /* name: { type: String, required: true },
+        locationType: { type: String }, */
        
         if (val.length>=3 ){
             ClientServ.find({query: {
                 $or:[
-                    { firstname: {
+                    { name: {
                         $regex:val,
                         $options:'i' 
                     }},
-                    { lastname: {
+                    { locationType: {
                         $regex:val,
                         $options:'i' 
                     }},
-                    { middlename: {
+                 /*    { middlename: {
                         $regex:val,
                         $options:'i' 
                     }},
@@ -109,7 +126,7 @@ export function ClientSearch({getSearchfacility,clear}) {
                     { specificDetails: {
                         $regex:val,
                         $options:'i' 
-                    }},
+                    }}, */
                 ],
               
                  facility: user.currentEmployee.facilityDetail._id,
@@ -166,7 +183,7 @@ export function ClientSearch({getSearchfacility,clear}) {
                     <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
                         <div className="dropdown-trigger" style={{width:"100%"}}>
                             <DebounceInput className="input is-small  is-expanded mb-0" 
-                                type="text" placeholder="Search for Client"
+                                type="text" placeholder="Search for location"
                                 value={simpa}
                                 minLength={3}
                                 debounceTimeout={400}
@@ -180,19 +197,19 @@ export function ClientSearch({getSearchfacility,clear}) {
                         </div>
                         <div className="dropdown-menu expanded" style={{width:"100%"}}>
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item selectadd" /* onClick={handleAddproduct} */> <span> {val} is not yet your client</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item selectadd" /* onClick={handleAddproduct} */> <span> {val} is not a location in your facility</span> </div>}
 
                               {facilities.map((facility, i)=>(
                                     
-                                    <div className="dropdown-item selectadd vht" key={facility._id} onClick={()=>handleRow(facility)}>
+                                    <div className="dropdown-item selectadd " key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <div ><span>{facility.firstname}</span>
-                                        <span className="padleft">{facility.middlename}</span>
-                                        <span className="padleft">{facility.lastname}</span>
-                                        <span className="padleft"> {facility.dob && formatDistanceToNowStrict(new Date(facility.dob))}</span>
+                                        <div >{/* <span>{facility.firstname}</span> */}
+                                        <span className="padleft">{facility.name}</span>
+                                        <span className="padleft">{facility.locationType}</span>
+                                        {/* <span className="padleft"> {facility.dob && formatDistanceToNowStrict(new Date(facility.dob))}</span>
                                         <span className="padleft">{facility.gender}</span>
                                         <span className="padleft">{facility.profession}</span>
-                                        <span className="padleft">{facility.phone}</span>
+                                        <span className="padleft">{facility.phone}</span> */}
                                         {/* <span className="padleft">{facility.email}</span> */}
                                         </div>
                             

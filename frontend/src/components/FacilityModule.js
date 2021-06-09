@@ -12,6 +12,7 @@ import Location from './facility/Location'
 import Roaster from './facility/Roaster'
 import Workspace from './facility/Workspace'
 import Accessibility from './facility/Accessibility'
+import ClinicSetup from './Clinic/ClinicSetup'
 
 export default function FacilityModule() {
     const [showmenu, setShowMenu]=useState(false)
@@ -66,6 +67,9 @@ export default function FacilityModule() {
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/facility`}>Facility</NavLink>
+                                    </div>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
                                     </div>
                                     {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/roaster`}>Roaster</NavLink>
@@ -125,6 +129,9 @@ export default function FacilityModule() {
                         </Route>
                         <Route path={`${path}/Workspace`} exact>
                             <Workspace />
+                        </Route>
+                        <Route path={`${path}/clinicsetup`} exact >
+                            <ClinicSetup />
                         </Route>
 
                     </Switch>

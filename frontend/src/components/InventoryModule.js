@@ -84,18 +84,19 @@ export default function InventoryModule() {
                                     <div className="navbar-item"   onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                    {/* <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-stores`}>Stores</NavLink>
-                                    </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-dispense`}>Dispensary</NavLink>
-                                    </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                    </div> */}
+                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-bill`}>Bill Prescription</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-payment`}>Payment</NavLink>
                                     </div>
+                                    <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/inv-dispense`}>Dispensary</NavLink>
+                                    </div>
+                                   
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
                                     </div>

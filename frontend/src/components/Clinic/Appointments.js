@@ -9,7 +9,9 @@ import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict, format, subDays,addDays } from 'date-fns'
 import DatePicker from "react-datepicker";
-
+import LocationSearch from "../helpers/LocationSearch"
+import EmployeeSearch from "../helpers/EmployeeSearch"
+import BillServiceCreate from '../Finance/BillServiceCreate'
 import "react-datepicker/dist/react-datepicker.css";
 // eslint-disable-next-line
 const searchfacility={};
@@ -48,8 +50,12 @@ export function AppointmentCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
+    const [success1, setSuccess1] =useState(false)
+    const [success2, setSuccess2] =useState(false)
     const [message,setMessage] = useState("")
     const [clientId,setClientId] = useState()
+    const [locationId,setLocationId] = useState()
+    const [practionerId,setPractionerId] = useState()
     const [type,setType] = useState()
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
@@ -63,8 +69,12 @@ export function AppointmentCreate(){
    // const [appointment_reason,setAppointment_reason]= useState()
     const [appointment_status,setAppointment_status]=useState("")
     const [appointment_type, setAppointment_type]=useState("")
-  
+    const [billingModal, setBillingModal] =useState(false)
+
     const [chosen, setChosen]=useState()
+    const [chosen1, setChosen1]=useState()
+    const [chosen2, setChosen2]=useState()
+    const appClass=[ "On-site","Teleconsultation"]
 
     let appointee  //  =state.ClientModule.selectedClient 
    /*  const getSearchfacility=(obj)=>{
@@ -81,11 +91,12 @@ export function AppointmentCreate(){
         await setAppointment_status(e.target.value)
     }
 
+   
     const getSearchfacility=(obj)=>{
 
        setClientId(obj._id)
        setChosen(obj)
-       
+       //handleRow(obj)
         if (!obj){
             //"clear stuff"
             setClientId()
@@ -99,6 +110,30 @@ export function AppointmentCreate(){
             shouldDirty: true
         }) */
     }
+    const getSearchfacility1=(obj)=>{
+
+        setLocationId(obj._id)
+        setChosen1(obj)
+        
+         if (!obj){
+             //"clear stuff"
+             setLocationId()
+             setChosen1()
+            
+         }
+     }
+     const getSearchfacility2=(obj)=>{
+
+        setPractionerId(obj._id)
+        setChosen2(obj)
+        
+         if (!obj){
+             //"clear stuff"
+             setPractionerId()
+             setChosen2()
+            
+         }
+     }
 
     useEffect(() => {
         setCurrentUser(user)
@@ -130,7 +165,8 @@ export function AppointmentCreate(){
           if (user.currentEmployee){
           data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-          data.locationId=state.ClinicModule.selectedClinic._id
+          data.locationId=locationId //state.ClinicModule.selectedClinic._id
+          data.practitionerId=practionerId
           data.appointment_type=appointment_type
          // data.appointment_reason=appointment_reason
           data.appointment_status=appointment_status
@@ -142,10 +178,17 @@ export function AppointmentCreate(){
             data.gender=chosen.gender
             data.phone=chosen.phone
             data.email=chosen.email
+            data.practitioner_name=chosen2.firstname+" "+chosen2.lastname
+            data.practitioner_profession=chosen2.profession
+            data.practitioner_department=chosen2.department
+            data.location_name=chosen1.name
+            data.location_type=chosen1.locationType
           data.actions=[{
               action:appointment_status,
               actor:user.currentEmployee._id
           }]
+          console.log(data);
+          
 
         ClientServ.create(data)
         .then((res)=>{
@@ -154,15 +197,21 @@ export function AppointmentCreate(){
                setAppointment_type("")
                setAppointment_status("")
                setClientId("")
+               setLocationId("")
                /*  setMessage("Created Client successfully") */
                 setSuccess(true)
+                setSuccess1(true)
+                setSuccess2(true)
                 toast({
-                    message: 'Appointment created succesfully',
+                    message: 'Appointment created succesfully, Kindly bill patient if required',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
                   })
                   setSuccess(false)
+                  setSuccess1(false)
+                  setSuccess2(false)
+                 // showBilling()
             })
             .catch((err)=>{
                 toast({
@@ -185,6 +234,24 @@ export function AppointmentCreate(){
         }
     }, [state.ClientModule.selectedClient ])
 
+  /*   const showBilling = () =>{
+        setBillingModal(true)
+       //history.push('/app/finance/billservice')
+        }
+        const  handlecloseModal1 = () =>{
+            setBillingModal(false)
+            }
+
+
+            const handleRow= async(Client)=>{
+              //  await setSelectedClient(Client)
+                const    newClientModule={
+                    selectedClient:Client,
+                    show :'detail'
+                }
+               await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+            } */
+
     return (
         <>
             
@@ -197,9 +264,10 @@ export function AppointmentCreate(){
             <div className="card-content vscrollable remPad1">
           
             <form onSubmit={handleSubmit(onSubmit)}>
-            <label className="label is-small">Client:</label>
-         <div className="field is-horizontal">
+            <div className="field is-horizontal">
             <div className="field-body">
+           {/*  <label className="label is-small mr-2">Client:</label> */}
+         
           {state.ClientModule.selectedClient.firstname !==undefined ? <> 
               <label className="label is-size-7" > {state.ClientModule.selectedClient.firstname} {state.ClientModule.selectedClient .lastname}</label>
                </> 
@@ -215,6 +283,46 @@ export function AppointmentCreate(){
                 </div>}
             </div>
         </div>
+        <div className="field is-horizontal">
+            <div className="field-body">
+                <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <LocationSearch  getSearchfacility={getSearchfacility1} clear={success1} /> 
+                    <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={locationId} name="locationId" type="text" onChange={e=>setLocationId(e.target.value)} placeholder="Product Id" />
+                        <span className="icon is-small is-left">
+                        <i className="fas  fa-map-marker-alt"></i>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div className="field is-horizontal">
+            <div className="field-body">
+                <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <EmployeeSearch  getSearchfacility={getSearchfacility2} clear={success2} /> 
+                    <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={practionerId} name="practionerId" type="text" onChange={e=>setPractionerId(e.target.value)} placeholder="Product Id" />
+                        <span className="icon is-small is-left">
+                        <i className="fas  fa-map-marker-alt"></i>
+                        </span>
+                    </p>
+                </div>
+             
+            </div>
+        </div>
+        <div className="field is-horizontal">
+                       
+                       <div className="field ml-3 ">
+                       {/* <label className= "mr-2 "> <b>Modules:</b></label> */}
+                           {
+                               appClass.map((c,i) => 
+                                   <label  className=" is-small" key={c}>
+                                       <input type="radio" value={c} name="appointmentClass" ref={register} />{c + " "}
+                                   </label>
+                               )
+                           }
+                       </div>  
+                       </div>
         <div className="field">
             <input name="start_time" ref={register ({ required: true })} type="datetime-local" />
         </div>
@@ -267,6 +375,7 @@ export function AppointmentCreate(){
                 </span>                    
             </p>
         </div>
+        
            
         <div className="field  is-grouped mt-2" >
                 <p className="control">
@@ -289,7 +398,20 @@ export function AppointmentCreate(){
             </form>
             </div>
             </div>
-                
+            {/* <div className={`modal ${billingModal?"is-active":""}` }>
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                    <p className="modal-card-title">Bill Client</p>
+                    <button className="delete" aria-label="close"  onClick={handlecloseModal1}></button>
+                    </header>
+                    <section className="modal-card-body">
+                   
+                    < BillServiceCreate closeModal={handlecloseModal1}/>
+                    </section>
+                  
+                </div>
+            </div>  */}      
         </>
     )
    
@@ -345,47 +467,72 @@ export function ClientList(){
 
    const handleSearch=(val)=>{
        const field='firstname'
-       console.log(val)
-       ClientServ.find({query: {
-                $or:[
-                    { firstname: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { lastname: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { middlename: {
-                        $regex:val,
-                        $options:'i' 
-                    }}, 
-                    { phone: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { appointment_type: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { appointment_status: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    {appointment_reason: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    
-                ],
-                locationId:state.employeeLocation.locationId,
-              facility:user.currentEmployee.facilityDetail._id, // || "",
-                $limit:20,
-                $sort: {
-                    createdAt: -1
-                  }
-                    }}).then((res)=>{
-                console.log(res)
+     //  console.log(val)
+
+     let query={
+        $or:[
+            { firstname: {
+                $regex:val,
+                $options:'i' 
+            }},
+            { lastname: {
+                $regex:val,
+                $options:'i' 
+            }},
+            { middlename: {
+                $regex:val,
+                $options:'i' 
+            }}, 
+            { phone: {
+                $regex:val,
+                $options:'i' 
+            }},
+            { appointment_type: {
+                $regex:val,
+                $options:'i' 
+            }},
+            { appointment_status: {
+                $regex:val,
+                $options:'i' 
+            }},
+            {appointment_reason: {
+                $regex:val,
+                $options:'i' 
+            }},
+            {location_type: {
+                $regex:val,
+                $options:'i' 
+            }},
+            {location_name: {
+                $regex:val,
+                $options:'i' 
+            }},
+            {practitioner_department: {
+                $regex:val,
+                $options:'i' 
+            }},
+            {practitioner_profession: {
+                $regex:val,
+                $options:'i' 
+            }},
+            {practitioner_name: {
+                $regex:val,
+                $options:'i' 
+            }},
+          
+        ],
+      facility:user.currentEmployee.facilityDetail._id, // || "",
+        $limit:20,
+        $sort: {
+            createdAt: -1
+          }
+            }
+          if (state.employeeLocation.locationType!=="Front Desk"){
+              query.locationId=state.employeeLocation.locationId}  
+     
+       ClientServ.find({query: query
+          }).then((res)=>{
+                  console.log(res)
                setFacilities(res.data)
                 setMessage(" Client  fetched successfully")
                 setSuccess(true) 
@@ -398,16 +545,20 @@ export function ClientList(){
         }
    
     const getFacilities= async()=>{
-            if (user.currentEmployee){      
-            const findClient= await ClientServ.find(
-                {query: {
+            if (user.currentEmployee){   
+                let stuff={
                     facility:user.currentEmployee.facilityDetail._id,
-                    locationId:state.employeeLocation.locationId,
+                   // locationId:state.employeeLocation.locationId,
                     $limit:100,
                     $sort: {
                         createdAt: -1
                     }
-                    }})
+                }
+                if (state.employeeLocation.locationType!=="Front Desk"){
+                    stuff.locationId=state.employeeLocation.locationId}  
+
+            const findClient= await ClientServ.find(
+                {query: stuff})
 
          await setFacilities(findClient.data)
                 }
@@ -415,7 +566,7 @@ export function ClientList(){
                     if (user.stacker){
                         const findClient= await ClientServ.find(
                             {query: {
-                                $limit:20,
+                                $limit:100,
                                 $sort: {
                                     createdAt: -1
                                 }
@@ -431,7 +582,7 @@ export function ClientList(){
     useEffect(() => {
                
                 if (user){
-                    getFacilities()
+                    handleCalendarClose()
                 }else{
                     /* const localUser= localStorage.getItem("user")
                     const user1=JSON.parse(localUser)
@@ -441,10 +592,10 @@ export function ClientList(){
                     console.log(user)
                     getFacilities(user) */
                 }
-                ClientServ.on('created', (obj)=>getFacilities())
-                ClientServ.on('updated', (obj)=>getFacilities())
-                ClientServ.on('patched', (obj)=>getFacilities())
-                ClientServ.on('removed', (obj)=>getFacilities())
+                ClientServ.on('created', (obj)=>handleCalendarClose())
+                ClientServ.on('updated', (obj)=>handleCalendarClose())
+                ClientServ.on('patched', (obj)=>handleCalendarClose())
+                ClientServ.on('removed', (obj)=>handleCalendarClose())
                 const newClient={
                     selectedClient:{},
                     show :'create'
@@ -455,19 +606,23 @@ export function ClientList(){
                 }
             },[])
 const handleCalendarClose = async ()=>{
+    let query= {
+        start_time:{
+            $gt:subDays(startDate,1),
+            $lt:addDays(startDate,1)
+        },
+        facility:user.currentEmployee.facilityDetail._id,
+       
+        $limit:100,
+        $sort: {
+            createdAt: -1
+        }
+        }
+        if (state.employeeLocation.locationType!=="Front Desk"){
+            query.locationId=state.employeeLocation.locationId}  
+
     const findClient= await ClientServ.find(
-        {query: {
-            start_time:{
-                $gt:subDays(startDate,1),
-                $lt:addDays(startDate,1)
-            },
-            facility:user.currentEmployee.facilityDetail._id,
-            locationId:state.employeeLocation.locationId,
-            $limit:100,
-            $sort: {
-                createdAt: -1
-            }
-            }})
+        {query:query})
 
         await setFacilities(findClient.data)
 }
@@ -537,20 +692,19 @@ const handleDate=async (date)=>{
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th><abbr title="Time">Date/Time</abbr></th>
                                         <th>First Name</th>
-                                        <th><abbr title="Middle Name">Middle Name</abbr></th>
                                        <th><abbr title="Last Name">Last Name</abbr></th>
-                                       <th><abbr title="Age">Age</abbr></th>
-                                        <th><abbr title="Gender">Gender</abbr></th> 
+                                       <th><abbr title="Class">Classification</abbr></th>
+                                        <th><abbr title="Location">Location</abbr></th> 
                                         {/* <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th> */}
+                                         */}
                                         <th><abbr title="Type">Type</abbr></th>
                                         <th><abbr title="Status">Status</abbr></th>
                                         <th><abbr title="Reason">Reason</abbr></th>
+                                        <th><abbr title="Practitioner">Practitioner</abbr></th>
                                         {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        
+                                    <tfoot>                                      
                                     </tfoot>
                                     <tbody>
                                         {facilities.map((Client, i)=>(
@@ -559,15 +713,17 @@ const handleDate=async (date)=>{
                                             <th>{i+1}</th>
                                             <td><strong>{format(new Date(Client.start_time),"dd-MM-yy HH:mm:ss")}</strong></td>
                                             <th>{Client.firstname}</th>
-                                            <td>{Client.middlename}</td>
+                                            {/* <td>{Client.middlename}</td> */}
                                            < td>{Client.lastname}</td>
-                                           < td>{formatDistanceToNowStrict(new Date(Client.dob))}</td>
-                                            <td>{Client.gender}</td>
-                                            {/*  <td>{Client.phone}</td>
-                                            <td>{Client.email}</td> */}
+                                          {/*  < td>{formatDistanceToNowStrict(new Date(Client.dob))}</td> */}
+                                           {/*  <td>{Client.gender}</td> */}
+                                            {/*  <td>{Client.phone}</td> */}
+                                            <td>{Client.appointmentClass}</td>
+                                            <td>{Client.location_name} {Client.location_type}</td> 
                                             <td>{Client.appointment_type}</td>
                                             <td>{Client.appointment_status}</td>
                                             <td>{Client.appointment_reason}</td>
+                                            <td>{Client.practitioner_name}</td>
                                             {/* <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
@@ -949,9 +1105,43 @@ export function ClientModify(){
     const [selectedAppointment,setSelectedAppointment]=useState()
     const [appointment_status,setAppointment_status]=useState("")
     const [appointment_type, setAppointment_type]=useState("")
+    const appClass=[ "On-site","Teleconsultation"]
+    const [locationId,setLocationId] = useState()
+    const [practionerId,setPractionerId] = useState()
+    const [success1, setSuccess1] =useState(false)
+    const [success2, setSuccess2] =useState(false)
+    const [chosen1, setChosen1]=useState()
+    const [chosen2, setChosen2]=useState()
 
     const Client =state.AppointmentModule.selectedAppointment
-    console.log(Client)
+    //console.log(Client)
+
+    const getSearchfacility1=(obj)=>{
+
+        setLocationId(obj._id)
+        setChosen1(obj)
+        
+         if (!obj){
+             //"clear stuff"
+             setLocationId()
+             setChosen1()
+            
+         }
+     }
+
+    const getSearchfacility2=(obj)=>{
+     
+        
+        setPractionerId(obj._id)
+        setChosen2(obj)
+        
+         if (!obj){
+             //"clear stuff"
+             setPractionerId()
+             setChosen2()
+            
+         }
+     }
 
     useEffect(() => {
         setValue("firstname", Client.firstname,  {
@@ -1002,6 +1192,11 @@ export function ClientModify(){
             shouldValidate: true,
             shouldDirty: true
         })
+        setValue("appointmentClass", Client.appointmentClass,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        
        
         return () => {
             
@@ -1087,7 +1282,22 @@ export function ClientModify(){
        // console.log(data)
       //  data.facility=Client.facility
           //console.log(data);
+           data.practitioner_name=chosen2.firstname+" "+chosen2.lastname
+            data.practitioner_profession=chosen2.profession
+            data.practitioner_department=chosen2.department
+            data.practitionerId=chosen2._id
+          data.locationId=chosen1._id
+          data.location_name=chosen1.name
+          data.location_type=chosen1.locationType
           
+           //data.actions
+           if (Client.appointment_status!== data.appointment_status){
+                Client.actions.push({
+                    status:data.appointment_status,
+                    actor:user.currentEmployee._id,
+                })
+           }
+           data.actions=Client.actions
         ClientServ.patch(Client._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -1130,12 +1340,51 @@ export function ClientModify(){
            
             <form onSubmit={handleSubmit(onSubmit)}>
        {/* ===================================================== */}
-       <label className="label is-small">Client:</label>
+      {/*  <label className="label is-small">Client:</label> */}
          
             <div className="field">
               <label className="label is-size-7" > {Client.firstname} {Client.lastname}</label>
             </div>
-      
+            <div className="field is-horizontal">
+            <div className="field-body">
+                <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <LocationSearch id={Client.locationId} getSearchfacility={getSearchfacility1} clear={success1} /> 
+                    <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={locationId} name="locationId" type="text" onChange={e=>setLocationId(e.target.value)} placeholder="Product Id" />
+                        <span className="icon is-small is-left">
+                        <i className="fas  fa-map-marker-alt"></i>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div className="field is-horizontal">
+            <div className="field-body">
+                <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <EmployeeSearch id={Client.practitionerId}  getSearchfacility={getSearchfacility2} clear={success2} /> 
+                    <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={practionerId} name="practionerId" type="text" onChange={e=>setPractionerId(e.target.value)} placeholder="Product Id" />
+                        <span className="icon is-small is-left">
+                        <i className="fas  fa-map-marker-alt"></i>
+                        </span>
+                    </p>
+                </div>
+             
+            </div>
+        </div>
+            <div className="field is-horizontal">
+                       
+                       <div className="field ml-3 ">
+                       {/* <label className= "mr-2 "> <b>Modules:</b></label> */}
+                           {
+                               appClass.map((c,i) => 
+                                   <label  className=" is-small" key={c}>
+                                       <input type="radio" value={c} name="appointmentClass" ref={register} />{c + " "}
+                                   </label>
+                               )
+                           }
+                       </div>  
+                       </div>
         <div className="field">
             <input name="start_time" ref={register ({ required: true })} type="datetime-local" defaultValue={format(new Date(Client.start_time),"yyyy-MM-dd'T'HH:mm:ss")} />
         </div>

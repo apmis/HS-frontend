@@ -82,12 +82,12 @@ export default function ClinicModule() {
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
+                                   {/*  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinics`}>Clinics</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
+                                    </div> */}
+                                   {/*  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
-                                    </div>
+                                    </div> */}
                                      <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/appointments`}>Appointments</NavLink>
                                     </div>
@@ -97,9 +97,9 @@ export default function ClinicModule() {
                                     {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
                                     </div> */}
-                                    <div className="navbar-item" onClick={handleBurger}>
+                                  {/*   <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/patients`}>Clients</NavLink>
-                                    </div>
+                                    </div> */}
                                     {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
                                     </div> */}

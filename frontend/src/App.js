@@ -53,6 +53,10 @@ function App() {
       show:'create',
       selectedClinic:{}
     },
+    FrontDesk:{
+      show:'create',
+      selectedFrontDesk:{}
+    },
     ClientModule:{
       show:'create',
       selectedClient:{}

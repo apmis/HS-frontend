@@ -5,7 +5,7 @@ import {DebounceInput} from 'react-debounce-input';
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { FacilitySearch } from '../helpers/FacilitySearch';
-import { ClientSearch } from '../helpers/ClientSearch';
+import  {ClientSearch}  from '../helpers/ClientSearch';
 
 
 export default function ClientFinInfo({closeModal}){

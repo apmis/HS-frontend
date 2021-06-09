@@ -10,25 +10,25 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Store() {
+export default function FrontDesk() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedStore,setSelectedStore]=useState()
+    const [selectedClinic,setSelectedClinic]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Store  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Clinic  Module</span></div>
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-                <StoreList />
+                <FrontDeskList />
                 </div>
             <div className="column is-4 ">
-                {(state.StoreModule.show ==='create')&&<StoreCreate />}
-                {(state.StoreModule.show ==='detail')&&<StoreDetail  />}
-                {(state.StoreModule.show ==='modify')&&<StoreModify Store={selectedStore} />}
+                {(state.FrontDesk.show ==='create')&&<FrontDeskCreate />}
+                {(state.FrontDesk.show ==='detail')&&<FrontDeskDetail  />}
+                {(state.FrontDesk.show ==='modify')&&<FrontDeskModify Clinic={selectedClinic} />}
                
             </div>
 
@@ -39,14 +39,15 @@ export default function Store() {
     
 }
 
-export function StoreCreate(){
+export function FrontDeskCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const StoreServ=client.service('location')
+    const ClinicServ=client.service('location')
+    
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
@@ -72,7 +73,7 @@ export function StoreCreate(){
 
   //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeStore.FacilityId)//
+        //setFacility(user.activeClinic.FacilityId)//
       if (!user.stacker){
           console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -92,15 +93,15 @@ export function StoreCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-          data.locationType="Store"
-        StoreServ.create(data)
+          data.locationType="Front Desk"
+        ClinicServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Store successfully") */
+               /*  setMessage("Created Clinic successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Store created succesfully',
+                    message: 'Front Desk created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -109,7 +110,7 @@ export function StoreCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Store ' + err,
+                    message: 'Error creating Front Desk ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -123,7 +124,7 @@ export function StoreCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Location
+                    Create Front Desk
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -131,7 +132,7 @@ export function StoreCreate(){
             <form onSubmit={handleSubmit(onSubmit)}>
                {/*  <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="StoreType" type="text" placeholder="Type of Store" />
+                        <input className="input is-small" ref={register({ required: true })}  name="ClinicType" type="text" placeholder="Type of Clinic" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
@@ -139,7 +140,7 @@ export function StoreCreate(){
                 </div> */}
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Location" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Front Desk" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -241,7 +242,7 @@ export function StoreCreate(){
    
 }
 
-export function StoreList({standalone,closeModal}){
+export function FrontDeskList({standalone,closeModal}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -249,12 +250,15 @@ export function StoreList({standalone,closeModal}){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const StoreServ=client.service('location')
+    const ClinicServ=client.service('location')
+   /*  const oldpeopleServ=client.service('oldapmispeople')
+    const oldpatientServ=client.service('oldapmispatient')
+    const foremost=client.service('foremost') */
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedStore, setSelectedStore]=useState() //
+   const [selectedClinic, setSelectedClinic]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -263,43 +267,49 @@ export function StoreList({standalone,closeModal}){
 
 
     const handleCreateNew = async()=>{
-        const    newStoreModule={
-            selectedStore:{},
+        const    newClinicModule={
+            selectedFrontDesk:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+       await setState((prevstate)=>({...prevstate, FrontDesk:newClinicModule}))
        //console.log(state)
         
 
     }
-    const handleRow= async(Store)=>{
+    const handleRow= async(Clinic)=>{
         //console.log("b4",state)
+       
+       
 
-        //console.log("handlerow",Store)
+        await setSelectedClinic(Clinic)
 
-        await setSelectedStore(Store)
-
-        const    newStoreModule={
-            selectedStore:Store,
+        const    newClinicModule={
+            selectedFrontDesk:Clinic,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+       await setState((prevstate)=>({...prevstate, FrontDesk:newClinicModule}))
        //console.log(state)
-       //closeModal()
-
+        closeModal()
     }
+    useEffect(() => {
+        console.log(state.FrontDesk)
+        return () => {
+            
+        }
+    }, [state.FrontDesk])
+
 
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       StoreServ.find({query: {
+       ClinicServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
-               facility:user.currentEmployee.facilityDetail._id || "",
-                locationType:"Finance",
+               facility:user.currentEmployee.facilityDetail._id || "" ,
+                locationType:"Front Desk",
                $limit:10,
                 $sort: {
                     name: 1
@@ -307,12 +317,12 @@ export function StoreList({standalone,closeModal}){
                     }}).then((res)=>{
                 console.log(res)
                setFacilities(res.data)
-                setMessage(" Store  fetched successfully")
+                setMessage(" Front Desk  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Store, probable network issues "+ err )
+                setMessage("Error fetching Front Desk, probable network issues "+ err )
                 setError(true)
             })
         }
@@ -320,9 +330,9 @@ export function StoreList({standalone,closeModal}){
         const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findStore= await StoreServ.find(
+        const findClinic= await ClinicServ.find(
                 {query: {
-                    locationType:"Finance",
+                    locationType:"Front Desk",
                     facility:user.currentEmployee.facilityDetail._id,
                     $limit:20,
                     $sort: {
@@ -330,37 +340,37 @@ export function StoreList({standalone,closeModal}){
                     }
                     }})
 
-         await setFacilities(findStore.data)
+         await setFacilities(findClinic.data)
                 }
                 else {
                     if (user.stacker){
-                        const findStore= await StoreServ.find(
+                        const findClinic= await ClinicServ.find(
                             {query: {
-                                locationType:"Finance",
+                                locationType:"Front Desk",
                                 $limit:20,
                                 $sort: {
                                     name: 1
                                 }
                                 }})
             
-                    await setFacilities(findStore.data)
+                    await setFacilities(findClinic.data)
 
                     }
                 }
           /*   .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
-                    setMessage(" Store  fetched successfully")
+                    setMessage(" Clinic  fetched successfully")
                     setSuccess(true)
                 })
                 .catch((err)=>{
-                    setMessage("Error creating Store, probable network issues "+ err )
+                    setMessage("Error creating Clinic, probable network issues "+ err )
                     setError(true)
                 }) */
             }
             
             useEffect(() => {
-            
+               
 
                 return () => {
                     
@@ -381,10 +391,10 @@ export function StoreList({standalone,closeModal}){
                     console.log(user)
                     getFacilities(user) */
                 }
-                StoreServ.on('created', (obj)=>getFacilities())
-                StoreServ.on('updated', (obj)=>getFacilities())
-                StoreServ.on('patched', (obj)=>getFacilities())
-                StoreServ.on('removed', (obj)=>getFacilities())
+                ClinicServ.on('created', (obj)=>getFacilities())
+                ClinicServ.on('updated', (obj)=>getFacilities())
+                ClinicServ.on('patched', (obj)=>getFacilities())
+                ClinicServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
                 }
@@ -392,6 +402,8 @@ export function StoreList({standalone,closeModal}){
 
 
     //todo: pagination and vertical scroll bar
+
+    
 
     return(
         <>
@@ -402,7 +414,7 @@ export function StoreList({standalone,closeModal}){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Stores"
+                                        type="text" placeholder="Search Front Desks"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -412,8 +424,11 @@ export function StoreList({standalone,closeModal}){
                                 </p>
                             </div>
                         </div>
+                      {/*   <button className="button" onClick={handleLoad}>
+                        load data
+                    </button> */}
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Locations </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Front Desks</span></div>
                     <div className="level-right">
                 { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -427,7 +442,7 @@ export function StoreList({standalone,closeModal}){
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
-                                        {/* <th><abbr title="Last Name">Store Type</abbr></th>
+                                        {/* <th><abbr title="Last Name">Clinic Type</abbr></th>
                                        <th><abbr title="Profession">Profession</abbr></th>
                                          <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
@@ -441,18 +456,18 @@ export function StoreList({standalone,closeModal}){
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((Store, i)=>(
+                                        {facilities.map((Clinic, i)=>(
 
-                                            <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
+                                            <tr key={Clinic._id} onClick={()=>handleRow(Clinic)}  className={Clinic._id===(selectedClinic?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Store.name}</th>
-                                            {/*<td>{Store.StoreType}</td>
-                                            < td>{Store.profession}</td>
-                                            <td>{Store.phone}</td>
-                                            <td>{Store.email}</td>
-                                            <td>{Store.department}</td>
-                                            <td>{Store.deptunit}</td> 
-                                            <td>{Store.facility}</td>*/}
+                                            <th>{Clinic.name}</th>
+                                            {/*<td>{Clinic.ClinicType}</td>
+                                            < td>{Clinic.profession}</td>
+                                            <td>{Clinic.phone}</td>
+                                            <td>{Clinic.email}</td>
+                                            <td>{Clinic.department}</td>
+                                            <td>{Clinic.deptunit}</td> 
+                                            <td>{Clinic.facility}</td>*/}
                                           { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
                                             </tr>
@@ -469,255 +484,28 @@ export function StoreList({standalone,closeModal}){
     }
 
 
-    export function StoreListStandalone({standalone,closeModal}){
-        // const { register, handleSubmit, watch, errors } = useForm();
-         // eslint-disable-next-line
-         const [error, setError] =useState(false)
-          // eslint-disable-next-line
-         const [success, setSuccess] =useState(false)
-          // eslint-disable-next-line
-        const [message, setMessage] = useState("") 
-         const StoreServ=client.service('location')
-         //const history = useHistory()
-        // const {user,setUser} = useContext(UserContext)
-         const [facilities,setFacilities]=useState([])
-          // eslint-disable-next-line
-        const [selectedStore, setSelectedStore]=useState() //
-         // eslint-disable-next-line
-         const {state,setState}=useContext(ObjectContext)
-         // eslint-disable-next-line
-         const {user,setUser}=useContext(UserContext)
-     
-     
-     
-         const handleCreateNew = async()=>{
-             const    newStoreModule={
-                 selectedStore:{},
-                 show :'create'
-                 }
-            await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-            //console.log(state)
-             
-     
-         }
-         const handleRow= async(Store)=>{
-             //console.log("b4",state)
-     
-             //console.log("handlerow",Store)
-     
-             await setSelectedStore(Store)
-     
-             const    newStoreModule={
-                 selectedStore:Store,
-                 show :'detail'
-             }
-            await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-            //console.log(state)
-            closeModal()
-     
-         }
-     
-        const handleSearch=(val)=>{
-            const field='name'
-            console.log(val)
-            StoreServ.find({query: {
-                     [field]: {
-                         $regex:val,
-                         $options:'i'
-                        
-                     },
-                    facility:user.currentEmployee.facilityDetail._id || "",
-                     locationType:"Finance",
-                    $limit:10,
-                     $sort: {
-                         name: 1
-                       }
-                         }}).then((res)=>{
-                     console.log(res)
-                    setFacilities(res.data)
-                     setMessage(" Store  fetched successfully")
-                     setSuccess(true) 
-                 })
-                 .catch((err)=>{
-                     console.log(err)
-                     setMessage("Error fetching Store, probable network issues "+ err )
-                     setError(true)
-                 })
-             }
-        
-             const getFacilities= async()=>{
-                 if (user.currentEmployee){
-                 
-             const findStore= await StoreServ.find(
-                     {query: {
-                         locationType:"Finance",
-                         facility:user.currentEmployee.facilityDetail._id,
-                         $limit:20,
-                         $sort: {
-                             name: 1
-                         }
-                         }})
-     
-              await setFacilities(findStore.data)
-                     }
-                     else {
-                         if (user.stacker){
-                             const findStore= await StoreServ.find(
-                                 {query: {
-                                     locationType:"Finance",
-                                     $limit:20,
-                                     $sort: {
-                                         name: 1
-                                     }
-                                     }})
-                 
-                         await setFacilities(findStore.data)
-     
-                         }
-                     }
-               /*   .then((res)=>{
-                     console.log(res)
-                         setFacilities(res.data)
-                         setMessage(" Store  fetched successfully")
-                         setSuccess(true)
-                     })
-                     .catch((err)=>{
-                         setMessage("Error creating Store, probable network issues "+ err )
-                         setError(true)
-                     }) */
-                 }
-                 
-                 useEffect(() => {
-                  
-     
-                     return () => {
-                         
-     
-                     }
-                 },[])
-     
-                 useEffect(() => {
-                    
-                     if (user){
-                         getFacilities()
-                     }else{
-                         /* const localUser= localStorage.getItem("user")
-                         const user1=JSON.parse(localUser)
-                         console.log(localUser)
-                         console.log(user1)
-                         fetchUser(user1)
-                         console.log(user)
-                         getFacilities(user) */
-                     }
-                     StoreServ.on('created', (obj)=>getFacilities())
-                     StoreServ.on('updated', (obj)=>getFacilities())
-                     StoreServ.on('patched', (obj)=>getFacilities())
-                     StoreServ.on('removed', (obj)=>getFacilities())
-                     return () => {
-                     
-                     }
-                 },[])
-     
-     
-         //todo: pagination and vertical scroll bar
-     
-         return(
-             <>
-                {user?( <>  
-                     <div className="level">
-                         <div className="level-left">
-                             <div className="level-item">
-                                 <div className="field">
-                                     <p className="control has-icons-left  ">
-                                         <DebounceInput className="input is-small " 
-                                             type="text" placeholder="Search Stores"
-                                             minLength={3}
-                                             debounceTimeout={400}
-                                             onChange={(e)=>handleSearch(e.target.value)} />
-                                         <span className="icon is-small is-left">
-                                             <i className="fas fa-search"></i>
-                                         </span>
-                                     </p>
-                                 </div>
-                             </div>
-                         </div>
-                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Locations </span></div>
-                         <div className="level-right">
-                     { !standalone &&   <div className="level-item"> 
-                                 <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                             </div>}
-                         </div>
-     
-                     </div>
-                     <div className="table-container pullup ">
-                                     <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
-                                         <thead>
-                                             <tr>
-                                             <th><abbr title="Serial No">S/No</abbr></th>
-                                             <th>Name</th>
-                                             {/* <th><abbr title="Last Name">Store Type</abbr></th>
-                                            <th><abbr title="Profession">Profession</abbr></th>
-                                              <th><abbr title="Phone">Phone</abbr></th>
-                                             <th><abbr title="Email">Email</abbr></th>
-                                             <th><abbr title="Department">Department</abbr></th>
-                                             <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
-                                             <th><abbr title="Facility">Facility</abbr></th>*/}
-                                            { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
-                                             </tr>
-                                         </thead>
-                                         <tfoot>
-                                             
-                                         </tfoot>
-                                         <tbody>
-                                             {facilities.map((Store, i)=>(
-     
-                                                 <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
-                                                 <th>{i+1}</th>
-                                                 <th>{Store.name}</th>
-                                                 {/*<td>{Store.StoreType}</td>
-                                                 < td>{Store.profession}</td>
-                                                 <td>{Store.phone}</td>
-                                                 <td>{Store.email}</td>
-                                                 <td>{Store.department}</td>
-                                                 <td>{Store.deptunit}</td> 
-                                                 <td>{Store.facility}</td>*/}
-                                               { !standalone &&   <td><span   className="showAction"  >...</span></td>}
-                                                
-                                                 </tr>
-     
-                                             ))}
-                                         </tbody>
-                                         </table>
-                                         
-                     </div>              
-                 </>):<div>loading</div>}
-                 </>
-                   
-         )
-         }
-
-export function StoreDetail(){
+export function FrontDeskDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const StoreServ=client.service('/Store')
+    //const ClinicServ=client.service('/Clinic')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
    
 
-   const Store =state.StoreModule.selectedStore 
+   const Clinic =state.FrontDesk.selectedFrontDesk
 
     const handleEdit= async()=>{
-        const    newStoreModule={
-            selectedStore:Store,
+        const    newClinicModule={
+            selectedFrontDesk:Clinic,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+       await setState((prevstate)=>({...prevstate, FrontDesk:newClinicModule}))
        //console.log(state)
        
     }
@@ -727,7 +515,7 @@ export function StoreDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Store Details
+                Front Desk Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -744,7 +532,7 @@ export function StoreDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"> {Store.name} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Clinic.name} </span>
                         </td>
                     </tr>
                     <tr>
@@ -754,7 +542,7 @@ export function StoreDetail(){
                     </span>Location Type:
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft"   name="StoreType">{Store.locationType} </span> 
+                    <span className="is-size-7 padleft"   name="ClinicType">{Clinic.locationType} </span> 
                     </td>
                 </tr>
                   {/*   <tr>
@@ -767,7 +555,7 @@ export function StoreDetail(){
                     </label>
                     </td>
                 <td>
-                <span className="is-size-7 padleft "  name="StoreCity">{Store.profession}</span> 
+                <span className="is-size-7 padleft "  name="ClinicCity">{Clinic.profession}</span> 
                 </td>
                 </tr>
                     <tr>
@@ -779,7 +567,7 @@ export function StoreDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft "  name="StoreContactPhone" >{Store.phone}</span>
+                        <span className="is-size-7 padleft "  name="ClinicContactPhone" >{Clinic.phone}</span>
                         </td>
                   </tr>
                     <tr><td>
@@ -789,7 +577,7 @@ export function StoreDetail(){
                     </span>Email:                     
                     
                          </label></td><td>
-                         <span className="is-size-7 padleft "  name="StoreEmail" >{Store.email}</span>
+                         <span className="is-size-7 padleft "  name="ClinicEmail" >{Clinic.email}</span>
                          </td>
              
                 </tr>
@@ -800,7 +588,7 @@ export function StoreDetail(){
                     
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft "  name="StoreOwner">{Store.department}</span>
+                    <span className="is-size-7 padleft "  name="ClinicOwner">{Clinic.department}</span>
                     </td>
                
                 </tr>
@@ -812,7 +600,7 @@ export function StoreDetail(){
                     
                 </label></td>
                 <td>
-                <span className="is-size-7 padleft "  name="StoreType">{Store.deptunit}</span>
+                <span className="is-size-7 padleft "  name="ClinicType">{Clinic.deptunit}</span>
                 </td>
               
                 </tr> */}
@@ -821,7 +609,7 @@ export function StoreDetail(){
              <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>Category:              
-                    <span className="is-size-7 padleft "  name= "StoreCategory">{Store.StoreCategory}</span>
+                    <span className="is-size-7 padleft "  name= "ClinicCategory">{Clinic.ClinicCategory}</span>
                 </label>
                  </div> */}
 
@@ -845,7 +633,7 @@ export function StoreDetail(){
    
 }
 
-export function StoreModify(){
+export function FrontDeskModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -854,44 +642,44 @@ export function StoreModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const StoreServ=client.service('location')
+    const ClinicServ=client.service('location')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const Store =state.StoreModule.selectedStore 
+    const Clinic =state.FrontDesk.selectedClinic 
 
         useEffect(() => {
-            setValue("name", Store.name,  {
+            setValue("name", Clinic.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("locationType", Store.locationType,  {
+            setValue("locationType", Clinic.locationType,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Store.profession,  {
+           /*  setValue("profession", Clinic.profession,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("phone", Store.phone,  {
+            setValue("phone", Clinic.phone,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("email", Store.email,  {
+            setValue("email", Clinic.email,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("department", Store.department,  {
+            setValue("department", Clinic.department,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("deptunit", Store.deptunit,  {
+            setValue("deptunit", Clinic.deptunit,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
-          /*   setValue("StoreCategory", Store.StoreCategory,  {
+          /*   setValue("ClinicCategory", Clinic.ClinicCategory,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
@@ -902,41 +690,41 @@ export function StoreModify(){
         })
 
    const handleCancel=async()=>{
-    const    newStoreModule={
-        selectedStore:{},
+    const    newClinicModule={
+        selectedFrontDesk:{},
         show :'create'
       }
-   await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+   await setState((prevstate)=>({...prevstate, FrontDesk:newClinicModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newStoreModule={
-            selectedStore:{},
+        const    newClinicModule={
+            selectedFrontDesk:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+        setState((prevstate)=>({...prevstate, FrontDesk:newClinicModule}))
 
         }
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=Store._id
+        const dleteId=Clinic._id
         if (conf){
              
-        StoreServ.remove(dleteId)
+        ClinicServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Store successfully")
+               /*  setMessage("Deleted Clinic successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'Store deleted succesfully',
+                    message: 'Front Desk deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -944,10 +732,10 @@ export function StoreModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Store, probable network issues "+ err )
+               // setMessage("Error deleting Clinic, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting Store, probable network issues or "+ err,
+                    message: "Error deleting Front Desk, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -966,16 +754,16 @@ export function StoreModify(){
         
         setSuccess(false)
         console.log(data)
-        data.facility=Store.facility
+        data.facility=Clinic.facility
           //console.log(data);
           
-        StoreServ.patch(Store._id,data)
+        ClinicServ.patch(Clinic._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated Store successfully")
+               // setMessage("updated Clinic successfully")
                  toast({
-                    message: 'Store updated succesfully',
+                    message: 'Front Desk updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -985,10 +773,10 @@ export function StoreModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Store, probable network issues "+ err )
+                //setMessage("Error creating Clinic, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Store, probable network issues or "+ err,
+                    message: "Error updating Front Desk, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -1004,7 +792,7 @@ export function StoreModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Store Details-Modify
+                    Clinic Details-Modify
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -1023,7 +811,7 @@ export function StoreModify(){
                 <div className="field">
                 <label className="label is-small">Location Type
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="StoreType" type="text" placeholder="Store Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="ClinicType" type="text" placeholder="Front Desk" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -1054,7 +842,7 @@ export function StoreModify(){
             <div className="field">
             <label className="label is-small">Email
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Store Email"/>
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Clinic Email"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
@@ -1085,7 +873,7 @@ export function StoreModify(){
            {/*  <div className="field">
             <label className="label is-small">Category
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="StoreCategory" type="text" placeholder="Store Category"/>
+                    <input className="input is-small" ref={register({ required: true })} name="ClinicCategory" type="text" placeholder="Clinic Category"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>
@@ -1243,7 +1031,7 @@ export  function InputSearch({getSearchfacility,clear}) {
                             <div className="dropdown-content">
                             {facilities.map((facility, i)=>(
                                     
-                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)} >
+                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
                                         <span>{facility.facilityName}</span>
                                         
