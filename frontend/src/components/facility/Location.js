@@ -297,7 +297,7 @@ export function LocationList(){
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                $limit:100,
                 $sort: {
                     createdAt: -1
                   }
@@ -320,7 +320,7 @@ export function LocationList(){
         const findLocation= await LocationServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
-                    $limit:20,
+                    $limit:200,
                     $sort: {
                         createdAt: -1
                     }
@@ -333,9 +333,9 @@ export function LocationList(){
                         const findLocation= await LocationServ.find(
                             {query: {
                                 
-                                $limit:20,
+                                $limit:200,
                                 $sort: {
-                                    createdAt: -1
+                                    facility: -1
                                 }
                                 }})
             
@@ -429,8 +429,8 @@ export function LocationList(){
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
                                         <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
-                                        <th><abbr title="Facility">Facility</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                       {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
+                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -448,8 +448,8 @@ export function LocationList(){
                                             <td>{Location.email}</td>
                                             <td>{Location.department}</td>
                                             <td>{Location.deptunit}</td> */}
-                                            <td>{Location.facility}</td>
-                                            <td><span   className="showAction"  >...</span></td>
+                                           {user.stacker &&  <td>{Location.facility}</td>}
+                                           {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 

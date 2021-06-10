@@ -298,7 +298,7 @@ export function EmployeeList(){
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                $limit:100,
                 $sort: {
                     createdAt: -1
                   }
@@ -321,7 +321,7 @@ export function EmployeeList(){
         const findEmployee= await EmployeeServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
-                    $limit:20,
+                    $limit:200,
                     $sort: {
                         createdAt: -1
                     }
@@ -336,7 +336,7 @@ export function EmployeeList(){
                                 
                                 $limit:100,
                                 $sort: {
-                                    createdAt: -1
+                                    facility: -1
                                 }
                                 }})
             

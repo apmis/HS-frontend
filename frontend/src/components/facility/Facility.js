@@ -245,7 +245,7 @@ export function FacilityList(){
         const getFacilities=()=>{
             facilityServ.find({query: {
               
-                $limit:20,
+                $limit:100,
                 $sort: {
                     createdAt: -1
                   }
@@ -316,7 +316,7 @@ export function FacilityList(){
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Type">Type</abbr></th>
                                         <th><abbr title="Category">Category</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -335,7 +335,7 @@ export function FacilityList(){
                                             <td>{facility.facilityType}</td>
                                             <td>{facility.facilityCategory}</td>
                                            
-                                            <td><span   className="showAction"  >...</span></td>
+                                           {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -454,13 +454,13 @@ export function FacilityDetail(){
 
 
             </div>
-            <div className="field">
+          {user.stacker &&   <div className="field">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
-            </div>
+            </div>}
             { error && <div className="message"> {message}</div>}
             </fieldset>
         </div>
