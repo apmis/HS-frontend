@@ -341,8 +341,8 @@ export function DocumentClassList({standalone,closeModal}){
                                          <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
-                                        <th><abbr title="Facility">Facility</abbr></th>*/}
+                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
+                                       {user.stacker &&  <th><abbr title="Facility">Facility</abbr></th>}
                                        { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                         </tr>
                                     </thead>
@@ -360,8 +360,8 @@ export function DocumentClassList({standalone,closeModal}){
                                             <td>{DocumentClass.phone}</td>
                                             <td>{DocumentClass.email}</td>
                                             <td>{DocumentClass.department}</td>
-                                            <td>{DocumentClass.deptunit}</td> 
-                                            <td>{DocumentClass.facility}</td>*/}
+                                            <td>{DocumentClass.deptunit}</td>*/}
+                                           {user.stacker &&  <td>{DocumentClass.facility}</td>}
                                           { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
                                             </tr>

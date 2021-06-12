@@ -156,6 +156,8 @@ export function ProductEntryCreate(){
     }
 
     const onSubmit = async(e) =>{
+        let confirm =window.confirm(`Are you sure you want to save this entry ?`)
+        if (confirm){
         e.preventDefault();
         setMessage("")
         setError(false)
@@ -231,7 +233,7 @@ export function ProductEntryCreate(){
                     pauseOnHover: true,
                   })
             })
-
+        }
       } 
     const removeEntity=(entity,i)=>{
     //console.log(entity)
@@ -673,6 +675,27 @@ export function ProductEntryList(){
        setTotal(0) 
        getNewFacilities()
     }
+    const handleDelete= async(obj)=>{
+        let confirm =window.confirm(`Are you sure you want to delete this entry with Document No: ${obj.documentNo} ?`)
+        if (confirm){
+        await ProductEntryServ.remove(obj._id).then((resp)=>{
+            toast({
+                message: 'Sucessfuly deleted ProductEntry ' ,
+                type: 'is-success',
+                dismissible: true,
+                pauseOnHover: true,
+            })
+        })
+        .catch((err)=>{
+            toast({
+                message: 'Error deleting ProductEntry ' + err,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+            })
+        })
+        }
+    }
 
     return(
         <>
@@ -722,7 +745,7 @@ export function ProductEntryList(){
                                         <th><abbr title="Document No">Document No</abbr></th>
                                         <th><abbr title="Total Amount">Total Amount</abbr></th>
                                         {/* <th><abbr title="Enteredby">Entered By</abbr></th> */} 
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                                         <th><abbr title="Actions">Actions</abbr></th> 
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -739,7 +762,7 @@ export function ProductEntryList(){
                                             <td>{ProductEntry.documentNo}</td>
                                             <td>{ProductEntry.totalamount}</td>
                                           {/*   <td>{ProductEntry.enteredby}</td> */}
-                                          {/*   <td><span className="showAction"  >...</span></td> */}
+                                           <td onClick={()=>handleDelete(ProductEntry)}><span className="showAction"  >X</span></td> 
                                            
                                             </tr>
 
@@ -781,6 +804,7 @@ export function ProductEntryDetail(){
        //console.log(state)
        
     }
+
  
     return (
         <>
@@ -1234,8 +1258,8 @@ export  function ProductSearch({getSearchfacility,clear}) {
             <div className={`modal ${productModal?"is-active":""}` }>
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
-                                        <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Store</p>
+                                        <header className="modal-card-head minHt">
+                                        <p className="modal-card-title">Product</p>
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">

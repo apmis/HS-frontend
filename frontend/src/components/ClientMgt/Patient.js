@@ -709,6 +709,7 @@ export function ClientDetail(){
     const [error, setError] =useState(false) //, 
     const [finacialInfoModal, setFinacialInfoModal] =useState(false)
     const [billingModal, setBillingModal] =useState(false)
+    const [billModal, setBillModal] =useState(false)
     const [appointmentModal, setAppointmentModal] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
@@ -756,6 +757,12 @@ export function ClientDetail(){
     const handleSchedule =()=>{
         setAppointmentModal(true)
     }
+    const handleBill =()=>{
+        setBillModal(true)
+    }
+    const  handlecloseModal3 = () =>{
+        setBillModal(false)
+        }
 
     return (
         <>
@@ -1123,7 +1130,24 @@ export function ClientDetail(){
                     <button className="button">Cancel</button>
                     </footer> */}
                 </div>
-            </div>                  
+            </div>
+            <div className={`modal ${billModal?"is-active":""}` }>
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                    <p className="modal-card-title">Set Appointment</p>
+                    <button className="delete" aria-label="close"  onClick={handlecloseModal3}></button>
+                    </header>
+                    <section className="modal-card-body">
+                    {/* <StoreList standalone="true" /> */}
+                    <ClientBilledPrescription  selectedClient={Client._id}  closeModal={handlecloseModal3}/>
+                    </section>
+                    {/* <footer className="modal-card-foot">
+                    <button className="button is-success">Save changes</button>
+                    <button className="button">Cancel</button>
+                    </footer> */}
+                </div>
+            </div>                       
         </>
     )
    

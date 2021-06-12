@@ -14,6 +14,7 @@ import {UserContext,ObjectContext} from '../context'
 import BillPrescription from './Finance/BillPrescription'
 import Services from './Finance/Services'
 import BillService from './Finance/BillService'
+import FacilityAccount from './Finance/FacilityAccount'
 
 export default function FinanceModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -94,6 +95,9 @@ export default function FinanceModule() {
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/payment`}>Payment</NavLink>
                                     </div>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/revenue`}>Revenue</NavLink>
+                                    </div>
                                     {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/location`}>Finance Locations</NavLink>
                                     </div> */}
@@ -146,6 +150,9 @@ export default function FinanceModule() {
                         </Route>
                          <Route path={`${path}/billservice`} exact>
                             <BillService />
+                        </Route>
+                        <Route path={`${path}/revenue`} exact>
+                            <FacilityAccount />
                         </Route>
                         {/* <Route path={`${path}/inv-entry`} exact>
                             <ProductEntry />

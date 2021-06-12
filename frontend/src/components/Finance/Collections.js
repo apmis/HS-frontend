@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
+import FacilityAccount from "./FacilityAccount"
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -26,6 +27,7 @@ export default function Collections() {
                     <CollectionList />
                 </div>
            <div className="column is-7 ">
+          
                 { (state.SelectedClient.show ==='detail') && <ClientAccount />}
                 {/*  {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
                 {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}*/}

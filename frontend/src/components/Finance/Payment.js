@@ -201,7 +201,9 @@ export function BillingList(){
                     }
                 ],
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                billing_status:"Unpaid",  // need to set this finally
+                billing_status:{
+                    $ne:"Fully Paid"
+                }, //set to not equal to "fully paid" // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
@@ -234,7 +236,9 @@ export function BillingList(){
                     }
                 ],
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                billing_status:"Unpaid",  // need to set this finally
+                billing_status:{
+                    $ne:"Fully Paid"
+                },  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
                 $limit:100,
@@ -356,7 +360,7 @@ export function BillingList(){
                                                         <th>{order.serviceInfo.name}</th>
                                                        {/*  <td>{order.fulfilled==="True"?"Yes":"No"}</td> */}
                                                         <td>{order.billing_status}</td>
-                                                        <td>{order.serviceInfo.amount}</td>
+                                                        <td>{(order.billing_status==="Unpaid")?order.serviceInfo.amount:order.paymentInfo.balance}</td>
                                                         </tr>
                                                 ))}
                                             </tbody>

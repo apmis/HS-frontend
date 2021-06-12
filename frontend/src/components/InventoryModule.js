@@ -106,9 +106,9 @@ export default function InventoryModule() {
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-exit`}>POS</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                  {user.stacker &&  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-products`}>Products</NavLink>
-                                    </div>
+                                    </div>}
                                    {/*  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
                                     </div> */}

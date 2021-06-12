@@ -13,10 +13,12 @@ import Roaster from './facility/Roaster'
 import Workspace from './facility/Workspace'
 import Accessibility from './facility/Accessibility'
 import ClinicSetup from './Clinic/ClinicSetup'
+import {UserContext,ObjectContext} from '../context'
 
 export default function FacilityModule() {
     const [showmenu, setShowMenu]=useState(false)
     let { path, url } = useRouteMatch();
+    const {user,setUser}=useContext(UserContext)
     const handleBurger=()=>{
        
         setShowMenu(prev=>(!prev))
@@ -65,12 +67,12 @@ export default function FacilityModule() {
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/location`}>Locations</NavLink>
                                     </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
+                                    {user.stacker &&  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/facility`}>Facility</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
+                                    </div>}
+                                    {user.stacker &&  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
-                                    </div>
+                                    </div>}
                                     {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/roaster`}>Roaster</NavLink>
                                     </div>

@@ -123,12 +123,12 @@ export function ProductCreate(){
                 </p>
             </div>
             <div className="card-content vscrollable">
-            <p className=" is-small">
+            {/* <p className=" is-small">
                     Kindly search product list before creating new products!
-                </p>
+                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
 
-                <div className="field">
+                <div className="field mb-2">
                     <p className="control has-icons-left has-icons-right">
                         <input className="input is-small" ref={register({ required: true })}  name="category" type="text" placeholder="Category of Product" />
                         <span className="icon is-small is-left">
@@ -136,7 +136,7 @@ export function ProductCreate(){
                         </span>                    
                     </p>
                 </div>
-                <div className="field">
+                <div className="field mb-2">
                     <p className="control has-icons-left has-icons-right">
                     <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Product" />
                     <span className="icon is-small is-left">
@@ -145,7 +145,7 @@ export function ProductCreate(){
                     
                 </p>
             </div>
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="baseunit" type="text" placeholder="Base unit of product"/>
                     <span className="icon is-small is-left">
@@ -154,7 +154,7 @@ export function ProductCreate(){
                 </p>
             </div>
            
-            <div className="field">
+            <div className="field ">
                 <p className="control">
                     <button className="button is-success is-small">
                         Create

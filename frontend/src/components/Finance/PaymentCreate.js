@@ -451,7 +451,7 @@ export default function PaymentCreate(){
             type: "Deposit"
 
         }
-        let confirm = window.confirm(`Are you sure you want to accept ${obj.amount} from ${obj.fromName}`)
+        let confirm = window.confirm(`Are you sure you want to accept N ${obj.amount} from ${obj.fromName}`)
         if (confirm){
 
       
@@ -466,6 +466,7 @@ export default function PaymentCreate(){
             pauseOnHover: true,
           })
           setAmountPaid(0)
+          setDescription("")
        })
        .catch((err)=>{
         toast({
@@ -494,6 +495,7 @@ export default function PaymentCreate(){
         setTotalamount(0)
 
         }
+        //is the row checked or unchecked
         if (state.financeModule.state){
             medication.show="none"
             medication.proposedpayment={
@@ -528,7 +530,12 @@ export default function PaymentCreate(){
         setTotalamount(0)
         productItem.forEach(el=>{
             if (el.show==="none"){
-                setTotalamount(prevtotal=>Number(prevtotal) + Number(el.serviceInfo.amount) )
+                if (el.billing_status==="Unpaid"){
+                    setTotalamount(prevtotal=>Number(prevtotal) + Number(el.serviceInfo.amount) )   
+                }else{
+                    setTotalamount(prevtotal=>Number(prevtotal) + Number(el.paymentInfo.balance) )
+                }
+               
             }
             if (el.show==="flex"){
                 setTotalamount(prevtotal=>Number(prevtotal) + Number(el.partPay) )
@@ -854,68 +861,21 @@ export default function PaymentCreate(){
 // console.log("simpa")
      return (
          <>
-             <div className="card card-overflow">
+          <div className="card card-overflow mb-2 ">
              <div className="card-header">
                  <p className="card-header-title">
-                     Pay Bill
+                    Make Deposit for {source}
                  </p>
                  <button className="button is-success is-small btnheight mt-2" >
                     Balance: N {balance}
                  </button>
              </div>
-             <div className="card-content ">
-    
-            {/*  <form onSubmit={onSubmit}>  */}
-             <div className="field is-horizontal">
-             <div className="field-body">
+             <div className="card-content pb-1">
+             <div id="Deposit">
          
-             <div className="field">
-                     <p className="control has-icons-left has-icons-right">
-                         <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
-                         <span className="icon is-small is-left">
-                             <i className="fas fa-hospital"></i>
-                         </span>                    
-                     </p>
-                 </div>
-                 <div className="field">
-                 <p className="control has-icons-left">
-                     <input className="input is-small" /* ref={register} */ name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-phone-alt"></i>
-                     </span>
-                 </p>
-             </div>
-                 
-            
-                </div>
-             </div>
-             <div className="field is-horizontal">
-             <div className="field-body" >
-             <div className="field">
-             <label className="label is-small">Total Amount Due:</label>
-             </div>
-             <div className="field" style={{width:"40%"}}>
-                 <p className="control has-icons-left " /* style={{display:"none"}} */>
-                     <input className="input is-small"  disabled={changeAmount} value={totalamount} name="totalamount"  onChange={e=>setTotalamount(e.target.value)} placeholder="Amount"  />
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-dollar-sign"></i>
-                     </span>
-                 </p>
-                
- 
-             </div> 
-            
-             </div>
-          </div>
-                
-               {/*   </form>   */} 
-                
-            
-          {/* array of ProductEntry items */}
-         
-         <label className="label is-small ">Payment Information:</label>
-         <div className="field is-horizontal">
+         <div className="field is-horizontal pullup">
              <div className="field-body">
+             
              <div className="field">    
                     <div className="control">
                         <div className="select is-small ">
@@ -938,9 +898,17 @@ export default function PaymentCreate(){
                      </span>
                  </p>
              </div> 
-             <div className="field">
+             <div className="field" >
+                 <p className="control  " /* style={{display:"none"}} has-icons-left*/>
+                     <input className="input is-small"  name="description"  value={description} type="text"  onChange={async e=> await setDescription(e.target.value)}  placeholder="Payment Details"  />
+                     {/* <span className="icon is-small is-left">
+                     <i className="fas fa-dollar-sign"></i> 
+                     </span>*/}
+                 </p>
+             </div> 
+             <div className="field ">
                 <p className="control">
-                     <button className="button is-info is-small  is-pulled-right selectadd" disabled={buttonState}>
+                     <button className="button is-info is-small  is-pulled-left selectadd" disabled={buttonState}>
                        <span className="is-small" onClick={handleAccept} >Accept</span>
                      </button>
                  </p>
@@ -948,15 +916,54 @@ export default function PaymentCreate(){
              </div>
              </div>
             
+      
           
-         <div className="field is-horizontal pullup">
+          </div> 
+         </div>
+          </div>
+             <div className="card card-overflow">
+             <div className="card-header">
+                 <div className="card-header-title">
+                     Pay Bills for {source}   #{documentNo} 
+                 </div>
+                
+                <button className="button is-danger is-small btnheight mt-2" >
+                    Total Amount Due: N {totalamount}
+                 </button> 
+             </div>
+             <div className="card-content ">
+    
+            {/*  <form onSubmit={onSubmit}>  */}
+           {/*   <div className="field is-horizontal">
+             <div className="field-body">
+         
+             <div className="field">
+                     <p className="control has-icons-left has-icons-right">
+                         <input className="input is-small"  ref={register({ required: true })}  value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
+                         <span className="icon is-small is-left">
+                             <i className="fas fa-hospital"></i>
+                         </span>                    
+                     </p>
+                 </div>
+                 <div className="field">
+                 <p className="control has-icons-left">
+                     <input className="input is-small"  ref={register}  name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
+                     <span className="icon is-small is-left">
+                     <i className="fas fa-phone-alt"></i>
+                     </span>
+                 </p>
+             </div>
+                </div>
+             </div> */}
+             
+             {/* <div className="field is-horizontal pullup">
              <div className="field-body" >
              <div className="field">
-             <label className="label is-small">Payment Details:</label>
+             <label className="label is-small">Total Amount Due:</label>
              </div>
-             <div className="field" >
-                 <p className="control has-icons-left " /* style={{display:"none"}} */>
-                     <input className="input is-small"  name="description"  value={description} type="text"  onChange={async e=> await setDescription(e.target.value)}  placeholder="Payment Details"  />
+             <div className="field" style={{width:"40%"}}>
+                 <p className="control has-icons-left "  style={{display:"none"}} >
+                     <input className="input is-small"  disabled={changeAmount} value={totalamount} name="totalamount"  onChange={e=>setTotalamount(e.target.value)} placeholder="Amount"  />
                      <span className="icon is-small is-left">
                      <i className="fas fa-dollar-sign"></i>
                      </span>
@@ -966,11 +973,16 @@ export default function PaymentCreate(){
              </div> 
             
              </div>
-          </div>
-             
+          </div> */}
+                
+               {/*   </form>   */} 
+                
+            
+          {/* array of ProductEntry items */}
+          
+
         {(productItem.length>0) && <>
-            <label>Product Items:</label>
-        <div className="vscrollable-acc">
+        <div className="vscrollable-acc pullup">
              
           <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                  <thead>
@@ -1025,7 +1037,7 @@ export default function PaymentCreate(){
                      ))}
                  </tbody>
                  </table>
-                 </div>    
+               
                  <div className="field mt-2 is-grouped">
                     <p className="control">
                         <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handlePayment}>
@@ -1038,6 +1050,7 @@ export default function PaymentCreate(){
                      </button>
                  </p>  */}
                  </div>
+                 </div>    
         
             </>
         }   

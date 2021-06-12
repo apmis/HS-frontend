@@ -191,7 +191,7 @@ function NavBar({url}){
                                 {(user.currentEmployee?.roles.includes('Clinic')||user.currentEmployee?.roles.length===0 )&&  <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/clinic`}>Clinic</NavLink>
                                 </div>}
-                                {(user.currentEmployee?.roles.includes('Pharmacy')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
+                                {(user.currentEmployee?.roles.includes('Pharmacy')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/inventory`}>Pharmacy</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
