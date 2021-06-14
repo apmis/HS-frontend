@@ -66,7 +66,7 @@ function NavBar({url}){
         //handleBurger()
         setShowMenu(true)
         setState((prevstate)=>({...prevstate, showpanel:false}))
-        alert(showmenu)
+       // alert(showmenu)
          }
         return () => {
             
