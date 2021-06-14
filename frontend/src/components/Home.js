@@ -154,8 +154,7 @@ function NavBar({url}){
         console.log(availableFacilities)
     }
     const handleBurger=()=>{
-        //showmenu=!showmenu
-       //alert(showmenu)
+       
         setShowMenu(prev=>(!prev))
     }
     if (!user) return 'Loading...'
