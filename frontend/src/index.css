@@ -22,6 +22,9 @@ body {
     monospace;
 }
  */
+ .startbutton{
+  display: none ;
+}
  html{
   -webkit-font-smoothing: antialiased;
   min-width: 300px;
@@ -36,5 +39,11 @@ body {
     overflow-y:auto  !important;
     overflow-x: auto;
    }
-   
+      
+  }
+  @media only screen and (max-width: 1024px) {
+    .startbutton{
+      display: block !important;
+      margin: auto 
+    }
   }

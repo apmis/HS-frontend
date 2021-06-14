@@ -9,7 +9,7 @@ import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
-import {UserContext} from '../context'
+import {UserContext,ObjectContext} from '../context'
 import client from '../feathers'
 
 export default function Home() {
@@ -54,8 +54,24 @@ function NavBar({url}){
     const [fullname, setFullname]=useState("")
     const [userFacility, setUserFacility]=useState()
     const {user,setUser} = useContext(UserContext)
+    const {state,setState}=useContext(ObjectContext)
     const [showmenu, setShowMenu]=useState(false)
     const history =useHistory()
+
+
+
+    useEffect(() => {
+       
+       if (state.showpanel){
+        //handleBurger()
+        setShowMenu(true)
+        setState((prevstate)=>({...prevstate, showpanel:false}))
+        alert(showmenu)
+         }
+        return () => {
+            
+        }
+    }, [state.showpanel])
     
     const reAuth =  async() =>{
         try{

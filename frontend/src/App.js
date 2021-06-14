@@ -95,6 +95,7 @@ function App() {
       selectedFinance:{}
     },
     currentClients:[],
+    showpanel:false,
     employeeLocation:{
       locationName:"",
       locationType:"",
