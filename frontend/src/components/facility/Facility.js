@@ -82,7 +82,7 @@ export function FacilityCreate(){
             <div className="card-content vscrollable">
             { success && <div className="message"> {message}</div>}
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="field">
+                <div className="field mb-2">
                     <p className="control has-icons-left has-icons-right">
                         <input className="input is-small" ref={register({ required: true })}  name="facilityName" type="text" placeholder="Name of Facility" />
                         <span className="icon is-small is-left">
@@ -90,7 +90,7 @@ export function FacilityCreate(){
                         </span>                    
                     </p>
                 </div>
-                <div className="field">
+                <div className="field mb-2">
                     <p className="control has-icons-left has-icons-right">
                     <input className="input is-small" ref={register({ required: true })}  name="facilityAddress" type="text" placeholder="Address of Facility" />
                     <span className="icon is-small is-left">
@@ -99,7 +99,7 @@ export function FacilityCreate(){
                     
                 </p>
             </div>
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="facilityCity" type="text" placeholder="City/Town"/>
                     <span className="icon is-small is-left">
@@ -107,7 +107,7 @@ export function FacilityCreate(){
                     </span>
                 </p>
             </div>
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="facilityContactPhone" type="text" placeholder="Contact Phone No"/>
                     <span className="icon is-small is-left">
@@ -116,7 +116,7 @@ export function FacilityCreate(){
                 </p>
             </div>
            
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="facilityEmail" type="email" placeholder="Facility Email"/>
                     <span className="icon is-small is-left">
@@ -124,7 +124,7 @@ export function FacilityCreate(){
                     </span>
                 </p>
             </div>
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="facilityOwner" type="text" placeholder="Facility Owner"/>
                     <span className="icon is-small is-left">
@@ -132,7 +132,7 @@ export function FacilityCreate(){
                     </span>
                 </p>
             </div>
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="facilityType" type="text" placeholder="Facility Type"/>
                     <span className="icon is-small is-left">
@@ -140,7 +140,7 @@ export function FacilityCreate(){
                     </span>
                 </p>
             </div>
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="facilityCategory" type="text" placeholder="Facility Category"/>
                     <span className="icon is-small is-left">
@@ -148,7 +148,7 @@ export function FacilityCreate(){
                     </span>
                 </p>
             </div>
-            <div className="field">
+            <div className="field mb-2">
                 <p className="control">
                     <button className="button is-success is-small">
                         Create

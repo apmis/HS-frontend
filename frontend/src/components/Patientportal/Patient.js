@@ -12,7 +12,6 @@ import ClientFinInfo from './ClientFinInfo';
 import BillServiceCreate from '../Finance/BillServiceCreate'
 import {AppointmentCreate} from '../Clinic/Appointments'
 import InfiniteScroll from "react-infinite-scroll-component";
-import ClientBilledPrescription from '../Finance/ClientBill'
 // eslint-disable-next-line
 const searchfacility={};
 

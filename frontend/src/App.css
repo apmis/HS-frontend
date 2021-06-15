@@ -64,6 +64,9 @@
 .accordion__button{
   padding:0.2rem !important;
 }
+.dropitem{
+  padding:0.5rem !important;
+}
 .pullup{
   margin-top: -1rem;
   cursor: pointer;

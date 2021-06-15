@@ -563,7 +563,7 @@ export function InventoryList(){
                                 <td>{Inventory.quantity}</td>
                                 <td>{Inventory.baseunit}</td>
                                 <td>{Inventory.stockvalue.toLocaleString('en-US', {maximumFractionDigits:2})}</td>
-                                <td>{Inventory.costprice.toFixed(2)}</td>
+                                <td>{Inventory.costprice? Inventory.costprice.toFixed(2):""}</td>
                                 <td>{Inventory.sellingprice}</td>
                                 <td>{Inventory.reorder_level}</td> 
                                 <td style={{backgroundColor:Inventory.expiry?"red":""}} >{Inventory.expiry?"Exist":""}</td>

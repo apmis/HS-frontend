@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {FacilitySearch} from '../helpers/FacilitySearch'
+import CategorySearch from "../helpers/CategorySearch"
 import {
     Accordion,
     AccordionItem,
@@ -57,6 +58,7 @@ export function ServicesCreate(){
    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [categoryname, setCategoryName] =useState("")
     const [success, setSuccess] =useState(false)
+    const [success2, setSuccess2] =useState(false)
     const [cash,setCash] = useState("Cash")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
@@ -79,6 +81,7 @@ export function ServicesCreate(){
     const [panelList,setPanelList] = useState([])
     const [successService,setSuccessService] = useState(false)
     const {state}=useContext(ObjectContext)
+    const [chosen2, setChosen2]=useState()
     
     const [Services,setServices]=useState({
         productitems:[],
@@ -114,6 +117,18 @@ export function ServicesCreate(){
             shouldDirty: true
         }) */
     }
+    const getSearchfacility2=(obj)=>{
+
+        setCategoryName(obj.categoryname)
+        setChosen2(obj)
+        
+         if (!obj){
+             //"clear stuff"
+             setCategoryName("")
+             setChosen2()
+            
+         }
+     }
 
     const getSearchService=(obj)=>{
             setService(obj)
@@ -242,6 +257,7 @@ export function ServicesCreate(){
                 resetform()
                /*  setMessage("Created Services successfully") */
                 setSuccess(true)
+                setSuccess2(true)
                 toast({
                     message: 'Service created succesfully',
                     type: 'is-success',
@@ -249,6 +265,7 @@ export function ServicesCreate(){
                     pauseOnHover: true,
                   })
                   setSuccess(false)
+                  setSuccess2(false)
                   setProductItem([])
                   setPanelList([])
             })
@@ -355,16 +372,29 @@ const handleCheck= async ()=>{
             {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
             <div className="field is-horizontal">
             <div className="field-body">
-           
+           {/* 
              <div className="field" style={{width:"25%"}}>
                     <p className="control has-icons-left has-icons-right"  >
-                        <input className="input is-small" /* ref={register({ required: true })} */ value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
+                        <input className="input is-small"  ref={register({ required: true })}  value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
                     </p>
+                </div> */}
+                <div className="field is-horizontal">
+            <div className="field-body">
+                <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <CategorySearch  getSearchfacility={getSearchfacility2} clear={success2} /> 
+                    <p className="control has-icons-left " style={{display:"none"}}>
+                        <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
+                        <span className="icon is-small is-left">
+                        <i className="fas  fa-map-marker-alt"></i>
+                        </span>
+                    </p>
                 </div>
-           
+             
+            </div>
+        </div>
             
             <div className="field">
                     <p className="control has-icons-left has-icons-right">
@@ -379,16 +409,16 @@ const handleCheck= async ()=>{
             </div> 
          
               
-            <div className="field is-horizontal">
+         <div className="field is-horizontal">
                <div className="field-body">
-                <div className="field">
+                 {/*   <div className="field">
                     <p className="control has-icons-left has-icons-right">
                         <label className="label is-small" >
-                        <input className="checkbox is-small"  /* ref={register({ required: true })} */ checked={panel}  name="panel" type="checkbox" onChange={e=>setPanel(e.target.checked)} /* placeholder="Date" */ />
+                        <input className="checkbox is-small"   ref={register({ required: true })}  checked={panel}  name="panel" type="checkbox" onChange={e=>setPanel(e.target.checked)}  placeholder="Date"  />
                     
                         <span>Panel</span></label>
                     </p>
-                </div>
+                </div> */}
 
             {panel && <>
                 <div className="field">
@@ -404,7 +434,7 @@ const handleCheck= async ()=>{
                 </div>
                 <p className="control">
                             <button className="button is-info is-small  is-pulled-right selectadd">
-                            <span className="is-small" onClick={handleAddPanel}> +</span>
+                            <span className="is-small" onClick={()=>handleAddPanel()}> +</span>
                             </button>
                         </p>
             </> }
@@ -981,6 +1011,7 @@ export function ServicesModify(){
     const [error, setError] =useState(false)
     // eslint-disable-next-line 
     const [success, setSuccess] =useState(false)
+    const [success2, setSuccess2] =useState(false)
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
@@ -1011,6 +1042,7 @@ export function ServicesModify(){
     const [modcon,setModCon] = useState("")
     const [yam,setYam] = useState(false) 
     const [pos,setPos] = useState("") 
+    const [chosen2, setChosen2]=useState()
 
     let Services =state.ServicesModule.selectedServices 
     let productItemI
@@ -1231,6 +1263,19 @@ export function ServicesModify(){
             }
                 setSuccessService(false)
         }
+      
+         const getSearchfacility2=(obj)=>{
+
+            setCategoryName(obj.categoryname)
+            setChosen2(obj)
+            
+             if (!obj){
+                 //"clear stuff"
+                 setCategoryName("")
+                 setChosen2()
+                
+             }
+         }
         const getSearchfacility=(obj)=>{
 
             setFacilityId(obj._id)
@@ -1288,10 +1333,6 @@ export function ServicesModify(){
             console.log("something added")
             
         }
-
-
-
-
    const handleCancel=async()=>{
     const    newServicesModule={
         selectedServices:Services,
@@ -1430,17 +1471,15 @@ export function ServicesModify(){
    {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
    <div className="field is-horizontal">
    <div className="field-body">
-  
-    <div className="field" style={{width:"25%"}}>
-           <p className="control has-icons-left has-icons-right"  >
-               <input className="input is-small" /* ref={register({ required: true })} */ value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
-               <span className="icon is-small is-left">
-                   <i className="fas fa-hospital"></i>
-               </span>                    
-           </p>
-       </div>
-  
-   
+       <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <CategorySearch id={Services.category}  getSearchfacility={getSearchfacility2} clear={success2} /> 
+                    <p className="control has-icons-left " style={{display:"none"}}>
+                        {/* <input className="input is-small"   ref={register ({ required: true }) }  add array no   value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" /> */}
+                        <span className="icon is-small is-left">
+                        <i className="fas  fa-map-marker-alt"></i>
+                        </span>
+                    </p>
+                </div>
    <div className="field">
            <p className="control has-icons-left has-icons-right">
                <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="source" type="text" onChange={e=>setSource(e.target.value)} onBlur={handleCheck} placeholder="Name of Service" autoComplete="false" />

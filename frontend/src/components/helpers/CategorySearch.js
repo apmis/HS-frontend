@@ -1,29 +1,19 @@
-/* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
+//import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-router-dom'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
-import { useForm } from "react-hook-form";
+//import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-import {FacilityCreate} from '../facility/Facility'
-import {
-    Accordion,
-    AccordionItem,
-    AccordionItemHeading,
-    AccordionItemState,
-    AccordionItemButton,
-    AccordionItemPanel,
-} from 'react-accessible-accordion';
-
-// Demo styles, see 'Styles' section below for some notes on use.
-import 'react-accessible-accordion/dist/fancy-example.css';
+import { formatDistanceToNowStrict, format } from 'date-fns'
 // eslint-disable-next-line
-const searchfacility={};
+//const searchfacility={};
 
-export  function FacilitySearch({getSearchfacility,clear}) {
+
+export  default function CategorySearch({id,getSearchfacility,clear}) {
     
-    const productServ=client.service('facility')
+    const ClientServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -39,15 +29,37 @@ export  function FacilitySearch({getSearchfacility,clear}) {
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
+   const {user} = useContext(UserContext) 
+   const {state}=useContext(ObjectContext)
     const [productModal,setProductModal]=useState(false)
+
+    const getInitial=async(id)=>{
+        console.log(id)
+        if(!!id){
+
+            let obj={
+                categoryname:id,
+    
+            }
+            console.log(obj)
+            handleRow(obj)
+       }
+    }
+
+        useEffect(() => {
+            getInitial(id)
+            return () => {
+                
+            }
+        }, [])
 
    const handleRow= async(obj)=>{
         await setChosen(true)
         //alert("something is chaning")
+      
+       
+       await setSimpa(obj.categoryname)
        getSearchfacility(obj)
-       
-       await setSimpa(obj.facilityName)
-       
         // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
@@ -57,12 +69,13 @@ export  function FacilitySearch({getSearchfacility,clear}) {
         }
    await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
    //console.log(state)
-}
+    }
+
     const handleBlur=async(e)=>{
-        /*  if (count===2){
+       /*   if (count===2){
              console.log("stuff was chosen")
-         }
-        */
+         } */
+       
        /*  console.log("blur")
          setShowPanel(false)
         console.log(JSON.stringify(simpa))
@@ -76,39 +89,67 @@ export  function FacilitySearch({getSearchfacility,clear}) {
         console.log(facilities.length)
         console.log(inputEl.current) */
     }
-
-    const handleSearch=async(value)=>{
-        setVal(value)
-        if (value===""){
+    const handleSearch=async(val)=>{
+        setVal(val)
+        if (val===""){
             setShowPanel(false)
             getSearchfacility(false)
-            await setFacilities([])
             return
         }
-        const field='facilityName' //field variable
-
+        const field='name' //field variable
+        /* name: { type: String, required: true },
+        locationType: { type: String }, */
        
-        if (value.length>=3 ){
-            productServ.find({query: {     //service
-                 [field]: {
-                     $regex:value,
-                     $options:'i'
-                    
-                 },
-                 $limit:10,
+        if (val.length>=3 ){
+            ClientServ.find({query: {
+               
+                   category: {
+                        $regex:val,
+                        $options:'i' 
+                    },
+                    /*  $or:[   { lastname: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { profession: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { department: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                   { clientTags: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { mrn: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
+                    { specificDetails: {
+                        $regex:val,
+                        $options:'i' 
+                    }}, 
+                ],*/
+              
+                 //facility: user.currentEmployee.facilityDetail._id,
+                 //storeId: state.StoreModule.selectedStore._id,
+                 $limit:1000,
                  $sort: {
-                     createdAt: -1
+                    category: 1
                    }
                      }}).then((res)=>{
-             // console.log("product  fetched successfully") 
-              //console.log(res.data) 
-                setFacilities(res.data)
-                 setSearchMessage(" product  fetched successfully")
+              console.log("Service category  fetched successfully") 
+              console.log(res.data) 
+              console.log(res.groupedOrder)
+                setFacilities(res.groupedOrder)
+                 setSearchMessage("Service category fetched successfully")
                  setShowPanel(true)
              })
              .catch((err)=>{
                 toast({
-                    message: 'Error creating Services ' + err,
+                    message: 'Error searching Service category  ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -116,16 +157,24 @@ export  function FacilitySearch({getSearchfacility,clear}) {
              })
          }
         else{
-           // console.log("less than 3 ")
-            //console.log(val)
+            console.log("less than 3 ")
+            console.log(val)
             setShowPanel(false)
             await setFacilities([])
-            //console.log(facilities)
+            console.log(facilities)
         }
     }
 
     const handleAddproduct =()=>{
-        setProductModal(true) 
+       
+        let obj={
+            categoryname:val,
+
+        }
+        console.log(obj)
+        handleRow(obj)
+       
+       // setProductModal(true) 
     }
     const handlecloseModal =()=>{
         setProductModal(false)
@@ -133,9 +182,8 @@ export  function FacilitySearch({getSearchfacility,clear}) {
     }
     useEffect(() => {
        if (clear){
-          // console.log("success has changed",clear)
+           console.log("success has changed",clear)
            setSimpa("")
-          // clear=!clear
        }
         return () => {
             
@@ -147,8 +195,8 @@ export  function FacilitySearch({getSearchfacility,clear}) {
                 <div className="control has-icons-left  ">
                     <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
                         <div className="dropdown-trigger" style={{width:"100%"}}>
-                            <DebounceInput className="input is-small " 
-                                type="text" placeholder="Search Organization"
+                            <DebounceInput className="input is-small  is-expanded mb-0" 
+                                type="text" placeholder="Search for Service Category"
                                 value={simpa}
                                 minLength={3}
                                 debounceTimeout={400}
@@ -160,17 +208,27 @@ export  function FacilitySearch({getSearchfacility,clear}) {
                                 <i className="fas fa-search"></i>
                             </span>
                         </div>
-                        {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu" style={{width:"100%"}} >
+                        <div className="dropdown-menu expanded" style={{width:"100%"}}>
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to facility list</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item selectadd dropitem mb-4" onClick={handleAddproduct} > 
+                          {/* <span>  */}<strong>{val}</strong> is not a known service category! Add it?{/* </span> */} </div>}
 
                               {facilities.map((facility, i)=>(
-                                    
-                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
+                                
+                                    <div className="dropdown-item selectadd " key={facility.categoryname} onClick={()=>handleRow(facility)}>
                                         
-                                        <span>{facility.facilityName}</span>
-                                        
+                                        <div ><span>{facility.categoryname}</span>
+                                         {/*  <span className="padleft">{facility.category}</span>
+                                      <span className="padleft">{facility.profession}</span>
+                                        <span className="padleft">{facility.department} Department</span> */}
+                                         {/* <span className="padleft"> {facility.dob && formatDistanceToNowStrict(new Date(facility.dob))}</span>
+                                       
+                                        <span className="padleft">{facility.profession}</span>
+                                        <span className="padleft">{facility.phone}</span> */}
+                                        {/* <span className="padleft">{facility.email}</span> */}
+                                        </div>
+                            
+                                        <br />
                                     </div>
                                     
                                     ))}
@@ -184,12 +242,12 @@ export  function FacilitySearch({getSearchfacility,clear}) {
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
                                         <header className="modal-card-head">
-                                        <p className="modal-card-title">Facility</p>
+                                        <p className="modal-card-title">Choose Store</p>
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">
                                         {/* <StoreList standalone="true" /> */}
-                                        <FacilityCreate />
+                                        {/* <ProductCreate /> */}
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

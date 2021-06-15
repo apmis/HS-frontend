@@ -74,7 +74,7 @@ export function AppointmentCreate(){
     const [chosen, setChosen]=useState()
     const [chosen1, setChosen1]=useState()
     const [chosen2, setChosen2]=useState()
-    const appClass=[ "On-site","Teleconsultation"]
+    const appClass=[ "On-site","Teleconsultation","Home Visit"]
 
     let appointee  //  =state.ClientModule.selectedClient 
    /*  const getSearchfacility=(obj)=>{
