@@ -30,7 +30,7 @@ export default function FacilityModule() {
                         <div className="container minHt ">
                             <div className="navbar-brand minHt ">
                                 <div className="navbar-item ">
-                                    <span className="is-size-6 has-text-weight-medium">Health Stack::Facility</span> 
+                                    <span className="is-small has-text-weight-medium">Health Stack::Facility</span> 
                                 </div>
                             {/* <div className="navbar-item">
                                 <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />

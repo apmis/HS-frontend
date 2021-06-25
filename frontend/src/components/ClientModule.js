@@ -54,7 +54,7 @@ export default function ClientModule() {
        
         setShowMenu(prev=>(!prev))
     }
-
+//
 
     return (
             <section className="section has-background-info remPad">
@@ -64,7 +64,7 @@ export default function ClientModule() {
                         <div className="container minHt">
                             <div className="navbar-brand  minHt">
                                 <div className="navbar-item ">
-                                    <span className="is-size-6 has-text-weight-medium">
+                                    <span className="is-small has-text-weight-medium">
                                         Health Stack::Front Desk::{selectedClinic?selectedClinic.name:""}</span>
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeClinic()}>Change Location</button> 
                                 </div>

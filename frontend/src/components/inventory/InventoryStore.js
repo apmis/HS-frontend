@@ -376,9 +376,10 @@ export function InventoryList(){
            if (allInventory.total > facilities.length){
             await  setPage(page=>page++)
            }
+
            updatelist(allInventory.data)
           // pages++
-        // console.log(findProduct)
+         console.log(allInventory)
             //
         // console.log(0>0)
         // console.log(total,facilities.length)

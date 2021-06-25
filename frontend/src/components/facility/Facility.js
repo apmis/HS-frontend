@@ -358,7 +358,7 @@ export function FacilityDetail(){
     const [message, setMessage] = useState("") //,
     //const facilityServ=client.service('/facility')
     //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
    

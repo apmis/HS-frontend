@@ -65,7 +65,7 @@ export default function InventoryModule() {
                         <div className="container minHt ">
                             <div className="navbar-brand minHt">
                                 <div className="navbar-item ">
-                                    <span className="is-size-6 has-text-weight-medium">
+                                    <span className="is-small has-text-weight-medium">
                                         Health Stack::Inventory::{selectedStore?selectedStore.name:""}</span>
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Store</button> 
                                 </div>

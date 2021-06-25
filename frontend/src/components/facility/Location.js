@@ -51,7 +51,7 @@ export function LocationCreate(){
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-
+    const locationTypeOptions =["Front Desk","Clinic", "Store", "Laboratory", "Finance", ]
 
 
     const getSearchfacility=(obj)=>{
@@ -84,6 +84,10 @@ export function LocationCreate(){
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
+        if (data.locationType===""){
+            alert("Kindly choose location type")
+            return
+        }
         setMessage("")
         setError(false)
         setSuccess(false)
@@ -128,13 +132,25 @@ export function LocationCreate(){
             <div className="card-content vscrollable">
    
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="field">
+               {/*  <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="locationType" type="text" placeholder="Type of Location" />
+                        <input className="input is-small"  ref={register({ required: true })}  name="locationType" type="text" placeholder="Type of Location" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
                     </p>
+                </div> */}
+                <div className="field">    
+                 <div className="control">
+                     <div className="select is-small ">
+                         <select name="locationType"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
+                         <option value="">Choose Location Type </option>
+                           {locationTypeOptions.map((option,i)=>(
+                               <option key={i} value={option}> {option}</option>
+                           ))}
+                         </select>
+                     </div>
+                 </div>
                 </div>
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">

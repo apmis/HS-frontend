@@ -30,8 +30,8 @@ export default function LabOrders() {
                 </div>
             <div className="column is-6 ">
                 {(state.OrderModule.show ==='create')&&<LabOrdersCreate />}
-                {(state.OrderModule.show ==='detail')&&<ProductEntryDetail  />}
-                {(state.OrderModule.show ==='modify')&&<ProductEntryModify ProductEntry={selectedProductEntry} />}
+              {/*   {(state.OrderModule.show ==='detail')&&<ProductEntryDetail  />}
+                {(state.OrderModule.show ==='modify')&&<ProductEntryModify ProductEntry={selectedProductEntry} />} */}
                
             </div>
 
@@ -434,6 +434,30 @@ export function LabOrdersList({standalone}){
         
 
     }
+    const handleDelete=(doc)=>{
+        // console.log(doc)
+         let confirm = window.confirm(`You are about to delete a ${doc.order} lab order?`)
+         if (confirm){
+        OrderServ.remove(doc._id)
+         .then((res)=>{
+             toast({
+                 message: 'Lab order deleted succesfully',
+                 type: 'is-success',
+                 dismissible: true,
+                 pauseOnHover: true,
+               })
+               setSuccess(false)
+         })
+         .catch((err)=>{
+             toast({
+                 message: 'Error deleting Lab order' + err,
+                 type: 'is-danger',
+                 dismissible: true,
+                 pauseOnHover: true,
+               })
+         })
+      }
+     }
     const handleRow= async(ProductEntry)=>{
         //console.log("b4",state)
 
@@ -566,7 +590,7 @@ export function LabOrdersList({standalone}){
                                     <tbody>
                                         {facilities.map((ProductEntry, i)=>(
 
-                                            <tr key={ProductEntry._id} onClick={()=>handleRow(ProductEntry)} className={ProductEntry._id===(selectedOrder?._id||null)?"is-selected":""}>
+                                            <tr key={ProductEntry._id} /* onClick={()=>handleRow(ProductEntry)} */ className={ProductEntry._id===(selectedOrder?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <td>{/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */}<span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td>
                                             <th>{ProductEntry.order}</th>
@@ -574,7 +598,9 @@ export function LabOrdersList({standalone}){
                                             <td>{ProductEntry.order_status}</td>
                                             <td>{ProductEntry.requestingdoctor_Name}</td>
                                             {/* <td>{ProductEntry.clientId}</td> */}
-                                            {!standalone &&  <td><span className="showAction"  >...</span></td>}
+                                            {!standalone &&  <td>  <button className="button  sbut" aria-label="more options" onClick={()=>handleDelete (ProductEntry)}>
+                                                            <span>x</span>
+                                                        </button> {/* <span className="showAction"  >...</span> */} </td>}
                                            
                                             </tr>
 

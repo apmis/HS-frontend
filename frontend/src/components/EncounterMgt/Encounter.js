@@ -57,14 +57,14 @@ export default function Encounter({standalone}) {
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div> //10
             </div> */}
             <div className="columns ">
             {!standalone && <div className="column is-2 ">
                    <PatientProfile  />
                     </div>}
 
-            {!standalone &&     <div className= {(state.DocumentClassModule.show ==='detail')?"column is-6":"column is-10 "}>
+            {!standalone &&     <div className= {(state.DocumentClassModule.show ==='detail')?"column is-6":"column is-6 "}>
                    <EncounterMain client={selectedClient}/>
                 </div>}
                 {standalone &&     <div className= {(state.DocumentClassModule.show ==='detail')?"column is-8":"column is-12 "}>

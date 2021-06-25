@@ -21,13 +21,14 @@ const VideoConference = () => {
     setRoom(client._id)
     setName(user.firstname)
     if (room && name) setCall(true)
-    alert(`Kindly share link with client and other collaborators: https://meet.jit.si/${client._id}`)
+   // alert(`Kindly share link with client and other collaborators: https://meet.jit.si/${client._id}`)
   }
 
- 
+ //<Draggable> </Draggable> 
  
   return call ? (
-    <Draggable>
+    
+      <div className="mt-2">
     <Jutsu
       roomName={room}
       displayName={name}
@@ -37,18 +38,22 @@ const VideoConference = () => {
       errorComponent={<><p>Oops, something went wrong</p>   </>} 
       containerStyles={{ width: '100%', height: '250px' }}
       />
-    </Draggable>  
+      <p className="bckgrnd">
+     {`Kindly share link with client and other collaborators: https://meet.jit.si/${client._id}`}
+      </p>
+      </div>
+    
   ) : (
     <form>
       {/* <input id='room' type='text' placeholder='Room' value={room} onChange={(e) => setRoom(e.target.value)} />
       <input id='name' type='text' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} /> */}
      {/*  <input id='password' type='text' placeholder='Password (optional)' value={password} onChange={(e) => setPassword(e.target.value)} /> */}
-      <button className="button is-success is-small mt-1" onClick={handleClick} type='submit'>
+      <button className="button is-success is-small mt-1" onClick={(e)=>handleClick(e)} type='submit'>
         Start / Join Teleconsultation
       </button>
     </form>
   )
  
 }
- 
+
 export default VideoConference

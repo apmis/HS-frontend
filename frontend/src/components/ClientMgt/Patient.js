@@ -13,6 +13,7 @@ import BillServiceCreate from '../Finance/BillServiceCreate'
 import {AppointmentCreate} from '../Clinic/Appointments'
 import InfiniteScroll from "react-infinite-scroll-component";
 import ClientBilledPrescription from '../Finance/ClientBill'
+import ClientGroup from './ClientGroup';
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -32,10 +33,8 @@ export default function Client() {
             <div className="column is-6 ">
                 {(state.ClientModule.show ==='create')&&<ClientCreate />}
                 {(state.ClientModule.show ==='detail')&&<ClientDetail  />}
-                {(state.ClientModule.show ==='modify')&&<ClientModify Client={selectedClient} />}
-               
+                {(state.ClientModule.show ==='modify')&&<ClientModify Client={selectedClient} />} 
             </div>
-
             </div>                            
             </section>
        
@@ -44,7 +43,7 @@ export default function Client() {
 }
 
 export function ClientCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue,  getValues, reset} = useForm(); //, watch, errors, reset 
       // eslint-disable-next-line
     const [error, setError] =useState(false)
       // eslint-disable-next-line
@@ -56,6 +55,9 @@ export function ClientCreate(){
     const ClientServ=client.service('client')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
+    const [billModal, setBillModal] =useState(false)
+    const [patList, setPatList] =useState([])
+    const [dependant, setDependant] =useState(false)
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
 
@@ -88,11 +90,189 @@ export function ClientCreate(){
       }
     })
 
+    const checkClient=()=>{
+        const data= getValues()
+       const obj ={
+        firstname:data.firstname,
+        middlename:data.middlename,
+        lastname:data.lastname,
+        gender:data.gender,
+        email:data.email,
+        phone:data.phone,
+        dob:data.dob
+       } 
+       /* find if there is a match with the paramters entered
+          run search if 
+            1.phone no alone or  
+            2.email alone or 
+            3.both is entered
+            4. all other 5 parameters
+
+        */
+       let query={}
+
+       if (!!data.phone){
+            query.phone=data.phone
+            checkQuery(query)
+       }
+
+       if (!!data.email){
+        query.email=data.email
+        checkQuery(query)
+       }
+
+       if (!!data.firstname && !!data.lastname && !!data.gender && !!data.dob ){
+          // console.log("simpa")
+           data.middlename=data.middlename||""
+           query.gender=data.gender,
+           query.dob=data.dob,
+
+           query.$or=[
+                {
+                    firstname: data.firstname,
+                    lastname:data.lastname,
+                    middlename: data.middlename
+                },
+                {
+                    firstname: data.firstname,
+                    lastname:data.middlename,
+                    middlename: data.lastname
+                },
+                {
+                    firstname: data.middlename,
+                    lastname:data.lastname,
+                    middlename: data.firstname
+                },
+                {
+                    firstname: data.middlename,
+                    lastname:data.firstname,
+                    middlename: data.lastname
+                },
+                {
+                    firstname: data.lastname,
+                    lastname:data.firstname,
+                    middlename: data.middlename
+                },
+                {
+                    firstname: data.lastname,
+                    lastname:data.middlename,
+                    middlename: data.firstname
+                },
+        ]
+        checkQuery(query)
+       }
+    
+       
+    }
+
+    const checkQuery=(query)=>{
+        if (!(query && Object.keys(query).length === 0 && query.constructor === Object)){
+            ClientServ.find({query:query}).then((res)=>{
+                console.log(res)
+                if (res.total>0){
+                   // alert(res.total)
+                     setPatList(res.data)
+                   setBillModal(true)
+                }
+     
+            })
+            .catch((err)=>{console.log(err)})
+         }
+
+    }
+
+
+    const handleBill =()=>{
+        setBillModal(true)
+    }
+    const  handlecloseModal3 = () =>{
+        setBillModal(false)
+        }
+
+    const choosen=async (client)=>{
+        //update client with facilities
+      /*   if (client.facility !== user.currentEmployee.facilityDetail._id ){ //check taht it is not in list of related facilities
+           
+        
+        //create mpi record
+        const newPat = {
+            client: client._id,
+            facility:user.currentEmployee.facilityDetail._id,
+            mrn:client.mrn,
+            clientTags:client.clientTags,
+            relfacilities:client.relatedfacilites
+           }
+           await mpiServ.create(newPat)
+        } */
+        //reset form
+        //toast niotification
+        //cash payment
+
+    }
+    const dupl=(client)=>{
+        toast({
+            message: 'Client previously registered in this facility',
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+          reset()
+          setPatList([])
+        
+    }
+    const reg=async (client)=>{
+        if ((client.relatedfacilities.findIndex(el=>el.facility===user.currentEmployee.facilityDetail._id))===-1){
+            //create mpi record
+            const newPat = {
+                client: client._id,
+                facility:user.currentEmployee.facilityDetail._id,
+                mrn:client.mrn,
+                clientTags:client.clientTags,
+                relfacilities:client.relatedfacilites
+               }
+               await mpiServ.create(newPat).then((resp)=>{
+                toast({
+                    message: 'Client created succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+               }).catch((err)=>{
+                toast({
+                    message: 'Error creating Client '+err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  
+               })
+            }
+            //reset form
+            reset()
+            setPatList([])
+            //cash payment
+        
+    }
+    const depen=(client)=>{
+        setDependant(true)
+       
+    }
     const onSubmit = (data,e) =>{
         e.preventDefault();
         setMessage("")
         setError(false)
         setSuccess(false)
+        checkClient()
+        if (patList.length>0){
+             if(!dependant){
+                return
+             }
+            //alert("something"+","+ patList.length)
+            //let confirm = window.confirm("Is this person a dependant with parent phone number?")
+           // setOption(confirm)
+            setPatList([])
+           
+        }
          // data.createdby=user._id
         //  console.log(data);
           if (user.currentEmployee){
@@ -111,6 +291,8 @@ export function ClientCreate(){
                     pauseOnHover: true,
                   })
                   setSuccess(false)
+                  setPatList([])
+                  setDependant(false)
             })
             .catch((err)=>{
                 toast({
@@ -119,6 +301,8 @@ export function ClientCreate(){
                     dismissible: true,
                     pauseOnHover: true,
                   })
+                  setPatList([])
+                  setDependant(false)
             })
 
       } 
@@ -141,7 +325,7 @@ export function ClientCreate(){
                 <div className="field-body">
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
-                            <input className="input is-small is-danger" ref={register({ required: true })}  name="firstname" type="text" placeholder="First Name" />
+                            <input className="input is-small is-danger" ref={register({ required: true })}  name="firstname" type="text" placeholder="First Name" onBlur={checkClient}/>
                             <span className="icon is-small is-left">
                                 <i className="fas fa-hospital"></i>
                             </span>                    
@@ -151,7 +335,7 @@ export function ClientCreate(){
                 
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register()}  name="middlename" type="text" placeholder="Middle Name" />
+                        <input className="input is-small" ref={register()}  name="middlename" type="text" placeholder="Middle Name" onBlur={checkClient}/>
                         <span className="icon is-small is-left">
                             <i className="fas fa-map-signs"></i>
                         </span>
@@ -161,7 +345,7 @@ export function ClientCreate(){
               
                 <div className="field">
                     <p className="control has-icons-left">
-                        <input className="input is-small is-danger" ref={register({ required: true })} name="lastname" type="text" placeholder="Last Name"/>
+                        <input className="input is-small is-danger" ref={register({ required: true })} name="lastname" type="text" placeholder="Last Name" onBlur={checkClient}/>
                         <span className="icon is-small is-left">
                         <i className=" fas fa-user-md "></i>
                         </span>
@@ -175,7 +359,7 @@ export function ClientCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small is-danger" ref={register({ required: true })} name="dob" type="text" placeholder="Date of Birth"  />
+                        <input className="input is-small is-danger" ref={register({ required: true })} name="dob" type="text" placeholder="Date of Birth"  onBlur={checkClient}/>
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -184,7 +368,7 @@ export function ClientCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small" ref={register()} name="gender" type="text" placeholder="Gender"  />
+                        <input className="input is-small" ref={register()} name="gender" type="text" placeholder="Gender" onBlur={checkClient} />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -232,7 +416,7 @@ export function ClientCreate(){
                 </div> 
                 <div className="field">
                     <p className="control has-icons-left">
-                        <input className="input is-small is-danger" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
+                        <input className="input is-small is-danger" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No" onBlur={checkClient}/>
                         <span className="icon is-small is-left">
                         <i className="fas fa-phone-alt"></i>
                         </span>
@@ -242,7 +426,7 @@ export function ClientCreate(){
                 <div className="field">
                     <p className="control has-icons-left">
                     
-                        <input className="input is-small " ref={register()} name="email" type="email" placeholder="Email"  />
+                        <input className="input is-small " ref={register()} name="email" type="email" placeholder="Email"  onBlur={checkClient} />
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
                         </span>
@@ -420,8 +604,8 @@ export function ClientCreate(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" onClick={(e)=>e.target.reset()}>
-                        Cancel
+                    <button type="reset" className="button is-warning is-small" /* onClick={(e)=>e.target.reset()} */>
+                        Reset
                     </button>
                 </p>
                {/*  <p className="control">
@@ -434,7 +618,23 @@ export function ClientCreate(){
             </form>
             </div>
             </div>
-               
+            <div className={`modal ${billModal?"is-active":""}` }>
+                <div className="modal-background"></div>
+                <div className="modal-card modalbkgrnd z10"  >
+                    <header className="modal-card-head selectadd">
+                    <p className="modal-card-title redu">Similar Client Already Exist?</p>
+                    <button className="delete" aria-label="close"  onClick={handlecloseModal3}></button>
+                    </header>
+                    <section className="modal-card-body">
+                    {/* <StoreList standalone="true" /> */}
+                     <ClientGroup  list={patList}  closeModal={handlecloseModal3} choosen={choosen} dupl ={dupl} reg={reg} depen={depen}/> 
+                    </section>
+                    {/* <footer className="modal-card-foot">
+                    <button className="button is-success">Save changes</button>
+                    <button className="button">Cancel</button>
+                    </footer> */}
+                </div>
+            </div>             
         </>
     )
    
@@ -513,14 +713,18 @@ export function ClientList(){
                         $regex:val,
                         $options:'i' 
                     }},
+                    { email: {
+                        $regex:val,
+                        $options:'i' 
+                    }},
                     { specificDetails: {
                         $regex:val,
                         $options:'i' 
                     }},
                     { gender: val},
                 ],
-              
-              facility:user.currentEmployee.facilityDetail._id, // || "",
+
+                "relatedfacilities.facility":user.currentEmployee.facilityDetail._id, // || "",
                 $limit:limit,
                 $sort: {
                     createdAt: -1
@@ -542,15 +746,20 @@ export function ClientList(){
             if (user.currentEmployee){      
             const findClient= await ClientServ.find(
                 {query: {
-                    facility:user.currentEmployee.facilityDetail._id,
+                    "relatedfacilities.facility":user.currentEmployee.facilityDetail._id,
                     $limit:limit,
                     $skip:page * limit,
                     $sort: {
                         createdAt: -1
                     }
                     }})
+        if (page===0){
+            await setFacilities(findClient.data)
+        }else{
+            await setFacilities(prevstate=>prevstate.concat(findClient.data))
+        }
 
-         await setFacilities(prevstate=>prevstate.concat(findClient.data))
+        
          await setTotal(findClient.total)
          //console.log(user.currentEmployee.facilityDetail._id, state)
          //console.log(facilities)
@@ -577,7 +786,8 @@ export function ClientList(){
     useEffect(() => {
                
                 if (user){
-                    getFacilities()
+                    //getFacilities()
+                    rest()
                 }else{
                     /* const localUser= localStorage.getItem("user")
                     const user1=JSON.parse(localUser)
@@ -664,7 +874,7 @@ export function ClientList(){
                                         <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Tags">Tags</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th>
+                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -683,7 +893,7 @@ export function ClientList(){
                                              <td>{Client.phone}</td>
                                             <td>{Client.email}</td>
                                             <td>{Client.clientTags}</td>
-                                            <td><span   className="showAction"  >...</span></td>
+                                           {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -716,7 +926,7 @@ export function ClientDetail(){
     const [message, setMessage] = useState("") //,
     //const ClientServ=client.service('/Client')
     //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
    
@@ -772,7 +982,7 @@ export function ClientDetail(){
                 <p className="card-header-title">
                     Client Details
                 </p>
-                <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>
+                {(user.currentEmployee?.roles.includes('Bill Client')||user.currentEmployee?.roles.length===0||user.stacker )&&   <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>}
             </div>
             <div className="card-content vscrollable">
            
@@ -1390,7 +1600,7 @@ export function ClientModify(){
         <div className="field-body">
             <div className="field">
                 <p className="control has-icons-left has-icons-right">
-                    <label className="label is-size-7"   >First Name </label> <input className="input is-small" ref={register()} name="firstname" type="text"placeholder="First Name " />
+                    <label className="label is-size-7"   >First Name </label> <input className="input is-small" ref={register()} name="firstname" type="text" placeholder="First Name " />
                     <span className="icon is-small is-left">
                         <i className="nop-hospital"></i>
                     </span>                    

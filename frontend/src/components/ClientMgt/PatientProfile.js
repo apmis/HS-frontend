@@ -23,6 +23,7 @@ import BillServiceCreate from '../Finance/BillServiceCreate'
 
 export default function PatientProfile () {
     const {state}=useContext(ObjectContext) //,setState
+    const {user,setUser} = useContext(UserContext)
     // eslint-disable-next-line
     const [selectedClient,setSelectedClient]=useState() 
     const [billingModal, setBillingModal] =useState(false)
@@ -111,7 +112,7 @@ export default function PatientProfile () {
                                 {companycover && "Company Cover"}
                                 {hmocover && "HMO Cover"} */}
                                 </p>
-                                <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>
+                                {(user.currentEmployee?.roles.includes('Bill Client')||user.currentEmployee?.roles.length===0||user.stacker )&&    <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>}
                         </div>
 
                     </div>

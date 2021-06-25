@@ -70,7 +70,7 @@ export default function FinanceModule() {
                         <div className="container minHt ">
                             <div className="navbar-brand minHt">
                                 <div className="navbar-item ">
-                                    <span className="is-size-6 has-text-weight-medium">
+                                    <span className="is-small has-text-weight-medium">
                                         Health Stack::Finance::{selectedStore?selectedStore.name:""}</span>
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>

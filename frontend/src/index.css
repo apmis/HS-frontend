@@ -23,7 +23,7 @@ body {
 }
  */
  .startbutton{
-  display: none ;
+  display: none !important ;
 }
  html{
   -webkit-font-smoothing: antialiased;

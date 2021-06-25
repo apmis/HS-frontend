@@ -12,6 +12,9 @@
  
   color: white; */
 }
+.warp{
+  flex-wrap: wrap;
+}
 .payment{
   background-color: rgb(133, 237, 133);
   color:white !important;
@@ -84,6 +87,9 @@
   padding-top: 0rem !important;
   padding-bottom: 0rem !important;
 }
+.redu{
+  font-size:0.75rem !important;
+}
 .wt100{
   width:100%;
 }
@@ -127,6 +133,10 @@
 .modalbkgrnd{
 width:90% !important;
 
+}
+.bckgrnd{
+  background-color: black;
+  color: white;
 }
 
 .sbut{

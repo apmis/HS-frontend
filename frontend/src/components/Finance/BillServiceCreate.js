@@ -935,7 +935,7 @@ export default function BillServiceCreate(){
                      <i className="fas fa-hashtag"></i>
                      </span>
                  </p>
-                 <button className="button is-small is-success btnheight" onClick={handleChangeAmount}>Adjust</button>
+                 {(user.currentEmployee?.roles.includes('Adjust Price')||user.currentEmployee?.roles.length===0||user.stacker )&& <button className="button is-small is-success btnheight" onClick={handleChangeAmount}>Adjust</button>}
  
              </div> 
              <div className="field">

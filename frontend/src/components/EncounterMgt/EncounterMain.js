@@ -255,8 +255,8 @@ export default function EncounterMain ({nopresc}) {
     return (
         <div>
             <VideoConference/>
-            <div className="level">
-                    <div className="level-left">
+            <div className="level is-mobile warp ">
+                    <div className="level-left mt-2">
                         <div className="level-item">
                             <div className="field">
                                 <p className="control has-icons-left  ">
@@ -273,9 +273,9 @@ export default function EncounterMain ({nopresc}) {
                         </div>
                     </div>
                    {/*  <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div> */}
-                    <div className="level-right">
+                    <div className="level-right my-2">
                    {!standalone &&   <div className="level-item"> 
-                        <div className="level-item">
+                        <div className="level-item ">
                            {!nopresc && <>
                                 <div className="button is-warning is-small mr-2" onClick={handleLabOrders}>Lab Orders</div>
                                 <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Prescription</div>

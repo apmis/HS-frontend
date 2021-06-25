@@ -203,7 +203,7 @@ export function LabOrderList(){
                 billing_status:"Unpaid",  // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                $limit:20,
                 $sort: {
                     createdAt: -1
                   }
@@ -494,9 +494,14 @@ export function LabNoteCreate(){
     }
 
     useEffect(() => {
+        if (typeof order.resultDetail.documentdetail ==="undefined"){
+            console.log(order)
+            alert("No Status")
+            return
 
-       // console.log(order.resultDetail.status)
+        }
         if (order.report_status !=="Pending"){
+            console.log(order.resultDetail.documentdetail)
         setValue("Finding", order.resultDetail.documentdetail.Finding,  {
             shouldValidate: true,
             shouldDirty: true
