@@ -9,13 +9,3 @@ function testissues() {
 }
 
 export default testissues
-
-import React from 'react'
-
-export default function testissues() {
-    return (
-        <div>
-            
-        </div>
-    )
-}
