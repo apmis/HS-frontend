@@ -308,9 +308,10 @@ export default function EncounterMain ({nopresc}) {
                                                         </button>  }
                                                     </header>
 
-                                                        {/* is not prescription,billed orders, or lab order or asthma docs */}
+                                                        {/* is not prescription,billed orders, or lab order, medication List or asthma docs */}
                                                         {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders" 
                                                         && Clinic.documentname!=="Adult Asthma Questionnaire" 
+                                                        && Clinic.documentname!=="Medication List" 
                                                         && Clinic.documentname!=="Pediatric Pulmonology Form") &&  Clinic.status!=="Draft"
                                                          && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}  >
                                                                 { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
@@ -329,7 +330,98 @@ export default function EncounterMain ({nopresc}) {
                                                                     ))
                                                                 }
                                                         </div>}
-                                                    {/* is  Pediatric Pulmonology Form  */}
+                                                    {/* is  Medication List */}
+                                                    {Clinic.documentname==="Medication List" &&  Clinic.status!=="Draft" &&
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
+                                                             { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                              <>  
+                                                              { value.length>0 &&  <>
+                                                                {(keys !=="Allergies" && 
+                                                                keys !=="Medications") && 
+                                                                    <div className="field is-horizontal"> 
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                            </div>                                                 
+                                                                    </div>}
+                                                                    { keys ==="Allergies" &&
+                                                                        <div id="skintest">
+                                                                        {(Clinic.documentdetail.Allergies.length>0) && <div>
+                                                                            <label className="label is-size-7">Allergies:</label>
+                                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-5 ml-5 ">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                                
+                                                                                    <th><abbr title="Type">Allergine</abbr></th>
+                                                                                    <th><abbr title="Destination">Reaction</abbr></th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tfoot>
+                                                                                    
+                                                                                </tfoot>
+                                                                                <tbody>
+                                                                                { Clinic.documentdetail.Allergies.map((ProductEntry, i)=>(
+        
+                                                                                        <tr key={i}>
+                                                                                        <th>{i+1}</th>
+                                                                                        <td>{ProductEntry.allergine}</td> 
+                                                                                        <td>{ProductEntry.reaction}</td>                                                                     
+                                                                                        </tr>
+        
+                                                                                    ))}
+                                                                                </tbody>
+                                                                                </table>
+                                                                                </div>} 
+                                                                                </div>  
+                                                                                }
+                                                                     { keys ==="Medications" &&
+                                                                        <div id="Medications">
+                                                                        {(Clinic.documentdetail.Medications.length>0) && <div>
+                                                                            <label className="label is-size-7">Medications:</label>
+                                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-5 ml-5 ">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                    <th><abbr title="Serial No">S/No</abbr></th>
+                                                                                
+                                                                                    <th><abbr title="Drug Name">Drug Name</abbr></th>
+                                                                                    <th><abbr title="Strength/Frequency">Strength/Frequency</abbr></th>
+                                                                                    <th><abbr title="Notes">Notes</abbr></th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tfoot>
+                                                                                    
+                                                                                </tfoot>
+                                                                                <tbody>
+                                                                                { Clinic.documentdetail.Medications.map((ProductEntry, i)=>(
+        
+                                                                                        <tr key={i}>
+                                                                                        <th>{i+1}</th>
+                                                                                        <td>{ProductEntry.drugname}</td> 
+                                                                                        <td>{ProductEntry.strengthfreq}</td>   
+                                                                                        <td>{ProductEntry.notes}</td>                                                                    
+                                                                                        </tr>
+        
+                                                                                    ))}
+                                                                                </tbody>
+                                                                                </table>
+                                                                                </div>} 
+                                                                                </div>  
+                                                                                }
+                                                                    
+                                                                    </>}</>
+
+                                                                    ))
+                                                                }
+                                                                                                            
+                                                        </div>}
+                                                         {/* is  Pediatric Pulmonology Form  */}
                                                     {Clinic.documentname==="Pediatric Pulmonology Form" &&  Clinic.status!=="Draft" &&
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
                                                              { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(

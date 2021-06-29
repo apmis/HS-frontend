@@ -230,6 +230,7 @@ export default function NewPatientConsult() {
                     pauseOnHover: true,
                   })
                   setSuccess(false)
+                  closeForm()
             })
             .catch((err)=>{
                 toast({
@@ -324,7 +325,7 @@ export default function NewPatientConsult() {
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                New Patient Consult
+                   New Patient Consultation Form
                 </p>
                 <button className="delete pushleft" aria-label="close"  onClick={()=>closeForm(false)}></button>
             </div>

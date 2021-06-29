@@ -10,6 +10,8 @@ import {toast} from 'bulma-toast'
 import AsthmaIntake from './AsthmaIntake';
 import PulmonologyIntake from './Pulmonology';
 import NewPatientConsult from './NewPatientConsult';
+import ProgressNote from './ProgressNote';
+import MedicationList from './MedicationList';
 
 export default function EncounterRight() {
     const {state,setState}=useContext(ObjectContext)
@@ -24,6 +26,8 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='Adult Asthma Questionnaire') &&   <AsthmaIntake />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Pediatric Pulmonology Form') &&   <PulmonologyIntake />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='New Patient Consultation Form') &&   <NewPatientConsult />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Progress Note') &&   <ProgressNote />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Medication List') &&   <MedicationList />}
          {( typeof state.DocumentClassModule.selectedDocumentClass.document !=='undefined' ) &&( typeof state.DocumentClassModule.selectedDocumentClass.document.documentType !=='undefined' ) && (state.DocumentClassModule.selectedDocumentClass.document.documentType==='Diagnostic Result') &&   <LabNoteCreate />} 
           
           
