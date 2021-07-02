@@ -9,6 +9,7 @@ import ProductEntry from './inventory/ProductEntry'
 import ProductExit from './inventory/ProductExit'
 import Dispense from './inventory/Dispensary'
 import Products from './inventory/Products'
+import BillService from './Finance/BillService'
 import PharmacyPayment from './inventory/PharmacyPayment'
 import Store, { StoreList, StoreListStandalone } from './inventory/Store'
 import {UserContext,ObjectContext} from '../context'
@@ -87,8 +88,11 @@ export default function InventoryModule() {
                                     {/* <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-stores`}>Stores</NavLink>
                                     </div> */}
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/billservice`}>Bill Client</NavLink>
+                                    </div>
                                      <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-bill`}>Bill Prescription</NavLink>
+                                        <NavLink to={`${url}/inv-bill`}>Bill Prescription Sent</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-payment`}>Payment</NavLink>
@@ -154,6 +158,9 @@ export default function InventoryModule() {
                         </Route>
                         <Route path={`${path}/inv-products`} exact>
                             <Products />
+                        </Route>
+                        <Route path={`${path}/billservice`} exact>
+                            <BillService />
                         </Route>
                         <Route path={`${path}/inv-reports`} exact>
                             <InventoryReport />

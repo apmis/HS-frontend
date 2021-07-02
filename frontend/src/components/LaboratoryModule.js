@@ -8,6 +8,7 @@ import LaboratoryHome from './Laboratory/LaboratoryHome'
 import ProductEntry from './Laboratory/ProductEntry'
 import ProductExit from './Laboratory/ProductExit'
 import Dispense from './Laboratory/Dispensary'
+import BillService from './Finance/BillService'
 import LabReport from './Laboratory/LabReport'
 import LabPayment from './Laboratory/LabPayment'
 import Labs, { StoreList, StoreListStandalone } from './Laboratory/Labs'
@@ -87,9 +88,11 @@ export default function LaboratoryModule() {
                                     {/* <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/labs`}>Labs</NavLink>
                                     </div> */}
-                                    
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/billservice`}>Bill Client</NavLink>
+                                    </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/lab-bill`}>Bill Lab Orders</NavLink>
+                                        <NavLink to={`${url}/lab-bill`}>Bill Lab Orders Sent</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/lab-payment`}>Payment</NavLink>
@@ -153,6 +156,9 @@ export default function LaboratoryModule() {
                         <Route path={`${path}/inv-products`} exact>
                             <Products />
                         </Route>*/}
+                        <Route path={`${path}/billservice`} exact>
+                            <BillService />
+                        </Route>
                         <Route path={`${path}/lab-result`} exact>
                             <LabReport />
                         </Route> 

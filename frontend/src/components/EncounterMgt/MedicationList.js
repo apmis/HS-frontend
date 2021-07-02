@@ -212,8 +212,6 @@ export default function MedicationList() {
         }
       } 
 
-
-
         const handleChangePart=async (e)=>{
             //console.log(e)
             //const (name, value) = e.target

@@ -132,7 +132,7 @@ export default function NewPatientConsult() {
     const affect=["flat","appropriate","anxious"]
     const presnt=["Absent","Present"]
     const skinex=["Xanthoma","Tugor"]
-    const tests=["2D Echocardiogram", "Exercise", "Chemical Stress Cardiolyte","Myoview", "Carotid Ultrasound","ABI", "Renal Doppler", "Arterial Doppler of BLE", "Arterial Doppler of RLE", "Arterial Doppler of LLE",
+    const tests=["2D Echocardiogram", "Exercise Stress test", "Chemical Stress Cardiolyte","Myoview", "Carotid Ultrasound","ABI", "Renal Doppler", "Arterial Doppler of BLE", "Arterial Doppler of RLE", "Arterial Doppler of LLE",
                  "CT"]
     const neu=["A&O x3","Affect"]
     const labo=["BMP","Mag","CBC","PT/INR","Fasting Lipids","LFT","TSH","T3Uptake","T4"]
