@@ -3,14 +3,18 @@ import React, {useState,useContext, useEffect} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
+import {toast} from 'bulma-toast'
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
+import {FacilitySearch} from '../helpers/FacilitySearch'
 
 
-export default function Facility() {
+export default function OrganizationClient() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedFacility,setSelectedFacility]=useState()
+    const [success, setSuccess] =useState(false)
+  
     //const [showState,setShowState]=useState() //create|modify|detail
     
     //console.log("Organization parent", state)
@@ -23,12 +27,12 @@ export default function Facility() {
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-                <FacilityList />
+                <OrganizationList />
                 </div>
             <div className="column is-4 ">
-                {(state.facilityModule.show ==='create')&&<FacilityCreate />}
-                {(state.facilityModule.show ==='detail')&&<FacilityDetail  />}
-                {(state.facilityModule.show ==='modify')&&<FacilityModify facility={selectedFacility} />}
+                {/* {(state.facilityModule.show ==='create')&&<OrganizationCreate />} */}
+                {(state.facilityModule.show ==='detail')&&<OrganizationDetail  />}
+                {(state.facilityModule.show ==='modify')&&<OrganizationModify facility={selectedFacility} />}
                
             </div>
 
@@ -39,12 +43,14 @@ export default function Facility() {
     
 }
 
-export function FacilityCreate(){
+export function OrganizationCreate(){
     const { register, handleSubmit} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    const facilityServ=client.service('/facility')
+    const facilityServ=client.service('facility')
+    const orgServ=client.service('organizationclient')
+    const [chosen, setChosen] =useState("")
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
 
@@ -71,12 +77,78 @@ export function FacilityCreate(){
 
       } 
 
+      const handleClick=()=>{
+
+        console.log(chosen)
+        let stuff={
+            facility:user.currentEmployee.facilityDetail._id ,
+            organization:chosen._id,
+            relationshiptype:"managedcare"
+        }
+        orgServ.create(stuff)
+        .then((res)=>{
+                //console.log(JSON.stringify(res))
+               // e.target.reset();
+               setSuccess(true)
+                toast({
+                    message: 'Organization added succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  setSuccess(false)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error adding organization ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            })
+
+      }
+      const getSearchfacility=(obj)=>{
+          setChosen(obj)
+
+       /*  setCategoryName(obj.categoryname)
+        setChosen2(obj) */
+        
+         if (!obj){
+             //"clear stuff"
+            /*  setCategoryName("")
+             setChosen2() */
+            
+         }
+     }
+
     return (
         <>
-        <div className="card ">
+        
+          <div className="field is-horizontal">
+             <div className="field-body">
+                <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                        <FacilitySearch  getSearchfacility={getSearchfacility} clear={success} /> 
+                        <p className="control has-icons-left " style={{display:"none"}}>
+                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  /* value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id" */ />
+                            <span className="icon is-small is-left">
+                            <i className="fas  fa-map-marker-alt"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div className="field">
+                        <p className="control">
+                                <button className="button is-success is-small selectadd">
+                                <span className="is-small" onClick={handleClick}>Add</span>
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    </div>
+      {/*   <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Facility
+                    Create Organization
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -159,12 +231,12 @@ export function FacilityCreate(){
             </form>
         </div>
         </div>
-        </>
+         */}</>
     )
    
 }
 
-export function FacilityList(){
+export function OrganizationList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -173,6 +245,7 @@ export function FacilityList(){
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
     const facilityServ=client.service('facility')
+    const orgServ=client.service('organizationclient')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
@@ -180,6 +253,7 @@ export function FacilityList(){
    const [selectedFacility, setSelectedFacility]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
+    const {user} = useContext(UserContext)
 
    
 
@@ -198,7 +272,7 @@ export function FacilityList(){
 
         //console.log("handlerow",facility)
 
-        await setSelectedFacility(facility)
+        await setSelectedFacility(facility.organizationDetail)
 
         const    newfacilityModule={
             selectedFacility:facility,
@@ -212,12 +286,14 @@ export function FacilityList(){
    const handleSearch=(val)=>{
        const field='facilityName'
        console.log(val)
-       facilityServ.find({query: {
-                [field]: {
+       if (val.length >0){
+       orgServ.find({query: {
+                /* [field]: {
                     $regex:val,
                     $options:'i'
                    
-                },
+                }, */
+                $search:val,
                 $limit:10,
                 $sort: {
                     createdAt: -1
@@ -233,6 +309,9 @@ export function FacilityList(){
                 setMessage("Error creating facility, probable network issues "+ err )
                 setError(true)
             })
+        }else{
+            getFacilities() 
+        }
         }
 
            /*  if (val.length>2){
@@ -243,8 +322,8 @@ export function FacilityList(){
         }
      */
         const getFacilities=()=>{
-            facilityServ.find({query: {
-              
+            orgServ.find({query: {
+                facility:user.currentEmployee.facilityDetail._id,
                 $limit:100,
                 $sort: {
                     createdAt: -1
@@ -266,10 +345,10 @@ export function FacilityList(){
     useEffect(() => {
         getFacilities()
 
-        facilityServ.on('created', (obj)=>getFacilities())
-        facilityServ.on('updated', (obj)=>getFacilities())
-        facilityServ.on('patched', (obj)=>getFacilities())
-        facilityServ.on('removed', (obj)=>getFacilities())
+        orgServ.on('created', (obj)=>getFacilities())
+        orgServ.on('updated', (obj)=>getFacilities())
+        orgServ.on('patched', (obj)=>getFacilities())
+        orgServ.on('removed', (obj)=>getFacilities())
         return () => {
            
         }
@@ -278,7 +357,7 @@ export function FacilityList(){
     //todo: pagination and vertical scroll bar
 
     return(
-            <>   
+            <>   <OrganizationCreate />
                 <div className="level">
                     <div className="level-left">
                         <div className="level-item">
@@ -296,12 +375,12 @@ export function FacilityList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Facilities </span></div>
-                    <div className="level-right">
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Contracted Organizations </span></div>
+                   {/*  <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
                 <div className="table-container pullup ">
@@ -325,15 +404,15 @@ export function FacilityList(){
                                     <tbody>
                                         {facilities.map((facility, i)=>(
 
-                                            <tr key={facility._id} onClick={()=>handleRow(facility)}>
+                                            <tr key={facility.organizationDetail._id} onClick={()=>handleRow(facility)} className={facility.organizationDetail._id===(selectedFacility?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{facility.facilityName}</th>
-                                            <td>{facility.facilityAddress}</td>
-                                            <td>{facility.facilityCity}</td>
-                                            <td>{facility.facilityContactPhone}</td>
-                                            <td>{facility.facilityEmail}</td>
-                                            <td>{facility.facilityType}</td>
-                                            <td>{facility.facilityCategory}</td>
+                                            <th>{facility.organizationDetail.facilityName}</th>
+                                            <td>{facility.organizationDetail.facilityAddress}</td>
+                                            <td>{facility.organizationDetail.facilityCity}</td>
+                                            <td>{facility.organizationDetail.facilityContactPhone}</td>
+                                            <td>{facility.organizationDetail.facilityEmail}</td>
+                                            <td>{facility.organizationDetail.facilityType}</td>
+                                            <td>{facility.organizationDetail.facilityCategory}</td>
                                            
                                            {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
@@ -349,7 +428,7 @@ export function FacilityList(){
     )
 }
 
-export function FacilityDetail(){
+export function OrganizationDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
@@ -374,6 +453,15 @@ export function FacilityDetail(){
        //console.log(state)
        
     }
+    const closeForm=async()=>{
+       
+        const    newfacilityModule={
+            selectedFacility:facility,
+            show :'create'
+        }
+       await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule}))
+        console.log("close form")
+    }
  
     return (
         <>
@@ -382,6 +470,7 @@ export function FacilityDetail(){
                 <p className="card-header-title">
                     Organization Details
                 </p>
+                <button className="delete pushleft" aria-label="close"  onClick={()=>closeForm()}></button>
             </div>
             <div className="card-content vscrollable">
            
@@ -390,7 +479,7 @@ export function FacilityDetail(){
                     <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        Name: <span className="is-small "   name="facilityName"> {facility.facilityName} </span>
+                        Name: <span className="is-small "   name="facilityName"> {facility.organizationDetail.facilityName} </span>
                         </label>
                 
                         
@@ -401,7 +490,7 @@ export function FacilityDetail(){
                         <i className="fas fa-map-signs"></i>
                     </span>Address:
                    
-                    <span className="is-small "  name="facilityAddress">{facility.facilityAddress} </span> 
+                    <span className="is-small "  name="facilityAddress">{facility.organizationDetail.facilityAddress} </span> 
                     </label>
                 </div>
             <div className="field">
@@ -409,14 +498,14 @@ export function FacilityDetail(){
                     <i className="fas fa-map-marker-alt"></i>
                     </span>City: 
                 
-                    <span className="is-small "  name="facilityCity">{facility.facilityCity}</span> 
+                    <span className="is-small "  name="facilityCity">{facility.organizationDetail.facilityCity}</span> 
                     </label>
                 </div>
             <div className="field">
             <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-phone-alt"></i>
                     </span>Phone:           
-                    <span className="is-small "  name="facilityContactPhone" >{facility.facilityContactPhone}</span>
+                    <span className="is-small "  name="facilityContactPhone" >{facility.organizationDetail.facilityContactPhone}</span>
                         </label>
  
                 
@@ -425,7 +514,7 @@ export function FacilityDetail(){
             <div className="field">
             <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
-                    </span>Email:                     <span className="is-small "  name="facilityEmail" >{facility.facilityEmail}</span>
+                    </span>Email:                     <span className="is-small "  name="facilityEmail" >{facility.organizationDetail.facilityEmail}</span>
                     
                          </label>
 
@@ -434,14 +523,14 @@ export function FacilityDetail(){
             <div className="field">
             <label className="label is-small"> <span className="icon is-small is-left">
                     <i className="fas fa-user-md"></i></span>CEO:
-                    <span className="is-small "  name="facilityOwner">{facility.facilityOwner}</span>
+                    <span className="is-small "  name="facilityOwner">{facility.organizationDetail.facilityOwner}</span>
                     </label>
                 </div>
             <div className="field">
             <label className="label is-small"> <span className="icon is-small is-left">
                     <i className="fas fa-hospital-symbol"></i>
                     </span>Type:              
-                    <span className="is-small "  name="facilityType">{facility.facilityType}</span>
+                    <span className="is-small "  name="facilityType">{facility.organizationDetail.facilityType}</span>
                 </label>
  
                 </div>
@@ -449,7 +538,7 @@ export function FacilityDetail(){
              <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>Category:              
-                    <span className="is-small "  name= "facilityCategory">{facility.facilityCategory}</span>
+                    <span className="is-small "  name= "facilityCategory">{facility.organizationDetail.facilityCategory}</span>
                 </label>
 
 
@@ -471,7 +560,7 @@ export function FacilityDetail(){
    
 }
 
-export function FacilityModify(){
+export function OrganizationModify(){
     const { register, handleSubmit, setValue,reset } = useForm(); //watch, errors,
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)

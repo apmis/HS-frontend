@@ -15,5 +15,6 @@ client.configure(socketio(socket,{timeout:700000}))
 client.configure(authentication({
     storage:window.localStorage
 }))
+//client.configure(restClient.axios(axios));
 
 export default client

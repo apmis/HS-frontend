@@ -12,6 +12,7 @@ import PulmonologyIntake from './Pulmonology';
 import NewPatientConsult from './NewPatientConsult';
 import ProgressNote from './ProgressNote';
 import MedicationList from './MedicationList';
+import Clerking from './Clerking';
 
 export default function EncounterRight() {
     const {state,setState}=useContext(ObjectContext)
@@ -28,6 +29,7 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='New Patient Consultation Form') &&   <NewPatientConsult />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Progress Note') &&   <ProgressNote />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Medication List') &&   <MedicationList />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Clerking') &&   <Clerking />}
          {( typeof state.DocumentClassModule.selectedDocumentClass.document !=='undefined' ) &&( typeof state.DocumentClassModule.selectedDocumentClass.document.documentType !=='undefined' ) && (state.DocumentClassModule.selectedDocumentClass.document.documentType==='Diagnostic Result') &&   <LabNoteCreate />} 
           
           
