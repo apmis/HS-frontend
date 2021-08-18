@@ -1266,7 +1266,7 @@ export function ClientDetail(){
                 </p>
                 <p className="control">
                     <button className="button is-info is-small" onClick={handleFinancialInfo}>
-                        Financial Info
+                        Payment Info
                     </button>
                 </p>
                 <p className="control">

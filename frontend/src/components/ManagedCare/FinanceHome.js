@@ -21,7 +21,7 @@ export default function InventoryHome() {
                 <div className="hero-body">
                     <div className="container has-text-centered">
                     <h1 className="title">
-                      Finance Module
+                      Manage Care Module
                     </h1>
                     <h2 className="subtitle">
                         Have fun working today!

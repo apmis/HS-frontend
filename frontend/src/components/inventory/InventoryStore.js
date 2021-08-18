@@ -9,6 +9,7 @@ import {toast} from 'bulma-toast'
 import InfiniteScroll from "react-infinite-scroll-component";
 import DatePicker from "react-datepicker";
 import { formatDistanceToNowStrict, format, subDays,addDays } from 'date-fns'
+import { ProductEntryCreate } from './ProductEntry';
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -37,6 +38,7 @@ export default function Inventory() {
                 {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}
                 {(state.InventoryModule.show ==='reorder')&&<InventoryReorder Inventory={selectedInventory} />}
                 {(state.InventoryModule.show ==='batch')&&<InventoryBatches Inventory={selectedInventory} />}
+                {(state.InventoryModule.show ==='audit')&&<ProductEntryCreate  Inventory={selectedInventory} />}
             </div>
 
             </div>                            
@@ -652,6 +654,15 @@ export function InventoryDetail(){
        //console.log(state)
        
     }
+    const handleAudit= async()=>{
+        const    newInventoryModule={
+            selectedInventory:Inventory,
+            show :'audit'
+        }
+       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
+       //console.log(state)
+       
+    }
     return (
         <>
         <div className="card ">
@@ -699,6 +710,11 @@ export function InventoryDetail(){
                 <p className="control">
                     <button className="button is-warning is-small"  onClick={handleReorder} >
                         Reorder Level
+                    </button>
+                </p> 
+                <p className="control">
+                    <button className="button is-danger is-small"  onClick={handleAudit} >
+                       Audit
                     </button>
                 </p> 
             </div>

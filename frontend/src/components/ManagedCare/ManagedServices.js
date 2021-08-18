@@ -8,6 +8,7 @@ import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {FacilitySearch} from '../helpers/FacilitySearch'
 import CategorySearch from "../helpers/CategorySearch"
+import {OrgList } from './OrgClientList';
 import {
     Accordion,
     AccordionItem,
@@ -25,7 +26,7 @@ import { StoreModify } from '../inventory/Store';
 const searchfacility={};
 
 
-export default function Services() {
+export default function ManagedServices() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedServices,setSelectedServices]=useState()
@@ -37,13 +38,17 @@ export default function Services() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Services  Module</span></div>
             </div> */}
             <div className="columns ">
-            <div className="column is-6 ">
-                <ServicesList />
+            <div className="column is-4 ">
+            <OrgList/>    
                 </div>
-            <div className="column is-6 ">
-                {(state.ServicesModule.show ==='create')&&<ServicesCreate />}
-                {(state.ServicesModule.show ==='detail')&&<ServicesDetail  />}
-                {(state.ServicesModule.show ==='modify')&&<ServicesModify Services={selectedServices} />}
+
+            <div className="column is-4 ">
+                <ManagedServicesList />
+                </div>
+            <div className="column is-4 ">
+                {(state.ServicesModule.show ==='create')&&<ManagedServicesCreate />}
+                {(state.ServicesModule.show ==='detail')&&<ManagedServicesDetail  />}
+                {(state.ServicesModule.show ==='modify')&&<ManagedServicesModify Services={selectedServices} />}
                
             </div>
 
@@ -54,7 +59,7 @@ export default function Services() {
     
 }
 
-export function ServicesCreate(){
+export function ManagedServicesCreate(){
    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [categoryname, setCategoryName] =useState("")
     const [success, setSuccess] =useState(false)
@@ -608,7 +613,7 @@ const handleCheck= async ()=>{
    
 }
 
-export function ServicesList(){
+export function ManagedServicesList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -691,7 +696,8 @@ export function ServicesList(){
             
         const findServices= await ServicesServ.find(
                 {query: {
-                    facility:user.currentEmployee.facilityDetail._id,
+                    facility: user.currentEmployee.facilityDetail._id,
+                    'contracts.source_org' : state.facilityModule.selectedFacility._id ,
                    // storeId:state.StoreModule.selectedStore._id,
                    // $limit:20,
                 //   paginate:false,
@@ -734,6 +740,15 @@ export function ServicesList(){
                 
                 }
             },[])
+
+
+            useEffect(() => {
+                getFacilities()
+                return () => {
+                    
+                    
+                }
+            }, [state.facilityModule.selectedFacility])
 
  /*    useEffect(() => {
                 getFacilities()
@@ -837,10 +852,9 @@ export function ServicesList(){
             </>
               
     )
-    }
+}
 
-
-export function ServicesDetail(){
+export function ManagedServicesDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
@@ -1005,7 +1019,7 @@ export function ServicesDetail(){
    
 }
 
-export function ServicesModify(){
+export function ManagedServicesModify(){
    // const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)

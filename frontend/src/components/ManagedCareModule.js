@@ -4,7 +4,7 @@ import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import FinanceReport from './Finance/FinanceReport'
 import FinanceSetup from './Finance/FinanceSetup'
 import Collections from './Finance/Collections'
-import FinanceHome from './Finance/FinanceHome'
+import FinanceHome from './ManagedCare/FinanceHome'
 import ProductEntry from './Finance/Services'
 import ProductExit from './Finance/ProductExit'
 import Payment from './ManagedCare/Payment'
@@ -13,7 +13,7 @@ import Products from './Finance/Products'
 import Store, { StoreList, StoreListStandalone } from './Finance/Store'
 import {UserContext,ObjectContext} from '../context'
 import BillPrescription from './Finance/BillPrescription'
-import Services from './Finance/Services'
+import ManagedServices from './ManagedCare/ManagedServices'
 import BillService from './Finance/BillService'
 import FacilityAccount from './Finance/FacilityAccount'
 
@@ -162,7 +162,7 @@ export default function ManagedCareModule() {
                             <Collections />
                         </Route>
                        <Route path={`${path}/services`} exact >
-                            <Services />
+                            <ManagedServices />
                         </Route>
                          <Route path={`${path}/billservice`} exact>
                             <BillService />

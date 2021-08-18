@@ -246,7 +246,7 @@ export function ProductEntryCreate(){
             <div className="card card-overflow">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create ProductEntry: Product Entry- Initialization, Purchase Invoice, Audit
+                    Create ProductEntry: Initialization, Purchase Invoice, Audit
                 </p>
             </div>
             <div className="card-content ">
@@ -772,7 +772,7 @@ export function ProductEntryList(){
                                  </InfiniteScroll>   
                                     
                 </div>              
-            </>):<div>loading... Choose a Store</div>}
+            </>):<div>loading... </div>}
             </>
               
     )
