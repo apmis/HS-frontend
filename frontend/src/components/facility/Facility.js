@@ -325,7 +325,7 @@ export function FacilityList(){
                                     <tbody>
                                         {facilities.map((facility, i)=>(
 
-                                            <tr key={facility._id} onClick={()=>handleRow(facility)}>
+                                            <tr key={facility._id} onClick={()=>handleRow(facility)} className={facility._id===(selectedFacility?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{facility.facilityName}</th>
                                             <td>{facility.facilityAddress}</td>
