@@ -18,12 +18,14 @@ export default function ClientFinInfo({closeModal}){
      const [organizationName,setOrganizationName] = useState("")
      const [principal,setPrincipal] = useState(null)
      const [plan,setPlan] = useState("")
+     const ServicesServ=client.service('billing')
      const [active,setActive] = useState(false)
      const [success, setSuccess] =useState(false)
      const [success1, setSuccess1] =useState(false)
      const [paymentmode, setPaymentMode] = useState("HMO")
      const [productItem,setProductItem] = useState([])
      const [obj, setObj]=useState("")
+     const [benefittingPlans1,setBenefittingPlans1] = useState([])
      const {state,setState}=useContext(ObjectContext)
      const ClientServ=client.service('client')
    //  const [productEntry,setProductEntry]=useState({
@@ -78,9 +80,11 @@ export default function ClientFinInfo({closeModal}){
       }
 
     const getSearchfacility=async (obj)=>{
+        console.log(obj)
        await setOrganization(obj)
-       setOrganizationId(obj._id)
+      await setOrganizationId(obj._id)
       await setOrganizationName(obj.facilityName)
+      getBenfittingPlans(obj)
      
       // setOrgType(obj.facilityType)
        if(!obj){
@@ -179,6 +183,42 @@ export default function ClientFinInfo({closeModal}){
         }
     },[medication])
 
+    const getBenfittingPlans = async( obj)=>{
+       await setBenefittingPlans1([])
+        if (user.currentEmployee){
+            console.log(obj._id, organizationId)
+                
+            const findServices= await ServicesServ.find(
+                    {query: {
+                        facility: obj._id, // user.currentEmployee.facilityDetail._id,
+                        'contracts.source_org' :obj._id,// user.currentEmployee.facilityDetail._id ,
+                        'contracts.dest_org' : obj._id,//user.currentEmployee.facilityDetail._id ,
+                        category:"Managed Care",
+                       // storeId:state.StoreModule.selectedStore._id,
+                       // $limit:20,
+                    //   paginate:false,
+                        $sort: {
+                            category: 1
+                        }
+                        }})
+    
+            findServices.groupedOrder[0].services.forEach(async (c)=>{
+                const newPlan={
+                    name:c.name,
+                    checked:false
+                }
+                await setBenefittingPlans1((prev)=>(prev.concat(c)))
+            })
+            }
+    
+       }
+
+       const handleChange = async(e) => {
+   
+        setPlan(e.target.value)
+   
+       }
+
      return (
          <>
              <div className="card card-overflow">
@@ -236,14 +276,26 @@ export default function ClientFinInfo({closeModal}){
             </div>
             <div className="field is-horizontal">
              <div className="field-body">
-             <div className="field" >
+            {/*  <div className="field" >
                  <p className="control has-icons-left" >
                      <input className="input is-small"  name="plan" value={plan} type="text" onChange={ e=> setPlan(e.target.value)} placeholder="Plan"  />
                      <span className="icon is-small is-left">
                      <i className="fas fa-hashtag"></i>
                      </span>
                  </p>
-             </div> 
+             </div>  */}
+             <div className="field">    
+                        <div className="control">
+                            <div className="select is-small ">
+                                <select name="bandType" value={plan} onChange={(e)=>handleChange(e)} className="selectadd" >
+                                <option value="">Choose Plan </option>
+                                {benefittingPlans1.map((option,i)=>(
+                                    <option key={i} value={option.name}> {option.name}</option>
+                                ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
              <div className="field" >
                  <p className="control " >
                      <label  className="label is-size-7 poslabel" >

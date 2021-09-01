@@ -48,9 +48,9 @@ export default function ManagedServices() {
                 </div>
             <div className="column is-6 ">
                 {(state.ServicesModule.show ==='create')&&<ManagedServicesCreate />}
-                {(state.ServicesModule.show ==='detail')&&<ManagedServicesDetail  />}
+              {/*   {(state.ServicesModule.show ==='detail')&&<ManagedServicesDetail  />}
                 {(state.ServicesModule.show ==='modify')&&<ManagedServicesModify Services={selectedServices} />}
-               
+                */}
             </div>
 
             </div>                            
