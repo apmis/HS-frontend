@@ -11,7 +11,7 @@ import { formatDistanceToNowStrict, format } from 'date-fns'
 //const searchfacility={};
 
 
-export  default function CategorySearch({id,getSearchfacility,clear}) {
+export  default function CreateServiceSearch({id,getSearchfacility,clear}) {
     
     const ClientServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
@@ -140,9 +140,9 @@ export  default function CategorySearch({id,getSearchfacility,clear}) {
                     category: 1
                    }
                      }}).then((res)=>{
-              //console.log("Service category  fetched successfully") 
-              //console.log(res.data) 
-             // console.log(res.groupedOrder)
+              console.log("Service category  fetched successfully") 
+              console.log(res.data) 
+              console.log(res.groupedOrder)
                 setFacilities(res.groupedOrder)
                  setSearchMessage("Service category fetched successfully")
                  setShowPanel(true)

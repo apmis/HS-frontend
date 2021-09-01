@@ -8,6 +8,7 @@ import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {FacilitySearch} from '../helpers/FacilitySearch'
 import CategorySearch from "../helpers/CategorySearch"
+import  ServiceSearch2  from '../helpers/ServiceSearch';
 import {OrgList } from './OrgClientList';
 import {
     Accordion,
@@ -38,14 +39,14 @@ export default function ManagedServices() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Services  Module</span></div>
             </div> */}
             <div className="columns ">
-            <div className="column is-4 ">
+            {/* <div className="column is-4 ">
             <OrgList/>    
-                </div>
+                </div> */}
 
-            <div className="column is-4 ">
+            <div className="column is-6 ">
                 <ManagedServicesList />
                 </div>
-            <div className="column is-4 ">
+            <div className="column is-6 ">
                 {(state.ServicesModule.show ==='create')&&<ManagedServicesCreate />}
                 {(state.ServicesModule.show ==='detail')&&<ManagedServicesDetail  />}
                 {(state.ServicesModule.show ==='modify')&&<ManagedServicesModify Services={selectedServices} />}
@@ -60,14 +61,17 @@ export default function ManagedServices() {
 }
 
 export function ManagedServicesCreate(){
-   // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [categoryname, setCategoryName] =useState("")
     const [success, setSuccess] =useState(false)
     const [success2, setSuccess2] =useState(false)
     const [cash,setCash] = useState("Cash")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
+    const [providerBand,setProviderBand] = useState([])
+    const [benefittingPlans1,setBenefittingPlans1] = useState([])
     const ServicesServ=client.service('billing')
+    const BandsServ=client.service('bands')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
@@ -79,6 +83,7 @@ export function ManagedServicesCreate(){
     const [quantity,setQuantity] = useState()
     const [costprice,setCostprice] = useState("")
     const [orgType,setOrgType] = useState("")
+    const [comments,setComments] = useState("")
     const [productItem,setProductItem] = useState([])
     const [plan,setPlan] = useState("")
     const [service,setService] = useState("")
@@ -87,21 +92,120 @@ export function ManagedServicesCreate(){
     const [successService,setSuccessService] = useState(false)
     const {state}=useContext(ObjectContext)
     const [chosen2, setChosen2]=useState()
+    const [modifier, setModifier]=useState([])
+    const [subplan, setSubplan]=useState({})
+    const [band, setBand]=useState("")
+    const [serviceUnavailable, setServiceUnavailable]=useState({
+                                                            status:false,
+                                                            name:""
+                                                            })
+
+   // const bandTypeOptions =["band 1", "Band 2"]
+   // const benefittingplans1 =["NHIS", "Gold","Platinium"]
+   const [checked, setChecked] = useState(false);
+ 
+   const handleChange = async(e,i,c) => {
+   
+     c.checked = !c.checked
+
+     const newPlan={
+        name:c.name,
+        checked:false
+    }
+    // console.log(c.checked)
+     if (c.checked){
+         //add to benefiting plan
+         let planx={
+            name:c.name,
+            serviceClass:"",
+            feeforService:true,
+            capitation:false,
+            reqAuthCode:false,
+            reqCopay:false,
+            copay:""
+            }
+         //   console.log(planx)
+        await setBenefittingPlans((prev)=>([...prev, planx])) 
+
+     }else{
+       await setBenefittingPlans( prevstate=>prevstate.filter(el=>el.name!==c.name))//remove from benefiting plan
+     }
+
+   };
+
+  const updateObjectInArray= (array, child) => {
+      array.map((item, index) => {
+      if (item.name !== child.name) {
+        // This isn't the item we care about - keep it as-is
+        return item
+      }
+      // Otherwise, this is the one we want - return an updated value
+      //console.log(child)
+      return {  
+        ...child
+      }
+    })
+    return array
+  }
+   
+   const handleChangeMode = async(e) => {
     
+    let existingBand=productItem.filter(el=>el.band===e.target.value)
+    if (!existingBand.length>0){
+        await setBand(e.target.value)
+    }else{
+        toast({
+            message: " This band already exist! Please choose another band ",
+            type: 'is-danger',
+            dismissible: true,
+            pauseOnHover: true,
+          })
+          return
+    } 
+   };
+
+
+   const handleServType = async(e,i,c) => {
+    let currentPlan=benefittingplans.filter(el=>el.name==c.name)[0]
+    currentPlan.serviceClass = e.target.value
+    currentPlan.capitation = e.target.value==="Capitation"?true:false
+    currentPlan.feeforService = e.target.value==="Fee for Service"?true:false
+    const updatedplan= updateObjectInArray(benefittingplans,currentPlan)
+    await setBenefittingPlans(updatedplan)
+   }
+
+
+   const handleCopay = async(e,i,c) => {
+    let currentPlan=benefittingplans.filter(el=>el.name==c.name)[0]
+    currentPlan.copay = e.target.value
+    currentPlan.reqCopay=currentPlan.copay===""?false:true
+    const updatedplan= updateObjectInArray(benefittingplans,currentPlan)
+    await setBenefittingPlans(updatedplan)
+   };
+
+   const handleAuthCode   = async(e,i,c) => {
+     let currentPlan=benefittingplans.filter(el=>el.name==c.name)[0]
+     currentPlan.reqAuthCode = e.target.checked
+     const updatedplan= updateObjectInArray(benefittingplans,currentPlan)
+     await setBenefittingPlans(updatedplan)
+   };
+
+   useEffect(() => {
+       
+       return () => {
+          
+       }
+   }, [benefittingplans])
+
     const [Services,setServices]=useState({
         productitems:[],
         panel,
         source,
 
     })
- 
-    let productItemI={
-       facilityId,
-        name,
-        quantity,
-        costprice,
-       
-    }
+   
+  
+
     // consider batchformat{batchno,expirydate,qtty,baseunit}
     //consider baseunoit conversions
     const getSearchfacility=(obj)=>{
@@ -109,6 +213,7 @@ export function ManagedServicesCreate(){
         setFacilityId(obj._id)
         setName(obj.facilityName)
         setOrgType(obj.facilityType)
+
         if(!obj){
         setName("")
         setOrgType("")
@@ -142,6 +247,13 @@ export function ManagedServicesCreate(){
         }
             setSuccessService(false)
     }
+
+    const notfound=(obj)=>{
+
+        alert(obj)
+        setServiceUnavailable(obj)
+        console.log(obj)
+    }
     
     useEffect(() => {
         setCurrentUser(user)
@@ -151,43 +263,141 @@ export function ManagedServicesCreate(){
         }
     }, [user])
 
+   const getBenfittingPlans = async()=>{
+    setBenefittingPlans1([])
+    if (user.currentEmployee){
+            
+        const findServices= await ServicesServ.find(
+                {query: {
+                    facility: user.currentEmployee.facilityDetail._id,
+                    'contracts.source_org' : user.currentEmployee.facilityDetail._id ,
+                    'contracts.dest_org' : user.currentEmployee.facilityDetail._id ,
+                    category:"Managed Care",
+                   // storeId:state.StoreModule.selectedStore._id,
+                   // $limit:20,
+                //   paginate:false,
+                    $sort: {
+                        category: 1
+                    }
+                    }})
+
+        findServices.groupedOrder[0].services.forEach(async (c)=>{
+            const newPlan={
+                name:c.name,
+                checked:false
+            }
+            await setBenefittingPlans1((prev)=>(prev.concat(c)))
+        })
+        }
+
+   }
+   const getProviderBand = async()=>{
+    if (user.currentEmployee){
+            
+        const findServices= await BandsServ.find(
+                {query: {
+                    facility: user.currentEmployee.facilityDetail._id,
+                    bandType:"Provider",
+                    
+                   // storeId:state.StoreModule.selectedStore._id,
+                   // $limit:20,
+                //   paginate:false,
+                    $sort: {
+                        category: 1
+                    }
+                    }})
+                   // console.log(findServices)
+         await setProviderBand(findServices.data)
+        // console.log(findServices)
+                }
+       
+}
+
+    useEffect(() => {
+       // console.log("starting...")
+        setBenefittingPlans1([])
+        setFacilityId(user.currentEmployee.facilityDetail._id) 
+        setName(user.currentEmployee.facilityDetail.facilityName) 
+        setOrgType(user.currentEmployee.facilityDetail.facilityType)
+        getProviderBand()
+        getBenfittingPlans()
+        return () => {
+         
+        }
+    }, [])
 
     const handleClickProd=async()=>{
-        if (productItem.length>0){
+        let pricingInfo ={
+            band,
+            costprice,
+            benefittingplans //=array of planx
+        }
         
-        if(!costprice || !name){
-            toast({
-                message: 'You need to enter organization name and price ' ,
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              }) 
-            return
+        let productItemI={
+           /* facilityId,
+            name,
+            quantity,
+            costprice, */
+            name:service.name,
+            categoryname,
+            comments,
+            pricingInfo      
         }
-    }else{
-        if(!costprice || !cash){
-            toast({
-                message: 'You need to enter organization name and price ' ,
-                type: 'is-danger',
-                dismissible: true,
-                pauseOnHover: true,
-              }) 
-            return
-        }
-
-    }
-        if(cash==="Cash"){
-             productItemI={
-                source_org:user.currentEmployee.facilityDetail._id,
-                source_org_name:user.currentEmployee.facilityDetail.facilityName,
-                dest_org:user.currentEmployee.facilityDetail._id,
-                dest_org_name:user.currentEmployee.facilityDetail.facilityName,
-                price:costprice,
-                billing_type:"Cash",
-                plans:benefittingplans
-             } 
-             await setCash("")
-        }else{
+      //  if (productItem.length>0){
+        //Check that fields are filled appropriately
+                if(!costprice ){
+                    toast({
+                        message: 'You need to enter price ' ,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                    }) 
+                    return
+                }
+ 
+            if( !service.name && !serviceUnavailable.name){
+                toast({
+                    message: 'You need to enter service name ' ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                }) 
+                return
+            }
+            if( !categoryname){
+                toast({
+                    message: 'You need to enter category ' ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                }) 
+                return
+            }
+            if( band===""){
+                toast({
+                    message: 'You need to choose provider band ' ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                }) 
+                return
+            }
+            if( !benefittingplans.length>0){
+                
+                toast({
+                    message: 'You need to add benefiting plan ' ,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                }) 
+               
+                return
+            }
+            let check=  await handleCheck()
+            if (check){
+                
+                return
+            }
             productItemI={
                source_org:facilityId, 
                source_org_name:name, 
@@ -195,20 +405,27 @@ export function ManagedServicesCreate(){
                dest_org_name:user.currentEmployee.facilityDetail.facilityName,
                price:costprice,
                billing_type:orgType==="HMO"?"HMO":"Company", 
-               plans:benefittingplans
-
+               plans:benefittingplans,
+               comments:comments,
+            
+               band:band
             } 
+           // console.log(productItemI)
             await setCash("")
-       }
+       
        
         await setSuccess(false)
         setProductItem(
             prevProd=>prevProd.concat(productItemI)
         )
-        setName("")
-        setOrgType("")
-        setFacilityId("")
+       
+       
         setCostprice("")
+        setBand("")
+        setBenefittingPlans([])
+        setBenefittingPlans1([])
+        getBenfittingPlans()
+
        await setSuccess(true)
      
     }
@@ -220,7 +437,7 @@ export function ManagedServicesCreate(){
     setSource("")
     setPanel(false)
     setName("")
-  
+    setComments("")
     setCostprice("")
     setProductItem([])
     setCategoryName("")
@@ -230,10 +447,34 @@ export function ManagedServicesCreate(){
     setBenefittingPlans([])
     setCash("Cash")
     setOrgType("")
+
+    }
+    const handleClear=()=>{
+        resetform()
+        /*  setMessage("Created Services successfully") */
+            setSuccess(true)
+            setSuccess2(true)
+            setSuccessService(true)
+            toast({
+                message: 'Data entry cleared succesfully',
+                type: 'is-success',
+                dismissible: true,
+                pauseOnHover: true,
+            })
+            setSuccess(false)
+            setSuccess2(false)
+            setSuccessService(false)
+            setProductItem([])
+            setPanelList([])
     }
 
     const onSubmit = async() =>{
        // e.preventDefault();
+     let check= await handleCheck()
+     if (check){
+         console.log(check)
+         return
+     }
        if(panel && (panelList.length===0)){
         toast({
             message: "Please choose services that make up panel or uncheck panel ",
@@ -245,45 +486,94 @@ export function ManagedServicesCreate(){
        }
 
         setSuccess(false)
-       let data ={
-           name:source,
-           category:categoryname,
-           facility:user.currentEmployee.facilityDetail._id,
-           facilityname:user.currentEmployee.facilityDetail.facilityName,
-           panel:panel,
-           panelServices:panelList,
-           contracts:productItem,
-           createdBy:user._id
-       }
-       
-        ServicesServ.create(data)
-        .then((res)=>{
-                //console.log(JSON.stringify(res))
-                resetform()
-               /*  setMessage("Created Services successfully") */
-                setSuccess(true)
-                setSuccess2(true)
-                toast({
-                    message: 'Service created succesfully',
-                    type: 'is-success',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-                  setSuccess(false)
-                  setSuccess2(false)
-                  setProductItem([])
-                  setPanelList([])
-            })
-            .catch((err)=>{
-                toast({
-                    message: 'Error creating Services ' + err,
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-            })
+            
+                    let data ={
+                        name: serviceUnavailable.status? serviceUnavailable.name:service.name, //source
+                        category:categoryname,
+                        facility:user.currentEmployee.facilityDetail._id,
+                        facilityname:user.currentEmployee.facilityDetail.facilityName,
+                        panel:panel,
+                        panelServices:panelList,
+                        contracts:productItem,
+                        createdBy:user._id
+                    }
+                  //  console.log(data)
+                    
+                        ServicesServ.create(data)
+                        .then((res)=>{
+                                //console.log(JSON.stringify(res))
+                                resetform()
+                            /*  setMessage("Created Services successfully") */
+                                setSuccess(true)
+                                setSuccess2(true)
+                                setSuccessService(true)
+                                toast({
+                                    message: 'Service created succesfully',
+                                    type: 'is-success',
+                                    dismissible: true,
+                                    pauseOnHover: true,
+                                })
+                                setSuccess(false)
+                                setSuccess2(false)
+                                setSuccessService(false)
+                                setProductItem([])
+                                setPanelList([])
+                            })
+                            .catch((err)=>{
+                                toast({
+                                    message: 'Error creating Services ' + err,
+                                    type: 'is-danger',
+                                    dismissible: true,
+                                    pauseOnHover: true,
+                                })
+                            })
 
-      } 
+                        
+                    
+                    /*else{
+
+
+                    let addservice= [...service.contracts, ...productItem]
+                        console.log(service)
+                        let data ={
+                        
+                            contracts:addservice
+                            //updatedBy:user._id //should be within contract
+                        }
+                       
+                        console.log(data)
+                        //data.facility=Services.facility
+                          //console.log(data);
+                        
+                       ServicesServ.patch(service._id,data)
+                        .then((res)=>{
+                                console.log(JSON.stringify(res))
+                               // e.target.reset();
+                               // setMessage("updated Services successfully")
+                                  toast({
+                                    message: 'Services updated succesfully',
+                                    type: 'is-success',
+                                    dismissible: true,
+                                    pauseOnHover: true,
+                                  })
+                                  
+                             //   changeState(res)
+                
+                            })
+                            .catch((err)=>{ 
+                                //setMessage("Error creating Services, probable network issues "+ err )
+                               console.log(err)
+                                toast({
+                                    message: "Error updating Services, probable network issues or "+ err,
+                                    type: 'is-danger',
+                                    dismissible: true,
+                                    pauseOnHover: true,
+                                  })
+                            })*/
+                 
+                      } 
+                    
+    
 
 const handleBenefit=(e)=>{
    
@@ -333,34 +623,40 @@ const handleCheck= async ()=>{
             dismissible: true,
             pauseOnHover: true,
           }) 
-        return
+        return true
     }
-    await ServicesServ.find({
+   // console.log(serviceUnavailable.name)
+   const resp= await ServicesServ.find({
         query:{
-            name:source,
+            name: serviceUnavailable.name||service.name, //source
             facility: user.currentEmployee.facilityDetail._id,
             category:categoryname
         }
-    }).then((resp)=>{
-        console.log(resp)
+    })
+  //  console.log(resp)
+    //.  
+    /*then((resp)=>{
+        console.log(resp)*/
         if (resp.data.length>0){
         toast({
-            message: 'Service already exist. Kindly modify it '+ resp.data ,
+            message: 'Service already exist. Kindly modify it ',//+ resp.data ,
             type: 'is-danger',
             dismissible: true,
             pauseOnHover: true,
           }) 
-          return
+          return true
+        }else{
+            return false
         }
-    })
-    .catch((err)=>{
+   // })
+   /*  .catch((err)=>{
         toast({
             message: 'Error checking services  '+ err ,
             type: 'is-danger',
             dismissible: true,
             pauseOnHover: true,
-          }) 
-    })
+          })  */
+  //  })
 }
     
 
@@ -372,22 +668,30 @@ const handleCheck= async ()=>{
                     Create Services
                 </p>
             </div>
-            <div className="card-content ">
+            <div className="card-content vscrollable remPad1 ">
    
             {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
-            <div className="field is-horizontal">
-            <div className="field-body">
-           {/* 
-             <div className="field" style={{width:"25%"}}>
-                    <p className="control has-icons-left has-icons-right"  >
-                        <input className="input is-small"  ref={register({ required: true })}  value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div> */}
-                <div className="field is-horizontal">
-            <div className="field-body">
+            {/* <div className="field is-horizontal">
+            <div className="field-body"> */}
+            <div className="field">
+                    <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                        <ServiceSearch  getSearchService={getSearchService} clearService={successService} notfound={notfound}  /> 
+                        <p className="control has-icons-left " style={{display:"none"}}>
+                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
+                            <span className="icon is-small is-left">
+                            <i className="fas  fa-map-marker-alt"></i>
+                            </span>
+                        </p>
+                    </div>  
+                </div>
+           
+                     
+                {/* {sellingprice}  {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"}  */}
+                {/*  </div> */}
+             
+          
+              
+           
                 <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
                     <CategorySearch  getSearchfacility={getSearchfacility2} clear={success2} /> 
                     <p className="control has-icons-left " style={{display:"none"}}>
@@ -397,172 +701,171 @@ const handleCheck= async ()=>{
                         </span>
                     </p>
                 </div>
-             
-            </div>
-        </div>
-            
-            <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="source" type="text" onChange={e=>setSource(e.target.value)} onBlur={handleCheck} placeholder="Name of Service" autoComplete="false" />
+                <div className="field is-expanded"   >
+                   
+                    <p className="control has-icons-left ">
+                        <input className="input is-small"    value={comments} name="comments" type="text" onChange={e=>setComments(e.target.value)} placeholder="Comments" />
                         <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div>
-           
-            </div>
-            </div> 
-         
-              
-         <div className="field is-horizontal">
-               <div className="field-body">
-                 {/*   <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <label className="label is-small" >
-                        <input className="checkbox is-small"   ref={register({ required: true })}  checked={panel}  name="panel" type="checkbox" onChange={e=>setPanel(e.target.checked)}  placeholder="Date"  />
-                    
-                        <span>Panel</span></label>
-                    </p>
-                </div> */}
-
-            {panel && <>
-                <div className="field">
-                    <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                        <ServiceSearch  getSearchService={getSearchService} clearService={successService} /> 
-                        <p className="control has-icons-left " style={{display:"none"}}>
-                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
-                            <span className="icon is-small is-left">
-                            <i className="fas  fa-map-marker-alt"></i>
-                            </span>
-                        </p>
-                    </div>  
-                </div>
-                <p className="control">
-                            <button className="button is-info is-small  is-pulled-right selectadd">
-                            <span className="is-small" onClick={()=>handleAddPanel()}> +</span>
-                            </button>
-                        </p>
-            </> }
-
-                </div> 
-                </div> 
-
-           {panelList.length>0 &&     <div>
-           <strong> Panel Items:</strong> {panelList.map((plan,i)=>(
-                        <span key={i} className="ml-1">
-                            {plan.service_name};
-                            </span>))}
-             </div>
-            }       
-
-              {/*   </form>    */}
-               
-           
-         {/* array of Services items */}
-        
-        <label className="label is-small">Add Pricing Info:</label>
-        {(productItem.length>0) ? <> 
-                <div className="field is-horizontal">
-                <div className="field-body">
-                    <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                        <FacilitySearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                        <p className="control has-icons-left " style={{display:"none"}}>
-                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id" />
-                            <span className="icon is-small is-left">
-                            <i className="fas  fa-map-marker-alt"></i>
-                            </span>
-                        </p>
-                    </div>
-                {/*  <div className="field">
-                    <p className="control has-icons-left">
-                        <input className="input is-small"  ref={register({ required: true })}  name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
+                        <i className="fas  fa-map-marker-alt"></i>
                         </span>
                     </p>
+                </div>
+       
         
-                </div>  */}
+        <label className="label is-small">Add Pricing Info:</label>
+        <div className="field is-horizontal">
+            <div className="field-body">
+                <div className="field">    
+                        <div className="control">
+                            <div className="select is-small ">
+                                <select name="bandType" value={band} onChange={(e)=>handleChangeMode(e)} className="selectadd" >
+                                <option value="">Choose Provider Band </option>
+                                {providerBand.map((option,i)=>(
+                                    <option key={i} value={option.name}> {option.name}</option>
+                                ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                 <div className="field">
                     <p className="control has-icons-left">
                         <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-dollar-sign"></i>
+                        <span className="icon naira is-left">
+                        {/* <i className="fas fa-dollar-sign"></i> */}
+                        <b>&#8358;</b>
                         </span>
                     </p>
-                </div>
-                <div className="field">
-                <p className="control">
-                        <button className="button is-info is-small  is-pulled-right selectadd">
-                        <span className="is-small" onClick={handleClickProd}>+</span>
-                        </button>
-                    </p>
+            </div>
+            </div>
+        </div>
+              
+      
+        
+        <label className="label is-small">Benefitting Plans:</label>
+        <div className="field is-horizontal">
+            <div className="field-body">
+            <div className="field">    
+                      {/*   <div className="control">
+                            <div className="select is-small ">
+                                <select name="bandType"   className="selectadd" >
+                                <option value="">Choose Benefitting Plans </option>
+                                {benefittingplans1.map((option,i)=>(
+                                    <option key={i} value={option}> {option}</option>
+                                ))}
+                                </select>
+                            </div>
+                            </div> */}
+                        
+                        <div className="field ">
+                            {
+                                benefittingPlans1.map((c,i) => 
+                                    < >
+                                    <div className="pb-2">
+                                        <div className= "field is-horizontal"> 
+                                                    <div className="field-body">
+                                                    <div className="field mr-2 ">
+                                                    <label  className="label is-small mr-2" key={i}>
+                                                        <input className="checkbox is-small " 
+                                                            type="checkbox" 
+                                                            value={i} 
+                                                            name={`selectedPlans +${i}`}
+                                                            /*  checked={c.checked}  */
+                                                            onChange={(e)=>handleChange(e,i,c)}
+                                                            />
+                                                            {c.name + " "}
+                                                    </label>
+                                                </div>
+
+                                         
+                                                    <div className={`field  mr-2 ${c.checked?"":"is-hidden"}`}>
+                                                    <input className="input smallerinput is-small is-pulled-right "  name={`copay +${i}`} value={benefittingplans.filter(el=>el.name==c.name).copay} type="text" onChange={(e)=>handleCopay(e,i,c)} placeholder="Co-pay Amount"  />
+                                                </div>
+                                                
+                                                </div>
+                                                </div>                                                                                                                                                                                                                          
+                                        <div className={`field pl-3 ${c.checked?"":"is-hidden"}`}>
+                                            <div className="field is-horizontal">
+                                                <div className="field-body mt-2">
+                                                    <div className="field mr-2">
+                                                                <p className="control has-icons-left has-icons-right">
+                                                                    <label className="radio label is-small" >
+                                                                    <input className=" is-small"  value="Capitation"     name={`servtype +${i}`} type="radio" onChange={(e)=>handleServType(e,i,c)}    />
+                                                                    <span>Capitation</span></label>
+                                                                </p>
+                                                            </div>
+                                                    <div className="field mr-2">
+                                                <p className="control has-icons-left has-icons-right">
+                                                    <label className="radio label is-small" >
+                                                    <input className=" is-small" name={`servtype +${i}`} value="Fee for Service"   type="radio" onChange={(e)=>handleServType(e,i,c)}   />
+                                                
+                                                    <span>Fee for Service</span></label>
+                                                </p>
+                                            </div>
+                                                </div>
+                                            </div>                              
+                                            <div className="field mr-2">
+                                                <p className="control has-icons-left has-icons-right">
+                                                    <label className="label is-small" >
+                                                    <input className="checkbox is-small"      
+                                                        name={`authCode +${i}`} 
+                                                        type="checkbox" 
+                                                        onChange={(e)=>handleAuthCode(e,i,c)}   
+                                                    />
+                                                    <span>Requires Pre-Authorization Code</span></label>
+                                                </p>
+                                            </div> 
+                                        </div>
+                                        </div> 
+                                    </>
+                                )
+                            }
                         </div>
-                        </div>
+                        
                     </div>
-             <div className="field is-horizontal">
-                <div className="field-body">
-                 <div className="field">
-                    
-                    <div className="field has-addons" /* style={{display:`${ProductEntry.show}`} }*/ >
-                              <div className="control">
+
+               {/*  <div className="field">
+                    <div className="field has-addons"  >
+                        <div className="control">
                                   <input  className="input selectadd" type="text" name="plan"  value={plan} onChange={e=>setPlan(e.target.value)} placeholder="Benefitting Plans" />
                                   </div> 
                                   <div className="control">
                                   <button className="button is-info selectadd" onClick={(e)=>handleBenefit(e)}>add</button>
-                                  </div>
-                                  </div>
-                                
-                 </div>
-                 <div className="field">
+                        </div>
+                    </div>               
+                    </div>
+                <div className="field">
                  {benefittingplans.map((plan,i)=>(
                         <span key={i} className="ml-1">
                             {plan};
                         </span>
                      ))}
-                 </div>
-                </div>
-              </div>
-            </>:
-            <>
-              <div className="field is-horizontal">
-                <div className="field-body">
-                    <div className="field">
-                        <p className="control has-icons-left">
-                            <input className="input is-small" /* ref={register({ required: true })} */ disabled name="cash" value={cash} type="text" onChange={e=>setCash(e.target.value)} /* placeholder="Cost Price" */  />
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-dollar-sign"></i>
-                            </span>
-                        </p>
-                        </div>
-                    <div className="field">
-                        <p className="control has-icons-left">
-                            <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-dollar-sign"></i>
-                            </span>
-                        </p>
-                    </div>
-                    <div className="field">
-                        <p className="control">
-                            <button className="button is-info is-small  is-pulled-right selectadd">
-                            <span className="is-small" onClick={handleClickProd}>+</span>
-                            </button>
-                        </p>
-                    </div>
-                </div>
-              </div>
-             
+                </div> */}
+               
 
-            </> }
-          
-            
+                </div>
+              </div>
+              <div>
+        </div>
+           
+          <>
+              
+         <div className="field pb-5 ">
+                    <p className="control">
+                        <button className="button is-info is-small  is-pulled-left selectadd ">
+                        <span className="is-small" onClick={handleClickProd}>Add</span>
+                        </button>
+                    </p>
+                </div>
+         </>
        {(productItem.length>0) && <div>
-            <label>Prices:</label>
+            <label>Service Parameters:</label>
          <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                 <thead>
                     <tr>
                     <th><abbr title="Serial No">S/No</abbr></th>
                     <th><abbr title="Source Organization">Organization</abbr></th>
+                    <th><abbr title="Band">Band</abbr></th>
                     <th><abbr title="Price">Amount</abbr></th>
                     <th><abbr title="Billing Type">Billing Type</abbr></th>
                     <th><abbr title="Benefitting Plans">Plans</abbr></th>
@@ -575,15 +878,15 @@ const handleCheck= async ()=>{
                 </tfoot>
                 <tbody>
                    { productItem.map((Services, i)=>(
-
                         <tr key={i}>
                         <th>{i+1}</th>
                         <td>{Services.source_org_name}</td>
+                        <td>{Services.band}</td>
                         <th>{Services.price}</th>
                        <td>{Services.billing_type}</td>
                         <td>  {Services.plans.map((plan,i)=>(
                         <span key={i} className="ml-1">
-                            {plan};
+                            <b>{plan.name}</b>:{plan.serviceClass}/{plan.reqAuthCode.toString()}/{plan.copay};<br></br>
                         </span>
                      ))}</td>
                           {/*<td>{Services.amount}</td> */}
@@ -594,10 +897,15 @@ const handleCheck= async ()=>{
                     ))}
                 </tbody>
                 </table>
-                <div className="field mt-2">
+                <div className="field is-grouped mt-2">
                 <p className="control">
                     <button className="button is-success is-small" disabled={!productItem.length>0} onClick={onSubmit}>
                         Create
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-warning is-small" type="reset" onClick={handleClear}>
+                        Cancel
                     </button>
                 </p>
                 </div>
@@ -731,6 +1039,7 @@ export function ManagedServicesList(){
 
     useEffect(() => {
                  getFacilities()
+                
 
                 ServicesServ.on('created', (obj)=>getFacilities())
                 ServicesServ.on('updated', (obj)=>getFacilities())
@@ -1143,7 +1452,7 @@ export function ManagedServicesModify(){
                     dismissible: true,
                     pauseOnHover: true,
                   }) 
-                return
+                return true
             }
             await ServicesServ.find({
                 query:{
@@ -1155,12 +1464,12 @@ export function ManagedServicesModify(){
                 console.log(resp)
                 if (resp.data.length>0){
                 toast({
-                    message: 'Service already exist. Kindly modify it '+ resp.data ,
+                    message: 'Service already exist. Kindly modify it ' , //+ resp.data
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
                   }) 
-                  return
+                  return true
                 }
             })
             .catch((err)=>{
@@ -1721,7 +2030,7 @@ export function ManagedServicesModify(){
     )              
 }   
 
-export  function ServiceSearch({getSearchService,clearService}) {
+export  function ServiceSearch({getSearchService,clearService,notfound}) {
     
     const productServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
@@ -1743,10 +2052,12 @@ export  function ServiceSearch({getSearchService,clearService}) {
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
+        await setSimpa(obj.name)
+       // alert("something is chaning")
+        //console.log(obj)
        getSearchService(obj)
        
-       await setSimpa(obj.name)
+      
        
         // setSelectedFacility(obj)
         setShowPanel(false)
@@ -1760,7 +2071,7 @@ export  function ServiceSearch({getSearchService,clearService}) {
 }
     const handleBlur=async(e)=>{
          if (count===2){
-             console.log("stuff was chosen")
+             console.log("stuff was not chosen")
          }
        
        /*  console.log("blur")
@@ -1801,7 +2112,17 @@ export  function ServiceSearch({getSearchService,clearService}) {
                      }}).then((res)=>{
              // console.log("product  fetched successfully") 
               //console.log(res.data) 
-                setFacilities(res.data)
+              //...new Set(array)
+             
+              const uniqueArr = [...new Set(res.data.map(data => data.name ))]
+             // console.log(uniqueArr)
+              let uniqueObj=[]
+              uniqueArr.forEach((obj)=>{
+                uniqueObj.push((res.data.find((el)=>el.name==obj)))
+              //  console.log(uniqueObj)
+              })
+              //console.log(uniqueObj)
+                setFacilities(uniqueObj)
                  setSearchMessage(" product  fetched successfully")
                  setShowPanel(true)
              })
@@ -1823,8 +2144,13 @@ export  function ServiceSearch({getSearchService,clearService}) {
         }
     }
 
-    const handleAddproduct =()=>{
+    const handleAddproduct =(val)=>{
         setProductModal(true) 
+        setShowPanel(false)
+        notfound({
+            status:true,
+            name:val
+            })
     }
     const handlecloseModal =()=>{
         setProductModal(false)
@@ -1862,13 +2188,13 @@ export  function ServiceSearch({getSearchService,clearService}) {
                         {/* {searchError&&<div>{searchMessage}</div>} */}
                         <div className="dropdown-menu"   style={{width:"100%"}}>
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Service does not current exist</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item" onClick={()=>handleAddproduct(val)}> <span>Add {val} to service list</span>  </div>}
 
                               {facilities.map((facility, i)=>(
                                     
                                     <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <span>{facility.name}</span>
+                                        <span>{facility.name} ({facility.category})</span>
                                         
                                     </div>
                                     

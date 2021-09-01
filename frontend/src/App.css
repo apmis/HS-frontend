@@ -15,6 +15,15 @@
 .warp{
   flex-wrap: wrap;
 }
+.naira{
+  height: 1.5rem !important;
+  margin-left: -0.7rem !important;
+  font-size: x-large !important;
+ 
+}
+.smallerinput{
+  font-size: 0.65rem !important;
+}
 .payment{
   background-color: rgb(133, 237, 133);
   color:white !important;

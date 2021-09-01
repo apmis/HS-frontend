@@ -383,7 +383,7 @@ export function OrganizationList(){
                     </div> */}
 
                 </div>
-                <div className="table-container pullup ">
+               {!!facilities[1] && <div className="table-container pullup ">
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
@@ -404,7 +404,7 @@ export function OrganizationList(){
                                     <tbody>
                                         {facilities.map((facility, i)=>(
 
-                                            <tr key={facility.organizationDetail._id} onClick={()=>handleRow(facility)} className={facility.organizationDetail._id===(selectedFacility?._id||null)?"is-selected":""}>
+                                            <tr key={facility.organizationDetail._id} onClick={()=>handleRow(facility)} className={facility.organizationDetail?._id===(selectedFacility?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{facility.organizationDetail.facilityName}</th>
                                             <td>{facility.organizationDetail.facilityAddress}</td>
@@ -423,7 +423,7 @@ export function OrganizationList(){
                                     </table>
                                     
                 </div>               
-            </>
+                } </>
               
     )
 }
@@ -479,7 +479,7 @@ export function OrganizationDetail(){
                     <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        Name: <span className="is-small "   name="facilityName"> {facility.organizationDetail.facilityName} </span>
+                        Name: <span className="is-small "   > {facility.organizationDetail.facilityName} </span>
                         </label>
                 
                         
@@ -490,7 +490,7 @@ export function OrganizationDetail(){
                         <i className="fas fa-map-signs"></i>
                     </span>Address:
                    
-                    <span className="is-small "  name="facilityAddress">{facility.organizationDetail.facilityAddress} </span> 
+                    <span className="is-small "  >{facility.organizationDetail.facilityAddress} </span> 
                     </label>
                 </div>
             <div className="field">
@@ -498,14 +498,14 @@ export function OrganizationDetail(){
                     <i className="fas fa-map-marker-alt"></i>
                     </span>City: 
                 
-                    <span className="is-small "  name="facilityCity">{facility.organizationDetail.facilityCity}</span> 
+                    <span className="is-small "  >{facility.organizationDetail.facilityCity}</span> 
                     </label>
                 </div>
             <div className="field">
             <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-phone-alt"></i>
                     </span>Phone:           
-                    <span className="is-small "  name="facilityContactPhone" >{facility.organizationDetail.facilityContactPhone}</span>
+                    <span className="is-small " >{facility.organizationDetail.facilityContactPhone}</span>
                         </label>
  
                 
@@ -514,7 +514,7 @@ export function OrganizationDetail(){
             <div className="field">
             <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
-                    </span>Email:                     <span className="is-small "  name="facilityEmail" >{facility.organizationDetail.facilityEmail}</span>
+                    </span>Email:                     <span className="is-small "   >{facility.organizationDetail.facilityEmail}</span>
                     
                          </label>
 
@@ -523,14 +523,14 @@ export function OrganizationDetail(){
             <div className="field">
             <label className="label is-small"> <span className="icon is-small is-left">
                     <i className="fas fa-user-md"></i></span>CEO:
-                    <span className="is-small "  name="facilityOwner">{facility.organizationDetail.facilityOwner}</span>
+                    <span className="is-small "  >{facility.organizationDetail.facilityOwner}</span>
                     </label>
                 </div>
             <div className="field">
             <label className="label is-small"> <span className="icon is-small is-left">
                     <i className="fas fa-hospital-symbol"></i>
                     </span>Type:              
-                    <span className="is-small "  name="facilityType">{facility.organizationDetail.facilityType}</span>
+                    <span className="is-small "  >{facility.organizationDetail.facilityType}</span>
                 </label>
  
                 </div>
@@ -538,7 +538,7 @@ export function OrganizationDetail(){
              <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>Category:              
-                    <span className="is-small "  name= "facilityCategory">{facility.organizationDetail.facilityCategory}</span>
+                    <span className="is-small "  >{facility.organizationDetail.facilityCategory}</span>
                 </label>
 
 

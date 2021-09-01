@@ -158,7 +158,7 @@ export function OrgList(){
                     </div> */}
 
                 </div>
-                <div className="table-container pullup ">
+               {!!facilities[1] && <div className="table-container pullup ">
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
@@ -197,7 +197,7 @@ export function OrgList(){
                                     </tbody>
                                     </table>
                                     
-                </div>               
+                </div>   }            
             </>
               
     )

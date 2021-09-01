@@ -14,6 +14,7 @@ import Workspace from './facility/Workspace'
 import Accessibility from './facility/Accessibility'
 import ClinicSetup from './Clinic/ClinicSetup'
 import {UserContext,ObjectContext} from '../context'
+import Bands from './facility/Bands'
 
 export default function FacilityModule() {
     const [showmenu, setShowMenu]=useState(false)
@@ -61,6 +62,9 @@ export default function FacilityModule() {
                                      <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/hsmodules`}>Modules</NavLink>
                                     </div>*/}
+                                     <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/bands`}>Bands</NavLink>
+                                    </div>
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/employees`}>Employees</NavLink>
                                     </div>
@@ -125,6 +129,9 @@ export default function FacilityModule() {
                         </Route>
                         <Route path={`${path}/location`} exact>
                             <Location/>
+                        </Route>
+                        <Route path={`${path}/bands`} exact>
+                            <Bands/>
                         </Route>
                         <Route path={`${path}/roaster`} exact>
                             <Roaster/>

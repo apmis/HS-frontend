@@ -29,6 +29,10 @@ function App() {
       show:'create',
       selectedLocation:{}
     },
+    BandModule:{
+      show:'create',
+      selectedBand:{}
+    },
     ProductModule:{
       show:'create',
       selectedProduct:{}
