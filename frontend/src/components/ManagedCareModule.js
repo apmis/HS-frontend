@@ -170,18 +170,7 @@ export default function ManagedCareModule() {
                         <Route path={`${path}/revenue`} exact>
                             <FacilityAccount />
                         </Route>
-                        {/* <Route path={`${path}/inv-entry`} exact>
-                            <ProductEntry />
-                        </Route>
-                        <Route path={`${path}/inv-exit`} exact>
-                            <ProductExit/>
-                        </Route>
-                        <Route path={`${path}/inv-products`} exact>
-                            <Products />
-                        </Route>
-                        <Route path={`${path}/inv-reports`} exact>
-                            <FinanceReport />
-                        </Route> */}
+                        
                         <Route path={`${path}/organization`} exact>
                             <OrganizationClient />
                         </Route>

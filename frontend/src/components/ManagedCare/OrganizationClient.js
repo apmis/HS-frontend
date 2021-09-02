@@ -51,11 +51,17 @@ export function OrganizationCreate(){
     const facilityServ=client.service('facility')
     const orgServ=client.service('organizationclient')
     const [chosen, setChosen] =useState("")
+    const [band, setBand]=useState("")
+    const BandsServ=client.service('bands')
+    const [providerBand,setProviderBand] = useState([])
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
 
-    
-    const onSubmit = (data,e) =>{
+     
+   const handleChangeMode = async(e) => {
+        await setBand(e.target.value)
+      };
+    /* const onSubmit = (data,e) =>{
         e.preventDefault();
         setMessage("")
         setError(false)
@@ -75,15 +81,47 @@ export function OrganizationCreate(){
                 setError(true)
             })
 
-      } 
+      }  */
+      const getProviderBand = async()=>{
+        if (user.currentEmployee){
+                
+            const findServices= await BandsServ.find(
+                    {query: {
+                        facility: user.currentEmployee.facilityDetail._id,
+                        bandType:"Provider",
+                        
+                       // storeId:state.StoreModule.selectedStore._id,
+                       // $limit:20,
+                    //   paginate:false,
+                        $sort: {
+                            category: 1
+                        }
+                        }})
+                       // console.log(findServices)
+             await setProviderBand(findServices.data)
+            // console.log(findServices)
+                    }
+           
+    }
 
       const handleClick=()=>{
+          //check band selected
+          if (band===""){
+            toast({
+                message: 'Band not selected, Please select band',
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+            })
+            return 
+          }
 
         console.log(chosen)
         let stuff={
             facility:user.currentEmployee.facilityDetail._id ,
             organization:chosen._id,
-            relationshiptype:"managedcare"
+            relationshiptype:"managedcare",
+            band
         }
         orgServ.create(stuff)
         .then((res)=>{
@@ -97,6 +135,7 @@ export function OrganizationCreate(){
                     pauseOnHover: true,
                   })
                   setSuccess(false)
+                  setBand("")
             })
             .catch((err)=>{
                 toast({
@@ -108,6 +147,14 @@ export function OrganizationCreate(){
             })
 
       }
+
+      useEffect(() => {
+        // console.log("starting...")
+          getProviderBand()
+         return () => {
+          
+         }
+        }, [])
       const getSearchfacility=(obj)=>{
           setChosen(obj)
 
@@ -135,6 +182,18 @@ export function OrganizationCreate(){
                             <i className="fas  fa-map-marker-alt"></i>
                             </span>
                         </p>
+                    </div>
+                    <div className="field">    
+                        <div className="control">
+                            <div className="select is-small ">
+                                <select name="bandType" value={band} onChange={(e)=>handleChangeMode(e)} className="selectadd" >
+                                <option value="">Choose Provider Band </option>
+                                {providerBand.map((option,i)=>(
+                                    <option key={i} value={option.name}> {option.name}</option>
+                                ))}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div className="field">
                         <p className="control">
@@ -383,12 +442,13 @@ export function OrganizationList(){
                     </div> */}
 
                 </div>
-               {!!facilities[1] && <div className="table-container pullup ">
+               {/* {!!facilities[1] && */} <div className="table-container pullup ">
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="S/No">S/No</abbr></th>
                                         <th>Organization Name</th>
+                                        <th><abbr title="Band"> Band</abbr></th>
                                         <th><abbr title="Address"> Address</abbr></th>
                                         <th><abbr title="City">City</abbr></th>
                                         <th><abbr title="Phone">Phone</abbr></th>
@@ -403,10 +463,12 @@ export function OrganizationList(){
                                     </tfoot>
                                     <tbody>
                                         {facilities.map((facility, i)=>(
-
-                                            <tr key={facility.organizationDetail._id} onClick={()=>handleRow(facility)} className={facility.organizationDetail?._id===(selectedFacility?._id||null)?"is-selected":""}>
+                                            facility.hasOwnProperty('organizationDetail') &&
+                                            <>
+                                            <tr key={i} onClick={()=>handleRow(facility)} className={facility.organizationDetail?._id===(selectedFacility?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{facility.organizationDetail.facilityName}</th>
+                                            <td>{facility.band}</td>
                                             <td>{facility.organizationDetail.facilityAddress}</td>
                                             <td>{facility.organizationDetail.facilityCity}</td>
                                             <td>{facility.organizationDetail.facilityContactPhone}</td>
@@ -417,13 +479,14 @@ export function OrganizationList(){
                                            {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
+                                            </>
 
                                         ))}
                                     </tbody>
                                     </table>
                                     
                 </div>               
-                } </>
+               {/*  }  */}</>
               
     )
 }
