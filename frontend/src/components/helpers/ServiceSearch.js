@@ -21,7 +21,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 // eslint-disable-next-line
 const searchfacility={};
 
-export default function ServiceSearch({getSearchfacility,clear}) {
+export default function ServiceSearch({getSearchfacility,clear,mode}) {
     const {user} = useContext(UserContext)
     const productServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
@@ -76,6 +76,7 @@ export default function ServiceSearch({getSearchfacility,clear}) {
         console.log(inputEl.current) */
     }
     const handleSearch=async(value)=>{
+        console.log(mode)
         setVal(value)
         if (value===""){
             setShowPanel(false)
@@ -87,8 +88,11 @@ export default function ServiceSearch({getSearchfacility,clear}) {
 
        
         if (value.length>=3 ){
+            if (mode.value=== "Cash" ||mode.value=== "Family Cover"){
+
+          
             productServ.find({query: {     //service
-                 [field]: {
+                 name: {
                      $regex:value,
                      $options:'i'
                     
@@ -113,6 +117,73 @@ export default function ServiceSearch({getSearchfacility,clear}) {
                     pauseOnHover: true,
                   })
              })
+            }
+            if (mode.value=== "CompanyCover"){
+                //if it is hmo or company cover
+                //band of hospital
+                //hmo facility Id
+                productServ.find({query: {     //service
+                    name: {
+                        $regex:value,
+                        $options:'i'
+                       
+                    },
+                    facility: user.currentEmployee.facilityDetail._id,
+                    $limit:10,
+                    $sort: {
+                        createdAt: -1
+                      }
+                        }}).then((res)=>{
+                // console.log("product  fetched successfully") 
+                 //console.log(res.data) 
+                   setFacilities(res.data)
+                    setSearchMessage(" product  fetched successfully")
+                    setShowPanel(true)
+                })
+                .catch((err)=>{
+                   toast({
+                       message: 'Error creating Services ' + err,
+                       type: 'is-danger',
+                       dismissible: true,
+                       pauseOnHover: true,
+                     })
+                })
+
+            }
+            if (mode.value=== "HMOCover"){
+                //if it is hmo or company cover
+                //band of hospital
+                //hmo facility Id
+                productServ.find({query: {     //service
+                    name: {
+                        $regex:value,
+                        $options:'i'
+                       
+                    },
+                    facility:mode.detail.organizationId ,
+                    mode:"HMOCover",
+                    dest_org:user.currentEmployee.facilityDetail._id,
+                    $limit:10,
+                    $sort: {
+                        createdAt: -1
+                      }
+                        }}).then((res)=>{
+                // console.log("product  fetched successfully") 
+                 //console.log(res.data) 
+                   setFacilities(res.data)
+                    setSearchMessage(" product  fetched successfully")
+                    setShowPanel(true)
+                })
+                .catch((err)=>{
+                   toast({
+                       message: 'Error creating Services ' + err,
+                       type: 'is-danger',
+                       dismissible: true,
+                       pauseOnHover: true,
+                     })
+                })
+
+            }
          }
         else{
            // console.log("less than 3 ")

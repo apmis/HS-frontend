@@ -75,10 +75,10 @@ export default function BillServiceCreate(){
     const handleChangeMode= async(value)=>{
       // console.log("value",value)
        await setPaymentMode(value)
-       // console.log(paymentOptions)
+        console.log(value)
        let billm= paymentOptions.filter(el=>el.name===value)
        await setBillMode(billm[0])
-      //  console.log(billm)
+        console.log(billm)
         // at startup
         // check payment mode options from patient financial info
         // load that to select options
@@ -877,31 +877,12 @@ export default function BillServiceCreate(){
                 
                  </form>   
                 
-            
-          {/* array of ProductEntry items */}
-         
-        {/*  <label className="label is-small">Medication:</label>
-         <div className="field is-horizontal">
-             <div className="field-body">
-             <div className="field" style={{width:"40%"}}>
-                 <p className="control has-icons-left" >
-                     <input className="input is-small"   ref={register({ required: true })}  disabled  name="order" value={medication.order} type="text" onChange={ e=> handleQtty(e)} placeholder="Quantity"  />
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-hashtag"></i>
-                     </span>
-                     <span className="helper is-size-7"><strong>Instruction: </strong>{medication.instruction}</span>
-                    
-                 </p>
-                 <span className="helper is-size-7"><strong>Billing Status: </strong>{medication.order_status}</span>
-             </div> 
-            
-             </div>
-             </div> */}
+        
              <label className="label is-small">Choose Service Item:</label>
           <div className="field is-horizontal">
              <div className="field-body">
              <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                     <ServiceSearch  getSearchfacility={getSearchfacility} clear={success} /> 
+                     <ServiceSearch  getSearchfacility={getSearchfacility} clear={success} mode={billMode}/> 
                      <p className="control has-icons-left " style={{display:"none"}}>
                          <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
                          <span className="icon is-small is-left">
