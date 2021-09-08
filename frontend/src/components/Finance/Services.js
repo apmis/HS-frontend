@@ -456,68 +456,7 @@ const handleCheck= async ()=>{
          {/* array of Services items */}
         
         <label className="label is-small">Add Pricing Info:</label>
-        {(productItem.length>0) ? <> 
-                <div className="field is-horizontal">
-                <div className="field-body">
-                    <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                        <FacilitySearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                        <p className="control has-icons-left " style={{display:"none"}}>
-                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id" />
-                            <span className="icon is-small is-left">
-                            <i className="fas  fa-map-marker-alt"></i>
-                            </span>
-                        </p>
-                    </div>
-                {/*  <div className="field">
-                    <p className="control has-icons-left">
-                        <input className="input is-small"  ref={register({ required: true })}  name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span>
-                    </p>
-        
-                </div>  */}
-                <div className="field">
-                    <p className="control has-icons-left">
-                        <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-dollar-sign"></i>
-                        </span>
-                    </p>
-                </div>
-                <div className="field">
-                <p className="control">
-                        <button className="button is-info is-small  is-pulled-right selectadd">
-                        <span className="is-small" onClick={handleClickProd}>+</span>
-                        </button>
-                    </p>
-                        </div>
-                        </div>
-                    </div>
-             <div className="field is-horizontal">
-                <div className="field-body">
-                 <div className="field">
-                    
-                    <div className="field has-addons" /* style={{display:`${ProductEntry.show}`} }*/ >
-                              <div className="control">
-                                  <input  className="input selectadd" type="text" name="plan"  value={plan} onChange={e=>setPlan(e.target.value)} placeholder="Benefitting Plans" />
-                                  </div> 
-                                  <div className="control">
-                                  <button className="button is-info selectadd" onClick={(e)=>handleBenefit(e)}>add</button>
-                                  </div>
-                                  </div>
-                                
-                 </div>
-                 <div className="field">
-                 {benefittingplans.map((plan,i)=>(
-                        <span key={i} className="ml-1">
-                            {plan};
-                        </span>
-                     ))}
-                 </div>
-                </div>
-              </div>
-            </>:
+     
             <>
               <div className="field is-horizontal">
                 <div className="field-body">
@@ -548,7 +487,7 @@ const handleCheck= async ()=>{
               </div>
              
 
-            </> }
+            </> 
           
             
        {(productItem.length>0) && <div>
