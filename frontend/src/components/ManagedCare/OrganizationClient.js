@@ -88,7 +88,7 @@ export function OrganizationCreate(){
             const findServices= await BandsServ.find(
                     {query: {
                         facility: user.currentEmployee.facilityDetail._id,
-                        bandType:"Provider",
+                        bandType:(user.currentEmployee.facilityDetail.facilityType==="HMO")?"Provider":"Company",
                         
                        // storeId:state.StoreModule.selectedStore._id,
                        // $limit:20,
@@ -187,7 +187,7 @@ export function OrganizationCreate(){
                         <div className="control">
                             <div className="select is-small ">
                                 <select name="bandType" value={band} onChange={(e)=>handleChangeMode(e)} className="selectadd" >
-                                <option value="">Choose Provider Band </option>
+                                <option value="">{(user.currentEmployee.facilityDetail.facilityType==="HMO")?"Choose Provider Band":"Choose Company Band"} </option>
                                 {providerBand.map((option,i)=>(
                                     <option key={i} value={option.name}> {option.name}</option>
                                 ))}
