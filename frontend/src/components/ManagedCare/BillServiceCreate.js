@@ -141,13 +141,13 @@ export default function BillServiceCreate(){
                 if (contract.length){
                    // console.log(contract[0].price)
                   await  setSellingPrice(contract[0].price)     
-             }else{
-                toast({
-                    message: 'Please NHIS does not have cover/price for this service. Either set service price for NHIS, try another service or bill using cash',
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
+                    }else{
+                        toast({
+                            message: 'Please NHIS does not have cover/price for this service. Either set service price for NHIS, try another service or bill using cash',
+                            type: 'is-danger',
+                            dismissible: true,
+                            pauseOnHover: true,
+                        })
                  await setSellingPrice(0)
              }
 

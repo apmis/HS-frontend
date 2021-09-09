@@ -280,14 +280,17 @@ export function ManagedServicesCreate(){
                         category: 1
                     }
                     }})
-
+                    console.log(findServices)
+                    if (findServices.total>0){
+             
         findServices.groupedOrder[0].services.forEach(async (c)=>{
             const newPlan={
                 name:c.name,
                 checked:false
             }
             await setBenefittingPlans1((prev)=>(prev.concat(c)))
-        })
+                })
+            }
         }
 
    }
