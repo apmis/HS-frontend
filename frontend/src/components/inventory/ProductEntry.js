@@ -287,6 +287,7 @@ export function ProductEntryCreate(){
                             onChange={date => handleDate(date)} 
                             dateFormat="dd/MM/yyyy"
                             placeholderText="Pick Date"
+                            
                             //isClearable
                             />
                   {/*   <input className="input is-small"   ref={register({ required: true })}  value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />

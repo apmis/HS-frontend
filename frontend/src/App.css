@@ -21,6 +21,12 @@
   font-size: x-large !important;
  
 }
+.red-border{
+  border: 1px solid red;
+  font-size: 0.8rem;
+  z-index: 100;
+
+}
 .smallerinput{
   font-size: 0.65rem !important;
 }

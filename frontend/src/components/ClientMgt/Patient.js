@@ -14,6 +14,8 @@ import {AppointmentCreate} from '../Clinic/Appointments'
 import InfiniteScroll from "react-infinite-scroll-component";
 import ClientBilledPrescription from '../Finance/ClientBill'
 import ClientGroup from './ClientGroup';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 // eslint-disable-next-line
 const searchfacility={};
 
@@ -60,6 +62,7 @@ export function ClientCreate(){
     const [dependant, setDependant] =useState(false)
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
+    const [date,setDate] = useState()
 
 
   // eslint-disable-next-line
@@ -69,7 +72,11 @@ export function ClientCreate(){
             shouldDirty: true
         })
     }
-    
+
+    const handleDate=async (date)=>{
+        setDate(date)
+        
+    }
     useEffect(() => {
         setCurrentUser(user)
         //console.log(currentUser)
@@ -92,6 +99,7 @@ export function ClientCreate(){
 
     const checkClient=()=>{
         const data= getValues()
+        data.dob= date
        const obj ={
         firstname:data.firstname,
         middlename:data.middlename,
@@ -166,6 +174,7 @@ export function ClientCreate(){
     }
 
     const checkQuery=(query)=>{
+        setPatList([])
         if (!(query && Object.keys(query).length === 0 && query.constructor === Object)){
             ClientServ.find({query:query}).then((res)=>{
                 console.log(res)
@@ -173,6 +182,7 @@ export function ClientCreate(){
                    // alert(res.total)
                      setPatList(res.data)
                    setBillModal(true)
+                   return
                 }
      
             })
@@ -257,7 +267,17 @@ export function ClientCreate(){
         setDependant(true)
        
     }
-    const onSubmit = (data,e) =>{
+    const onSubmit = async (data,e) =>{
+        if(!date){
+            toast({
+                message: 'Please enter Date of Birth! ' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+
+            return
+        }
         e.preventDefault();
         setMessage("")
         setError(false)
@@ -278,7 +298,11 @@ export function ClientCreate(){
           if (user.currentEmployee){
           data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        ClientServ.create(data)
+
+            
+        let confirm =window.confirm(`You are about to register a new patient ${ data.firstname}  ${ data.middlename} ${ data.lastname} ?`)
+        if (confirm){
+        await ClientServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
@@ -293,6 +317,7 @@ export function ClientCreate(){
                   setSuccess(false)
                   setPatList([])
                   setDependant(false)
+                  setDate()
             })
             .catch((err)=>{
                 toast({
@@ -304,6 +329,7 @@ export function ClientCreate(){
                   setPatList([])
                   setDependant(false)
             })
+        }
 
       } 
 
@@ -357,12 +383,20 @@ export function ClientCreate(){
         <div className="field is-horizontal">
             <div className="field-body">
                 <div className="field">
-                    <p className="control has-icons-left">
+                    <p className="control has-icons-left is-danger">
                     
-                        <input className="input is-small is-danger" ref={register({ required: true })} name="dob" type="text" placeholder="Date of Birth"  onBlur={checkClient}/>
+                      {/*   <input className="input is-small is-danger" ref={register({ required: true })} name="dob" type="text" placeholder="Date of Birth"  onBlur={checkClient}/>
                         <span className="icon is-small is-left">
                         <i className="fas fa-envelope"></i>
-                        </span>
+                        </span> */}
+                        <DatePicker className="is-danger"
+                            selected={date} 
+                            onChange={date => handleDate(date)} 
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Enter date with dd/MM/yyyy format "
+                            //isClearable
+                            className="red-border is-small"
+                            />
                     </p>
                 </div> 
                 <div className="field">
