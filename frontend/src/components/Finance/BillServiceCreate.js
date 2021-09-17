@@ -670,6 +670,7 @@ export default function BillServiceCreate(){
                   break;
                 case 'HMO':
                   // code block
+                  console.log(pay)
                  let  sname="HMO: " + pay.organizationName + "(" + pay.plan+")"
 
                   obj=createObj(pay,sname,"HMOCover", "HMO Cover" )

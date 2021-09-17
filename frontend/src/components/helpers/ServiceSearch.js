@@ -154,35 +154,39 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
                 //if it is hmo or company cover
                 //band of hospital
                 //hmo facility Id
-                productServ.find({query: {     //service
-                    name: {
-                        $regex:value,
-                        $options:'i'
-                       
-                    },
-                    facility:mode.detail.organizationId ,
-                    mode:"HMOCover",
-                    dest_org:user.currentEmployee.facilityDetail._id,
-                    $limit:10,
-                    $sort: {
-                        createdAt: -1
-                      }
-                        }}).then((res)=>{
-                // console.log("product  fetched successfully") 
-                 //console.log(res.data) 
-                   setFacilities(res.data)
-                    setSearchMessage(" product  fetched successfully")
-                    setShowPanel(true)
-                })
-                .catch((err)=>{
-                   toast({
-                       message: 'Error creating Services ' + err,
-                       type: 'is-danger',
-                       dismissible: true,
-                       pauseOnHover: true,
-                     })
-                })
+                //check if the hmo is a state hmo or not
+                console.log(mode)
+                if(true){
+                    productServ.find({query: {     //service
+                        name: {
+                            $regex:value,
+                            $options:'i'
+                        
+                        },
+                        facility:mode.detail.organizationId ,
+                        mode:"HMOCover",
+                        dest_org:user.currentEmployee.facilityDetail._id,
+                        $limit:10,
+                        $sort: {
+                            createdAt: -1
+                        }
+                            }}).then((res)=>{
+                    // console.log("product  fetched successfully") 
+                    //console.log(res.data) 
+                    setFacilities(res.data)
+                        setSearchMessage(" product  fetched successfully")
+                        setShowPanel(true)
+                    })
+                    .catch((err)=>{
+                    toast({
+                        message: 'Error creating Services ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                        })
+                    })
 
+                }
             }
          }
         else{

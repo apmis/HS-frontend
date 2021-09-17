@@ -388,7 +388,7 @@ export function AppointmentCreate(){
                         Cancel
                     </button>
                 </p>
-               {/*  <p className="control">
+                 {/* <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
@@ -1453,11 +1453,11 @@ export function ClientModify(){
                         Cancel
                     </button>
                 </p>
-               {/*  <p className="control">
+               <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p> */}
+                </p> 
             </div>
         </div>
         </div>

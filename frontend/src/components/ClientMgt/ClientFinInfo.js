@@ -190,7 +190,7 @@ export default function ClientFinInfo({closeModal}){
                 
             const findServices= await ServicesServ.find(
                     {query: {
-                        facility: obj._id, // user.currentEmployee.facilityDetail._id,
+                        //facility: obj._id, // user.currentEmployee.facilityDetail._id,
                         'contracts.source_org' :obj._id,// user.currentEmployee.facilityDetail._id ,
                         'contracts.dest_org' : obj._id,//user.currentEmployee.facilityDetail._id ,
                         category:"Managed Care",
@@ -209,7 +209,9 @@ export default function ClientFinInfo({closeModal}){
                 }
                 await setBenefittingPlans1((prev)=>(prev.concat(c)))
             })
+            console.log(findServices.groupedOrder[0])
             }
+            
     
        }
 
