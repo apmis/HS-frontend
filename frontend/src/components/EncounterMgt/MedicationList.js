@@ -288,6 +288,10 @@ export default function MedicationList() {
         console.log("close form")
     }
 
+    const onDelete = (comp,i)=>{
+        //console.log(comp,i)
+       setSymptoms(prevstate=>prevstate.filter((el,index)=>index!==i))
+    }
     return (
         <>
         <div className="card ">
@@ -429,6 +433,7 @@ export default function MedicationList() {
                             <th><abbr title="Name"> Name</abbr></th>
                             <th><abbr title="Strength/Frequency">Strength/Frequency</abbr></th>
                             <th><abbr title="Notes"> Notes</abbr></th>
+                            <th><abbr title="Action"> Action</abbr></th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -437,11 +442,12 @@ export default function MedicationList() {
                         <tbody>
                         { symptoms.map((ProductEntry, i)=>(
 
-                                <tr key={i}>
+                                <tr key={i} >
                                 <th>{i+1}</th>
                                 <td>{ProductEntry.drugname}</td> 
                                 <td>{ProductEntry.strengthfreq}</td>  
-                                <td>{ProductEntry.notes}</td>                                                                   
+                                <td>{ProductEntry.notes} </td> 
+                                <td onClick={()=>onDelete(ProductEntry, i)}>x</td>                                                                    
                                 </tr>
 
                             ))}
