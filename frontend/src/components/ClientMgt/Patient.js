@@ -302,6 +302,7 @@ export function ClientCreate(){
             
         let confirm =window.confirm(`You are about to register a new patient ${ data.firstname}  ${ data.middlename} ${ data.lastname} ?`)
         if (confirm){
+            data.dob=date
         await ClientServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -1918,11 +1919,11 @@ export function ClientModify(){
                         Cancel
                     </button>
                 </p>
-               {/*  <p className="control">
+               <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p> */}
+                </p> 
             </div>
         </div>
         </div>
