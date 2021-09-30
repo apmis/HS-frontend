@@ -215,7 +215,7 @@ export function ManagedServicesCreate(){
         setOrgType(obj.facilityType)
 
         if(!obj){
-        setName("")
+       // setName("")
         setOrgType("")
         setFacilityId("")
         setCostprice("")
@@ -248,15 +248,21 @@ export function ManagedServicesCreate(){
             setSuccessService(false)
     }
 
-    const notfound=(obj)=>{
+    const notfound= async(obj)=>{
 
-        alert(obj)
-        setServiceUnavailable(obj)
-        console.log(obj)
+        //alert(obj)
+       await  setServiceUnavailable(obj)
+        await setSuccessService(true)
+        if (!obj){
+        await  setServiceUnavailable("")
+        }
+       // console.log(obj)
+        //here
     }
     
     useEffect(() => {
         setCurrentUser(user)
+        
         //console.log(currentUser)
         return () => {
         
@@ -341,7 +347,7 @@ export function ManagedServicesCreate(){
             name,
             quantity,
             costprice, */
-            name:service.name,
+            name: service.name,
             categoryname,
             comments,
             pricingInfo      
@@ -413,7 +419,7 @@ export function ManagedServicesCreate(){
             
                band:band
             } 
-           // console.log(productItemI)
+            console.log(productItemI)
             await setCash("")
        
        
@@ -422,7 +428,7 @@ export function ManagedServicesCreate(){
             prevProd=>prevProd.concat(productItemI)
         )
        
-       
+      
         setCostprice("")
         setBand("")
         setBenefittingPlans([])
@@ -436,10 +442,10 @@ export function ManagedServicesCreate(){
 
     const resetform=()=>{
   
-    setFacilityId("")
+    //setFacilityId("")
     setSource("")
     setPanel(false)
-    setName("")
+    //setName("")
     setComments("")
     setCostprice("")
     setProductItem([])
@@ -450,6 +456,8 @@ export function ManagedServicesCreate(){
     setBenefittingPlans([])
     setCash("Cash")
     setOrgType("")
+     setServiceUnavailable("")
+    setServices("")
 
     }
     const handleClear=()=>{
@@ -473,11 +481,11 @@ export function ManagedServicesCreate(){
 
     const onSubmit = async() =>{
        // e.preventDefault();
-     let check= await handleCheck()
-     if (check){
-         console.log(check)
-         return
-     }
+        let check= await handleCheck()
+        if (check){
+            console.log(check)
+            return
+        }
        if(panel && (panelList.length===0)){
         toast({
             message: "Please choose services that make up panel or uncheck panel ",
@@ -490,7 +498,7 @@ export function ManagedServicesCreate(){
 
         setSuccess(false)
             
-                    let data ={
+        let data ={
                         name: serviceUnavailable.status? serviceUnavailable.name:service.name, //source
                         category:categoryname,
                         facility:user.currentEmployee.facilityDetail._id,
@@ -502,79 +510,42 @@ export function ManagedServicesCreate(){
                     }
                   //  console.log(data)
                     
-                        ServicesServ.create(data)
-                        .then((res)=>{
-                                //console.log(JSON.stringify(res))
-                                resetform()
-                            /*  setMessage("Created Services successfully") */
-                                setSuccess(true)
-                                setSuccess2(true)
-                                setSuccessService(true)
-                                toast({
-                                    message: 'Service created succesfully',
-                                    type: 'is-success',
-                                    dismissible: true,
-                                    pauseOnHover: true,
-                                })
-                                setSuccess(false)
-                                setSuccess2(false)
-                                setSuccessService(false)
-                                setProductItem([])
-                                setPanelList([])
-                            })
-                            .catch((err)=>{
-                                toast({
-                                    message: 'Error creating Services ' + err,
-                                    type: 'is-danger',
-                                    dismissible: true,
-                                    pauseOnHover: true,
-                                })
-                            })
-
-                        
-                    
-                    /*else{
-
-
-                    let addservice= [...service.contracts, ...productItem]
-                        console.log(service)
-                        let data ={
-                        
-                            contracts:addservice
-                            //updatedBy:user._id //should be within contract
-                        }
-                       
-                        console.log(data)
-                        //data.facility=Services.facility
-                          //console.log(data);
-                        
-                       ServicesServ.patch(service._id,data)
-                        .then((res)=>{
-                                console.log(JSON.stringify(res))
-                               // e.target.reset();
-                               // setMessage("updated Services successfully")
-                                  toast({
-                                    message: 'Services updated succesfully',
-                                    type: 'is-success',
-                                    dismissible: true,
-                                    pauseOnHover: true,
-                                  })
-                                  
-                             //   changeState(res)
+        ServicesServ.create(data)
+        .then((res)=>{
+            setSuccessService(true)
+                //console.log(JSON.stringify(res))
+                resetform()
+            /*  setMessage("Created Services successfully") */
+                setSuccess(true)
+                setSuccess2(true)
                 
-                            })
-                            .catch((err)=>{ 
-                                //setMessage("Error creating Services, probable network issues "+ err )
-                               console.log(err)
-                                toast({
-                                    message: "Error updating Services, probable network issues or "+ err,
-                                    type: 'is-danger',
-                                    dismissible: true,
-                                    pauseOnHover: true,
-                                  })
-                            })*/
-                 
-                      } 
+                toast({
+                    message: 'Service created succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                })
+                setSuccess(false)
+                setSuccess2(false)
+                setSuccessService(false)
+                setProductItem([])
+                setPanelList([])
+                setServiceUnavailable({
+                    status:false,
+                    name:""
+                })
+                // setSuccessService(true)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error creating Services ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                })
+            })
+               
+        } 
                     
     
 
@@ -628,7 +599,8 @@ const handleCheck= async ()=>{
           }) 
         return true
     }
-   // console.log(serviceUnavailable.name)
+   console.log("unavailb:",serviceUnavailable.name)
+   console.log("availb:", service.name)
    const resp= await ServicesServ.find({
         query:{
             name: serviceUnavailable.name||service.name, //source
@@ -636,7 +608,7 @@ const handleCheck= async ()=>{
             category:categoryname
         }
     })
-  //  console.log(resp)
+    console.log(resp)
     //.  
     /*then((resp)=>{
         console.log(resp)*/
@@ -678,7 +650,7 @@ const handleCheck= async ()=>{
             <div className="field-body"> */}
             <div className="field">
                     <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                        <ServiceSearch  getSearchService={getSearchService} clearService={successService} notfound={notfound}  /> 
+                        <ServiceSearch  getSearchService={getSearchService} clear={successService} notfound={notfound}  /> 
                         <p className="control has-icons-left " style={{display:"none"}}>
                             <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
                             <span className="icon is-small is-left">
@@ -1833,7 +1805,7 @@ export function ManagedServicesModify(){
    {panel && <>
        <div className="field">
            <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-               <ServiceSearch  getSearchService={getSearchService} clearService={successService} /> 
+               <ServiceSearch  getSearchService={getSearchService} clear={successService} /> 
                <p className="control has-icons-left " style={{display:"none"}}>
                    <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
                    <span className="icon is-small is-left">
@@ -2033,7 +2005,7 @@ export function ManagedServicesModify(){
     )              
 }   
 
-export  function ServiceSearch({getSearchService,clearService,notfound}) {
+export  function ServiceSearch({getSearchService,clear,notfound}) {
     
     const productServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
@@ -2160,15 +2132,19 @@ export  function ServiceSearch({getSearchService,clearService,notfound}) {
         handleSearch(val)
     }
     useEffect(() => {
-       if (clearService){
-           console.log("success has changed",clearService)
+       if (clear){
+          
+           console.log("success has changed",clear)
            setSimpa("")
-           
+         
+
        }
         return () => {
             
         }
-    }, [clearService] )
+    }, [clear] )
+
+  
     return (
         <div>
             <div className="field">
