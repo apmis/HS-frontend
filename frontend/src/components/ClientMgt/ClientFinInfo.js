@@ -18,6 +18,7 @@ export default function ClientFinInfo({closeModal}){
      const [organizationName,setOrganizationName] = useState("")
      const [principal,setPrincipal] = useState(null)
      const [plan,setPlan] = useState("")
+     const [planHMO,setPlanHMO] = useState("")
      const ServicesServ=client.service('billing')
      const [active,setActive] = useState(false)
      const [success, setSuccess] =useState(false)
@@ -26,8 +27,10 @@ export default function ClientFinInfo({closeModal}){
      const [productItem,setProductItem] = useState([])
      const [obj, setObj]=useState("")
      const [benefittingPlans1,setBenefittingPlans1] = useState([])
+     const [benefittingHMO,setBenefittingHMO] = useState([])
      const {state,setState}=useContext(ObjectContext)
      const ClientServ=client.service('client')
+     const HMOServ=client.service('organizationclient')
    //  const [productEntry,setProductEntry]=useState({
        
     //})
@@ -61,7 +64,9 @@ export default function ClientFinInfo({closeModal}){
         principalId,
         principalName,
         plan,
-        active
+        active,
+        agent:planHMO,
+        organizationType:organization.facilityType
 
      }
 
@@ -85,7 +90,7 @@ export default function ClientFinInfo({closeModal}){
       await setOrganizationId(obj._id)
       await setOrganizationName(obj.facilityName)
       getBenfittingPlans(obj)
-     
+      getBenfittingHMO(obj)
       // setOrgType(obj.facilityType)
        if(!obj){
         setOrganizationId(null)
@@ -183,6 +188,38 @@ export default function ClientFinInfo({closeModal}){
         }
     },[medication])
 
+    const getBenfittingHMO = async( obj)=>{
+        await setBenefittingHMO([])
+        await HMOServ.find({query: {
+            facility:obj._id,
+            relationshiptype:"managedcare",
+            $sort: {
+                createdAt: -1
+              }
+                }})
+        .then((res)=>{
+            console.log(res)
+            setBenefittingHMO(res.data)
+          /*   toast({
+                message: 'Client financial info updated succesfully',
+                type: 'is-success',
+                dismissible: true,
+                pauseOnHover: true,
+              }) */
+            })
+            .catch((err)=>{
+                console.log(err)
+                toast({
+                    message: 'Error fetching HMO ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            })
+
+     
+        }
+
     const getBenfittingPlans = async( obj)=>{
        await setBenefittingPlans1([])
         if (user.currentEmployee){
@@ -218,6 +255,11 @@ export default function ClientFinInfo({closeModal}){
        const handleChange = async(e) => {
    
         setPlan(e.target.value)
+   
+       }
+       const handleHMO = async(e) => {
+   
+        setPlanHMO(e.target.value)
    
        }
 
@@ -298,6 +340,18 @@ export default function ClientFinInfo({closeModal}){
                             </div>
                         </div>
                     </div>
+              {  organization?.facilityType==="State HIA"?    <div className="field">    
+                        <div className="control">
+                            <div className="select is-small ">
+                                <select name="bandType" value={planHMO} onChange={(e)=>handleHMO(e)} className="selectadd" >
+                                <option value="">Choose HMO </option>
+                                {benefittingHMO.map((options,i)=>(
+                                    <option key={i} value={options.organizationDetail._id}> {options.organizationDetail.facilityName}</option>
+                                ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>:<></>}
              <div className="field" >
                  <p className="control " >
                      <label  className="label is-size-7 poslabel" >
@@ -334,6 +388,7 @@ export default function ClientFinInfo({closeModal}){
                      </span>
                  </p>
              </div> 
+             
              <div className="field" >
                  <p className="control " >
                      <label  className="label is-size-7 poslabel" >
@@ -367,11 +422,12 @@ export default function ClientFinInfo({closeModal}){
                      <tr>
                      <th><abbr title="Serial No">S/No</abbr></th>
                      <th><abbr title="Type">Type</abbr></th>
-                     <th><abbr title="Organization">Organization</abbr></th>
                      <th><abbr title="Principal">Principal</abbr></th>
+                     <th><abbr title="Organization">Organization</abbr></th>
+                     <th><abbr title="HMO">HMO Agent</abbr></th>
                      <th><abbr title="Plan">Plan</abbr></th>
                      <th><abbr title="Active">Active</abbr></th>
-                     {/* <th><abbr title="Cost Price">Amount</abbr></th> */}
+                     {/*  */}
                      {/* <th><abbr title="Actions">Actions</abbr></th> */}
                      </tr>
                  </thead>
@@ -383,8 +439,9 @@ export default function ClientFinInfo({closeModal}){
                           <tr key={i}>
                          <th>{i+1}</th>
                          <th>{ProductEntry.paymentmode}</th>
-                         <td>{ProductEntry.organizationName}</td>
                          <td>{ProductEntry.principalName}</td>
+                         <td>{ProductEntry.organizationName}</td>
+                         <td>{ProductEntry.agent}</td>
                          <td>{ProductEntry.plan}</td>
                          <td>{ProductEntry.active?"Yes":"No"}</td>
 
