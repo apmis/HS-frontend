@@ -18,7 +18,8 @@ export default function ClientFinInfo({closeModal}){
      const [organizationName,setOrganizationName] = useState("")
      const [principal,setPrincipal] = useState(null)
      const [plan,setPlan] = useState("")
-     const [planHMO,setPlanHMO] = useState("")
+     const [planHMO,setPlanHMO] = useState("") 
+     const [chosenHMO,setChosenHMO] = useState("")
      const ServicesServ=client.service('billing')
      const [active,setActive] = useState(false)
      const [success, setSuccess] =useState(false)
@@ -65,8 +66,9 @@ export default function ClientFinInfo({closeModal}){
         principalName,
         plan,
         active,
-        agent:planHMO,
-        organizationType:organization.facilityType
+        agent:planHMO?planHMO.organizationDetail._id:"",
+        organizationType:organization?.facilityType,
+        agentName:planHMO?planHMO.organizationDetail.facilityName:""
 
      }
 
@@ -139,6 +141,7 @@ export default function ClientFinInfo({closeModal}){
 
     const handleAdd=async()=>{
        //setSuccess(false)
+  
         setProductItem(prev=>prev.concat(productItemI))
         resetform()
         //
@@ -152,7 +155,10 @@ export default function ClientFinInfo({closeModal}){
         })
         .then((resp)=>{
             resetform()
-            //setProductItem([])
+           let client=resp
+            console.log(client)
+            medication=resp
+           // setProductItem([])
             toast({
                 message: 'Client financial info updated succesfully',
                 type: 'is-success',
@@ -258,10 +264,28 @@ export default function ClientFinInfo({closeModal}){
    
        }
        const handleHMO = async(e) => {
-   
-        setPlanHMO(e.target.value)
-   
-       }
+           const abc=e.target.value
+           const hmo=benefittingHMO.find((el=>el._id===abc))
+           
+            /*  if (e.target.value===undefined||e.target.value===""){
+                toast({
+                    message: 'Kindly select Agent HMO ',
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  return
+             }else{ */
+                console.log(e.target.value)
+                if (!!hmo){
+                    await setPlanHMO(hmo)
+                }
+
+      
+    
+      //console.log(benefittingHMO[e.target.value].organizationDetail.facilityName)
+     /*  } */
+    }
 
      return (
          <>
@@ -343,10 +367,10 @@ export default function ClientFinInfo({closeModal}){
               {  organization?.facilityType==="State HIA"?    <div className="field">    
                         <div className="control">
                             <div className="select is-small ">
-                                <select name="bandType" value={planHMO} onChange={(e)=>handleHMO(e)} className="selectadd" >
-                                <option value="">Choose HMO </option>
+                                <select name="bandType"  value={planHMO?._id}  onChange={(e)=>handleHMO(e)} className="selectadd" >
+                               {/*  <option value="">Choose HMO </option>  */}
                                 {benefittingHMO.map((options,i)=>(
-                                    <option key={i} value={options.organizationDetail._id}> {options.organizationDetail.facilityName}</option>
+                                    <option key={i} value={options._id}> {options.organizationDetail.facilityName}</option>
                                 ))}
                                 </select>
                             </div>
@@ -441,7 +465,7 @@ export default function ClientFinInfo({closeModal}){
                          <th>{ProductEntry.paymentmode}</th>
                          <td>{ProductEntry.principalName}</td>
                          <td>{ProductEntry.organizationName}</td>
-                         <td>{ProductEntry.agent}</td>
+                         <td>{ProductEntry.agentName}</td>
                          <td>{ProductEntry.plan}</td>
                          <td>{ProductEntry.active?"Yes":"No"}</td>
 

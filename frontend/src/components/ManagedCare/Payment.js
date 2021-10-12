@@ -54,11 +54,11 @@ export default function Payment() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-6 ">
+                <div className="column is-4 ">
                     <BillingList />
                     </div>
               
-                <div className="column is-6 ">
+                <div className="column is-8 ">
                 
                 {(state.financeModule.show ==='detail')&& <PaymentCreate />}
                 </div>
@@ -206,7 +206,7 @@ export function BillingList(){
                 }, //set to not equal to "fully paid" // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:10,
+                $limit:100,
                 $sort: {
                     createdAt: -1
                   }
@@ -225,7 +225,7 @@ export function BillingList(){
     const getFacilities= async()=>{
        
             // console.log("here b4 server")
-    const findProductEntry= await BillServ.find(
+    const getHMOBills= await BillServ.find(
             {query: {
                 $or:[
                     {
@@ -247,8 +247,8 @@ export function BillingList(){
                 }
                 }})
 
-            //console.log("updatedorder", findProductEntry.groupedOrder)
-            await setFacilities(findProductEntry.groupedOrder)
+            console.log("updatedorder",getHMOBills)
+            await setFacilities(getHMOBills.groupedOrder)
           //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
     const handleRow= async(Client,e)=>{

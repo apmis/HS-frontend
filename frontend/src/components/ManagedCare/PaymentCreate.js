@@ -63,7 +63,7 @@ export default function PaymentCreate(){
 
     
   let medication =state.financeModule.selectedFinance
-  //console.log(state.financeModule.state)
+  //console.log(state.financeModule.selectedFinance)
 
   const showDocumentation = async (value)=>{
     setProductModal(true)
@@ -546,7 +546,7 @@ export default function PaymentCreate(){
     }
 
     useEffect(() => {
-        console.log(productItem)
+       // console.log(productItem)
        getTotal()
         return () => {
         
@@ -568,7 +568,7 @@ export default function PaymentCreate(){
                 createdAt: -1
             }
             }})
-             console.log(findProductEntry)
+            // console.log(findProductEntry)
 
      // console.log("balance", findProductEntry.data[0].amount)
         if (findProductEntry.data.length>0){
@@ -619,7 +619,7 @@ export default function PaymentCreate(){
 
     
     const handleChangePart= async(bill, e)=>{
-        console.log(bill, e.target.value)
+       // console.log(bill, e.target.value)
         if(e.target.value==="Part"){
             bill.show="flex"
         setPartPay((prev)=>prev.concat(bill))
@@ -818,7 +818,7 @@ export default function PaymentCreate(){
             facilityName:user.employeeData[0].facilityDetail.facilityName
            }
 
-           console.log(obj)
+          // console.log(obj)
 
            
             InvoiceServ.create(obj)
@@ -861,66 +861,7 @@ export default function PaymentCreate(){
 // console.log("simpa")
      return (
          <>
-          <div className="card card-overflow mb-2 ">
-             <div className="card-header">
-                 <p className="card-header-title">
-                    Make Deposit for {source}
-                 </p>
-                 <button className="button is-success is-small btnheight mt-2" >
-                    Balance: N {balance}
-                 </button>
-             </div>
-             <div className="card-content pb-1">
-             <div id="Deposit">
-         
-         <div className="field is-horizontal pullup">
-             <div className="field-body">
-             
-             <div className="field">    
-                    <div className="control">
-                        <div className="select is-small ">
-                            <select name="paymentmode" value={paymentmode} onChange={(e)=>handleChangeMode(e.target.value)} className="selectadd" >
-                                <option value="">Payment Mode </option>
-                                <option value="Cash">Cash</option>
-                                <option value="Wallet">Wallet </option>
-                                <option value="Wallet">Bank Transfer </option>
-                                <option value="Card">Card</option>
-                                <option value="Cheque">Cheque</option> 
-                            </select>
-                        </div>
-                    </div>
-                    </div>
-             <div className="field" >
-                 <p className="control has-icons-left" >
-                     <input className="input is-small"  name="order" value={amountPaid} type="text" onChange={ e=> setAmountPaid(e.target.value)} placeholder="Amount"  />
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-hashtag"></i>
-                     </span>
-                 </p>
-             </div> 
-             <div className="field" >
-                 <p className="control  " /* style={{display:"none"}} has-icons-left*/>
-                     <input className="input is-small"  name="description"  value={description} type="text"  onChange={async e=> await setDescription(e.target.value)}  placeholder="Payment Details"  />
-                     {/* <span className="icon is-small is-left">
-                     <i className="fas fa-dollar-sign"></i> 
-                     </span>*/}
-                 </p>
-             </div> 
-             <div className="field ">
-                <p className="control">
-                     <button className="button is-info is-small  is-pulled-left selectadd" disabled={buttonState}>
-                       <span className="is-small" onClick={handleAccept} >Accept</span>
-                     </button>
-                 </p>
-             </div>
-             </div>
-             </div>
-            
-      
-          
-          </div> 
-         </div>
-          </div>
+        
              <div className="card card-overflow">
              <div className="card-header">
                  <div className="card-header-title">
@@ -990,11 +931,10 @@ export default function PaymentCreate(){
                      <th><abbr title="Serial No">S/No</abbr></th>
                      <th><abbr title="Category">Category</abbr></th>
                      <th><abbr title="Description">Description</abbr></th>
-                    
-                     <th><abbr title="Cost Price">Type</abbr></th>
                      <th><abbr title="Amount">Amount</abbr></th>
-                     {/* <th><abbr title="Cost Price">Amount</abbr></th> */}
-                     {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                     <th><abbr title="Service Detail">Service Detail</abbr></th>
+                     <th><abbr title="Code">Authorization Code</abbr></th>
+                    <th><abbr title="Co-pay">Copay Amount</abbr></th> 
                      </tr>
                  </thead>
                  <tfoot>
@@ -1006,32 +946,44 @@ export default function PaymentCreate(){
                          <th>{i+1}</th>
                          <th>{ProductEntry.orderInfo.orderObj.order_category}</th>
                          <td>{ProductEntry.serviceInfo.name}</td>
-                         <td><label className=" is-small">
-                             <input  type="radio" name={ProductEntry._id} value="Full" checked={ProductEntry.show==="none"}  onChange={(e)=>{handleChangePart(ProductEntry,e)}}/>
-                               <span > Full</span>
-                              </label> <br/>
-                              <label className=" is-small">
-                             <input type="radio" name={ProductEntry._id}  value="Part" onChange={(e)=>handleChangePart(ProductEntry,e)}/>
-                             <span> Part </span>
-                              </label>
-                              <div className="field has-addons" style={{display:`${ProductEntry.show}`}}>
-                              <div className="control">
-                                  <input  className="input selectadd" type="text" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
-                                  </div> 
-                                  <div className="control">
-                                  <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
-                                  </div>
-                                  </div>
-                             {/*  {ProductEntry.partPay} */}
-                              </td>
+                        
                          <td>
-                            <p><strong>Balance Due:</strong>{ProductEntry.paymentInfo.balance}  ({ProductEntry.proposedpayment.balance})</p>
-                            <p><strong>Paid Up:</strong>{ProductEntry.paymentInfo.paidup} ({ProductEntry.proposedpayment.paidup })</p>
-                            <p><strong>Amount:</strong>{ProductEntry.paymentInfo.amountDue}</p>
+                            {/* <p><strong>Balance Due:</strong>{ProductEntry.paymentInfo.balance}  ({ProductEntry.proposedpayment.balance})</p>
+                            <p><strong>Paid Up:</strong>{ProductEntry.paymentInfo.paidup} ({ProductEntry.proposedpayment.paidup })</p> */}
+                            {ProductEntry.paymentInfo.amountDue}
                          </td>
-
+                         <td>  {ProductEntry.serviceInfo.billingContract.map((contract,i)=>(
+                        <span key={i} className="ml-1">
+                           {contract.plans.map((plan,p)=>(
+                                <>
+                                   <span className="ml-1"> <b>HMO:</b> {contract.source_org_name}</span> 
+                                   <span className="ml-1"> <b>Plan:</b> {plan.name}</span> 
+                                   <span className="ml-1"><b>Class:</b>{plan.serviceClass} </span> 
+                                   <span className="ml-1"><b> Require Code:</b> {plan.reqAuthCode.toString()}  </span> 
+                                   <span className="ml-1"><b> Copay:</b>{plan.copay?plan.copay:"None"}</span> <br></br>
+                                </>
+                            ))}{/* :{plan?.serviceClass}/{plan?.reqAuthCode.toString()}/{plan?.copay}; */}
+                        </span>
+                        ))}</td> 
                           
-                        {/* <td>{ProductEntry.amount}</td> */}
+                        <td> <div className="field has-addons" /* style={{display:`${ProductEntry.show}`}} */>
+                                <div className="control">
+                                    <input  className="input selectadd" type="text" placeholder="Authorization Code" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
+                                    </div> 
+                                    <div className="control">
+                                    <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
+                                    </div>
+                                    </div>
+                        </td> 
+                        <td> <div className="field has-addons" /* style={{display:`${ProductEntry.show}`}} */>
+                                <div className="control">
+                                    <input  className="input selectadd" type="text" placeholder="copay" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
+                                    </div> 
+                                    <div className="control">
+                                    <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
+                                    </div>
+                                    </div>
+                        </td> 
                         {/*  <td><span className="showAction"  >x</span></td> */}
                          </tr>
                      ))}
@@ -1041,7 +993,7 @@ export default function PaymentCreate(){
                  <div className="field mt-2 is-grouped">
                     <p className="control">
                         <button className="button is-success is-small" disabled={!productItem.length>0} onClick={handlePayment}>
-                            Pay
+                            Approve
                         </button>
                     </p>
                   {/* <p className="control">
@@ -1122,7 +1074,7 @@ export default function PaymentCreate(){
     }
     const handleBlur=async(e)=>{
          if (count===2){
-             console.log("stuff was chosen")
+          //   console.log("stuff was chosen")
          }
        
        /*  console.log("blur")
@@ -1162,8 +1114,8 @@ export default function PaymentCreate(){
                      createdAt: -1
                    }
                      }}).then((res)=>{
-              console.log("product  fetched successfully") 
-              console.log(res.data) 
+             // console.log("product  fetched successfully") 
+             // console.log(res.data) 
                 setFacilities(res.data)
                  setSearchMessage(" product  fetched successfully")
                  setShowPanel(true)
@@ -1178,11 +1130,11 @@ export default function PaymentCreate(){
              })
          }
         else{
-            console.log("less than 3 ")
-            console.log(val)
+          //  console.log("less than 3 ")
+           // console.log(val)
             setShowPanel(false)
             await setFacilities([])
-            console.log(facilities)
+           // console.log(facilities)
         }
     }
 
@@ -1195,7 +1147,7 @@ export default function PaymentCreate(){
     }
     useEffect(() => {
        if (clear){
-           console.log("success has changed",clear)
+          // console.log("success has changed",clear)
            setSimpa("")
        }
         return () => {

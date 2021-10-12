@@ -966,7 +966,7 @@ export function ClientDetail(){
 
    
 
-   const Client =state.ClientModule.selectedClient 
+  let Client =state.ClientModule.selectedClient 
      // eslint-disable-next-line
     const client=Client
     const handleEdit= async()=>{
@@ -1010,6 +1010,12 @@ export function ClientDetail(){
         setBillModal(false)
         }
 
+   /*  useEffect(() => {
+        Client =state.ClientModule.selectedClient
+        return () => {
+           
+        }
+    }, [billingModal]) */
     return (
         <>
         <div className="card ">

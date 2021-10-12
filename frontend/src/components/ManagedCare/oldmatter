@@ -734,3 +734,22 @@ export function OrganizationModify(){
    
                 
 }   
+
+<td><label className=" is-small">
+        <input  type="radio" name={ProductEntry._id} value="Full" checked={ProductEntry.show==="none"}  onChange={(e)=>{handleChangePart(ProductEntry,e)}}/>
+        <span > Full</span>
+        </label> <br/>
+        <label className=" is-small">
+        <input type="radio" name={ProductEntry._id}  value="Part" onChange={(e)=>handleChangePart(ProductEntry,e)}/>
+        <span> Part </span>
+        </label>
+        <div className="field has-addons" style={{display:`${ProductEntry.show}`}}>
+        <div className="control">
+            <input  className="input selectadd" type="text" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
+            </div> 
+            <div className="control">
+            <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
+            </div>
+            </div>
+{/*  {ProductEntry.partPay} */}
+ </td>

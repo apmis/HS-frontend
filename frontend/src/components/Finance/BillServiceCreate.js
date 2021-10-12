@@ -129,13 +129,14 @@ export default function BillServiceCreate(){
          costprice,
          category: category==="Inventory"?"Prescription":category,
          billingId,
+         billingContract:contracts,
          billMode
  
      }
    
      const checkPrice= async(contracts,billMode)=>{
            if( billMode.type==="HMO Cover"){ //paymentmode
-            if (billMode.detail.plan==="NHIS"){
+           /*  if (billMode.detail.plan==="NHIS"){
                 //find contract for NHIS
                 let contract=contracts.filter(el=>el.source_org_name==="NHIS")
                 if (contract.length){
@@ -151,7 +152,7 @@ export default function BillServiceCreate(){
                  await setSellingPrice(0)
              }
 
-            }else{
+            }else{ */
 
             let contract=contracts.filter(el=>el.source_org===billMode.detail.organizationId)
             if (contract.length){
@@ -169,7 +170,7 @@ export default function BillServiceCreate(){
          }
         
         }
-        }
+       /*  } */
         if( billMode.type==="Company Cover"){ //paymentmode
             let contract=contracts.filter(el=>el.source_org===billMode.detail.organizationId)
             if (contract.length){
@@ -239,7 +240,7 @@ export default function BillServiceCreate(){
          setInventoryId(service.inventoryId)
          setBilllingId(service._id)
          await setObj(service)
-        
+        console.log(service.contracts)
         
      }
 
@@ -343,6 +344,7 @@ export default function BillServiceCreate(){
         /* console.log(qamount)
         console.log(productItem) */
         setChangeAmount(true)
+        setContracts("")
        // alert("finished")
      }
   
@@ -392,6 +394,7 @@ export default function BillServiceCreate(){
      setBaseunit()
      setCostprice()
      setProductItem([])
+     setContracts("")
      }
 
 
@@ -431,7 +434,9 @@ export default function BillServiceCreate(){
                 destination_name: document.facilityname, //facilityname
                 destination: document.facility, //facility id
                 order_status:"Billed",
-              
+                payer:element.billMode.organizationName,
+                paymentmode:element.billMode.paymentmode,
+                
                 requestingdoctor_Id: document.createdBy, 
                 requestingdoctor_Name: document.createdByname,
                 requestingdoctor_locationid:document.locationId,
@@ -461,6 +466,7 @@ export default function BillServiceCreate(){
                     baseunit: element.baseunit,
                     amount:element.amount,
                     billingId:element.billingId,
+                    billingContract:element.billingContract,
                     createdby:user._id,
                   },
                   paymentInfo:{
