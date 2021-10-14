@@ -12,6 +12,7 @@ import ManagedCareModule from './ManagedCareModule'
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
 import client from '../feathers'
+import EpidemiologyModule from './EpidemiologyModule'
 
 export default function Home() {
     let { path, url } = useRouteMatch();
@@ -45,6 +46,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/labs`} >
                     <LaboratoryModule />
+                </Route>
+                <Route path={`${path}/epidemiology`} >
+                    <EpidemiologyModule />
                 </Route>
                 <Route path={`${path}/hmo`} >
                     <ManagedCareModule />
@@ -215,6 +219,9 @@ function NavBar({url}){
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/labs`}>Laboratory</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/epidemiology`}>Epidemiology</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Finance')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/hmo`}>Managed Care</NavLink>
