@@ -1,6 +1,5 @@
 /* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
-
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
@@ -24,8 +23,6 @@ import {
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-import { useDebounce } from './util';
-import SnomedSearchInput from './SnomedSearchInput';
 //import BillPrescriptionCreate from './BillPrescriptionCreate';
 
 
@@ -365,60 +362,211 @@ export function LabNoteCreate(){
     const [currentUser,setCurrentUser] = useState()
     const [reportStatus,setReportStatus] = useState("Draft")
     const {state, setState}=useContext(ObjectContext)
-    const [selectedDisease, setSelectedDisease] =  useState();
-    const [selectedFindings,  setSelectedFindings] = useState([]);
 
+    const order=state.financeModule.selectedFinance
+    const bill_report_status=state.financeModule.report_status
+
+    const getSearchfacility=(obj)=>{
+        setValue("facility", obj._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+    }
+    
+    useEffect(() => {
+        setCurrentUser(user)
+        //console.log(currentUser)
+        return () => {
+        
+        }
+    }, [user])
+
+  //check user for facility or get list of facility  
+    useEffect(()=>{
+        //setFacility(user.activeClient.FacilityId)//
+      if (!user.stacker){
+       /*    console.log(currentUser)
+        setValue("facility", user.currentEmployee.facilityDetail._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })  */
+      }
+    })
+
+    const onSubmit = async(data,e) =>{
+        e.preventDefault();
+        setMessage("")
+        setError(false)
+        setSuccess(false)
+        let document={}
+         // data.createdby=user._id
+        //  console.log(data);
+          if (user.currentEmployee){
+          document.facility=user.currentEmployee.facilityDetail._id 
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          }
+         document.documentdetail=data
+          document.documentname= `${order.serviceInfo.name} Result`
+         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
+          document.client=order.orderInfo.orderObj.clientId
+          document.createdBy=user._id
+          document.createdByname=user.firstname+ " "+user.lastname
+          document.status=reportStatus
+          document.billId=order._id
+        //  console.log(document)
+        //  console.log(order)
+
+          if (
+            document.location===undefined ||!document.createdByname || !document.facilityname ){
+            toast({
+                message: ' Documentation data missing, requires location and facility details' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              return
+          }
+
+        if (bill_report_status==="Pending"){
+            ClientServ.create(document)
+            .then((res)=>{
+                  
+                    e.target.reset();
+                  
+                    setSuccess(true)
+                    toast({
+                        message: 'Lab Result created succesfully',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                      setSuccess(false)
+                })
+                .catch((err)=>{
+                    toast({
+                        message: 'Error creating Lab Result ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                })  
+        }
+
+        if (bill_report_status==="Draft"){
+         ClientServ.patch(order.resultDetail._id, document)
+        .then((res)=>{
+              
+                e.target.reset();
+              
+                setSuccess(true)
+                toast({
+                    message: 'Lab Result updated succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  setSuccess(false)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error updating Lab Result ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            }) 
+        }
+        const    newProductEntryModule={
+            selectedFinance:order,
+            show :'show',
+           // report_status:order.report_status
+           
+        }
+      await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
+      } 
+
+    const handleChangePart=async (e)=>{
+        console.log(e.target.value)
+        await setReportStatus(e.target.value)
+
+    }
+
+    useEffect(() => {
+        if (typeof order.resultDetail.documentdetail ==="undefined"){
+            console.log(order)
+            alert("No Status")
+            return
+
+        }
+        if (order.report_status !=="Pending"){
+            console.log(order.resultDetail.documentdetail)
+        setValue("Finding", order.resultDetail.documentdetail.Finding,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setValue("Recommendation", order.resultDetail.documentdetail.Recommendation,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        setReportStatus(order.report_status)
+    }
+        
+        return () => {
+            
+        }
+    }, [order])
 
     return (
         <>
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    New Case Definition
+                    Lab Result
                 </p>
             </div>
             <div className="card-content vscrollable remPad1">
 
-            <form onSubmit={() => {}}>
+                <label className="label is-size-7">
+                  Client:  {order.orderInfo.orderObj.clientname}
+                </label>
+                <label className="label is-size-7">
+                 Test:  {order.serviceInfo.name}
+                </label>
+            <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field is-horizontal">
                 <div className="field-body">
-                <label className=" is-small">Select Diagnosis</label>
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
-                         <SnomedSearchInput onSelected={setSelectedDisease}  />
-                         {selectedDisease?.fsn?.term}
+                            <textarea className="textarea is-small" ref={register()}  name="Finding" type="text" placeholder="Findings" disabled={bill_report_status==="Final"}/>                 
                         </p>
                     </div>
                     </div>
                     </div>
             <div className="field is-horizontal">
                 <div className="field-body">
-                <label className=" is-small">Add Findings</label>
                     <div className="field">
-                        <p className="control has-icons-left has-icons-right">
-                         <SnomedSearchInput onSelected={(obj)  => setSelectedFindings([...selectedFindings,  obj])}  />
-                         {selectedFindings.map((obj) => obj?.fsn?.term)}
-                        </p>
+                        <div className="control has-icons-left has-icons-right">
+                        <textarea className="textarea is-small" ref={register()}  name="Recommendation" type="text" placeholder="Recommendation" disabled={bill_report_status==="Final"}/>
+                        </div>
                     </div>
                     </div>
                     </div>
-             
-            <div className="field is-horizontal">
-                <div className="field-body">
-                <label className=" is-small">Select Diagnosis</label>
                     <div className="field">
-                        <p className="control has-icons-left has-icons-right">
-                         <SnomedSearchInput onSelected={(obj)  => setSelectedFindings([...selectedFindings,  obj])}  />
-                         {selectedFindings.map((obj) => obj?.fsn?.term)}
-                        </p>
-                    </div>
-                    </div>
-                    </div>
-           
+                    <label className=" is-small">
+                             <input  type="radio" name="status" value="Draft"   checked={reportStatus==="Draft"||reportStatus==="Pending"} onChange={(e)=>{handleChangePart(e)}} disabled={bill_report_status==="Final"}/>
+                               <span > Draft</span>
+                              </label> <br/>
+                              <label className=" is-small">
+                             <input type="radio" name="status"  value="Final"   checked={reportStatus==="Final"} onChange={(e)=>handleChangePart(e)} disabled={bill_report_status==="Final"}/>
+                             <span> Final </span>
+                              </label>
+                              </div> 
              <div className="field  is-grouped mt-2" >
                 <p className="control">
-                    <button type="submit" className="button is-success is-small"  >
-                    {"Submit"}
+                    <button type="submit" className="button is-success is-small" disabled={bill_report_status==="Final"} >
+                    {bill_report_status==="Pending"? "Save":"Update"}
                     </button>
                 </p>
                {/*  <p className="control">

@@ -7,53 +7,52 @@ const SnomedSearchInput = ({limit, placeholder, onSelected}) => {
 
 const baseUrl = 'https://browser.ihtsdotools.org/snowstorm/snomed-ct';
 const edition =  'MAIN';
-const version = '2019-07-31';
+const version = '2020-07-31';
 const defaultLimit = 10;
 
+
  
-const [searchTerm, setSearchTerm] = useState('');
- const [selectedSuggestion, setSelectedSuggestion] = useState();
+ const [searchTerm, setSearchTerm] = useState('');
+ const [inputValue, setInputValue] = useState('')
  const [suggestions, setSuggestions] = useState([]);
 
 
  const onChange = (_,  {newValue}) => {
-  setSearchTerm(newValue)
+  if(typeof newValue === 'object') { setInputValue('');}
+  else { setInputValue(newValue); }
 };
 
 const inputProps = {
  placeholder: placeholder || 'Input snomed term',
- value: searchTerm,
+ value: inputValue,
  onChange
 };
 
 const getSuggestions = () => {
-fetch(`${baseUrl}/${edition}/${version}/concepts?term=${searchTerm}&limit=${limit || defaultLimit}`)
+fetch(`${baseUrl}/${edition}/${version}/concepts?term=${searchTerm}&limit=${limit || defaultLimit}&semanticFilter=disorder`)
 .then((response) => response.json())
 .then(response => {
 setSuggestions(response.items)
+})
+.catch(exception  =>{
+ setSuggestions([])
 });
 
 };
 
 
-const handleOnSelected = (suggestion2) => {
- console.log({suggestion2})
-// setSearchTerm(suggestion.fsn.term)
- onSelected(suggestion2)
+const handleOnSelected = (_, { suggestion }) => {
+ onSelected(suggestion)
 }
 
 
-
 useDebounce(getSuggestions, 100, [searchTerm]);
-
-
-
 
 return ( <Autosuggest
  suggestions={suggestions}
  onSuggestionsFetchRequested={({ value }) => { setSearchTerm(value)}}
  onSuggestionsClearRequested={() => setSuggestions([])}
- getSuggestionValue={suggestion => {return suggestion.pt.term}}
+ getSuggestionValue={suggestion => suggestion}
  renderSuggestion={(concept) => (<div>{concept.fsn.term}</div>)}
  inputProps={inputProps}
  onSuggestionSelected={handleOnSelected}

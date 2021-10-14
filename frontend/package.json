@@ -19,6 +19,7 @@
     "random-string-generator": "^1.0.0",
     "react": "^17.0.1",
     "react-accessible-accordion": "^3.3.4",
+    "react-autosuggest": "^10.1.0",
     "react-chartjs-2": "^3.0.3",
     "react-datepicker": "^3.6.0",
     "react-debounce-input": "^3.2.3",

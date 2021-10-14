@@ -11,25 +11,16 @@ const useDebounce = (fn, delay, deps) => {
    * It changes only when one of the dependencies has has changed.
    * See official documentation at: https://reactjs.org/docs/hooks-reference.html#usecallback
    * */
-  const callback = useCallback(fn, deps); // eslint-disable-line react-hooks/exhaustive-deps
-  /**
-   * useEffect gets re-called whenever "callback" changes.
-   * You can add "delay" to the second argument array,
-   *    if you want to change "delay" dynamically.
-   * */
+  const callback = useCallback(fn, deps);
+
   useEffect(() => {
-    // Call the memoized version of callback after the delay
     const handler = setTimeout(() => {
       callback();
     }, delay);
-    /**
-     * Clear timeout when useEffect gets re-called,
-     *    in other words, when "callback" changes.
-     * */
     return () => {
       clearTimeout(handler);
     };
-  }, [callback]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [callback]);
 };
 
 const noop = () => {};
