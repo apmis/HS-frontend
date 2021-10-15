@@ -7,6 +7,7 @@ import ClinicModule from './ClinicModule'
 import ClientModule from './ClientModule'
 import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
+import EpidModule from './EpidemiologyModule'
 import ManagedCareModule from './ManagedCareModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
@@ -48,6 +49,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/hmo`} >
                     <ManagedCareModule />
+                </Route>
+                <Route path={`${path}/epid`} >
+                    <EpidModule />
                 </Route>
             </Switch>
         </div>
@@ -221,6 +225,9 @@ function NavBar({url}){
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Finance')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/finance`}>Finance</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Epidemiology')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/epid`}>Epidemiology</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>

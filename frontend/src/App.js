@@ -25,6 +25,10 @@ function App() {
       show:'create',
       selectedEmployee:{}
     },
+    EpidemiologyModule:{
+      show:'create',
+      selectedEpid:{}
+    },
     LocationModule:{
       show:'create',
       selectedLocation:{}
