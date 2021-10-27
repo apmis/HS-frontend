@@ -241,6 +241,8 @@ export function CaseDefinitionCreate(){
                 setSuccess(true)
               /*   setAllergies([]) */
                 setSymptoms([])
+                setFindings([])
+                setLabs([])
                 setMgtProtocol([])
                 toast({
                     message: 'Band created succesfully',
@@ -293,9 +295,21 @@ export function CaseDefinitionCreate(){
         setLabs((prev)=>([...prev, newLabs]))
        // setAllergy({})
         setLab("")
+        setLabvalue("")
        /*  setFindingreq(false) */
     }
-
+    const onDelete = (comp,i)=>{
+        //console.log(comp,i)
+       setSymptoms(prevstate=>prevstate.filter((el,index)=>index!==i))
+    }
+    const onDeleteFinding = (comp,i)=>{
+        //console.log(comp,i)
+       setFindings(prevstate=>prevstate.filter((el,index)=>index!==i))
+    }
+    const onDeleteLab = (comp,i)=>{
+        //console.log(comp,i)
+       setLabs(prevstate=>prevstate.filter((el,index)=>index!==i))
+    }
     return (
         <>
             <div className="card ">
@@ -379,6 +393,7 @@ export function CaseDefinitionCreate(){
                             <th><abbr title="Type"> Symptom</abbr></th>
                             <th><abbr title="Destination">Duration</abbr></th>
                             <th><abbr title="Destination">Required</abbr></th>
+                            <th><abbr title="Action"> Action</abbr></th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -392,7 +407,7 @@ export function CaseDefinitionCreate(){
                                 <td>{ProductEntry.symptom}</td> 
                                 <td>{ProductEntry.duration}</td>
                                 <td>{ProductEntry.sympreq.toString()}</td>                                                                     
-
+                                <td onClick={()=>onDelete(ProductEntry, i)}>x</td> 
                                 </tr>
 
                             ))}
@@ -439,6 +454,7 @@ export function CaseDefinitionCreate(){
                                         <th><abbr title="Type"> Finding</abbr></th>
                                     
                                         <th><abbr title="Destination">Required</abbr></th>
+                                        <th><abbr title="Action"> Action</abbr></th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -452,7 +468,7 @@ export function CaseDefinitionCreate(){
                                             <td>{ProductEntry.finding}</td> 
                                             
                                             <td>{ProductEntry.findingreq.toString()}</td>                                                                     
-
+                                            <td onClick={()=>onDeleteFinding(ProductEntry, i)}>x</td>
                                             </tr>
 
                                         ))}
@@ -503,6 +519,7 @@ export function CaseDefinitionCreate(){
                                         <th><abbr title="Type"> Test</abbr></th>
                                         <th><abbr title="Destination">Value</abbr></th>
                                     {/*   <th><abbr title="Destination">Required</abbr></th> */}
+                                        <th><abbr title="Action"> Action</abbr></th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -515,6 +532,7 @@ export function CaseDefinitionCreate(){
                                             <th>{i+1}</th>
                                             <td>{ProductEntry.lab}</td> 
                                             <td>{ProductEntry.labvalue}</td>
+                                            <td onClick={()=>onDeleteLab(ProductEntry, i)}>x</td>
                                             {/* <td>{ProductEntry.sympreq.toString()}</td>   */}                                                                   
 
                                             </tr>
