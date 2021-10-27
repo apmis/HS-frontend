@@ -7,13 +7,13 @@ import InventoryStore from './Epidemiology/InventoryStore' */
 import EpidemiologyHome from './Epidemiology/EpidemiologyHome'
 /* import ProductEntry from './Epidemiology/ProductEntry'
 import ProductExit from './Epidemiology/ProductExit'
-import Dispense from './Epidemiology/Dispensary' */
-import BillService from './Finance/BillService'
-import CaseDefinition from './Epidemiology/CaseDefinition'
+//import BillService from './Finance/BillService'
 /* import LabPayment from './Epidemiology/LabPayment' */
-import Labs, { StoreList, StoreListStandalone } from './Epidemiology/Labs'
+import Notifications, { StoreList, StoreListStandalone } from './Epidemiology/Notifications'
 import {UserContext,ObjectContext} from '../context'
 import BillLab from './Epidemiology/BillLab'
+import Dashboard from './Epidemiology/DashBoard'
+import CaseDefinition from './Epidemiology/CaseDefinition'
 
 export default function EpidModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -95,11 +95,11 @@ export default function EpidModule() {
                                         <NavLink to={`${url}/definitions`}>Case Definition</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/notifications`}>Notification</NavLink>
+                                        <NavLink to={`${url}/notifications`}>Signals</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                   {/*  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/Communication`}>Communication</NavLink>
-                                    </div>
+                                    </div> */}
                                     {/*  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
                                     </div>
@@ -157,7 +157,7 @@ export default function EpidModule() {
                             <Products />
                         </Route>*/}
                         <Route path={`${path}/dashboard`} exact>
-                            <BillService />
+                            <Dashboard />
                         </Route>
                         <Route path={`${path}/definitions`} exact>
                             <CaseDefinition />
@@ -166,7 +166,7 @@ export default function EpidModule() {
                             <BillLab />
                         </Route>
                         <Route path={`${path}/notifications`} exact>
-                            <Labs />
+                            <Notifications />
                         </Route>
                        {/*  <Route path={`${path}/lab-payment`} exact>
                             <LabPayment />

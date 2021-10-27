@@ -4,13 +4,14 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
+import {format, formatDistanceToNowStrict } from 'date-fns'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 // eslint-disable-next-line
 const searchfacility={};
 
 
-export default function Labs() {
+export default function Notifications() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
@@ -22,16 +23,20 @@ export default function Labs() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Store  Module</span></div>
             </div> */}
             <div className="columns ">
-            <div className="column is-8 ">
+            <div className="column is-1 ">
+                </div>  
+            <div className="column is-10 ">
                 <StoreList />
                 </div>
-            <div className="column is-4 ">
+                <div className="column is-1 ">
+                </div>  
+{/*             <div className="column is-4 ">
                 {(state.StoreModule.show ==='create')&&<StoreCreate />}
                 {(state.StoreModule.show ==='detail')&&<StoreDetail  />}
                 {(state.StoreModule.show ==='modify')&&<StoreModify Store={selectedStore} />}
                
             </div>
-
+ */}
             </div>                            
             </section>
        
@@ -249,7 +254,7 @@ export function StoreList({standalone,closeModal}){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const StoreServ=client.service('location')
+    const StoreServ=client.service('epidalerts')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
@@ -290,7 +295,7 @@ export function StoreList({standalone,closeModal}){
     }
 
    const handleSearch=(val)=>{
-       const field='name'
+       const field='disease'
        console.log(val)
        StoreServ.find({query: {
                 [field]: {
@@ -298,11 +303,11 @@ export function StoreList({standalone,closeModal}){
                     $options:'i'
                    
                 },
-               facility:user.currentEmployee.facilityDetail._id || "",
-                locationType:"Laboratory",
-               $limit:10,
+            /*    facility:user.currentEmployee.facilityDetail._id || "",
+                locationType:"Laboratory", */
+              /*  $limit:10, */
                 $sort: {
-                    name: 1
+                   createdAt: -1
                   }
                     }}).then((res)=>{
                 console.log(res)
@@ -322,24 +327,24 @@ export function StoreList({standalone,closeModal}){
             
         const findStore= await StoreServ.find(
                 {query: {
-                    locationType:"Laboratory",
-                    facility:user.currentEmployee.facilityDetail._id,
-                    $limit:20,
+                    /* locationType:"Laboratory", */
+                   /*  facility:user.currentEmployee.facilityDetail._id, */
+                   /*  $limit:20, */
                     $sort: {
-                        name: 1
+                        createdAt: -1
                     }
                     }})
-
+                 
          await setFacilities(findStore.data)
                 }
                 else {
                     if (user.stacker){
                         const findStore= await StoreServ.find(
                             {query: {
-                                locationType:"Laboratory",
+                              /*   locationType:"Laboratory", */
                                 $limit:20,
                                 $sort: {
-                                    name: 1
+                                    name: -1
                                 }
                                 }})
             
@@ -405,10 +410,10 @@ export function StoreList({standalone,closeModal}){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Laboratory </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Notifications </span></div>
                     <div className="level-right">
                 { !standalone &&   <div className="level-item"> 
-                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
+                            {/* <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div> */}
                         </div>}
                     </div>
 
@@ -418,15 +423,16 @@ export function StoreList({standalone,closeModal}){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th>Name</th>
-                                        {/* <th><abbr title="Last Name">Store Type</abbr></th>
-                                       <th><abbr title="Profession">Profession</abbr></th>
-                                         <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
-                                        <th><abbr title="Facility">Facility</abbr></th>*/}
-                                       { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
+                                        <th><abbr title="Date and Time">Date and Time</abbr></th>
+                                        <th>Disease</th>
+                                        <th><abbr title="Location">Location</abbr></th>
+                                        <th><abbr title="Facility">Facility</abbr></th>
+                                         <th><abbr title="Notified By">Notified By</abbr></th>
+                                        <th><abbr title="Notification Type">Notification Type</abbr></th>
+                                        <th><abbr title="Status">Status</abbr></th>
+                                        <th><abbr title="Action">Action</abbr></th> 
+                                        <th><abbr title="Person Notified"> Person Notified"</abbr></th>
+                                       {/* { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>} */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -437,15 +443,16 @@ export function StoreList({standalone,closeModal}){
 
                                             <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Store.name}</th>
-                                            {/*<td>{Store.StoreType}</td>
-                                            < td>{Store.profession}</td>
-                                            <td>{Store.phone}</td>
-                                            <td>{Store.email}</td>
-                                            <td>{Store.department}</td>
-                                            <td>{Store.deptunit}</td> 
-                                            <td>{Store.facility}</td>*/}
-                                          { !standalone &&   <td><span   className="showAction"  >...</span></td>}
+                                            <th><div className="docdate">{formatDistanceToNowStrict(new Date(Store.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Store.createdAt),'dd-MM-yy')}</span></div></th>
+                                            <td>{Store.disease}</td>
+                                            < td>{Store.location}</td>
+                                            <td>{Store.facility}</td>
+                                            <td>{Store.notified_by}</td>
+                                            <td>{Store.notification_type}</td>
+                                            <td>{Store.status}</td> 
+                                            <td>{Store.action}</td>
+                                            <td>{Store.person_notified}</td>
+                                         {/*  { !standalone &&   <td><span   className="showAction"  >...</span></td>} */}
                                            
                                             </tr>
 

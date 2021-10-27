@@ -88,10 +88,23 @@ export function CaseDefinitionCreate(){
     const [currentUser,setCurrentUser] = useState()
     const bandTypeOptions =["Immediate Notification","Weekly", "Monthly" ]
     const notifierOptions =["Facility Focal Person","DSNO", "Asst DSNO","State Epidemiologist" ]
+    
+    const [finding,setFinding] = useState("")
+    const [findings,setFindings] = useState([])
+    const [findingreq,setFindingreq] = useState(false)
+
     const [symptom,setSymptom] = useState("")
     const [symptoms,setSymptoms] = useState([])
     const [duration,setDuration] = useState("")
     const [sympreq,setSympreq] = useState(false)
+
+    const [lab,setLab] = useState("")
+    const [labs,setLabs] = useState([])
+    const [labvalue,setLabvalue] = useState("")
+    /* const [sympreq,setSympreq] = useState(false) */
+    const [observations,setObservations]=useState([])
+    const [mgtProtocol,setMgtProtocol] = useState("")
+    const [notified,setNotified] = useState("")
 
     const getSearchfacility=(obj)=>{
         
@@ -121,17 +134,97 @@ export function CaseDefinitionCreate(){
       }
     })
     const handleChecked=e=>{
-        console.log(e.target.checked)
+       // console.log(e.target.checked)
         setSympreq(e.target.checked)
     }
 
-    const onSubmit = (data,e) =>{
+    const handleChecked2=e=>{
+       // console.log(e.target.checked)
+        setFindingreq(e.target.checked)
+    }
+
+    const onSubmit = async(data,e) =>{
         e.preventDefault();
-        data.Presenting_Complaints=symptoms
-        if (data.bandType===""){
-            alert("Kindly choose band type")
+       /*  data.Presenting_Complaints=symptoms
+        data.Clinical_Findings=findings */
+        //data.LaboratoryConfirmation=labconfirms
+        data.observations=[]
+        data.disease={
+            name:data.disease,
+            icdcode:"",
+            icdver:"",
+            snomed:"",
+            snomedver:"",
+        }
+
+        if (data.notificationtype===""){
+            alert("Kindly choose notification type")
             return
         }
+        if (symptoms.length>0){
+            let sympcollection = []
+            symptoms.forEach(el=>{
+                let obs={
+                    category:"symptoms" ,
+                    name:el.symptom ,
+                    duration:el.duration ,
+                    /* note:"",
+                    snomed:"" ,
+                    response:"" , */
+                    required:el.sympreq,
+                    /* value:""  */
+                }
+                console.log(obs)
+                sympcollection.push(obs)
+                console.log(sympcollection)
+
+            })
+            data.observations=[...data.observations, ...sympcollection]
+        }
+        if (findings.length>0){
+            let findingscollection = []
+            findings.forEach(el=>{
+                let obs={
+                    category:"Signs" ,
+                    name:el.finding ,
+                   /*  duration:el.duration , */
+                    /* note:"",
+                    snomed:"" ,
+                    response:"" , */
+                    required:el.findingreq,
+                    /* value:""  */
+                }
+                findingscollection.push(obs)
+
+            })
+            data.observations=[...data.observations, ...findingscollection]
+
+        }
+        if (labs.length>0){
+            let labscollection = []
+            labs.forEach(el=>{
+                let obs={
+                    category:"Laboratory" ,
+                    name:el.lab ,
+                   /*  duration:el.duration , */
+                    /* note:"",
+                    snomed:"" ,
+                    response:"" , */
+                   /*  required:el.findingreq, */
+                    value:el.labvalue 
+                }
+               labscollection.push(obs)
+
+            })
+            data.observations=[...data.observations, ...labscollection]
+
+        }
+        let notifiedlist=[]
+        notifiedlist.push(data.notifiedPerson)
+        console.log(notifiedlist)
+        data.notification_destination= notifiedlist[0]
+        data.treatmentprotocol=mgtProtocol
+      // await setObservations((prev)=>([...prev, symp]))
         setMessage("")
         setError(false)
         setSuccess(false)
@@ -148,6 +241,7 @@ export function CaseDefinitionCreate(){
                 setSuccess(true)
               /*   setAllergies([]) */
                 setSymptoms([])
+                setMgtProtocol([])
                 toast({
                     message: 'Band created succesfully',
                     type: 'is-success',
@@ -179,6 +273,28 @@ export function CaseDefinitionCreate(){
         setDuration("")
         setSympreq(false)
     }
+    const handleAddFindings = ()=>{
+        let newFinding = {
+            finding,
+            findingreq
+        } 
+        console.log(newFinding)
+        setFindings((prev)=>([...prev, newFinding]))
+       // setAllergy({})
+        setFinding("")
+        setFindingreq(false)
+    }
+    const handleAddLabs = ()=>{
+        let newLabs = {
+            lab,
+            labvalue
+        } 
+        console.log(newLabs)
+        setLabs((prev)=>([...prev, newLabs]))
+       // setAllergy({})
+        setLab("")
+       /*  setFindingreq(false) */
+    }
 
     return (
         <>
@@ -199,10 +315,10 @@ export function CaseDefinitionCreate(){
                         </span>                    
                     </p>
                 </div> */}
-                <div className="field">    
+            <div className="field">    
                  <div className="control">
                      <div className="select is-small ">
-                         <select name="bandType"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
+                         <select name="notificationtype"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
                          <option value="">Choose Notification Type </option>
                            {bandTypeOptions.map((option,i)=>(
                                <option key={i} value={option}> {option}</option>
@@ -210,106 +326,19 @@ export function CaseDefinitionCreate(){
                          </select>
                      </div>
                  </div>
-                </div>
-                <div className="field">
+            </div>
+            <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="diagnosis" type="text" placeholder="Name of Disease" />
+                    <input className="input is-small" ref={register({ required: true })}  name="disease" type="text" placeholder="Name of Disease" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
                     
                 </p>
             </div>
-          {/*   <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="description" type="text" placeholder="Description of Band" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div> */}
-           {/*  <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-           
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> */}
-        {/*    <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
-                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
-                    <span className="icon is-small is-left">
-                    <i className="fas  fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div> */}
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
+        {/* Symptoms */}
             <>
-             <h3><b>Symptoms</b></h3>
+             <h3 className=" mt-2"><b>Symptoms</b></h3>
                 <input className="input is-small is-hidden"   ref={register} name="Symptoms" type="text" placeholder="Specify" />  
                     <div className="field is-horizontal">
                         <div className="field-body ml-3">  
@@ -370,157 +399,160 @@ export function CaseDefinitionCreate(){
                         </tbody>
                         </table>
 
-</>
-<>
-             <h3><b>Clinical Findings</b></h3>
-                <input className="input is-small is-hidden"   ref={register} name="ClinicalFindings" type="text" placeholder="Specify" />  
-                    <div className="field is-horizontal">
-                        <div className="field-body ml-3">  
-                           {/*  <div className="field">
-                                <label className="is-small"> Symptom</label>
-                            </div> */}
-                            <div className="field">
-                                <p className="control ">
-                                    <input className="input is-small"  value={symptom} /* ref={register} */ onChange={(e)=>{setSymptom(e.target.value)}} name="symptom" type="text" placeholder="Symptom" />           
-                                </p>
-                            </div>
-                            
-                            <div className="field">
-                            <label  className=" is-small" >
-                                    <input type="checkbox" value={sympreq} name="sympreq"  onChange={(e)=>{handleChecked(e)}}/* ref={register} */ />Required
-                                </label>
-                                </div>
-                            <div className="field">
-                            <div className="control">
-                            <div  className="button is-success is-small selectadd" onClick={handleAddSymptoms}>
-                               Add
-                            </div>
-                            </div>
-                        </div>
-                        
-                        </div>
-                    </div> 
-                    
-                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                        <thead>
-                            <tr>
-                            <th><abbr title="Serial No">S/No</abbr></th>
-                        
-                            <th><abbr title="Type"> Finding</abbr></th>
-                           
-                            <th><abbr title="Destination">Required</abbr></th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            
-                        </tfoot>
-                        <tbody>
-                        { symptoms.map((ProductEntry, i)=>(
-
-                                <tr key={i}>
-                                <th>{i+1}</th>
-                                <td>{ProductEntry.symptom}</td> 
+            </>
+            {/* findings */}
+            <>
+                        <h3 className=" mt-2"><b>Clinical Signs</b></h3>
+                            <input className="input is-small is-hidden"   ref={register} name="ClinicalFindings" type="text" placeholder="Specify" />  
+                                <div className="field is-horizontal">
+                                    <div className="field-body ml-3">  
+                                    {/*  <div className="field">
+                                            <label className="is-small"> Symptom</label>
+                                        </div> */}
+                                        <div className="field">
+                                            <p className="control ">
+                                                <input className="input is-small"  value={finding} /* ref={register} */ onChange={(e)=>{setFinding(e.target.value)}} name="finding" type="text" placeholder="Finding" />           
+                                            </p>
+                                        </div>
+                                        
+                                        <div className="field">
+                                        <label  className=" is-small" >
+                                                <input type="checkbox" value={findingreq} name="sympreq"  onChange={(e)=>{handleChecked2(e)}}/* ref={register} */ />Required
+                                            </label>
+                                            </div>
+                                        <div className="field">
+                                        <div className="control">
+                                        <div  className="button is-success is-small selectadd" onClick={handleAddFindings}>
+                                        Add
+                                        </div>
+                                        </div>
+                                    </div>
+                                    
+                                    </div>
+                                </div> 
                                 
-                                <td>{ProductEntry.sympreq.toString()}</td>                                                                     
+                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                    <thead>
+                                        <tr>
+                                        <th><abbr title="Serial No">S/No</abbr></th>
+                                    
+                                        <th><abbr title="Type"> Finding</abbr></th>
+                                    
+                                        <th><abbr title="Destination">Required</abbr></th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                    <tbody>
+                                    { findings.map((ProductEntry, i)=>(
 
-                                </tr>
+                                            <tr key={i}>
+                                            <th>{i+1}</th>
+                                            <td>{ProductEntry.finding}</td> 
+                                            
+                                            <td>{ProductEntry.findingreq.toString()}</td>                                                                     
 
-                            ))}
-                        </tbody>
-                        </table>
+                                            </tr>
 
-</>
-<>
-             <h3><b>Laboratory Confirmation</b></h3>
-                <input className="input is-small is-hidden"   ref={register} name="LaboratoryConfirmation" type="text" placeholder="Specify" />  
-                    <div className="field is-horizontal">
-                        <div className="field-body ml-3">  
-                           {/*  <div className="field">
-                                <label className="is-small"> Symptom</label>
-                            </div> */}
-                            <div className="field">
-                                <p className="control ">
-                                    <input className="input is-small"  value={symptom} /* ref={register} */ onChange={(e)=>{setSymptom(e.target.value)}} name="symptom" type="text" placeholder="Symptom" />           
-                                </p>
-                            </div>
-                            <div className="field">
-                                <p className="control ">
-                                    <input className="input is-small"  value={duration}  /* ref={register} */ onChange={(e)=>{setDuration(e.target.value)}}  name="durationn" type="text" placeholder="Duration" />           
-                                </p>
-                            </div>
-                           {/*  <div className="field">
-                            <label  className=" is-small" >
-                                    <input type="checkbox" value={sympreq} name="sympreq"  onChange={(e)=>{handleChecked(e)}}/* ref={register} */ /* />Required */
-                                /* </label>
-                                </div> */} 
-                            <div className="field">
-                            <div className="control">
-                            <div  className="button is-success is-small selectadd" onClick={handleAddSymptoms}>
-                               Add
-                            </div>
-                            </div>
-                        </div>
-                        
-                        </div>
-                    </div> 
-                    
-                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                        <thead>
-                            <tr>
-                            <th><abbr title="Serial No">S/No</abbr></th>
-                        
-                            <th><abbr title="Type"> Test</abbr></th>
-                            <th><abbr title="Destination">Value</abbr></th>
-                          {/*   <th><abbr title="Destination">Required</abbr></th> */}
-                            </tr>
-                        </thead>
-                        <tfoot>
+                                        ))}
+                                    </tbody>
+                                    </table>
+
+            </>
+            {/* lab confirm */}
+            <>
+                        <h3 className=" mt-2"><b>Laboratory Confirmation</b></h3>
+                            <input className="input is-small is-hidden"   ref={register} name="LaboratoryConfirmation" type="text" placeholder="Specify" />  
+                                <div className="field is-horizontal">
+                                    <div className="field-body ml-3">  
+                                    {/*  <div className="field">
+                                            <label className="is-small"> Symptom</label>
+                                        </div> */}
+                                        <div className="field">
+                                            <p className="control ">
+                                                <input className="input is-small"  value={lab} /* ref={register} */ onChange={(e)=>{setLab(e.target.value)}} name="lab" type="text" placeholder="Lab" />           
+                                            </p>
+                                        </div>
+                                        <div className="field">
+                                            <p className="control ">
+                                                <input className="input is-small"  value={labvalue}  /* ref={register} */ onChange={(e)=>{setLabvalue(e.target.value)}}  name="lab value" type="text" placeholder=" Value" />           
+                                            </p>
+                                        </div>
+                                    {/*  <div className="field">
+                                        <label  className=" is-small" >
+                                                <input type="checkbox" value={sympreq} name="sympreq"  onChange={(e)=>{handleChecked(e)}}/* ref={register} */ /* />Required */
+                                            /* </label>
+                                            </div> */} 
+                                        <div className="field">
+                                        <div className="control">
+                                        <div  className="button is-success is-small selectadd" onClick={handleAddLabs}>
+                                        Add
+                                        </div>
+                                        </div>
+                                    </div>
+                                    
+                                    </div>
+                                </div> 
+                                
+                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                    <thead>
+                                        <tr>
+                                        <th><abbr title="Serial No">S/No</abbr></th>
+                                    
+                                        <th><abbr title="Type"> Test</abbr></th>
+                                        <th><abbr title="Destination">Value</abbr></th>
+                                    {/*   <th><abbr title="Destination">Required</abbr></th> */}
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        
+                                    </tfoot>
+                                    <tbody>
+                                    { labs.map((ProductEntry, i)=>(
+
+                                            <tr key={i}>
+                                            <th>{i+1}</th>
+                                            <td>{ProductEntry.lab}</td> 
+                                            <td>{ProductEntry.labvalue}</td>
+                                            {/* <td>{ProductEntry.sympreq.toString()}</td>   */}                                                                   
+
+                                            </tr>
+
+                                        ))}
+                                    </tbody>
+                                    </table>
+
+            </>
+             {/* Management Protocol */}
+            <>
                             
-                        </tfoot>
-                        <tbody>
-                        { symptoms.map((ProductEntry, i)=>(
+                                    <div className="field-body ml-3">  
+                                    <div className="field">
+                                            <label className="is-small">Management Protocol</label>
+                                        {/* </div>  */}
+                                       {/*  <div className="field"> */}
+                                            <p className="control mt-1 mb-2">
+                                                <textarea className="textarea is-small"  value={mgtProtocol} /* ref={register} */ onChange={(e)=>{setMgtProtocol(e.target.value)}} name="mgtProtocol" type="text" placeholder="Mangement Protocol" />           
+                                            </p>
+                                        </div>
+                                        </div>
+                                    
 
-                                <tr key={i}>
-                                <th>{i+1}</th>
-                                <td>{ProductEntry.symptom}</td> 
-                                <td>{ProductEntry.duration}</td>
-                                {/* <td>{ProductEntry.sympreq.toString()}</td>   */}                                                                   
+            </>
 
-                                </tr>
-
-                            ))}
-                        </tbody>
-                        </table>
-
-</>
-<>
-                   
-                        <div className="field-body ml-3">  
-                          <div className="field">
-                                <label className="is-small">Management Protocol</label>
-                            </div> 
-                            <div className="field">
-                                <p className="control ">
-                                    <textarea className="textarea is-small"  value={symptom} /* ref={register} */ onChange={(e)=>{setSymptom(e.target.value)}} name="symptom" type="text" placeholder="Mangement Protocol" />           
-                                </p>
-                            </div>
-                            </div>
-                          
-
-</>
-
-             <div className="field">    
+            <div className="field  ml-3 mt-2">    
                  <div className="control">
                      <div className="select is-small ">
-                         <select name="bandType"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                         <option value="">Choose Notification Person </option>
+                         <select name="notifiedPerson"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
+                         <option value="">Choose Person to Notify </option>
                            {notifierOptions.map((option,i)=>(
                                <option key={i} value={option}> {option}</option>
                            ))}
                          </select>
                      </div>
                  </div>
-                </div>
+            </div>
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
@@ -560,10 +592,10 @@ export function CaseDefinitionList(){
 
     const handleCreateNew = async()=>{
         const    newBandModule={
-            selectedBand:{},
+            selectedEpid:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate, EpidemiologyModule:newBandModule}))
        //console.log(state)
         
 
@@ -574,18 +606,18 @@ export function CaseDefinitionList(){
         //console.log("handlerow",Band)
 
         await setSelectedBand(Band)
-
+       
         const    newBandModule={
-            selectedBand:Band,
+            selectedEpid:Band,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
-       //console.log(state)
+       await setState((prevstate)=>({...prevstate, EpidemiologyModule:newBandModule}))
+       console.log(newBandModule)
 
     }
 
    const handleSearch=(val)=>{
-       const field='name'
+       const field='disease.name'
        console.log(val)
        BandServ.find({query: {
                 [field]: {
@@ -719,9 +751,10 @@ export function CaseDefinitionList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th>Name</th>
-                                        <th><abbr title="Band Type">Band Type</abbr></th>
-                                       <th><abbr title="Description">Description</abbr></th>
+                                        <th>Disease</th>
+                                        <th><abbr title="Notification Type">Notification Type</abbr></th>
+                                      {/*  <th><abbr title="Description">Description</abbr></th> */}
+                                      {/*  <th><abbr title="Notified">Description</abbr></th> */}
                                           {/*<th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
@@ -738,9 +771,9 @@ export function CaseDefinitionList(){
 
                                             <tr key={Band._id} onClick={()=>handleRow(Band)} className={Band._id===(selectedBand?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Band.name}</th>
-                                            <td>{Band.bandType}</td>
-                                            < td>{Band.description}</td>
+                                            <th>{Band.disease.name}</th>
+                                            <td>{Band.notificationtype}</td>
+                                           {/*  < td>{Band.description}</td> */}
                                             {/*<td>{Band.phone}</td>
                                             <td>{Band.email}</td>
                                             <td>{Band.department}</td>
@@ -776,14 +809,14 @@ export function CaseDefinitionDetail(){
 
    
 
-   const Band =state.BandModule.selectedBand 
+   const Band =state.EpidemiologyModule.selectedEpid 
 
     const handleEdit= async()=>{
         const    newBandModule={
-            selectedBand:Band,
+            EpidemiologyModule:Band,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate,  EpidemiologyModule:newBandModule}))
        //console.log(state)
        
     }
@@ -793,115 +826,159 @@ export function CaseDefinitionDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Band Details
+                    Case Definition Details
                 </p>
             </div>
             <div className="card-content vscrollable">
-           
-                <table> 
-                <tbody>         
-                <tr>
-                    <td>
-                
-                    <label className="label is-small"> <span className="icon is-small is-left">
+                    <div >
+                     <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        Name: 
+                        Disease : 
+                        <span className="is-size-7 padleft"   name="name"> {Band.disease.name} </span>
                         </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft"   name="name"> {Band.name} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                    <td>
-                <label className="label is-small"><span className="icon is-small is-left">
+                        
+                       
+                        
+                    </div>
+                    <div className=" mt-2"> 
+                    <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
-                    </span>Band Type:
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft"   name="BandType">{Band.bandType} </span> 
-                    </td>
-                </tr>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
+                    </span>Notification Type: <span className="is-size-7 padleft"   name="BandType">{Band.notificationtype} </span> 
                     </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="BandCity">{Band.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
                     
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="BandContactPhone" >{Band.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
                     
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="BandEmail" >{Band.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="BandOwner">{Band.department}</span>
-                    </td>
-               
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="BandType">{Band.deptunit}</span>
-                </td>
-              
-                </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "BandCategory">{Band.BandCategory}</span>
-                </label>
-                 </div> */}
+                   
+                    </div>
+                    <div className=" mt-2">
+                    <label className=" mt-2">
+                       <b> Symptoms </b>
+                    </label>
+                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                        <thead>
+                            <tr>
+                            <th><abbr title="Serial No">S/No</abbr></th>
+                        
+                            <th><abbr title="Type"> Symptom</abbr></th>
+                            <th><abbr title="Destination">Duration</abbr></th>
+                            <th><abbr title="Destination">Required</abbr></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            
+                        </tfoot>
+                        <tbody>
+                        { Band.observations.map((ProductEntry, i)=>(
+                           <>
+                            { (ProductEntry.category==="symptoms") &&   <tr key={i}>
+                                <th>{i+1}</th>
+                                <td>{ProductEntry.name}</td> 
+                                <td>{ProductEntry.duration}</td>
+                                <td>{ProductEntry.required.toString()}</td>                                                                     
 
-            </tbody> 
-            </table> 
-           
+                                </tr>
+                        }
+                        </>
+                            ))}
+                        </tbody>
+                        </table>
+                    </div>
+                    <div className=" mt-2">
+                    <label className=" mt-2">
+                        <b>Clinical Signs </b>
+                    </label>
+                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                        <thead>
+                            <tr>
+                            <th><abbr title="Serial No">S/No</abbr></th>
+                        
+                            <th><abbr title="Type"> Symptom</abbr></th>
+                            <th><abbr title="Destination">Duration</abbr></th>
+                            <th><abbr title="Destination">Required</abbr></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            
+                        </tfoot>
+                        <tbody>
+                        { Band.observations.map((ProductEntry, i)=>(
+                           <>
+                            { (ProductEntry.category==="Signs") &&   <tr key={i}>
+                                <th>{i+1}</th>
+                                <td>{ProductEntry.name}</td> 
+                                <td>{ProductEntry.required}</td>
+                                {/* <td>{ProductEntry.required.toString()}</td>  */}                                                                    
+
+                                </tr>
+                        }
+                        </>
+                            ))}
+                        </tbody>
+                        </table>
+                    </div>
+                    <div className=" mt-2">
+                    <label className=" mt-2">
+                       <b> Laboratory</b>
+                    </label>
+                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                        <thead>
+                            <tr>
+                            <th><abbr title="Serial No">S/No</abbr></th>
+                        
+                            <th><abbr title="Type"> Lab Test </abbr></th>
+                            <th><abbr title="Destination">Value</abbr></th>
+                           {/*  <th><abbr title="Destination">Required</abbr></th> */}
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            
+                        </tfoot>
+                        <tbody>
+                        { Band.observations.map((ProductEntry, i)=>(
+                           <>
+                            { (ProductEntry.category==="symptoms") &&   <tr key={i}>
+                                <th>{i+1}</th>
+                                <td>{ProductEntry.name}</td> 
+                                <td>{ProductEntry.duration}</td>
+                                <td>{ProductEntry.required.toString()}</td>                                                                     
+
+                                </tr>
+                        }
+                        </>
+                            ))}
+                        </tbody>
+                        </table> 
+
+                    </div>
+                    <div className=" mt-2">
+                     <label className="label is-small"> <span className="icon is-small is-left">
+                            <i className="fas fa-hospital"></i>
+                        </span>                    
+                        Treatment Protocol: 
+                        </label>
+                        
+                       
+                        <span className="is-size-7 padleft"   name="name"> {Band.treatmentprotocol} </span>
+                    </div>
+                    <div className=" mt-2">
+                     <label className="label is-small"> <span className="icon is-small is-left">
+                            <i className="fas fa-hospital"></i>
+                        </span>                    
+                        Person to Notify :  <span className="is-size-7 padleft"   name="name"> {Band.notification_destination[0]} </span>
+                        </label>
+                        
+                       
+                        
+                    </div>
+          {/*  
             <div className="field mt-2">
                 <p className="control">
-                    <button className="button is-success is-small" onClick={handleEdit}>
+                    <button className="button is-success is-small is-disabled" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
-            </div>
-            { error && <div className="message"> {message}</div>}
+            </div> */}
+          
            
         </div>
         </div>
@@ -926,7 +1003,7 @@ export function CaseDefinitionModify(){
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const Band =state.BandModule.selectedBand 
+    const Band =state.EpidemiologyModule.selectedBand 
 
         useEffect(() => {
             setValue("name", Band.name,  {

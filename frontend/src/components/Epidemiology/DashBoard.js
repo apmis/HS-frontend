@@ -28,7 +28,7 @@ import { ProductExitCreate } from './DispenseExit';
 
 
 
-export default function Dispense() {
+export default function Dashboard() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -55,13 +55,16 @@ export default function Dispense() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-6 ">
-                    <DispenseList />
+                <div className="column is-2 ">
+
+                </div>
+                <div className="column is-8 ">
+                    <DashBoardMain />
                     </div>
               
-                <div className="column is-6 ">
+                <div className="column is-2 ">
                 
-                {(state.financeModule.show ==='detail')&& <ProductExitCreate />}
+           
                 </div>
                {/*  <div className="column is-3 ">
                 
@@ -75,7 +78,7 @@ export default function Dispense() {
     
 }
 
-export function DispenseList(){
+export function DashBoardMain(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -292,93 +295,10 @@ export function DispenseList(){
  
 
     return(     
-            <>  
-                <div className="level">
-                    <div className="level-left">
-                        <div className="level-item">
-                            <div className="field">
-                                <p className="control has-icons-left  ">
-                                    <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Medications"
-                                        minLength={3}
-                                        debounceTimeout={400}
-                                        onChange={(e)=>handleSearch(e.target.value)} />
-                                    <span className="icon is-small is-left">
-                                        <i className="fas fa-search"></i>
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Paid Prescriptions </span></div>
-                     {/* <div className="level-right">
-                       <div className="level-item"> 
-                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div> 
-                    </div>*/}
-
-                </div>
-                <div className=" pullup ">
-                    <div className=" is-fullwidth vscrollable pr-1">   
-                    <Accordion allowZeroExpanded >
-                        {facilities.map((Clinic, i)=>(
-                            <AccordionItem  key={Clinic.client_id}  >
-                               <AccordionItemHeading >
-                                    <AccordionItemButton  >
-                                   {/*  <input type = "checkbox" name={Clinic.client_id}  />  */} 
-                                    <strong> {i+1} {Clinic.clientname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
-                                    </AccordionItemButton>
-                                </AccordionItemHeading>
-                                <AccordionItemPanel>
-                                    <div className=" is-fullwidth vscrollable pr-1">   
-                                        <Accordion allowZeroExpanded>
-                                            {Clinic.bills.map((category, i)=>(
-                                                <AccordionItem  key={Clinic.client_id} >
-                                                    <AccordionItemHeading >
-                                                    <AccordionItemButton  >
-                                                   {/*  <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} />   */}
-                                                         {category.catName} with {category.order.length} Paid bill(s). {/* Total amount: N */}
-                                                    </AccordionItemButton>
-                                                    </AccordionItemHeading>
-                                                    <AccordionItemPanel>
-                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th><abbr title="Serial No">S/No</abbr></th>
-                                                                        <th><abbr title="Date">Date</abbr></th>
-                                                                        <th><abbr title="Description">Description</abbr></th>
-                                                                    {/*  <th>Fulfilled</th> */}
-                                                                        <th><abbr title="Status">Status</abbr></th>
-                                                                        <th><abbr title="Amount">Amount</abbr></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                     { category.order.map((order, i)=>(
-
-                                                        <tr key={order._id}  /*  onClick={()=>handleMedicationRow(order)} */  className={order._id===(selectedFinance?._id||null)?"is-selected":""}>                                         
-                                                        <th><input type = "checkbox" name={order._id} onChange={(e)=>handleChoseClient(Clinic,e, order)}  checked={order.checked}/>  {i+1}</th>
-                                                        <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
-                                                        <th>{order.serviceInfo.name}</th>
-                                                       {/*  <td>{order.fulfilled==="True"?"Yes":"No"}</td> */}
-                                                        <td>{order.billing_status}</td>
-                                                        <td>{order.serviceInfo.amount}</td>
-                                                        </tr>
-                                                ))}
-                                            </tbody>
-                                            </table>
-
-                                                    </AccordionItemPanel>                                          
-                                                </AccordionItem>
-                                            ))}
-                                        </Accordion>
-                                    </div>
-                                </AccordionItemPanel>                    
-                            </AccordionItem >
-                        ))}
-                    </Accordion >
-                    </div>  
-                </div>
-            </>          
+            <>
+            <img src="\dashboard-epid.PNG"></img>
+            
+            </>         
     )
     }
 
