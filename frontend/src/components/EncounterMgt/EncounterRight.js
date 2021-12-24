@@ -22,6 +22,8 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='Vital Signs') &&  <VitalSignCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Clinical Note') &&   <ClinicalNoteCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Lab Result') &&   <LabNoteCreate />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Nursing Note') &&   <NursingNoteCreate />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Doctor Note') &&   <DoctorsNoteCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Prescription') &&   <PrescriptionCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Diagnostic Request') &&   <LabrequestCreate />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Adult Asthma Questionnaire') &&   <AsthmaIntake />}
@@ -871,6 +873,491 @@ const handleChangePart=(e)=>{
     )
    
 }
+
+export function NursingNoteCreate(){
+    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const [error, setError] =useState(false)
+    const [success, setSuccess] =useState(false)
+    const [message,setMessage] = useState("")
+    // eslint-disable-next-line
+    const [facility,setFacility] = useState()
+    const ClientServ=client.service('clinicaldocument')
+    //const history = useHistory()
+    const {user} = useContext(UserContext) //,setUser
+    // eslint-disable-next-line
+    const [currentUser,setCurrentUser] = useState()
+    const {state}=useContext(ObjectContext)
+
+    const [docStatus,setDocStatus] = useState("Draft")
+
+    let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
+
+    useEffect(() => {
+        if( !!draftDoc && draftDoc.status==="Draft"){
+
+           Object.entries(draftDoc.documentdetail).map(([keys,value],i)=>(
+               setValue(keys, value,  {
+                   shouldValidate: true,
+                   shouldDirty: true
+               })
+
+           ))
+          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
+          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+   }
+        return () => {
+            draftDoc={}
+        }
+    }, [draftDoc])
+
+    const getSearchfacility=(obj)=>{
+        setValue("facility", obj._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+    }
+    
+    useEffect(() => {
+        setCurrentUser(user)
+        //console.log(currentUser)
+        return () => {
+        
+        }
+    }, [user])
+
+  //check user for facility or get list of facility  
+    useEffect(()=>{
+        //setFacility(user.activeClient.FacilityId)//
+      if (!user.stacker){
+       /*    console.log(currentUser)
+        setValue("facility", user.currentEmployee.facilityDetail._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })  */
+      }
+    })
+
+    const onSubmit = (data,e) =>{
+        e.preventDefault();
+        setMessage("")
+        setError(false)
+        setSuccess(false)
+        let document={}
+         // data.createdby=user._id
+          //console.log(data);
+          if (user.currentEmployee){
+          document.facility=user.currentEmployee.facilityDetail._id 
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          }
+         document.documentdetail=data
+          document.documentname="Nursing Note"
+          document.documentType="Nursing Note"
+         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
+          document.client=state.ClientModule.selectedClient._id
+          document.createdBy=user._id
+          document.createdByname=user.firstname+ " "+user.lastname
+          document.status=docStatus==="Draft"?"Draft":"completed"
+         // console.log(document)
+
+          if (
+            document.location===undefined ||!document.createdByname || !document.facilityname ){
+            toast({
+                message: ' Documentation data missing, requires location and facility details' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              return
+          }
+          let confirm = window.confirm(`You are about to save this document ${ document.documentname} ?`)
+          if (confirm){
+            if (!!draftDoc &&  draftDoc.status==="Draft"){
+                ClientServ.patch(draftDoc._id, document)
+                .then((res)=>{
+                    //console.log(JSON.stringify(res))
+                    e.target.reset();
+                    setDocStatus("Draft")
+                   // setAllergies([])
+                   /*  setMessage("Created Client successfully") */
+                    setSuccess(true)
+                    toast({
+                        message: 'Documentation updated succesfully',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                      setSuccess(false)
+                })
+                .catch((err)=>{
+                    toast({
+                        message: 'Error updating Documentation ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                })
+ 
+            }else{
+        ClientServ.create(document)
+        .then((res)=>{
+                //console.log(JSON.stringify(res))
+                e.target.reset();
+               /*  setMessage("Created Client successfully") */
+                setSuccess(true)
+                toast({
+                    message: 'Lab Result created succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  setSuccess(false)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error creating Lab Result ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            })
+
+      } 
+    }
+
+} 
+
+const handleChangeStatus=async (e)=>{
+    // await setAppointment_type(e.target.value)
+   
+    setDocStatus(e.target.value)
+
+    //console.log(e.target.value)
+
+    }
+const handleChangePart=(e)=>{
+    console.log(e)
+}
+    return (
+        <>
+            <div className="card ">
+            <div className="card-header">
+                <p className="card-header-title">
+                    Nursing Note
+                </p>
+            </div>
+            <div className="card-content vscrollable remPad1">
+
+              {/*   <label className="label is-size-7">
+                  Client:  {order.orderInfo.orderObj.clientname}
+                </label>
+                <label className="label is-size-7">
+                 Test:  {order.serviceInfo.name}
+                </label> */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <input className="input is-small" ref={register()}  name="Title" type="text" placeholder="Title" />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-hospital"></i>
+                            </span>                    
+                        </p>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Documentation" type="text" placeholder="Documentation" />                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <div className="control has-icons-left has-icons-right">
+                        <textarea className="textarea is-small" ref={register()}  name="Recommendation" type="text" placeholder="Recommendation" />
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field">
+                    <label className=" is-small">
+                        <input  type="radio"  checked={docStatus==="Draft"} name="status" value="Draft"  onChange={(e)=>{handleChangeStatus(e)}}/>
+                        <span > Draft</span>
+                    </label> <br/>
+                    <label className=" is-small">
+                        <input type="radio" checked={docStatus==="Final"} name="status"  value="Final" onChange={(e)=>handleChangeStatus(e)}/>
+                        <span> Final </span>
+                    </label>
+                </div>  
+                
+        <div className="field  is-grouped mt-2" >
+                <p className="control">
+                    <button type="submit" className="button is-success is-small" >
+                        Save
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-warning is-small" type="reset">
+                        Cancel
+                    </button>
+                </p>
+               
+            </div>
+     
+            </form>
+            </div>
+            </div>
+                 
+        </>
+    )
+   
+}
+
+export function DoctorsNoteCreate(){
+    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const [error, setError] =useState(false)
+    const [success, setSuccess] =useState(false)
+    const [message,setMessage] = useState("")
+    // eslint-disable-next-line
+    const [facility,setFacility] = useState()
+    const ClientServ=client.service('clinicaldocument')
+    //const history = useHistory()
+    const {user} = useContext(UserContext) //,setUser
+    // eslint-disable-next-line
+    const [currentUser,setCurrentUser] = useState()
+    const {state}=useContext(ObjectContext)
+
+    const [docStatus,setDocStatus] = useState("Draft")
+
+    let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
+
+    useEffect(() => {
+        if( !!draftDoc && draftDoc.status==="Draft"){
+
+           Object.entries(draftDoc.documentdetail).map(([keys,value],i)=>(
+               setValue(keys, value,  {
+                   shouldValidate: true,
+                   shouldDirty: true
+               })
+
+           ))
+          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
+          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+   }
+        return () => {
+            draftDoc={}
+        }
+    }, [draftDoc])
+
+    const getSearchfacility=(obj)=>{
+        setValue("facility", obj._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+    }
+    
+    useEffect(() => {
+        setCurrentUser(user)
+        //console.log(currentUser)
+        return () => {
+        
+        }
+    }, [user])
+
+  //check user for facility or get list of facility  
+    useEffect(()=>{
+        //setFacility(user.activeClient.FacilityId)//
+      if (!user.stacker){
+       /*    console.log(currentUser)
+        setValue("facility", user.currentEmployee.facilityDetail._id,  {
+            shouldValidate: true,
+            shouldDirty: true
+        })  */
+      }
+    })
+
+    const onSubmit = (data,e) =>{
+        e.preventDefault();
+        setMessage("")
+        setError(false)
+        setSuccess(false)
+        let document={}
+         // data.createdby=user._id
+          //console.log(data);
+          if (user.currentEmployee){
+          document.facility=user.currentEmployee.facilityDetail._id 
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          }
+         document.documentdetail=data
+          document.documentname="Doctor Note"
+          document.documentType="Doctor Note"
+         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
+          document.client=state.ClientModule.selectedClient._id
+          document.createdBy=user._id
+          document.createdByname=user.firstname+ " "+user.lastname
+          document.status=docStatus==="Draft"?"Draft":"completed"
+         // console.log(document)
+
+          if (
+            document.location===undefined ||!document.createdByname || !document.facilityname ){
+            toast({
+                message: ' Documentation data missing, requires location and facility details' ,
+                type: 'is-danger',
+                dismissible: true,
+                pauseOnHover: true,
+              })
+              return
+          }
+          let confirm = window.confirm(`You are about to save this document ${ document.documentname} ?`)
+          if (confirm){
+            if (!!draftDoc &&  draftDoc.status==="Draft"){
+                ClientServ.patch(draftDoc._id, document)
+                .then((res)=>{
+                    //console.log(JSON.stringify(res))
+                    e.target.reset();
+                    setDocStatus("Draft")
+                   // setAllergies([])
+                   /*  setMessage("Created Client successfully") */
+                    setSuccess(true)
+                    toast({
+                        message: 'Documentation updated succesfully',
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                      setSuccess(false)
+                })
+                .catch((err)=>{
+                    toast({
+                        message: 'Error updating Documentation ' + err,
+                        type: 'is-danger',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      })
+                })
+ 
+            }else{
+        ClientServ.create(document)
+        .then((res)=>{
+                //console.log(JSON.stringify(res))
+                e.target.reset();
+               /*  setMessage("Created Client successfully") */
+                setSuccess(true)
+                toast({
+                    message: 'Lab Result created succesfully',
+                    type: 'is-success',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+                  setSuccess(false)
+            })
+            .catch((err)=>{
+                toast({
+                    message: 'Error creating Lab Result ' + err,
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  })
+            })
+
+      } 
+    }
+
+} 
+
+const handleChangeStatus=async (e)=>{
+    // await setAppointment_type(e.target.value)
+   
+    setDocStatus(e.target.value)
+
+    //console.log(e.target.value)
+
+    }
+const handleChangePart=(e)=>{
+    console.log(e)
+}
+    return (
+        <>
+            <div className="card ">
+            <div className="card-header">
+                <p className="card-header-title">
+                   Doctor's Note
+                </p>
+            </div>
+            <div className="card-content vscrollable remPad1">
+
+              {/*   <label className="label is-size-7">
+                  Client:  {order.orderInfo.orderObj.clientname}
+                </label>
+                <label className="label is-size-7">
+                 Test:  {order.serviceInfo.name}
+                </label> */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <input className="input is-small" ref={register()}  name="Title" type="text" placeholder="Title" />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-hospital"></i>
+                            </span>                    
+                        </p>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Documentation" type="text" placeholder="Documentation" />                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <div className="control has-icons-left has-icons-right">
+                        <textarea className="textarea is-small" ref={register()}  name="Recommendation" type="text" placeholder="Recommendation" />
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field">
+                    <label className=" is-small">
+                        <input  type="radio"  checked={docStatus==="Draft"} name="status" value="Draft"  onChange={(e)=>{handleChangeStatus(e)}}/>
+                        <span > Draft</span>
+                    </label> <br/>
+                    <label className=" is-small">
+                        <input type="radio" checked={docStatus==="Final"} name="status"  value="Final" onChange={(e)=>handleChangeStatus(e)}/>
+                        <span> Final </span>
+                    </label>
+                </div>  
+                
+        <div className="field  is-grouped mt-2" >
+                <p className="control">
+                    <button type="submit" className="button is-success is-small" >
+                        Save
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-warning is-small" type="reset">
+                        Cancel
+                    </button>
+                </p>
+               
+            </div>
+     
+            </form>
+            </div>
+            </div>
+                 
+        </>
+    )
+   
+}
+
 
 export function PrescriptionCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 

@@ -92,7 +92,7 @@ export default function ClientModule() {
                                     </div>
                                  
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/patients`}>Register</NavLink>
+                                        <NavLink to={`${url}/patients`}>Clients</NavLink>
                                     </div>
                                      {/*   <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
