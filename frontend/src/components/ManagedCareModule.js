@@ -91,7 +91,7 @@ export default function ManagedCareModule() {
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
 
-                                    <div className="navbar-item" onClick={handleBurger}>
+                                   {/*  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/revenue`}>Funds</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
@@ -112,7 +112,7 @@ export default function ManagedCareModule() {
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/billservice`}>Health Plans</NavLink>
-                                    </div>
+                                    </div> */}
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/payment`}>Claims Payment</NavLink>
                                     </div>

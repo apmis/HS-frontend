@@ -229,7 +229,7 @@ export function BillingList(){
             {query: {
                 $or:[
                     {
-                       'participantInfo.paymentmode.type':"HMO"
+                       'participantInfo.paymentmode.type':"HMO Cover"
                     },
                     {
                        'participantInfo.paymentmode.type':"Company Cover"
