@@ -904,6 +904,7 @@ export function ClientList(){
                                         <th><abbr title="Last Name">Last Name</abbr></th>
                                         <th>First Name</th>
                                         <th><abbr title="Middle Name">Middle Name</abbr></th>
+                                        <th><abbr title="Age">Payment Mode</abbr></th>
                                        <th><abbr title="Age">Age</abbr></th>
                                         <th><abbr title="Gender">Gender</abbr></th> 
                                         <th><abbr title="Phone">Phone</abbr></th>
@@ -923,6 +924,11 @@ export function ClientList(){
                                             <th>{Client.lastname}</th>
                                             <td>{Client.firstname}</td>
                                             <td>{Client.middlename}</td>
+                                            <td>{Client.paymentinfo.map((pay,i)=>(
+                                                <>
+                                                {pay.paymentmode} {pay.paymentmode==="Cash"?"":":" } {pay.organizationName}<br></br>
+                                                </>
+                                            ))}</td>
                                            <td>{Client.dob && <>{formatDistanceToNowStrict(new Date(Client.dob))}</>}</td>
                                             <td>{Client.gender}</td>
                                              <td>{Client.phone}</td>

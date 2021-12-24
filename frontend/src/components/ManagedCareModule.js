@@ -90,38 +90,53 @@ export default function ManagedCareModule() {
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
+
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/revenue`}>Funds</NavLink>
+                                    </div>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/revenue`}>Care Provider</NavLink>
+                                    </div>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/revenue`}>Employer</NavLink>
+                                    </div>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/revenue`}>HIA</NavLink>
+                                    </div>
+
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/revenue`}>Complaints</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/billservice`}>Bill Services</NavLink>
+                                        <NavLink to={`${url}/billservice`}>Premiums</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/payment`}>Approvals</NavLink>
+                                        <NavLink to={`${url}/billservice`}>Health Plans</NavLink>
+                                    </div>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/payment`}>Claims Payment</NavLink>
+                                    </div>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/collections`}>Claims</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/revenue`}>Referrals</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/revenue`}>Claims</NavLink>
+                                        <NavLink to={`${url}/revenue`}>Check In</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/collections`}>Receivables</NavLink>
+                                        <NavLink to={`${url}/collections`}>Preauthourization</NavLink>
                                     </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/collections`}>Collections</NavLink>
-                                    </div>
+
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/location`}>Beneficiaries</NavLink>
                                     </div>
-                                   
-                                   
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/organization`}>Organizations</NavLink>
                                     </div>
-                                   
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/services`}>Price Lists</NavLink>
+                                        <NavLink to={`${url}/services`}>Tariff</NavLink>
                                     </div>
                                      
                                    {/* <div className="navbar-item">

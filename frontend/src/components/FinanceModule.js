@@ -15,6 +15,7 @@ import BillPrescription from './Finance/BillPrescription'
 import Services from './Finance/Services'
 import BillService from './Finance/BillService'
 import FacilityAccount from './Finance/FacilityAccount'
+import HMOauth from './Finance/HMOauth'
 
 export default function FinanceModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -96,11 +97,12 @@ export default function FinanceModule() {
                                         <NavLink to={`${url}/payment`}>Payment</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/hmoauth`}>HMO Authorization</NavLink>
+                                    </div> 
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/revenue`}>Revenue</NavLink>
                                     </div>
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/location`}>Finance Locations</NavLink>
-                                    </div> */}
+                                   
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/collections`}>Collections</NavLink>
                                     </div>
@@ -150,6 +152,9 @@ export default function FinanceModule() {
                         </Route>
                          <Route path={`${path}/billservice`} exact>
                             <BillService />
+                        </Route>
+                        <Route path={`${path}/hmoauth`} exact>
+                            <HMOauth />
                         </Route>
                         <Route path={`${path}/revenue`} exact>
                             <FacilityAccount />

@@ -105,14 +105,19 @@ export default function PatientProfile () {
                             </figure>
                         </div>
                         <div className="media-content">
-                            <p className="title is-7">{firstname} {middlename} {lastname}</p>
-                            <p className="subtitle is-7 payment">
+                            <p className="title is-7 is-uppercase">{firstname} {middlename} {lastname}</p>
+                            <p className="subtitle is-7 ">
+                            {paymentinfo.map((pay,i)=>(
+                                                <>
+                                                {pay.paymentmode} {pay.paymentmode==="Cash"?"":":" } {pay.organizationName}<br></br>
+                                                </>
+                                            ))}
                                 {/* {cash && "Cash"}
                                 {familycover && "Family Cover"}
                                 {companycover && "Company Cover"}
                                 {hmocover && "HMO Cover"} */}
                                 </p>
-                                {(user.currentEmployee?.roles.includes('Bill Client')||user.currentEmployee?.roles.length===0||user.stacker )&&    <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>}
+                                {(user.currentEmployee?.roles.includes('Bill Client')||user.currentEmployee?.roles.length===0||user.stacker )&&    <button className="button is-success is-small btnheight upt" onClick={showBilling}>Bill Client</button>}
                         </div>
 
                     </div>

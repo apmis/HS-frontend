@@ -15,6 +15,9 @@
 .warp{
   flex-wrap: wrap;
 }
+.upt{
+  margin-top: -1rem !important;
+}
 .naira{
   height: 1.5rem !important;
   margin-left: -0.7rem !important;

@@ -47,6 +47,7 @@ export default function ClientFinInfo({closeModal}){
         setOrganizationName("")
         setOrganization(null)
         setPlan("")
+        setPlanHMO("")
         setActive(false)
         setClientId("")
         setPrincipalId("")
@@ -66,7 +67,7 @@ export default function ClientFinInfo({closeModal}){
         principalName,
         plan,
         active,
-        agent:planHMO?planHMO.organizationDetail._id:"",
+        agent:planHMO?planHMO.organizationDetail._id:null,
         organizationType:organization?.facilityType,
         agentName:planHMO?planHMO.organizationDetail.facilityName:""
 
@@ -82,6 +83,7 @@ export default function ClientFinInfo({closeModal}){
              setPrincipalId("")
              setPrincipalName("")
              setPrincipal(null)
+             setPlanHMO("")
             
          }
       }
@@ -129,6 +131,7 @@ export default function ClientFinInfo({closeModal}){
        setPrincipalName("")
        setSuccess(true)
        setPaymentMode("HMO")
+       setPlanHMO("")
        //setSuccess(false)
 
      }
@@ -141,7 +144,7 @@ export default function ClientFinInfo({closeModal}){
 
     const handleAdd=async()=>{
        //setSuccess(false)
-  
+        console.log(productItemI)
         setProductItem(prev=>prev.concat(productItemI))
         resetform()
         //
@@ -150,6 +153,7 @@ export default function ClientFinInfo({closeModal}){
 
     const handlePayment= async ()=>{
        // console.log(productItem)
+       console.log(productItem)
         ClientServ.patch(medication._id, {
             paymentinfo:productItem
         })
