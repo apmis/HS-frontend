@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-import PaymentCreate from './PaymentCreate'
+import HmoClaimCreate from './HmoClaimCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
@@ -60,7 +60,7 @@ export default function HMOauth() {
               
                 <div className="column is-6 ">
                 
-                {(state.financeModule.show ==='detail')&& <PaymentCreate />}
+                {(state.financeModule.show ==='detail')&& <HmoClaimCreate />}
                 </div>
                {/*  <div className="column is-3 ">
                 {(state.financeModule.show ==='detail')&&<PatientProfile />}
@@ -247,7 +247,7 @@ export function BillingList(){
                 }
                 }})
 
-            //console.log("updatedorder", findProductEntry.groupedOrder)
+            console.log("updatedorder", findProductEntry.groupedOrder)
             await setFacilities(findProductEntry.groupedOrder)
           //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
@@ -325,7 +325,7 @@ export function BillingList(){
                                <AccordionItemHeading >
                                     <AccordionItemButton  >
                                     {/* <input type = "checkbox" name={Clinic.client_id}  />   */}
-                                    <strong> {i+1} {Clinic.clientname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
+                                    <strong> {i+1} {Clinic.bills[0].order[0].participantInfo.client.firstname}  {Clinic.bills[0].order[0].participantInfo.client.lastname}{/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
                                     </AccordionItemButton>
                                 </AccordionItemHeading>
                                 <AccordionItemPanel>

@@ -33,6 +33,7 @@ export default function Client() {
                 <ClientList />
                 </div>
             <div className="column is-6 ">
+              {(state.ClientModule.show ==='List')&&<ClientList />}
                 {(state.ClientModule.show ==='create')&&<ClientCreate />}
                 {(state.ClientModule.show ==='detail')&&<ClientDetail  />}
                 {(state.ClientModule.show ==='modify')&&<ClientModify Client={selectedClient} />} 
@@ -944,12 +945,10 @@ export function ClientList(){
                                     </InfiniteScroll>                  
                 </div>              
             </>):<div>loading</div>}
-            </>
+        </>
               
     )
     }
-
-
 
 export function ClientDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
