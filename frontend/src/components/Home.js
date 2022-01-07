@@ -9,7 +9,7 @@ import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
 import ManagedCareModule from './ManagedCareModule'
-import Communication from './Communication'
+import Communication from './CommunicationModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
