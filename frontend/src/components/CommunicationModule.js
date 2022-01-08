@@ -1,14 +1,15 @@
 /* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import EpidemiologyHome from './Epidemiology/EpidemiologyHome'
+// import EpidemiologyHome from './Epidemiology/EpidemiologyHome'
+import ChannelHome from "./Channel/ChannelHome"
 
 
 import Channel from './Channel/Channel'
 
 
 
-export default function Communication() {
+export default function CommunicationModule() {
     const [showmenu, setShowMenu]=useState(false)
     let { path, url } = useRouteMatch();
     const handleBurger=()=>{
@@ -56,7 +57,7 @@ export default function Communication() {
                        
                     <Switch>
                         <Route path={path} exact>
-                            <EpidemiologyHome />
+                            <ChannelHome />
                         </Route>
                         
                         <Route path={`${path}/Channel`} exact>
