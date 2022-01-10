@@ -2,13 +2,10 @@
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 // import EpidemiologyHome from './Epidemiology/EpidemiologyHome'
-import ChannelHome from "./Channel/ChannelHome"
+import ChannelHome from "./Communication/ChannelHome"
 
 
-import Channel from './Channel/Channel'
-
-
-
+import Channel from './Communication/Channel'
 export default function CommunicationModule() {
     const [showmenu, setShowMenu]=useState(false)
     let { path, url } = useRouteMatch();
