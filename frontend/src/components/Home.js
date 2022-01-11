@@ -8,6 +8,7 @@ import ClientModule from './ClientModule'
 import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
+import Ward from './WardModule'
 import ManagedCareModule from './ManagedCareModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
@@ -52,6 +53,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/epid`} >
                     <EpidModule />
+                </Route>
+                <Route path={`${path}/ward`} >
+                    <Ward />
                 </Route>
             </Switch>
         </div>
@@ -214,12 +218,16 @@ function NavBar({url}){
                                 {(user.currentEmployee?.roles.includes('Clinic')||user.currentEmployee?.roles.length===0 )&&  <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/clinic`}>Clinic</NavLink>
                                 </div>}
+                                {(user.currentEmployee?.roles.includes('Ward')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/ward`}>Ward</NavLink>
+                                </div>}
                                 {(user.currentEmployee?.roles.includes('Pharmacy')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/inventory`}>Pharmacy</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/labs`}>Laboratory</NavLink>
                                 </div>}
+                               
                                 {(user.currentEmployee?.roles.includes('Finance')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/hmo`}>Managed Care</NavLink>
                                 </div>}

@@ -10,27 +10,25 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Bands() {
+export default function Admissions() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedBand,setSelectedBand]=useState()
+    const [selectedClinic,setSelectedClinic]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Band  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Clinic  Module</span></div>
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-            <BandList />
+                <ClinicList />
                 </div>
-            <div className="column is-8 ">
-                
-                
-                {(state.BandModule.show ==='create')&&<BandCreate />}
-                {(state.BandModule.show ==='detail')&&<BandDetail  />}
-                {(state.BandModule.show ==='modify')&&<BandModify Band={selectedBand} />}
+            <div className="column is-4 ">
+                {(state.ClinicModule.show ==='create')&&<ClinicCreate />}
+                {(state.ClinicModule.show ==='detail')&&<ClinicDetail  />}
+                {(state.ClinicModule.show ==='modify')&&<ClinicModify Clinic={selectedClinic} />}
                
             </div>
 
@@ -41,22 +39,23 @@ export default function Bands() {
     
 }
 
-export function BandCreate(){
+export function ClinicCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const BandServ=client.service('bands')
+    const ClinicServ=client.service('location')
+    
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const bandTypeOptions =["Provider","Company", "Patient","Plan" ]
 
 
-    const getSearchfacility=(obj)=>{
+
+    const getSearchfacility=(obj)=>{ // buble-up from inputsearch for creating resource
         
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -74,7 +73,7 @@ export function BandCreate(){
 
   //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeBand.FacilityId)//
+        //setFacility(user.activeClinic.FacilityId)//
       if (!user.stacker){
           console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -86,10 +85,6 @@ export function BandCreate(){
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
-        if (data.bandType===""){
-            alert("Kindly choose band type")
-            return
-        }
         setMessage("")
         setError(false)
         setSuccess(false)
@@ -98,14 +93,15 @@ export function BandCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        BandServ.create(data)
+          data.locationType="Clinic"
+        ClinicServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Band successfully") */
+               /*  setMessage("Created Clinic successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Band created succesfully',
+                    message: 'Clinic created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -114,7 +110,7 @@ export function BandCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Band ' + err,
+                    message: 'Error creating Clinic ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -128,7 +124,7 @@ export function BandCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Band
+                    Create Clinic
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -136,36 +132,15 @@ export function BandCreate(){
             <form onSubmit={handleSubmit(onSubmit)}>
                {/*  <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small"  ref={register({ required: true })}  name="bandType" type="text" placeholder="Type of Band" />
+                        <input className="input is-small" ref={register({ required: true })}  name="ClinicType" type="text" placeholder="Type of Clinic" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
                     </p>
                 </div> */}
-                <div className="field">    
-                 <div className="control">
-                     <div className="select is-small ">
-                         <select name="bandType"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                         <option value="">Choose Band Type </option>
-                           {bandTypeOptions.map((option,i)=>(
-                               <option key={i} value={option}> {option}</option>
-                           ))}
-                         </select>
-                     </div>
-                 </div>
-                </div>
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Band" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div>
-            <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="description" type="text" placeholder="Description of Band" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Clinic" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -267,7 +242,7 @@ export function BandCreate(){
    
 }
 
-export function BandList(){
+export function ClinicList({standalone,closeModal}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -275,12 +250,15 @@ export function BandList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const BandServ=client.service('bands')
+    const ClinicServ=client.service('location')
+    const oldpeopleServ=client.service('oldapmispeople')
+    const oldpatientServ=client.service('oldapmispatient')
+    const foremost=client.service('foremost')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedBand, setSelectedBand]=useState() //
+   const [selectedClinic, setSelectedClinic]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -289,54 +267,55 @@ export function BandList(){
 
 
     const handleCreateNew = async()=>{
-        const    newBandModule={
-            selectedBand:{},
+        const    newClinicModule={
+            selectedClinic:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
         
 
     }
-    const handleRow= async(Band)=>{
+    const handleRow= async(Clinic)=>{
         //console.log("b4",state)
 
-        //console.log("handlerow",Band)
+        //console.log("handlerow",Clinic)
 
-        await setSelectedBand(Band)
+        await setSelectedClinic(Clinic)
 
-        const    newBandModule={
-            selectedBand:Band,
+        const    newClinicModule={
+            selectedClinic:Clinic,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
-
+        closeModal()
     }
 
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       BandServ.find({query: {
+       ClinicServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
-               facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:100,
+               facility:user.currentEmployee.facilityDetail._id || "" ,
+                locationType:"Clinic",
+               $limit:10,
                 $sort: {
-                    createdAt: -1
+                    name: 1
                   }
                     }}).then((res)=>{
                 console.log(res)
                setFacilities(res.data)
-                setMessage(" Band  fetched successfully")
+                setMessage(" Clinic  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Band, probable network issues "+ err )
+                setMessage("Error fetching Clinic, probable network issues "+ err )
                 setError(true)
             })
         }
@@ -344,46 +323,47 @@ export function BandList(){
         const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findBand= await BandServ.find(
+        const findClinic= await ClinicServ.find(
                 {query: {
+                    locationType:"Clinic",
                     facility:user.currentEmployee.facilityDetail._id,
-                    $limit:200,
+                    $limit:20,
                     $sort: {
-                        createdAt: -1
+                        name: 1
                     }
                     }})
 
-         await setFacilities(findBand.data)
+         await setFacilities(findClinic.data)
                 }
                 else {
                     if (user.stacker){
-                        const findBand= await BandServ.find(
+                        const findClinic= await ClinicServ.find(
                             {query: {
-                                
-                                $limit:200,
+                                locationType:"Clinic",
+                                $limit:20,
                                 $sort: {
-                                    facility: -1
+                                    name: 1
                                 }
                                 }})
             
-                    await setFacilities(findBand.data)
+                    await setFacilities(findClinic.data)
 
                     }
                 }
           /*   .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
-                    setMessage(" Band  fetched successfully")
+                    setMessage(" Clinic  fetched successfully")
                     setSuccess(true)
                 })
                 .catch((err)=>{
-                    setMessage("Error creating Band, probable network issues "+ err )
+                    setMessage("Error creating Clinic, probable network issues "+ err )
                     setError(true)
                 }) */
             }
             
             useEffect(() => {
-             
+               
 
                 return () => {
                     
@@ -404,10 +384,10 @@ export function BandList(){
                     console.log(user)
                     getFacilities(user) */
                 }
-                BandServ.on('created', (obj)=>getFacilities())
-                BandServ.on('updated', (obj)=>getFacilities())
-                BandServ.on('patched', (obj)=>getFacilities())
-                BandServ.on('removed', (obj)=>getFacilities())
+                ClinicServ.on('created', (obj)=>getFacilities())
+                ClinicServ.on('updated', (obj)=>getFacilities())
+                ClinicServ.on('patched', (obj)=>getFacilities())
+                ClinicServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
                 }
@@ -415,6 +395,33 @@ export function BandList(){
 
 
     //todo: pagination and vertical scroll bar
+
+     const handleLoad=async ()=>{
+         console.log("something") //5bb5f0538a2a1e386cc10b2e
+        let people=[]
+         //1.create blank database
+            // oldpeopleServ.create({})
+            // oldpatientServ.create({})
+            //delete default
+         //find foremost base patients
+         const findClinic= await oldpatientServ.find(
+            {query: {
+               
+                facilityId:"5bb5f0538a2a1e386cc10b2e"
+               
+                }}).then((resp)=>{
+                    console.log(resp)
+                   
+                    })
+                  
+                .catch((err)=>console.log(err))
+
+                console.log("done")
+    // await setFacilities(findClinic.data)
+         //take their clients
+         //save into healthstack vs import
+         //replace facility id for foremost
+     }
 
     return(
         <>
@@ -425,7 +432,7 @@ export function BandList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Bands"
+                                        type="text" placeholder="Search Clinics"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -435,48 +442,51 @@ export function BandList(){
                                 </p>
                             </div>
                         </div>
+                      {/*   <button className="button" onClick={handleLoad}>
+                        load data
+                    </button> */}
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Bands </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div>
                     <div className="level-right">
-                        <div className="level-item"> 
+                { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div>
+                        </div>}
                     </div>
 
                 </div>
                 <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
-                                        <th><abbr title="Band Type">Band Type</abbr></th>
-                                       <th><abbr title="Description">Description</abbr></th>
-                                          {/*<th><abbr title="Phone">Phone</abbr></th>
+                                        {/* <th><abbr title="Last Name">Clinic Type</abbr></th>
+                                       <th><abbr title="Profession">Profession</abbr></th>
+                                         <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
-                                       {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
+                                        <th><abbr title="Facility">Facility</abbr></th>*/}
+                                       { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((Band, i)=>(
+                                        {facilities.map((Clinic, i)=>(
 
-                                            <tr key={Band._id} onClick={()=>handleRow(Band)} className={Band._id===(selectedBand?._id||null)?"is-selected":""}>
+                                            <tr key={Clinic._id} onClick={()=>handleRow(Clinic)}  className={Clinic._id===(selectedClinic?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Band.name}</th>
-                                            <td>{Band.bandType}</td>
-                                            < td>{Band.description}</td>
-                                            {/*<td>{Band.phone}</td>
-                                            <td>{Band.email}</td>
-                                            <td>{Band.department}</td>
-                                            <td>{Band.deptunit}</td> */}
-                                           {user.stacker &&  <td>{Band.facility}</td>}
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
+                                            <th>{Clinic.name}</th>
+                                            {/*<td>{Clinic.ClinicType}</td>
+                                            < td>{Clinic.profession}</td>
+                                            <td>{Clinic.phone}</td>
+                                            <td>{Clinic.email}</td>
+                                            <td>{Clinic.department}</td>
+                                            <td>{Clinic.deptunit}</td> 
+                                            <td>{Clinic.facility}</td>*/}
+                                          { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
                                             </tr>
 
@@ -492,28 +502,28 @@ export function BandList(){
     }
 
 
-export function BandDetail(){
+export function ClinicDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const BandServ=client.service('/Band')
+    //const ClinicServ=client.service('/Clinic')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
    
 
-   const Band =state.BandModule.selectedBand 
+   const Clinic =state.ClinicModule.selectedClinic 
 
     const handleEdit= async()=>{
-        const    newBandModule={
-            selectedBand:Band,
+        const    newClinicModule={
+            selectedClinic:Clinic,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
        //console.log(state)
        
     }
@@ -523,7 +533,7 @@ export function BandDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Band Details
+                    Clinic Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -540,17 +550,17 @@ export function BandDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"> {Band.name} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Clinic.name} </span>
                         </td>
                     </tr>
                     <tr>
                     <td>
                 <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
-                    </span>Band Type:
+                    </span>Location Type:
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft"   name="BandType">{Band.bandType} </span> 
+                    <span className="is-size-7 padleft"   name="ClinicType">{Clinic.locationType} </span> 
                     </td>
                 </tr>
                   {/*   <tr>
@@ -563,7 +573,7 @@ export function BandDetail(){
                     </label>
                     </td>
                 <td>
-                <span className="is-size-7 padleft "  name="BandCity">{Band.profession}</span> 
+                <span className="is-size-7 padleft "  name="ClinicCity">{Clinic.profession}</span> 
                 </td>
                 </tr>
                     <tr>
@@ -575,7 +585,7 @@ export function BandDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft "  name="BandContactPhone" >{Band.phone}</span>
+                        <span className="is-size-7 padleft "  name="ClinicContactPhone" >{Clinic.phone}</span>
                         </td>
                   </tr>
                     <tr><td>
@@ -585,7 +595,7 @@ export function BandDetail(){
                     </span>Email:                     
                     
                          </label></td><td>
-                         <span className="is-size-7 padleft "  name="BandEmail" >{Band.email}</span>
+                         <span className="is-size-7 padleft "  name="ClinicEmail" >{Clinic.email}</span>
                          </td>
              
                 </tr>
@@ -596,7 +606,7 @@ export function BandDetail(){
                     
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft "  name="BandOwner">{Band.department}</span>
+                    <span className="is-size-7 padleft "  name="ClinicOwner">{Clinic.department}</span>
                     </td>
                
                 </tr>
@@ -608,7 +618,7 @@ export function BandDetail(){
                     
                 </label></td>
                 <td>
-                <span className="is-size-7 padleft "  name="BandType">{Band.deptunit}</span>
+                <span className="is-size-7 padleft "  name="ClinicType">{Clinic.deptunit}</span>
                 </td>
               
                 </tr> */}
@@ -617,7 +627,7 @@ export function BandDetail(){
              <label className="label is-small"><span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>Category:              
-                    <span className="is-size-7 padleft "  name= "BandCategory">{Band.BandCategory}</span>
+                    <span className="is-size-7 padleft "  name= "ClinicCategory">{Clinic.ClinicCategory}</span>
                 </label>
                  </div> */}
 
@@ -641,7 +651,7 @@ export function BandDetail(){
    
 }
 
-export function BandModify(){
+export function ClinicModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -650,44 +660,44 @@ export function BandModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const BandServ=client.service('bands')
+    const ClinicServ=client.service('location')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const Band =state.BandModule.selectedBand 
+    const Clinic =state.ClinicModule.selectedClinic 
 
         useEffect(() => {
-            setValue("name", Band.name,  {
+            setValue("name", Clinic.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("bandType", Band.bandType,  {
+            setValue("locationType", Clinic.locationType,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Band.profession,  {
+           /*  setValue("profession", Clinic.profession,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("phone", Band.phone,  {
+            setValue("phone", Clinic.phone,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("email", Band.email,  {
+            setValue("email", Clinic.email,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("department", Band.department,  {
+            setValue("department", Clinic.department,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("deptunit", Band.deptunit,  {
+            setValue("deptunit", Clinic.deptunit,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
-          /*   setValue("BandCategory", Band.BandCategory,  {
+          /*   setValue("ClinicCategory", Clinic.ClinicCategory,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
@@ -698,41 +708,41 @@ export function BandModify(){
         })
 
    const handleCancel=async()=>{
-    const    newBandModule={
-        selectedBand:{},
-        show :'list'
+    const    newClinicModule={
+        selectedClinic:{},
+        show :'create'
       }
-   await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+   await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newBandModule={
-            selectedBand:{},
+        const    newClinicModule={
+            selectedClinic:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+        setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
 
         }
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=Band._id
+        const dleteId=Clinic._id
         if (conf){
              
-        BandServ.remove(dleteId)
+        ClinicServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Band successfully")
+               /*  setMessage("Deleted Clinic successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'Band deleted succesfully',
+                    message: 'Clinic deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -740,10 +750,10 @@ export function BandModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Band, probable network issues "+ err )
+               // setMessage("Error deleting Clinic, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting Band, probable network issues or "+ err,
+                    message: "Error deleting Clinic, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -762,16 +772,16 @@ export function BandModify(){
         
         setSuccess(false)
         console.log(data)
-        data.facility=Band.facility
+        data.facility=Clinic.facility
           //console.log(data);
           
-        BandServ.patch(Band._id,data)
+        ClinicServ.patch(Clinic._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated Band successfully")
+               // setMessage("updated Clinic successfully")
                  toast({
-                    message: 'Band updated succesfully',
+                    message: 'Clinic updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -781,10 +791,10 @@ export function BandModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Band, probable network issues "+ err )
+                //setMessage("Error creating Clinic, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Band, probable network issues or "+ err,
+                    message: "Error updating Clinic, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -800,7 +810,7 @@ export function BandModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Band Details-Modify
+                    Clinic Details-Modify
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -817,9 +827,9 @@ export function BandModify(){
                     </label>
                     </div>
                 <div className="field">
-                <label className="label is-small">Band Type
+                <label className="label is-small">Location Type
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="bandType" type="text" placeholder="Band Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="ClinicType" type="text" placeholder="Clinic Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -850,7 +860,7 @@ export function BandModify(){
             <div className="field">
             <label className="label is-small">Email
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Band Email"/>
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Clinic Email"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
@@ -881,7 +891,7 @@ export function BandModify(){
            {/*  <div className="field">
             <label className="label is-small">Category
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="BandCategory" type="text" placeholder="Band Category"/>
+                    <input className="input is-small" ref={register({ required: true })} name="ClinicCategory" type="text" placeholder="Clinic Category"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>
@@ -903,11 +913,11 @@ export function BandModify(){
                         Cancel
                     </button>
                 </p>
-                <p className="control">
+                {/* <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p>
+                </p> */}
             </div>
         </div>
         </div>

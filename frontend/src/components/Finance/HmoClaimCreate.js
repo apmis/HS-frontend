@@ -60,7 +60,16 @@ export default function HmoClaimCreate(){
      let calcamount1
      let hidestatus
   
+     const [productEntry,setProductEntry]=useState({
+        productitems:[],
+        date,
+        documentNo,
+        type,
+        totalamount,
+        source,
 
+    })
+ 
     
   let medication =state.financeModule.selectedFinance
   //console.log(state.financeModule.state)
@@ -110,16 +119,7 @@ export default function HmoClaimCreate(){
 
         }  
  
-  const [productEntry,setProductEntry]=useState({
-         productitems:[],
-         date,
-         documentNo,
-         type,
-         totalamount,
-         source,
- 
-     })
-  
+
   const productItemI={
          productId,
          name,
@@ -737,6 +737,19 @@ export default function HmoClaimCreate(){
 
     const handleAuth= (bill, e)=>{
 
+        console.log(e.chec)
+        if (e.checked){
+           
+        }
+       
+
+        
+  /*   const    newProductEntryModule={
+        selectedMedication:ProductEntry,
+        show :'detail'
+    }
+  await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule})) */
+   //console.log(state)
     }
     const handlePayment= async ()=>{
            //1. check if there is sufficient amount
@@ -1054,7 +1067,7 @@ export default function HmoClaimCreate(){
                              <input type="checkbox" name="Auth"  value="Authorization Code" onChange={(e)=>handleAuth(ProductEntry,e)}/>
                              <span> Authorization Code </span>
                               </label>
-                              <div className="field has-addons" style={{display:`${ProductEntry.show}`}}>
+                              <div className="field has-addons" style={{display:`${ProductEntry.authcode}`}}>
                               <div className="control">
                                   <input  className="input selectadd" type="text" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
                                   </div> 

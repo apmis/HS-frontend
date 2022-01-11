@@ -10,27 +10,25 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Bands() {
+export default function Transfer() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedBand,setSelectedBand]=useState()
+    const [selectedInventory,setSelectedInventory]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Band  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-            <BandList />
+                <InventoryList />
                 </div>
-            <div className="column is-8 ">
-                
-                
-                {(state.BandModule.show ==='create')&&<BandCreate />}
-                {(state.BandModule.show ==='detail')&&<BandDetail  />}
-                {(state.BandModule.show ==='modify')&&<BandModify Band={selectedBand} />}
+            <div className="column is-4 ">
+                {(state.InventoryModule.show ==='create')&&<InventoryCreate />}
+                {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
+                {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}
                
             </div>
 
@@ -41,19 +39,19 @@ export default function Bands() {
     
 }
 
-export function BandCreate(){
+export function InventoryCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const BandServ=client.service('bands')
+    const InventoryServ=client.service('inventory')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const bandTypeOptions =["Provider","Company", "Patient","Plan" ]
+
 
 
     const getSearchfacility=(obj)=>{
@@ -74,7 +72,7 @@ export function BandCreate(){
 
   //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeBand.FacilityId)//
+        //setFacility(user.activeInventory.FacilityId)//
       if (!user.stacker){
           console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -86,10 +84,6 @@ export function BandCreate(){
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
-        if (data.bandType===""){
-            alert("Kindly choose band type")
-            return
-        }
         setMessage("")
         setError(false)
         setSuccess(false)
@@ -98,14 +92,14 @@ export function BandCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        BandServ.create(data)
+        InventoryServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Band successfully") */
+               /*  setMessage("Created Inventory successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Band created succesfully',
+                    message: 'Inventory created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -114,7 +108,7 @@ export function BandCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Band ' + err,
+                    message: 'Error creating Inventory ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -128,85 +122,91 @@ export function BandCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Band
+                    Create Inventory: Product Entry- Initialization, Purchase Invoice, Audit
                 </p>
             </div>
             <div className="card-content vscrollable">
    
             <form onSubmit={handleSubmit(onSubmit)}>
-               {/*  <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small"  ref={register({ required: true })}  name="bandType" type="text" placeholder="Type of Band" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div> */}
-                <div className="field">    
-                 <div className="control">
-                     <div className="select is-small ">
-                         <select name="bandType"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                         <option value="">Choose Band Type </option>
-                           {bandTypeOptions.map((option,i)=>(
-                               <option key={i} value={option}> {option}</option>
-                           ))}
-                         </select>
-                     </div>
-                 </div>
+            <div className="field">    
+                <div class="control">
+                    <div class="select is-small">
+                        <select>
+                            <option>Purchase Invoice </option>
+                            <option>Initialization</option>
+                            <option>Audit</option>
+                        </select>
+                    </div>
                 </div>
-                <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Band" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
             </div>
             <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="description" type="text" placeholder="Description of Band" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div>
-           {/*  <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
+                <p className="control has-icons-left"> {/* Audit/initialization/Purchase Invoice */}
+                    <input className="input is-small" ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
                     <span className="icon is-small is-left">
                     <i className=" fas fa-user-md "></i>
                     </span>
                 </p>
             </div>
+                <div className="field">
+                    <p className="control has-icons-left has-icons-right">
+                        <input className="input is-small" ref={register({ required: true })}  name="supplier" type="text" placeholder="Supplier" />
+                        <span className="icon is-small is-left">
+                            <i className="fas fa-hospital"></i>
+                        </span>                    
+                    </p>
+                </div>
+                <div className="field">
+                    <p className="control has-icons-left has-icons-right">
+                    <input className="input is-small" ref={register({ required: true })}  name="date" type="text" placeholder="Date" />
+                    <span className="icon is-small is-left">
+                        <i className="fas fa-map-signs"></i>
+                    </span>
+                    
+                </p>
+            </div>
+            
             <div className="field">
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
+                    <input className="input is-small" ref={register({ required: true })} name="totalamount" type="text" placeholder=" Total Amount"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-phone-alt"></i>
                     </span>
                 </p>
             </div>
            
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
+         {/* array of inventory items */}
+         <p className="control">
+                    <button className="button is-info is-small  is-pulled-right">
+                      <span className="is-small"> +</span>
+                    </button>
                 </p>
-            </div> */}
-           <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
-                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
+           <div className="field"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                <ProductSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                 <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
+                    <input className="input is-small" ref={register ({ required: true }) } /* add array no */ name="productId" type="text" placeholder="Product Id" />
                     <span className="icon is-small is-left">
                     <i className="fas  fa-map-marker-alt"></i>
                     </span>
                 </p>
             </div>
+           
+               <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="quantity" type="text" placeholder="Quantity"  />
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>
+                </p>
+                <label className="label is-small">Base Unit</label>
+            </div> 
+            <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="costprice" type="text" placeholder="Cost Price"  />
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>
+                </p>
+            </div> 
            {/*  <div className="field">
                 <div className="control has-icons-left">
                     <div className="dropdown ">
@@ -267,7 +267,7 @@ export function BandCreate(){
    
 }
 
-export function BandList(){
+export function InventoryList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -275,12 +275,12 @@ export function BandList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const BandServ=client.service('bands')
+    const InventoryServ=client.service('inventory')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedBand, setSelectedBand]=useState() //
+   const [selectedInventory, setSelectedInventory]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -289,27 +289,26 @@ export function BandList(){
 
 
     const handleCreateNew = async()=>{
-        const    newBandModule={
-            selectedBand:{},
+        const    newInventoryModule={
+            selectedInventory:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
        //console.log(state)
-        
-
     }
-    const handleRow= async(Band)=>{
+
+    const handleRow= async(Inventory)=>{
         //console.log("b4",state)
 
-        //console.log("handlerow",Band)
+        //console.log("handlerow",Inventory)
 
-        await setSelectedBand(Band)
+        await setSelectedInventory(Inventory)
 
-        const    newBandModule={
-            selectedBand:Band,
+        const    newInventoryModule={
+            selectedInventory:Inventory,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
        //console.log(state)
 
     }
@@ -317,26 +316,26 @@ export function BandList(){
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       BandServ.find({query: {
+       InventoryServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:100,
+                $limit:10,
                 $sort: {
                     createdAt: -1
                   }
                     }}).then((res)=>{
                 console.log(res)
                setFacilities(res.data)
-                setMessage(" Band  fetched successfully")
+                setMessage(" Inventory  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Band, probable network issues "+ err )
+                setMessage("Error fetching Inventory, probable network issues "+ err )
                 setError(true)
             })
         }
@@ -344,40 +343,41 @@ export function BandList(){
         const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findBand= await BandServ.find(
+        const findInventory= await InventoryServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
-                    $limit:200,
+                    storeId:state.StoreModule.selectedStore._id,
+                    $limit:20,
                     $sort: {
                         createdAt: -1
                     }
                     }})
 
-         await setFacilities(findBand.data)
+         await setFacilities(findInventory.data)
                 }
                 else {
                     if (user.stacker){
-                        const findBand= await BandServ.find(
+                        const findInventory= await InventoryServ.find(
                             {query: {
                                 
-                                $limit:200,
+                                $limit:20,
                                 $sort: {
-                                    facility: -1
+                                    createdAt: -1
                                 }
                                 }})
             
-                    await setFacilities(findBand.data)
+                    await setFacilities(findInventory.data)
 
                     }
                 }
           /*   .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
-                    setMessage(" Band  fetched successfully")
+                    setMessage(" Inventory  fetched successfully")
                     setSuccess(true)
                 })
                 .catch((err)=>{
-                    setMessage("Error creating Band, probable network issues "+ err )
+                    setMessage("Error creating Inventory, probable network issues "+ err )
                     setError(true)
                 }) */
             }
@@ -404,15 +404,21 @@ export function BandList(){
                     console.log(user)
                     getFacilities(user) */
                 }
-                BandServ.on('created', (obj)=>getFacilities())
-                BandServ.on('updated', (obj)=>getFacilities())
-                BandServ.on('patched', (obj)=>getFacilities())
-                BandServ.on('removed', (obj)=>getFacilities())
+                InventoryServ.on('created', (obj)=>getFacilities())
+                InventoryServ.on('updated', (obj)=>getFacilities())
+                InventoryServ.on('patched', (obj)=>getFacilities())
+                InventoryServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
                 }
             },[])
-
+        
+        useEffect(() => {
+            getFacilities()
+            return () => {
+               
+            }
+        }, [state.StoreModule.selectedStore])
 
     //todo: pagination and vertical scroll bar
 
@@ -425,7 +431,7 @@ export function BandList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Bands"
+                                        type="text" placeholder="Search Inventory"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -436,7 +442,7 @@ export function BandList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Bands </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Inventories </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -449,34 +455,36 @@ export function BandList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th>Name</th>
-                                        <th><abbr title="Band Type">Band Type</abbr></th>
-                                       <th><abbr title="Description">Description</abbr></th>
-                                          {/*<th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
-                                       {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                                        {/* <th><abbr title="Category">Category</abbr></th> */}
+                                        <th>Product</th>
+                                        <th><abbr title="Quantity">Quantity</abbr></th>
+                                        <th><abbr title="Base Unit">Base Unit</abbr></th>
+                                        <th><abbr title="Stock Value">Stock Value</abbr></th>
+                                         <th><abbr title="Cost Price">Cost Price</abbr></th>
+                                        <th><abbr title="Selling Price">Selling Price</abbr></th>
+                                        <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
+                                        <th><abbr title="Expiry">Expiry</abbr></th> 
+                                        <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((Band, i)=>(
+                                        {facilities.map((Inventory, i)=>(
 
-                                            <tr key={Band._id} onClick={()=>handleRow(Band)} className={Band._id===(selectedBand?._id||null)?"is-selected":""}>
+                                            <tr key={Inventory._id} onClick={()=>handleRow(Inventory)}>
                                             <th>{i+1}</th>
-                                            <th>{Band.name}</th>
-                                            <td>{Band.bandType}</td>
-                                            < td>{Band.description}</td>
-                                            {/*<td>{Band.phone}</td>
-                                            <td>{Band.email}</td>
-                                            <td>{Band.department}</td>
-                                            <td>{Band.deptunit}</td> */}
-                                           {user.stacker &&  <td>{Band.facility}</td>}
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
+                                            {/* <td>{Inventory.productDetail.category}</td> */}
+                                            <th>{Inventory.name}</th>
+                                            <td>{Inventory.quantity}</td>
+                                            <td>{Inventory.baseunit}</td>
+                                            <td>{Inventory.stockvalue}</td>
+                                            <td>{Inventory.costprice}</td>
+                                            <td>{Inventory.sellingprice}</td>
+                                            <td>{Inventory.reorder_level}</td> 
+                                            <td>{Inventory.expiry}</td>
+                                            <td><span   className="showAction"  >...</span></td>
                                            
                                             </tr>
 
@@ -492,28 +500,93 @@ export function BandList(){
     }
 
 
-export function BandDetail(){
+export function InventoryDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const BandServ=client.service('/Band')
+    //const InventoryServ=client.service('/Inventory')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
-
+    const {user} = useContext(UserContext) //,setUser
+    
    
 
-   const Band =state.BandModule.selectedBand 
+   const Inventory =state.InventoryModule.selectedInventory 
+   console.log("selected",Inventory)
+
+   
+  const getFacilities= async()=>{
+    
+    
+     const findProductEntry= await client.service('productentry').find(
+        {query: {
+            'productitems.productId':Inventory.productId,
+            facility:user.currentEmployee.facilityDetail._id,
+            storeId:state.StoreModule.selectedStore._id,
+            $limit:20,
+            $sort: {
+                createdAt: -1
+            }
+            }})
+
+        console.log(findProductEntry)
+       }
+    
+       useEffect(() => {
+        getFacilities()
+           return () => {
+               
+           }
+       }, [Inventory])
+ /* await setFacilities(findProductEntry.data)
+        }
+        else {
+            if (user.stacker){ */
+                /* toast({
+                    message: 'You do not qualify to view this',
+                    type: 'is-danger',
+                    dismissible: true,
+                    pauseOnHover: true,
+                  }) 
+                  return */
+               /*  const findProductEntry= await ProductEntryServ.find(
+                    {query: {
+                        
+                        $limit:20,
+                        $sort: {
+                            createdAt: -1
+                        }
+                        }})
+    
+            await setFacilities(findProductEntry.data)
+
+            }
+        }  */
+  /*   .then((res)=>{
+        console.log(res)
+            setFacilities(res.data)
+            setMessage(" ProductEntry  fetched successfully")
+            setSuccess(true)
+        })
+        .catch((err)=>{
+            setMessage("Error creating ProductEntry, probable network issues "+ err )
+            setError(true)
+        }) */
+    
+    
+
+
 
     const handleEdit= async()=>{
-        const    newBandModule={
-            selectedBand:Band,
+        const    newInventoryModule={
+            selectedInventory:Inventory,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+       await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
        //console.log(state)
        
     }
@@ -523,7 +596,7 @@ export function BandDetail(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Band Details
+                    Inventory Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -536,98 +609,46 @@ export function BandDetail(){
                     <label className="label is-small"> <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
-                        Name: 
+                        Product Name: 
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"> {Band.name} </span>
+                        <span className="is-size-7 padleft"   name="name"><strong> {Inventory.name} </strong></span>
                         </td>
                     </tr>
-                    <tr>
+                   {/*  <tr>
                     <td>
                 <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
-                    </span>Band Type:
+                    </span>Inventory Type:
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft"   name="BandType">{Band.bandType} </span> 
+                    <span className="is-size-7 padleft"   name="InventoryType">{Inventory.InventoryType} </span> 
                     </td>
-                </tr>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
-                    </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="BandCity">{Band.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="BandContactPhone" >{Band.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="BandEmail" >{Band.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="BandOwner">{Band.department}</span>
-                    </td>
-               
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="BandType">{Band.deptunit}</span>
-                </td>
-              
                 </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "BandCategory">{Band.BandCategory}</span>
-                </label>
-                 </div> */}
 
             </tbody> 
             </table> 
            
-            <div className="field mt-2">
+            <div className="field mt-2 is-grouped">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
-                        Edit
+                        Set Price
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-danger is-small"  /*  onClick={handleSetPrice} */>
+                        Audit
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-info is-small" /* onClick={handleEdit} */>
+                        Transaction History
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-warning is-small" /* onClick={handleEdit} */>
+                        Reorder Level
                     </button>
                 </p>
             </div>
@@ -641,7 +662,7 @@ export function BandDetail(){
    
 }
 
-export function BandModify(){
+export function InventoryModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -649,90 +670,80 @@ export function BandModify(){
     const [success, setSuccess] =useState(false)
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
+    const [billservice,setBillService] = useState()
     // eslint-disable-next-line 
-    const BandServ=client.service('bands')
+    const InventoryServ=client.service('inventory')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
+    const billServ=client.service('billing')
 
-    const Band =state.BandModule.selectedBand 
-
-        useEffect(() => {
-            setValue("name", Band.name,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("bandType", Band.bandType,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-           /*  setValue("profession", Band.profession,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("phone", Band.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", Band.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("department", Band.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", Band.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("BandCategory", Band.BandCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
+    const Inventory =state.InventoryModule.selectedInventory // set inventory
+    const handleSetPrice = async()=>{
+    
+        const service = await  billServ.get(Inventory.billingId) // get the service
+            const contractSel= service.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
             
+            setValue("price", contractSel[0].price,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("oldprice", contractSel[0].price,  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            await setBillService(service)
+            console.log(contractSel,service)
+    }
+ 
+        useEffect(() => {
+            handleSetPrice()
+     
             return () => {
                 
             }
-        })
+        },[])
 
    const handleCancel=async()=>{
-    const    newBandModule={
-        selectedBand:{},
-        show :'list'
+   
+    const    newInventoryModule={
+        selectedInventory:{},
+        show :'detail'
       }
-   await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newBandModule={
-            selectedBand:{},
-            show :'create'
-        }
-        setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
+            const    newInventoryModule={
+                selectedInventory:{},
+                show :'detail'
+            }
+        setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
 
         }
+
+
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=Band._id
+        const dleteId=Inventory._id
         if (conf){
              
-        BandServ.remove(dleteId)
+        InventoryServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Band successfully")
+               /*  setMessage("Deleted Inventory successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'Band deleted succesfully',
+                    message: 'Inventory deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -740,10 +751,10 @@ export function BandModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Band, probable network issues "+ err )
+               // setMessage("Error deleting Inventory, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting Band, probable network issues or "+ err,
+                    message: "Error deleting Inventory, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -762,16 +773,17 @@ export function BandModify(){
         
         setSuccess(false)
         console.log(data)
-        data.facility=Band.facility
+       // data.facility=Inventory.facility
           //console.log(data);
-          
-        BandServ.patch(Band._id,data)
+          const contractSel= billservice.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
+          contractSel[0].price=data.price 
+          billServ.patch(billservice._id,billservice)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated Band successfully")
+               // setMessage("updated Inventory successfully")
                  toast({
-                    message: 'Band updated succesfully',
+                    message: 'Price updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -781,15 +793,15 @@ export function BandModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Band, probable network issues "+ err )
+                //setMessage("Error creating Inventory, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Band, probable network issues or "+ err,
+                    message: "Error updating Price, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
                   })
-            })
+            }) 
 
       } 
      
@@ -800,16 +812,16 @@ export function BandModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Band Details-Modify
+                    Set Price for {Inventory.name} per {Inventory.baseunit}
                 </p>
             </div>
             <div className="card-content vscrollable">
            
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
-                    <label className="label is-small"> Name
+                    <label className="label is-small"> New Selling Price
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input  is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name" />
+                        <input className="input  is-small" ref={register({ required: true })}  name="price" type="text" placeholder="Name" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
@@ -817,9 +829,9 @@ export function BandModify(){
                     </label>
                     </div>
                 <div className="field">
-                <label className="label is-small">Band Type
+                <label className="label is-small">Old Price
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="bandType" type="text" placeholder="Band Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="oldprice" type="text" placeholder="Inventory Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -827,67 +839,7 @@ export function BandModify(){
                 </p>
                 </label>
                 </div>
-            {/* <div className="field">
-            <label className="label is-small">Profession
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Band Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="BandCategory" type="text" placeholder="Band Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
+           
            
            
             </form>
@@ -903,11 +855,11 @@ export function BandModify(){
                         Cancel
                     </button>
                 </p>
-                <p className="control">
+               {/*  <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p>
+                </p> */}
             </div>
         </div>
         </div>
@@ -918,9 +870,9 @@ export function BandModify(){
                 
 }   
 
-export  function InputSearch({getSearchfacility,clear}) {
+export  function ProductSearch({getSearchfacility,clear}) {
     
-    const facilityServ=client.service('facility')
+    const facilityServ=client.service('products')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -974,7 +926,7 @@ export  function InputSearch({getSearchfacility,clear}) {
     }
     const handleSearch=async(val)=>{
         
-        const field='facilityName' //field variable
+        const field='name' //field variable
        
         if (val.length>=3){
             facilityServ.find({query: {     //service
@@ -1022,7 +974,7 @@ export  function InputSearch({getSearchfacility,clear}) {
                     <div className={`dropdown ${showPanel?"is-active":""}`}>
                         <div className="dropdown-trigger">
                             <DebounceInput className="input is-small " 
-                                type="text" placeholder="Search Facilities"
+                                type="text" placeholder="Search Product"
                                 value={simpa}
                                 minLength={1}
                                 debounceTimeout={400}
