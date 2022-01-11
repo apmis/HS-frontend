@@ -9,7 +9,6 @@ import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
 import ManagedCareModule from './ManagedCareModule'
-import Communication from './CommunicationModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
@@ -53,9 +52,6 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/epid`} >
                     <EpidModule />
-                </Route>
-                <Route path={`${path}/comm`} >
-                    <Communication />
                 </Route>
             </Switch>
         </div>
@@ -235,9 +231,6 @@ function NavBar({url}){
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>
-                                </div>}
-                                {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
-                                    <NavLink to={`${url}/comm`}>Communication</NavLink>
                                 </div>}
                                
                                
