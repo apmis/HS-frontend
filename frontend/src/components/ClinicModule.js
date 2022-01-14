@@ -12,9 +12,8 @@ import Clinic, { ClinicList } from './Clinic/Clinic'
 import {UserContext,ObjectContext} from '../context'
 
 export default function ClinicModule() {
-    const {state,setState}=useContext(ObjectContext) //,setState
+    const {state,setState}=useContext(ObjectContext) 
     const {user,setUser}=useContext(UserContext)
-    // eslint-disable-next-line
     const [selectedClinic,setSelectedClinic]=useState()
     const [showModal,setShowModal]=useState(false)
     const [showmenu, setShowMenu]=useState(false)
@@ -47,7 +46,6 @@ export default function ClinicModule() {
 
     const handleChangeClinic= async()=>{
         await setShowModal(true)                                                                                                                                                        
-       // console.log( showModal)
     }
     const handleBurger=()=>{
        
@@ -58,7 +56,6 @@ export default function ClinicModule() {
     return (
             <section className="section has-background-info remPad">
                
-               {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
                         <div className="container minHt">
                             <div className="navbar-brand  minHt">
@@ -68,9 +65,6 @@ export default function ClinicModule() {
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeClinic()}>Change Clinic</button> 
                                 </div>
                                 
-                            {/* <div className="navbar-item">
-                                <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
-                            </div> */}
                                 <span className="navbar-burger minHt" data-target="navbarMenuHeroB"  onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
@@ -82,45 +76,14 @@ export default function ClinicModule() {
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                   {/*  <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/clinics`}>Clinics</NavLink>
-                                    </div> */}
-                                   {/*  <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
-                                    </div> */}
                                      <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/appointments`}>Appointments</NavLink>
                                     </div>
-                                  {/*   <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
-                                    </div>  */}
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
-                                    </div> */}
-                                  {/*   <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/patients`}>Clients</NavLink>
-                                    </div> */}
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
-                                    </div> */}
-                                {/* <span className="navbar-item" onClick={handleBurger}>
-                                <div className="button is-info is-inverted">
-                                    <span className="icon">
-                                    <i className="fab fa-github"></i>
-                                    </span>
-                                    <span>Download</span>
-                                </div>
-                                </span> */}
                                 </div>
                             </div>
                         </div>
                     </nav>
-                    
-               {/*  </div> */}
-                
-                {/* <div className="section"> */}
-                {/* <div className="container mvUp " > */}
-                       
+                                           
                     <Switch>
                         <Route path={path} exact>
                             <ClinicHome />
@@ -160,10 +123,6 @@ export default function ClinicModule() {
                                         <section className="modal-card-body">
                                         <ClinicList standalone="true"  closeModal={()=>setShowModal(false)}/>
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>        
             </section>

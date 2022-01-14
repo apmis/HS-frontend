@@ -2,10 +2,10 @@
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 // import EpidemiologyHome from './Epidemiology/EpidemiologyHome'
-import ChannelHome from "./Channel/ChannelHome"
+import ChannelHome from "./Communication/ChannelHome"
 
 
-import Channel from './Channel/Channel'
+import ChannelDefinition from "./Communication/ChannelDefinition"
 
 
 
@@ -61,7 +61,7 @@ export default function CommunicationModule() {
                         </Route>
                         
                         <Route path={`${path}/Channel`} exact>
-                            <Channel />
+                            <ChannelDefinition />
                         </Route>
                         
 

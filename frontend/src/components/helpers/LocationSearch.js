@@ -1,31 +1,20 @@
 import React, {useState,useContext, useEffect,useRef} from 'react'
-//import {Route, Switch,  useRouteMatch, Link, NavLink, useHistory} from 'react-router-dom'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
-//import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict, format } from 'date-fns'
-// eslint-disable-next-line
-//const searchfacility={};
 
 
 export  default function LocationSearch({id,getSearchfacility,clear}) {
     
     const ClientServ=client.service('location')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
@@ -51,39 +40,15 @@ export  default function LocationSearch({id,getSearchfacility,clear}) {
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.name + " "+ obj.locationType )
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
     }
 
     const handleBlur=async(e)=>{
-       /*   if (count===2){
-             console.log("stuff was chosen")
-         } */
-       
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         setVal(val)
@@ -92,9 +57,7 @@ export  default function LocationSearch({id,getSearchfacility,clear}) {
             getSearchfacility(false)
             return
         }
-        const field='name' //field variable
-        /* name: { type: String, required: true },
-        locationType: { type: String }, */
+        const field='name' 
        
         if (val.length>=3 ){
             ClientServ.find({query: {
@@ -107,30 +70,9 @@ export  default function LocationSearch({id,getSearchfacility,clear}) {
                         $regex:val,
                         $options:'i' 
                     }},
-                 /*    { middlename: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { phone: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { clientTags: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { mrn: {
-                        $regex:val,
-                        $options:'i' 
-                    }},
-                    { specificDetails: {
-                        $regex:val,
-                        $options:'i' 
-                    }}, */
                 ],
               
                  facility: user.currentEmployee.facilityDetail._id,
-                 //storeId: state.StoreModule.selectedStore._id,
                  $limit:10,
                  $sort: {
                      createdAt: -1
@@ -197,20 +139,15 @@ export  default function LocationSearch({id,getSearchfacility,clear}) {
                         </div>
                         <div className="dropdown-menu expanded" style={{width:"100%"}}>
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item selectadd" /* onClick={handleAddproduct} */> <span> {val} is not a location in your facility</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item selectadd"> <span> {val} is not a location in your facility</span> </div>}
 
                               {facilities.map((facility, i)=>(
                                     
                                     <div className="dropdown-item selectadd " key={facility._id} onClick={()=>handleRow(facility)}>
                                         
-                                        <div >{/* <span>{facility.firstname}</span> */}
+                                        <div >
                                         <span className="padleft">{facility.name}</span>
                                         <span className="padleft">{facility.locationType}</span>
-                                        {/* <span className="padleft"> {facility.dob && formatDistanceToNowStrict(new Date(facility.dob))}</span>
-                                        <span className="padleft">{facility.gender}</span>
-                                        <span className="padleft">{facility.profession}</span>
-                                        <span className="padleft">{facility.phone}</span> */}
-                                        {/* <span className="padleft">{facility.email}</span> */}
                                         </div>
                             
                                         <br />
@@ -231,13 +168,7 @@ export  default function LocationSearch({id,getSearchfacility,clear}) {
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        {/* <StoreList standalone="true" /> */}
-                                        {/* <ProductCreate /> */}
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>       
         </div>

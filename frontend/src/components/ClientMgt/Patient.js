@@ -1,10 +1,9 @@
 /* eslint-disable */
 import React, {useState,useContext, useEffect,useRef} from 'react'
-import {  useRouteMatch,  useHistory} from 'react-router-dom' //Route, Switch,Link, NavLink,
+import {  useRouteMatch,  useHistory} from 'react-router-dom' 
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -16,15 +15,12 @@ import ClientBilledPrescription from '../Finance/ClientBill'
 import ClientGroup from './ClientGroup';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-// eslint-disable-next-line
 const searchfacility={};
 
 
 export default function Client() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
     const [selectedClient,setSelectedClient]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
@@ -46,27 +42,25 @@ export default function Client() {
 }
 
 export function ClientCreate(){
-    const { register, handleSubmit,setValue,  getValues, reset} = useForm(); //, watch, errors, reset 
-      // eslint-disable-next-line
+    const { register, handleSubmit,setValue,  getValues, reset} = useForm(); 
     const [error, setError] =useState(false)
-      // eslint-disable-next-line
+      
     const [success, setSuccess] =useState(false)
-      // eslint-disable-next-line
+      
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('client')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
+    
+    const {user} = useContext(UserContext) 
     const [billModal, setBillModal] =useState(false)
     const [patList, setPatList] =useState([])
     const [dependant, setDependant] =useState(false)
-    // eslint-disable-next-line
+    
     const [currentUser,setCurrentUser] = useState()
     const [date,setDate] = useState()
 
 
-  // eslint-disable-next-line
     const getSearchfacility=(obj)=>{
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -80,21 +74,13 @@ export function ClientCreate(){
     }
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -110,14 +96,6 @@ export function ClientCreate(){
         phone:data.phone,
         dob:data.dob
        } 
-       /* find if there is a match with the paramters entered
-          run search if 
-            1.phone no alone or  
-            2.email alone or 
-            3.both is entered
-            4. all other 5 parameters
-
-        */
        let query={}
 
        if (!!data.phone){
@@ -131,7 +109,6 @@ export function ClientCreate(){
        }
 
        if (!!data.firstname && !!data.lastname && !!data.gender && !!data.dob ){
-          // console.log("simpa")
            data.middlename=data.middlename||""
            query.gender=data.gender,
            query.dob=data.dob,
@@ -180,7 +157,6 @@ export function ClientCreate(){
             ClientServ.find({query:query}).then((res)=>{
                 console.log(res)
                 if (res.total>0){
-                   // alert(res.total)
                      setPatList(res.data)
                    setBillModal(true)
                    return
@@ -201,23 +177,6 @@ export function ClientCreate(){
         }
 
     const choosen=async (client)=>{
-        //update client with facilities
-      /*   if (client.facility !== user.currentEmployee.facilityDetail._id ){ //check taht it is not in list of related facilities
-           
-        
-        //create mpi record
-        const newPat = {
-            client: client._id,
-            facility:user.currentEmployee.facilityDetail._id,
-            mrn:client.mrn,
-            clientTags:client.clientTags,
-            relfacilities:client.relatedfacilites
-           }
-           await mpiServ.create(newPat)
-        } */
-        //reset form
-        //toast niotification
-        //cash payment
 
     }
     const dupl=(client)=>{
@@ -233,7 +192,6 @@ export function ClientCreate(){
     }
     const reg=async (client)=>{
         if ((client.relatedfacilities.findIndex(el=>el.facility===user.currentEmployee.facilityDetail._id))===-1){
-            //create mpi record
             const newPat = {
                 client: client._id,
                 facility:user.currentEmployee.facilityDetail._id,
@@ -258,10 +216,8 @@ export function ClientCreate(){
                   
                })
             }
-            //reset form
             reset()
             setPatList([])
-            //cash payment
         
     }
     const depen=(client)=>{
@@ -288,16 +244,12 @@ export function ClientCreate(){
              if(!dependant){
                 return
              }
-            //alert("something"+","+ patList.length)
-            //let confirm = window.confirm("Is this person a dependant with parent phone number?")
-           // setOption(confirm)
-            setPatList([])
+
+             setPatList([])
            
         }
-         // data.createdby=user._id
-        //  console.log(data);
           if (user.currentEmployee){
-          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+          data.facility=user.currentEmployee.facilityDetail._id  
           }
 
             
@@ -306,9 +258,7 @@ export function ClientCreate(){
             data.dob=date
         await ClientServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Client created succesfully',
@@ -344,9 +294,6 @@ export function ClientCreate(){
                 </p>
             </div>
             <div className="card-content vscrollable remPad1">
-           {/*  <p className=" is-small">
-                    Kindly search Client list before creating new Clients!
-                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <p className=" is-small">Names</p>
             <div className="field is-horizontal">
@@ -386,17 +333,11 @@ export function ClientCreate(){
             <div className="field-body">
                 <div className="field">
                     <p className="control has-icons-left is-danger">
-                    
-                      {/*   <input className="input is-small is-danger" ref={register({ required: true })} name="dob" type="text" placeholder="Date of Birth"  onBlur={checkClient}/>
-                        <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                        </span> */}
                         <DatePicker className="is-danger"
                             selected={date} 
                             onChange={date => handleDate(date)} 
                             dateFormat="dd/MM/yyyy"
                             placeholderText="Enter date with dd/MM/yyyy format "
-                            //isClearable
                             className="red-border is-small"
                             />
                     </p>
@@ -640,15 +581,10 @@ export function ClientCreate(){
                     </button>
                 </p>
                 <p className="control">
-                    <button type="reset" className="button is-warning is-small" /* onClick={(e)=>e.target.reset()} */>
+                    <button type="reset" className="button is-warning is-small">
                         Reset
                     </button>
                 </p>
-               {/*  <p className="control">
-                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-                       Delete
-                    </button>
-                </p> */}
             </div>
      
             </form>
@@ -662,13 +598,8 @@ export function ClientCreate(){
                     <button className="delete" aria-label="close"  onClick={handlecloseModal3}></button>
                     </header>
                     <section className="modal-card-body">
-                    {/* <StoreList standalone="true" /> */}
                      <ClientGroup  list={patList}  closeModal={handlecloseModal3} choosen={choosen} dupl ={dupl} reg={reg} depen={depen}/> 
                     </section>
-                    {/* <footer className="modal-card-foot">
-                    <button className="button is-success">Save changes</button>
-                    <button className="button">Cancel</button>
-                    </footer> */}
                 </div>
             </div>             
         </>
@@ -677,22 +608,18 @@ export function ClientCreate(){
 }
 
 export function ClientList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+    
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+    
    const [message, setMessage] = useState("") 
     const ClientServ=client.service('client')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+   
+  
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedClient, setSelectedClient]=useState() //
-    // eslint-disable-next-line
-    const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
+   const [selectedClient, setSelectedClient]=useState()
+    const {state, setState}=useContext(ObjectContext)
     const {user,setUser}=useContext(UserContext)
     const [page, setPage] = useState(0) 
     const [limit, setLimit] = useState(50) 
@@ -706,7 +633,6 @@ export function ClientList(){
             show :'create'
             }
         await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
-       //console.log(state)
         } 
 
     
@@ -720,7 +646,6 @@ export function ClientList(){
     }
 
    const handleSearch=(val)=>{
-         // eslint-disable-next-line
        const field='firstname'
        console.log(val)
        ClientServ.find({query: {
@@ -760,7 +685,7 @@ export function ClientList(){
                     { gender: val},
                 ],
 
-                "relatedfacilities.facility":user.currentEmployee.facilityDetail._id, // || "",
+                "relatedfacilities.facility":user.currentEmployee.facilityDetail._id, 
                 $limit:limit,
                 $sort: {
                     createdAt: -1
@@ -797,8 +722,6 @@ export function ClientList(){
 
         
          await setTotal(findClient.total)
-         //console.log(user.currentEmployee.facilityDetail._id, state)
-         //console.log(facilities)
          setPage(page=>page+1)
                 }
                 else {
@@ -822,16 +745,8 @@ export function ClientList(){
     useEffect(() => {
                
                 if (user){
-                    //getFacilities()
                     rest()
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 ClientServ.on('created', (obj)=>rest ())
                 ClientServ.on('updated', (obj)=>rest ())
@@ -840,27 +755,18 @@ export function ClientList(){
                 return () => {
                 
                 }
-        // eslint-disable-next-line
             },[])
             const rest = async ()=>{
-                // console.log("starting rest")
-               // await setRestful(true)
                    await  setPage(0) 
-                   //await  setLimit(2) 
                    await    setTotal(0) 
                    await  setFacilities([])
                   await getFacilities()
-                  //await  setPage(0) 
-                //  await setRestful(false)
-         
              }
              useEffect(() => {
-                //console.log(facilities)
                  return () => {
                     
                  }
              }, [facilities])
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -911,7 +817,6 @@ export function ClientList(){
                                         <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Tags">Tags</abbr></th>
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -935,7 +840,6 @@ export function ClientList(){
                                              <td>{Client.phone}</td>
                                             <td>{Client.email}</td>
                                             <td>{Client.clientTags}</td>
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -951,28 +855,20 @@ export function ClientList(){
     }
 
 export function ClientDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
     const history =useHistory()
-      // eslint-disable-next-line
     let { path, url } = useRouteMatch();
-  // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     const [finacialInfoModal, setFinacialInfoModal] =useState(false)
     const [billingModal, setBillingModal] =useState(false)
     const [billModal, setBillModal] =useState(false)
     const [appointmentModal, setAppointmentModal] =useState(false)
-     // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const ClientServ=client.service('/Client')
-    //const history = useHistory()
     const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
    
 
   let Client =state.ClientModule.selectedClient 
-     // eslint-disable-next-line
     const client=Client
     const handleEdit= async()=>{
         const    newClientModule={
@@ -980,7 +876,6 @@ export function ClientDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
-       //console.log(state)
        
     }
  
@@ -1002,7 +897,6 @@ export function ClientDetail(){
 
     const showBilling = () =>{
         setBillingModal(true)
-       //history.push('/app/finance/billservice')
         }
 
     const handleSchedule =()=>{
@@ -1015,12 +909,6 @@ export function ClientDetail(){
         setBillModal(false)
         }
 
-   /*  useEffect(() => {
-        Client =state.ClientModule.selectedClient
-        return () => {
-           
-        }
-    }, [billingModal]) */
     return (
         <>
         <div className="card ">
@@ -1320,11 +1208,6 @@ export function ClientDetail(){
                         Schedule appointment
                     </button>
                 </p>
-               {/*  <p className="control">
-                    <button className="button is-danger is-small" >
-                        Check into Clinic 
-                    </button>
-                </p> */}
                 <p className="control">
                     <button className="button is-link is-small" onClick={()=>{history.push('/app/clinic/encounter')}} >
                         Attend to Client
@@ -1344,13 +1227,8 @@ export function ClientDetail(){
                 <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                 </header>
                 <section className="modal-card-body">
-                {/* <StoreList standalone="true" /> */}
                 <ClientFinInfo closeModal={handlecloseModal}/>
                 </section>
-                {/* <footer className="modal-card-foot">
-                <button className="button is-success">Save changes</button>
-                <button className="button">Cancel</button>
-                </footer> */}
             </div>
         </div> 
 
@@ -1362,13 +1240,8 @@ export function ClientDetail(){
                     <button className="delete" aria-label="close"  onClick={handlecloseModal1}></button>
                     </header>
                     <section className="modal-card-body">
-                    {/* <StoreList standalone="true" /> */}
                     < BillServiceCreate closeModal={handlecloseModal1}/>
                     </section>
-                    {/* <footer className="modal-card-foot">
-                    <button className="button is-success">Save changes</button>
-                    <button className="button">Cancel</button>
-                    </footer> */}
                 </div>
             </div>  
             <div className={`modal ${appointmentModal?"is-active":""}` }>
@@ -1379,13 +1252,8 @@ export function ClientDetail(){
                     <button className="delete" aria-label="close"  onClick={handlecloseModal2}></button>
                     </header>
                     <section className="modal-card-body">
-                    {/* <StoreList standalone="true" /> */}
                     <AppointmentCreate  closeModal={handlecloseModal2}/>
                     </section>
-                    {/* <footer className="modal-card-foot">
-                    <button className="button is-success">Save changes</button>
-                    <button className="button">Cancel</button>
-                    </footer> */}
                 </div>
             </div>
             <div className={`modal ${billModal?"is-active":""}` }>
@@ -1396,13 +1264,8 @@ export function ClientDetail(){
                     <button className="delete" aria-label="close"  onClick={handlecloseModal3}></button>
                     </header>
                     <section className="modal-card-body">
-                    {/* <StoreList standalone="true" /> */}
                     <ClientBilledPrescription  selectedClient={Client._id}  closeModal={handlecloseModal3}/>
                     </section>
-                    {/* <footer className="modal-card-foot">
-                    <button className="button is-success">Save changes</button>
-                    <button className="button">Cancel</button>
-                    </footer> */}
                 </div>
             </div>                       
         </>
@@ -1412,17 +1275,11 @@ export function ClientDetail(){
 }
 
 export function ClientModify(){
-    const { register, handleSubmit, setValue,reset} = useForm(); //watch, errors,, errors 
-    // eslint-disable-next-line 
+    const { register, handleSubmit, setValue,reset} = useForm(); 
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line 
     const ClientServ=client.service('client')
-    //const history = useHistory()
-     // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -1538,7 +1395,6 @@ export function ClientModify(){
         show :'detail'
       }
    await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
-   //console.log(state)
            }
 
 
@@ -1550,7 +1406,6 @@ export function ClientModify(){
         setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
 
         }
-          // eslint-disable-next-line
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
@@ -1559,14 +1414,7 @@ export function ClientModify(){
              
         ClientServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Client successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Client deleted succesfully',
                     type: 'is-success',
@@ -1576,8 +1424,6 @@ export function ClientModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Client, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting Client, probable network issues or "+ err,
                     type: 'is-danger',
@@ -1589,23 +1435,13 @@ export function ClientModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
-       // console.log(data)
-      //  data.facility=Client.facility
-          //console.log(data);
           
         ClientServ.patch(Client._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Client successfully")
                  toast({
                     message: 'Client updated succesfully',
                     type: 'is-success',
@@ -1617,8 +1453,6 @@ export function ClientModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Client, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error updating Client, probable network issues or "+ err,
                     type: 'is-danger',
@@ -1947,64 +1781,37 @@ export function ClientModify(){
 
 export  function InputSearch({getSearchfacility,clear}) {
     const ClientServ=client.service('client')
-   // const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='facilityName' //field variable
+        const field='facilityName' 
        
         if (val.length>=3){
-            ClientServ.find({query: {     //service
+            ClientServ.find({query: {     
                  [field]: {
                      $regex:val,
                      $options:'i'

@@ -3,7 +3,7 @@ import React ,{useState,useEffect,useContext} from 'react'
 // import Store, { StoreList } from './Notifications'
 import {UserContext,ObjectContext} from '../../context'
 
-export default function EpidemiologyHome() {
+export default function ChannelHome() {
    // const [activeModal, setActiveModal]=useState("modal is-active ")
     const {state,setState}=useContext(ObjectContext)
     const handleCloseModal=()=>{

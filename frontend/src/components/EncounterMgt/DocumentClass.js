@@ -3,24 +3,21 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-// eslint-disable-next-line
+
 const searchfacility={};
 
 
 export default function DocumentClass() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedDocumentClass,setSelectedDocumentClass]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">DocumentClass  Module</span></div>
-            </div> */}
             <div className="columns ">
             <div className="column is-8 ">
                 <DocumentClassList />
@@ -40,21 +37,21 @@ export default function DocumentClass() {
 }
 
 export function DocumentClassCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const DocumentClassServ=client.service('documentclass')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
 
 
 
-    const getSearchfacility=(obj)=>{ // buble-up from inputsearch for creating resource
+    const getSearchfacility=(obj)=>{ 
         
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -64,17 +61,17 @@ export function DocumentClassCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeDocumentClass.FacilityId)//
+        
       if (!user.stacker){
-         // console.log(currentUser)
+         
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
             shouldValidate: true,
             shouldDirty: true
@@ -87,17 +84,16 @@ export function DocumentClassCreate(){
         setMessage("")
         setError(false)
         setSuccess(false)
-         // data.createdby=user._id
+         
           console.log(data);
           if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         data.facility=user.currentEmployee.facilityDetail._id  
           }
           data.locationType="DocumentClass"
         DocumentClassServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 e.target.reset();
-               /*  setMessage("Created DocumentClass successfully") */
                 setSuccess(true)
                 toast({
                     message: 'DocumentClass created succesfully',
@@ -167,22 +163,22 @@ export function DocumentClassCreate(){
 }
 
 export function DocumentClassList({standalone,closeModal}){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+   
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+    
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+    
    const [message, setMessage] = useState("") 
     const DocumentClassServ=client.service('documentclass')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+   
+  
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedDocumentClass, setSelectedDocumentClass]=useState() //
-    // eslint-disable-next-line
+    
+   const [selectedDocumentClass, setSelectedDocumentClass]=useState()
+   
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+   
     const {user,setUser}=useContext(UserContext)
 
    
@@ -193,14 +189,14 @@ export function DocumentClassList({standalone,closeModal}){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
-       //console.log(state)
+      
         
 
     }
     const handleRow= async(DocumentClass)=>{
-        //console.log("b4",state)
+       
 
-        //console.log("handlerow",DocumentClass)
+       
 
         await setSelectedDocumentClass(DocumentClass)
 
@@ -209,7 +205,7 @@ export function DocumentClassList({standalone,closeModal}){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
-       //console.log(state)
+      
        if (standalone){
            closeModal()
        }
@@ -226,7 +222,6 @@ export function DocumentClassList({standalone,closeModal}){
                    
                 },
                facility:user.currentEmployee.facilityDetail._id,
-                /* locationType:"DocumentClass", */
                $limit:10,
                 $sort: {
                     name: 1
@@ -249,7 +244,6 @@ export function DocumentClassList({standalone,closeModal}){
             
         const findDocumentClass= await DocumentClassServ.find(
                 {query: {
-                    /* locationType:"DocumentClass",*/
                     facility:user.currentEmployee.facilityDetail._id, 
                     $limit:20,
                     $sort: {
@@ -263,7 +257,6 @@ export function DocumentClassList({standalone,closeModal}){
                     if (user.stacker){
                         const findDocumentClass= await DocumentClassServ.find(
                             {query: {
-                               /*  locationType:"DocumentClass", */
                                 $limit:20,
                                 $sort: {
                                     name: 1
@@ -274,16 +267,6 @@ export function DocumentClassList({standalone,closeModal}){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" DocumentClass  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating DocumentClass, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
      
 
@@ -300,7 +283,6 @@ export function DocumentClassList({standalone,closeModal}){
         },[])
 
 
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -336,12 +318,6 @@ export function DocumentClassList({standalone,closeModal}){
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
-                                        {/* <th><abbr title="Last Name">DocumentClass Type</abbr></th>
-                                       <th><abbr title="Profession">Profession</abbr></th>
-                                         <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
                                        {user.stacker &&  <th><abbr title="Facility">Facility</abbr></th>}
                                        { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                         </tr>
@@ -355,12 +331,6 @@ export function DocumentClassList({standalone,closeModal}){
                                             <tr key={DocumentClass._id} onClick={()=>handleRow(DocumentClass)}  className={DocumentClass._id===(selectedDocumentClass?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{DocumentClass.name}</th>
-                                            {/*<td>{DocumentClass.DocumentClassType}</td>
-                                            < td>{DocumentClass.profession}</td>
-                                            <td>{DocumentClass.phone}</td>
-                                            <td>{DocumentClass.email}</td>
-                                            <td>{DocumentClass.department}</td>
-                                            <td>{DocumentClass.deptunit}</td>*/}
                                            {user.stacker &&  <td>{DocumentClass.facility}</td>}
                                           { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
@@ -379,15 +349,15 @@ export function DocumentClassList({standalone,closeModal}){
 
 
 export function DocumentClassDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const DocumentClassServ=client.service('/DocumentClass')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    
+     
+    const [error, setError] =useState(false) 
+    
+     
+    const [message, setMessage] = useState("") 
+    
+    
+    
     const {state,setState} = useContext(ObjectContext)
 
    
@@ -400,7 +370,6 @@ export function DocumentClassDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
-       //console.log(state)
        
     }
             
@@ -445,11 +414,6 @@ export function DocumentClassDetail(){
                         Edit
                     </button>
                 </p>
-                {/* <p className="control">
-                    <button className="button is-info is-small" onClick={handleCreateForm}>
-                        Create Form
-                    </button>
-                </p> */}
             </div>
             { error && <div className="message"> {message}</div>}
            
@@ -462,17 +426,17 @@ export function DocumentClassDetail(){
 }
 
 export function DocumentClassModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
+    const { register, handleSubmit, setValue,reset, errors } = useForm(); 
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
+    
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
+    
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line 
+    
     const DocumentClassServ=client.service('documentclass')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -487,30 +451,6 @@ export function DocumentClassModify(){
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", DocumentClass.profession,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("phone", DocumentClass.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", DocumentClass.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("department", DocumentClass.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", DocumentClass.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("DocumentClassCategory", DocumentClass.DocumentClassCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
             
             return () => {
                 
@@ -523,7 +463,6 @@ export function DocumentClassModify(){
         show :'create'
       }
    await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
-   //console.log(state)
            }
 
 
@@ -543,14 +482,7 @@ export function DocumentClassModify(){
              
         DocumentClassServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted DocumentClass successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'DocumentClass deleted succesfully',
                     type: 'is-success',
@@ -560,8 +492,6 @@ export function DocumentClassModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting DocumentClass, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting DocumentClass, probable network issues or "+ err,
                     type: 'is-danger',
@@ -573,23 +503,15 @@ export function DocumentClassModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
         console.log(data)
         data.facility=DocumentClass.facility
-          //console.log(data);
           
         DocumentClassServ.patch(DocumentClass._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated DocumentClass successfully")
                  toast({
                     message: 'DocumentClass updated succesfully',
                     type: 'is-success',
@@ -601,8 +523,6 @@ export function DocumentClassModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating DocumentClass, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error updating DocumentClass, probable network issues or "+ err,
                     type: 'is-danger',
@@ -636,78 +556,6 @@ export function DocumentClassModify(){
                     </p>
                     </label>
                     </div>
-                {/* <div className="field">
-                <label className="label is-small">Location Type
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="DocumentClassType" type="text" placeholder="DocumentClass Type" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-                </label>
-                </div> */}
-            {/* <div className="field">
-            <label className="label is-small">Profession
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="DocumentClass Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="DocumentClassCategory" type="text" placeholder="DocumentClass Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-DocumentClass-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
            
            
             </form>
@@ -723,11 +571,6 @@ export function DocumentClassModify(){
                         Cancel
                     </button>
                 </p>
-                {/* <p className="control">
-                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-                       Delete
-                    </button>
-                </p> */}
             </div>
         </div>
         </div>
@@ -742,62 +585,36 @@ export  function InputSearch({getSearchfacility,clear}) {
     
     const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='facilityName' //field variable
+        const field='facilityName' 
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            facilityServ.find({query: {     
                  [field]: {
                      $regex:val,
                      $options:'i'

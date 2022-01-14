@@ -3,22 +3,22 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 
 export default function PulmonologyIntake() {
 
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const [allergy,setAllergy] = useState("")
     const [reaction,setReaction] = useState("")
@@ -36,7 +36,7 @@ export default function PulmonologyIntake() {
      let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
    
 
-     //state.DocumentClassModule.selectedDocumentClass.name
+     
 
      useEffect(() => {
          if(!!draftDoc && draftDoc.status==="Draft"){
@@ -65,21 +65,16 @@ export default function PulmonologyIntake() {
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -107,39 +102,31 @@ export default function PulmonologyIntake() {
     const bowelsound=["Normal", "absent", "hyperactive", "reduced or hypoactive"]
 
 
-       /*  const joins=(p)=>{
-        let x=p.split(" ")
-        console.log(x)
-        x.forEach((el,i)=>({
-            setSub(prev => (prev+"_"+el))
-        }
-        ))
-    } */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         setMessage("")
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-         // console.log(data)
+        
+        
           data.Presenting_Complaints=symptoms
           data.Allergy_Skin_Test=allergies
         
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName
           }
          document.documentdetail=data
-          document.documentname="Pediatric Pulmonology Form"  //"Lab Result"
-         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.documentname="Pediatric Pulmonology Form" 
+        
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status=docStatus==="Draft"?"Draft":"completed"
-          //console.log(document)
+         
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -157,11 +144,10 @@ export default function PulmonologyIntake() {
         if (!!draftDoc &&  draftDoc.status==="Draft"){
             ClientServ.patch(draftDoc._id, document)
             .then((res)=>{
-                    //console.log(JSON.stringify(res))
+                   
                     e.target.reset();
                     setAllergies([])
                     setSymptoms([])
-                   /*  setMessage("Created Client successfully") */
                     setSuccess(true)
                     toast({
                         message: 'Pediatric Pulmonology Form updated succesfully',
@@ -183,11 +169,9 @@ export default function PulmonologyIntake() {
         }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
                 setAllergies([])
                 setSymptoms([])
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Pediatric Pulmonology Form created succesfully',
@@ -212,36 +196,22 @@ export default function PulmonologyIntake() {
 
 
         const handleChangePart=async (e)=>{
-            //console.log(e)
-            //const (name, value) = e.target
             let {name, value}= e.target
             console.log(name,value)
         await   setDataset((prev ) => ({...prev, [name]:value}))
-        //  console.log(dataset)
 
         }
         const handleChangeStatus=async (e)=>{
-        // await setAppointment_type(e.target.value)
        
         setDocStatus(e.target.value)
 
-        //console.log(e.target.value)
 
         }
 
-      /*   useEffect(() => {
-           
-            return () => {
-               
-            }
-        }, [docStatus]) */
 
         const handleAllergy=async (e)=>{
-            //console.log(e)
-            //const (name, value) = e.target
             const {name, value}= e.target
             console.log(name,value)
-           // [name]=value
          await   setAllergy((prev ) => ({...prev, [name]:value}))
           console.log(allergy)
 
@@ -265,7 +235,6 @@ export default function PulmonologyIntake() {
             duration
         } 
         setSymptoms((prev)=>([...prev, newsymptom]))
-       // setAllergy({})
         setSymptom("")
         setDuration("")
 
@@ -281,12 +250,6 @@ export default function PulmonologyIntake() {
             </div>
             <div className="card-content vscrollable remPad1">
 
-              {/*   <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label> */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
                         <p className="control ">
@@ -318,28 +281,6 @@ export default function PulmonologyIntake() {
                         </p>
                 </div>
                 
-               {/*  <div className="field">
-                    <label >5. Race</label> 
-                    <label className=" is-small ml-2">
-                            <input  type="radio" ref={register} name="Race"  value="African"  onChange={(e)=>{handleChangePart(e)}}/>
-                                <span > African</span>
-                    </label> 
-                    <label className=" is-small ml-2">
-                        <input type="radio" ref={register} name="Race"   value="Caucasian"  onChange={(e)=>handleChangePart(e)}/>
-                        <span>Caucasian</span>
-                    </label>
-                    <label className=" is-small ml-2">
-                        <input type="radio" ref={register} name="Race"   value="Indian"  onChange={(e)=>handleChangePart(e)}/>
-                        <span>Indian </span>
-                    </label>
-                    <label className=" is-small ml-2">
-                        <input type="radio" ref={register} name="Race"   value="Others"   onChange={(e)=>handleChangePart(e)}/>
-                        <span>Others </span>
-                    </label>
-                    <p className="control ">
-                            <input className="input is-small"   ref={register} name="Others_race" type="text" placeholder="Highest Level of Education" />           
-                        </p>
-                </div> */}
                 <div className="field">
                         <p className="control ">
                             <input className="input is-small"   ref={register} name="Marital_Status" type="text" placeholder="Marital Status" />
@@ -390,33 +331,6 @@ export default function PulmonologyIntake() {
                         </p>
                 </div>
 
-               {/*  <div className="field ">
-                       
-                        <label >8. Highest Level of Education</label> 
-                                <label className=" is-small ml-2">
-                                        <input  type="radio" ref={register} name="Education" value="Uneducated" onChange={(e)=>{handleChangePart(e)}}/>
-                                            <span > Uneducated</span>
-                                </label> 
-                                <label className=" is-small ml-2">
-                                    <input type="radio" ref={register} name="Education"  value="Primary School" onChange={(e)=>handleChangePart(e)}/>
-                                    <span>Primary School</span>
-                                </label>
-                                <label className=" is-small ml-2">
-                                    <input type="radio" ref={register} name="Education"  value="Secondary School" onChange={(e)=>handleChangePart(e)}/>
-                                    <span>Secondary School </span>
-                                </label>
-                                <label className=" is-small ml-2">
-                                    <input type="radio" ref={register} name="Education"  value="Post-Secondary School (Diploma /Degree)" onChange={(e)=>handleChangePart(e)}/>
-                                    <span>Post-Secondary School (Diploma /Degree) </span>
-                                </label>
-                                <label className=" is-small ml-2">
-                                    <input type="radio" ref={register} name="Education"  value="Others" onChange={(e)=>handleChangePart(e)}/>
-                                    <span>Others (Specify) </span>
-                                </label>
-                        <p className="control ">
-                            <input className="input is-small"   ref={register} name="others_education" type="text" placeholder="Highest Level of Education" />           
-                        </p>
-                </div> */}
                 <h3><b>Presentation Complaints</b></h3>
                 <input className="input is-small is-hidden"   ref={register} name="Presenting_Complaints" type="text" placeholder="Specify" />  
                     <div className="field is-horizontal">
@@ -426,7 +340,7 @@ export default function PulmonologyIntake() {
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={symptom} /* ref={register} */ onChange={(e)=>{setSymptom(e.target.value)}} name="symptom" type="text" placeholder="Symptom" />           
+                                    <input className="input is-small"  value={symptom} onChange={(e)=>{setSymptom(e.target.value)}} name="symptom" type="text" placeholder="Symptom" />           
                                 </p>
                             </div>
                         
@@ -439,7 +353,7 @@ export default function PulmonologyIntake() {
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={duration}  /* ref={register} */ onChange={(e)=>{setDuration(e.target.value)}}  name="durationn" type="text" placeholder="Duration" />           
+                                    <input className="input is-small"  value={duration}  onChange={(e)=>{setDuration(e.target.value)}}  name="durationn" type="text" placeholder="Duration" />           
                                 </p>
                             </div>
                         </div>
@@ -1110,15 +1024,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                        {/*   <div className="field">
-                        {
-                            side.map((c,i) => 
-                                <label  className=" is-small" key={c}>
-                                    <input type="checkbox" value={c } name="Eye_pain_side" ref={register} />{c + " "}
-                                </label>
-                            )
-                        }
-                        </div> */}
                          <p className="control">
                             <input className="input is-small"   ref={register} name="Pregnancy_details" type="text" placeholder="Pregnancy details" />           
                         </p>
@@ -1292,9 +1197,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                       {/*   <p className="control ">
-                            <input className="input is-small"   ref={register} name="Delayed_milestones_detail" type="text" placeholder="Delayed Milestones detail"/>           
-                        </p> */}
                     </div> 
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Febrile</b></label>
@@ -1305,9 +1207,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                        {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Delayed_milestones_detail" type="text" placeholder="Delayed Milestones detail"/>           
-                        </p> */}
                     </div>    
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Cyanosed</b></label>
@@ -1318,9 +1217,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                        {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Delayed_milestones_detail" type="text" placeholder="Delayed Milestones detail"/>           
-                        </p> */}
                     </div>    
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Icteric</b></label>
@@ -1331,9 +1227,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                        {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Delayed_milestones_detail" type="text" placeholder="Delayed Milestones detail"/>           
-                        </p> */}
                     </div>    
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Lyphm node  enlargement</b></label>
@@ -1396,9 +1289,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                         {/*   <p className="control ">
-                            <input className="input is-small"   ref={register} name="Delayed_milestones_detail" type="text" placeholder="Delayed Milestones detail"/>           
-                        </p> */}
                        
                     </div>    
                     <div className="field ml-3 ">
@@ -1423,9 +1313,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                        {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Delayed_milestones_detail" type="text" placeholder="Delayed Milestones detail"/>           
-                        </p> */}
                     </div>    
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Audible wheeze</b></label>
@@ -1436,9 +1323,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                      {/*    <p className="control ">
-                            <input className="input is-small"   ref={register} name="Lyphm_node_enlargements_detail" type="text" placeholder="Lyphm node enlargement description"/>           
-                        </p> */}
                     </div>    
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Chest symetrical</b></label>
@@ -1449,9 +1333,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                         {/* <p className="control ">
-                            <input className="input is-small"   ref={register} name="Chest_symetrical" type="text" placeholder="Chest symetrical"/>           
-                        </p>  */}
                     </div>    
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Equal chest expansion</b></label>
@@ -1462,9 +1343,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                       {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Pedal_edema_detail" type="text" placeholder="Pedal edema detail"/>           
-                        </p> */}
                         
                     </div> 
                    
@@ -1477,9 +1355,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                       {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Pedal_edema_detail" type="text" placeholder="Pedal edema detail"/>           
-                        </p> */}
                         
                     </div> 
                     <div className="field ml-3 ">
@@ -1491,21 +1366,11 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                       {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Pedal_edema_detail" type="text" placeholder="Pedal edema detail"/>           
-                        </p> */}
                         
                     </div> 
                     <h4><b>Auscultatory findings</b></h4>
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Air entry</b></label>
-                       {/*  {
-                            yesno.map((c,i) => 
-                                <label  className=" is-small" key={c}>
-                                    <input type="radio" value={c } name="Equal_chest_expansion" ref={register} />{c + " "}
-                                </label>
-                            )
-                        } */}
                        <p className="control ">
                             <input className="input is-small"   ref={register} name="Ausc_Air_entry" type="text" placeholder="Describe"/>           
                         </p> 
@@ -1513,13 +1378,6 @@ export default function PulmonologyIntake() {
                     </div> 
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Breath sound</b></label>
-                     {/*    {
-                            yesno.map((c,i) => 
-                                <label  className=" is-small" key={c}>
-                                    <input type="radio" value={c } name="Equal_chest_expansion" ref={register} />{c + " "}
-                                </label>
-                            )
-                        } */}
                     <p className="control ">
                             <input className="input is-small"   ref={register} name="Ausc_Breath_Sound" type="text" placeholder="Describe"/>           
                         </p> 
@@ -1592,9 +1450,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                     {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Pulse_rate" type="text" placeholder="Pulse rate"/>           
-                        </p> */}
                     </div> 
                     <div className="field ml-3 ">
                     
@@ -1606,19 +1461,9 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                     {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Pulse_rate" type="text" placeholder="Pulse rate"/>           
-                        </p> */}
                     </div> 
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Blood Pressure Value</b></label>
-                      {/*   {
-                            yesno.map((c,i) => 
-                                <label  className=" is-small" key={c}>
-                                    <input type="radio" value={c } name="Precordium_hyperactive" ref={register} />{c + " "}
-                                </label>
-                            )
-                        } */}
                     <p className="control ">
                             <input className="input is-small"   ref={register} name="Blood_Pressure" type="text" placeholder="Blood pressure value"/>           
                         </p> 
@@ -1629,20 +1474,10 @@ export default function PulmonologyIntake() {
                     <p className="control ">
                             <input className="input is-small"   ref={register} name="Apex_beat_location" type="text" placeholder="Apex beat location"/>           
                         </p> 
-                         {/*   {
-                            yesno.map((c,i) => 
-                                <label  className=" is-small" key={c}>
-                                    <input type="radio" value={c } name="Precordium_hyperactive" ref={register} />{c + " "}
-                                </label>
-                            )
-                        } */}
                     </div> 
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Apex beat Displaced?</b></label>
                      
-                   {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Apex_beat_location" type="text" placeholder="Apex beat location"/>           
-                        </p>  */}
                            {
                             yesno.map((c,i) => 
                                 <label  className=" is-small" key={c}>
@@ -1654,9 +1489,6 @@ export default function PulmonologyIntake() {
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Apex beat located?</b></label>
                      
-                   {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Apex_beat_location" type="text" placeholder="Apex beat location"/>           
-                        </p>  */}
                            {
                             yesno.map((c,i) => 
                                 <label  className=" is-small" key={c}>
@@ -1668,9 +1500,6 @@ export default function PulmonologyIntake() {
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Thrills</b></label>
                      
-                   {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Apex_beat_location" type="text" placeholder="Apex beat location"/>           
-                        </p>  */}
                            {
                             yesno.map((c,i) => 
                                 <label  className=" is-small" key={c}>
@@ -1715,9 +1544,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                       {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Pulse_rate" type="text" placeholder="Pulse rate"/>           
-                        </p> */}
                     </div> 
                     <div className="field ml-3 ">
                     <label className= "mr-2 "> <b>Abdominal tenderness</b></label>
@@ -1780,9 +1606,6 @@ export default function PulmonologyIntake() {
                                 </label>
                             )
                         }
-                       {/* <p className="control ">
-                            <input className="input is-small"   ref={register} name="Spleen_enlarged_details" type="text" placeholder="Spleen enlarged details"/>           
-                        </p>  */}
                     </div> 
 
                     <h4><b>5. Other Systemic Findings</b></h4> 
@@ -2016,7 +1839,7 @@ export default function PulmonologyIntake() {
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={allergine} /* ref={register} */ onChange={(e)=>{setAllergine(e.target.value)}} name="allergine" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"  value={allergine} onChange={(e)=>{setAllergine(e.target.value)}} name="allergine" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         
@@ -2029,7 +1852,7 @@ export default function PulmonologyIntake() {
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={reaction}  /* ref={register} */ onChange={(e)=>{setReaction(e.target.value)}}  name="reaction" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"  value={reaction}  onChange={(e)=>{setReaction(e.target.value)}}  name="reaction" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2077,19 +1900,6 @@ export default function PulmonologyIntake() {
                             </div>
                         </div>
                     </div>
-                    {/* <div className="field is-horizontal">
-                        <div className="field-body ml-3">  
-                            <div className="field">
-                                <label className="is-small">FRACTION EXHALED NITRIC OXIDE (FeNO)</label>
-                            </div>
-                            <div className="field">
-                                <p className="control ">
-                                    <input className="input is-small"   ref={register} name="FeNo" type="text" placeholder="Specify" />           
-                                </p>
-                            </div>
-                           
-                        </div>
-                    </div> */}
 
                     <h4>URINALYSIS</h4>
                     <div className="field is-horizontal">
@@ -2299,9 +2109,6 @@ export default function PulmonologyIntake() {
                            
                         </div>
                     </div>
-                       {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Education" type="text" placeholder="Hihest Level of Education" />           
-                        </p> */}
                
                 <div className="field">
                     <label className=" is-small">

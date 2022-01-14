@@ -2,32 +2,25 @@ import React, {useState,useContext, useEffect} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 
 
 export function Facility() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
-    const [selectedFacility,setSelectedFacility]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    const {state}=useContext(ObjectContext) 
     
-    //console.log("facility parent", state)
+    const [selectedFacility,setSelectedFacility]=useState()
+    
+    
+    
     
 
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Facility  Module</span></div>
-            </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-              {/*   <FacilityList /> */}
                 </div>
             <div className="column is-4 ">
-               {/*  {(state.facilityModule.show ==='create')&&<FacilityCreate />}
-                {(state.facilityModule.show ==='detail')&&<FacilityDetail  />}
-                {(state.facilityModule.show ==='modify')&&<FacilityModify facility={selectedFacility} />} */}
                
             </div>
 
@@ -39,13 +32,13 @@ export function Facility() {
 }
 
 export function FacilityCreate(){
-    const { register, handleSubmit} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     const facilityServ=client.service('/facility')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
+    
+    const {user} = useContext(UserContext) 
 
     
     const onSubmit = (data,e) =>{
@@ -54,11 +47,11 @@ export function FacilityCreate(){
         setError(false)
         setSuccess(false)
           data.createdby=user._id
-          //console.log(data);
+          
           
         facilityServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 e.target.reset();
                 setMessage("Created facility successfully")
                 setSuccess(true)
@@ -74,7 +67,7 @@ export function FacilityCreate(){
         <>
         <section className= "section remPadTop">
         <div className="columns ">
-        <div /* className="column is-4 " */>
+        <div>
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
@@ -170,38 +163,26 @@ export function FacilityCreate(){
 }
 
 export default function FacilityPopup({facilityType,closeModal}){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const facilityServ=client.service('facility')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedFacility, setSelectedFacility]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedFacility, setSelectedFacility]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
 
    
 
-  /*   const handleCreateNew = async()=>{
-        const    newfacilityModule={
-            selectedFacility:{},
-            show :'create'
-            }
-       await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule}))
-       //console.log(state)
-        
-
-    } */
     const handleRow= async(facility)=>{
-        //console.log("b4",state)
 
-        //console.log("handlerow",facility)
 
         await setSelectedFacility(facility)
 
@@ -210,7 +191,6 @@ export default function FacilityPopup({facilityType,closeModal}){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, DestinationModule:newfacilityModule}))
-       //console.log(state)
        closeModal()
 
     }
@@ -242,13 +222,6 @@ export default function FacilityPopup({facilityType,closeModal}){
             })
         }
 
-           /*  if (val.length>2){
-                console.log("in")
-               
-            }
-
-        }
-     */
         const getFacilities=()=>{
             facilityServ.find({query: {
                 facilityType,
@@ -283,13 +256,12 @@ export default function FacilityPopup({facilityType,closeModal}){
         }
     },[])
 
-    //todo: pagination and vertical scroll bar
 
     return(
             <>  
             <section className= "section remPadTop">
-            <div /* className="columns " */>
-            <div /* className="column is-4 " */>  
+            <div >
+            <div >  
                 <div className="level">
                     <div className="level-left">
                         <div className="level-item">
@@ -308,11 +280,6 @@ export default function FacilityPopup({facilityType,closeModal}){
                         </div>
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Facilities </span></div>
-                    {/* <div className="level-right">
-                        <div className="level-item"> 
-                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div>
-                    </div> */}
 
                 </div>
                 <div className="table-container pullup ">

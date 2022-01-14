@@ -3,24 +3,21 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-// eslint-disable-next-line
+
 const searchfacility={};
 
 
 export default function Inventory() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedInventory,setSelectedInventory]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
-            </div> */}
             <div className="columns ">
             <div className="column is-8 ">
                 <InventoryList />
@@ -40,16 +37,16 @@ export default function Inventory() {
 }
 
 export function InventoryCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const InventoryServ=client.service('inventory')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
 
 
@@ -64,15 +61,15 @@ export function InventoryCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeInventory.FacilityId)//
+        
       if (!user.stacker){
           console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -87,16 +84,15 @@ export function InventoryCreate(){
         setMessage("")
         setError(false)
         setSuccess(false)
-         // data.createdby=user._id
+         
           console.log(data);
           if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         data.facility=user.currentEmployee.facilityDetail._id  
           }
         InventoryServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 e.target.reset();
-               /*  setMessage("Created Inventory successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Inventory created succesfully',
@@ -140,7 +136,7 @@ export function InventoryCreate(){
                 </div>
             </div>
             <div className="field">
-                <p className="control has-icons-left"> {/* Audit/initialization/Purchase Invoice */}
+                <p className="control has-icons-left"> 
                     <input className="input is-small" ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
                     <span className="icon is-small is-left">
                     <i className=" fas fa-user-md "></i>
@@ -174,16 +170,15 @@ export function InventoryCreate(){
                 </p>
             </div>
            
-         {/* array of inventory items */}
          <p className="control">
                     <button className="button is-info is-small  is-pulled-right">
                       <span className="is-small"> +</span>
                     </button>
                 </p>
-           <div className="field"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+           <div className="field" >
                 <ProductSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                 <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } /* add array no */ name="productId" type="text" placeholder="Product Id" />
+                    <input className="input is-small" ref={register ({ required: true }) } name="productId" type="text" placeholder="Product Id" />
                     <span className="icon is-small is-left">
                     <i className="fas  fa-map-marker-alt"></i>
                     </span>
@@ -207,50 +202,6 @@ export function InventoryCreate(){
                     </span>
                 </p>
             </div> 
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
@@ -268,22 +219,21 @@ export function InventoryCreate(){
 }
 
 export function InventoryList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const InventoryServ=client.service('inventory')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedInventory, setSelectedInventory]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedInventory, setSelectedInventory]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
 
 
@@ -294,14 +244,9 @@ export function InventoryList(){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-       //console.log(state)
     }
 
     const handleRow= async(Inventory)=>{
-        //console.log("b4",state)
-
-        //console.log("handlerow",Inventory)
-
         await setSelectedInventory(Inventory)
 
         const    newInventoryModule={
@@ -309,7 +254,6 @@ export function InventoryList(){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-       //console.log(state)
 
     }
 
@@ -370,16 +314,6 @@ export function InventoryList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Inventory  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Inventory, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
             useEffect(() => {
@@ -396,13 +330,6 @@ export function InventoryList(){
                 if (user){
                     getFacilities()
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 InventoryServ.on('created', (obj)=>getFacilities())
                 InventoryServ.on('updated', (obj)=>getFacilities())
@@ -420,7 +347,6 @@ export function InventoryList(){
             }
         }, [state.StoreModule.selectedStore])
 
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -455,7 +381,6 @@ export function InventoryList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        {/* <th><abbr title="Category">Category</abbr></th> */}
                                         <th>Product</th>
                                         <th><abbr title="Quantity">Quantity</abbr></th>
                                         <th><abbr title="Base Unit">Base Unit</abbr></th>
@@ -475,7 +400,6 @@ export function InventoryList(){
 
                                             <tr key={Inventory._id} onClick={()=>handleRow(Inventory)}>
                                             <th>{i+1}</th>
-                                            {/* <td>{Inventory.productDetail.category}</td> */}
                                             <th>{Inventory.name}</th>
                                             <td>{Inventory.quantity}</td>
                                             <td>{Inventory.baseunit}</td>
@@ -501,17 +425,15 @@ export function InventoryList(){
 
 
 export function InventoryDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const InventoryServ=client.service('/Inventory')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    const [error, setError] =useState(false) 
+    
+     
+    const [message, setMessage] = useState("") 
+    
+    
+    
     const {state,setState} = useContext(ObjectContext)
-    const {user} = useContext(UserContext) //,setUser
+    const {user} = useContext(UserContext) 
     
    
 
@@ -542,40 +464,6 @@ export function InventoryDetail(){
                
            }
        }, [Inventory])
- /* await setFacilities(findProductEntry.data)
-        }
-        else {
-            if (user.stacker){ */
-                /* toast({
-                    message: 'You do not qualify to view this',
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  }) 
-                  return */
-               /*  const findProductEntry= await ProductEntryServ.find(
-                    {query: {
-                        
-                        $limit:20,
-                        $sort: {
-                            createdAt: -1
-                        }
-                        }})
-    
-            await setFacilities(findProductEntry.data)
-
-            }
-        }  */
-  /*   .then((res)=>{
-        console.log(res)
-            setFacilities(res.data)
-            setMessage(" ProductEntry  fetched successfully")
-            setSuccess(true)
-        })
-        .catch((err)=>{
-            setMessage("Error creating ProductEntry, probable network issues "+ err )
-            setError(true)
-        }) */
     
     
 
@@ -587,7 +475,6 @@ export function InventoryDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-       //console.log(state)
        
     }
  
@@ -616,16 +503,6 @@ export function InventoryDetail(){
                         <span className="is-size-7 padleft"   name="name"><strong> {Inventory.name} </strong></span>
                         </td>
                     </tr>
-                   {/*  <tr>
-                    <td>
-                <label className="label is-small"><span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>Inventory Type:
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft"   name="InventoryType">{Inventory.InventoryType} </span> 
-                    </td>
-                </tr> */}
 
             </tbody> 
             </table> 
@@ -637,17 +514,17 @@ export function InventoryDetail(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-danger is-small"  /*  onClick={handleSetPrice} */>
+                    <button className="button is-danger is-small" >
                         Audit
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-info is-small" /* onClick={handleEdit} */>
+                    <button className="button is-info is-small">
                         Transaction History
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" /* onClick={handleEdit} */>
+                    <button className="button is-warning is-small">
                         Reorder Level
                     </button>
                 </p>
@@ -663,26 +540,26 @@ export function InventoryDetail(){
 }
 
 export function InventoryModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
+    const { register, handleSubmit, setValue,reset, errors } = useForm(); 
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
+    
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
+    
     const [message,setMessage] = useState("")
     const [billservice,setBillService] = useState()
-    // eslint-disable-next-line 
+    
     const InventoryServ=client.service('inventory')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
     const billServ=client.service('billing')
 
-    const Inventory =state.InventoryModule.selectedInventory // set inventory
+    const Inventory =state.InventoryModule.selectedInventory 
     const handleSetPrice = async()=>{
     
-        const service = await  billServ.get(Inventory.billingId) // get the service
+        const service = await  billServ.get(Inventory.billingId) 
             const contractSel= service.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
             
             setValue("price", contractSel[0].price,  {
@@ -712,7 +589,7 @@ export function InventoryModify(){
         show :'detail'
       }
         await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-   //console.log(state)
+   
            }
 
 
@@ -734,14 +611,8 @@ export function InventoryModify(){
              
         InventoryServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 reset();
-               /*  setMessage("Deleted Inventory successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Inventory deleted succesfully',
                     type: 'is-success',
@@ -751,8 +622,6 @@ export function InventoryModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Inventory, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting Inventory, probable network issues or "+ err,
                     type: 'is-danger',
@@ -764,24 +633,15 @@ export function InventoryModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
         console.log(data)
-       // data.facility=Inventory.facility
-          //console.log(data);
           const contractSel= billservice.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
           contractSel[0].price=data.price 
           billServ.patch(billservice._id,billservice)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Inventory successfully")
                  toast({
                     message: 'Price updated succesfully',
                     type: 'is-success',
@@ -793,8 +653,6 @@ export function InventoryModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Inventory, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error updating Price, probable network issues or "+ err,
                     type: 'is-danger',
@@ -855,11 +713,6 @@ export function InventoryModify(){
                         Cancel
                     </button>
                 </p>
-               {/*  <p className="control">
-                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-                       Delete
-                    </button>
-                </p> */}
             </div>
         </div>
         </div>
@@ -874,62 +727,36 @@ export  function ProductSearch({getSearchfacility,clear}) {
     
     const facilityServ=client.service('products')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='name' //field variable
+        const field='name' 
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            facilityServ.find({query: {     
                  [field]: {
                      $regex:val,
                      $options:'i'
