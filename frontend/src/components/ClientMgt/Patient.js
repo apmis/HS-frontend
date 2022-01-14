@@ -56,6 +56,7 @@ export function ClientCreate(){
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
     const ClientServ=client.service('client')
+    const mpiServ=client.service('mpi')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     const [billModal, setBillModal] =useState(false)
@@ -239,8 +240,9 @@ export function ClientCreate(){
                 facility:user.currentEmployee.facilityDetail._id,
                 mrn:client.mrn,
                 clientTags:client.clientTags,
-                relfacilities:client.relatedfacilites
+                relfacilities:client.relatedfacilities
                }
+               //console.log(newPat)
                await mpiServ.create(newPat).then((resp)=>{
                 toast({
                     message: 'Client created succesfully',
