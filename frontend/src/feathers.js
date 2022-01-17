@@ -4,9 +4,10 @@ import socketio from '@feathersjs/socketio-client'
 import authentication from '@feathersjs/authentication-client'
 
 const herok= 'https://healthstack-backend.herokuapp.com'
-const url= 'http://localhost:3035'
-const API = process.env.NODE_ENV !== 'production' ?  url :'https://healthstack-backend.herokuapp.com' ;
-const socket=io(herok, {
+const url= 'http://localhost:5000'
+console.log('innit feathers')
+//const API = process.env.NODE_ENV !== 'production' ?  url :'https://healthstack-backend.herokuapp.com' ;
+const socket=io(url, {
     transports: ['websocket'],
     forceNew: true
   })
