@@ -26,13 +26,9 @@ export default function ClientFinInfo({closeModal}){
      const [obj, setObj]=useState("")
      const {state,setState}=useContext(ObjectContext)
      const ClientServ=client.service('client')
-   //  const [productEntry,setProductEntry]=useState({
-       
-    //})
     
   let medication =state.ClientModule.selectedClient 
 
-  //console.log(state.financeModule.state)
 
   const handleChangeMode= async(value)=>{
       
@@ -64,12 +60,10 @@ export default function ClientFinInfo({closeModal}){
      }
 
      const getSearchfacility1=async (obj)=>{
-        //setPrincipalId(obj._id)
         setPrincipalName(obj.firstname +" "+obj.lastname)
         setPrincipal(obj._id)
         
          if (!obj){
-             //"clear stuff"
              setPrincipalId("")
              setPrincipalName("")
              setPrincipal(null)
@@ -82,7 +76,6 @@ export default function ClientFinInfo({closeModal}){
        setOrganizationId(obj._id)
       await setOrganizationName(obj.facilityName)
      
-      // setOrgType(obj.facilityType)
        if(!obj){
         setOrganizationId(null)
         setOrganizationName("")
@@ -91,7 +84,6 @@ export default function ClientFinInfo({closeModal}){
      }
 
     useEffect(() => {
-       // console.log("success", success)
         if (success){
             setSuccess(false)
         }
@@ -99,7 +91,6 @@ export default function ClientFinInfo({closeModal}){
      }, [success])
 
      useEffect(() => {
-        // console.log("success", success)
          if (success1){
              setSuccess1(false)
          }
@@ -118,7 +109,6 @@ export default function ClientFinInfo({closeModal}){
        setPrincipalName("")
        setSuccess(true)
        setPaymentMode("HMO")
-       //setSuccess(false)
 
      }
  
@@ -129,21 +119,17 @@ export default function ClientFinInfo({closeModal}){
        } 
 
     const handleAdd=async()=>{
-       //setSuccess(false)
         setProductItem(prev=>prev.concat(productItemI))
         resetform()
-        //
     }
 
 
     const handlePayment= async ()=>{
-       // console.log(productItem)
         ClientServ.patch(medication._id, {
             paymentinfo:productItem
         })
         .then((resp)=>{
             resetform()
-            //setProductItem([])
             toast({
                 message: 'Client financial info updated succesfully',
                 type: 'is-success',
@@ -317,8 +303,6 @@ export default function ClientFinInfo({closeModal}){
                      <th><abbr title="Principal">Principal</abbr></th>
                      <th><abbr title="Plan">Plan</abbr></th>
                      <th><abbr title="Active">Active</abbr></th>
-                     {/* <th><abbr title="Cost Price">Amount</abbr></th> */}
-                     {/* <th><abbr title="Actions">Actions</abbr></th> */}
                      </tr>
                  </thead>
                  <tfoot>
@@ -333,10 +317,7 @@ export default function ClientFinInfo({closeModal}){
                          <td>{ProductEntry.principalName}</td>
                          <td>{ProductEntry.plan}</td>
                          <td>{ProductEntry.active?"Yes":"No"}</td>
-
-                          
-                        {/* <td>{ProductEntry.amount}</td> */}
-                        {/*  <td><span className="showAction"  >x</span></td> */}
+                         
                          </tr>
                      ))}
                  </tbody>
