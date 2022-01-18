@@ -9,7 +9,7 @@ import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
 import ManagedCareModule from './ManagedCareModule'
-import Communication from './CommunicationModule'
+// import Communication from './CommunicationModule'
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
 import client from '../feathers'
@@ -51,9 +51,9 @@ export default function Home() {
                 <Route path={`${path}/epid`} >
                     <EpidModule />
                 </Route>
-                <Route path={`${path}/comm`} >
+                {/* <Route path={`${path}/comm`} >
                     <Communication />
-                </Route>
+                </Route> */}
             </Switch>
         </div>
     )
