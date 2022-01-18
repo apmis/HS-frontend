@@ -51,7 +51,7 @@ export function LocationCreate(){
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const locationTypeOptions =["Front Desk","Clinic", "Store", "Laboratory", "Finance", ]
+    const locationTypeOptions =["Front Desk","Clinic","Ward", "Store", "Laboratory", "Finance","Theatre","Pharmacy", "Radiology" ]
 
 
     const getSearchfacility=(obj)=>{
@@ -506,6 +506,9 @@ export function LocationDetail(){
        //console.log(state)
        
     }
+    const handleSublocation= ()=>{
+        // show popup to create new sublocation.
+    }
  
     return (
         <>
@@ -613,10 +616,15 @@ export function LocationDetail(){
             </tbody> 
             </table> 
            
-            <div className="field mt-2">
+            <div className="field mt-2  is-grouped">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
+                    </button>
+                </p>
+                <p className="control">
+                    <button className="button is-success is-small" onClick={handleSublocation}>
+                        Create Sublocation
                     </button>
                 </p>
             </div>

@@ -494,9 +494,8 @@ export function LabNoteCreate(){
     }
 
     useEffect(() => {
-        if (typeof order.resultDetail.documentdetail ==="undefined"){
-            console.log(order)
-            alert("No Status")
+        if (!typeof order.resultDetail?.documentdetail ){
+           
             return
 
         }
