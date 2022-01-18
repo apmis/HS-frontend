@@ -3,24 +3,21 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-// eslint-disable-next-line
+
 const searchfacility={};
 
 
 export default function Product() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedProduct,setSelectedProduct]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Product  Module</span></div>
-            </div> */}
             <div className="columns ">
             <div className="column is-8 ">
                 <ProductList />
@@ -40,16 +37,16 @@ export default function Product() {
 }
 
 export function ProductCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ProductServ=client.service('products')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
 
 
@@ -64,21 +61,16 @@ export function ProductCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeProduct.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -87,16 +79,15 @@ export function ProductCreate(){
         setMessage("")
         setError(false)
         setSuccess(false)
-         // data.createdby=user._id
+         
           console.log(data);
           if (user.currentEmployee){
-        // data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+        
           }
         ProductServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 e.target.reset();
-               /*  setMessage("Created Product successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Product created succesfully',
@@ -156,77 +147,6 @@ export function ProductCreate(){
                     </span>
                 </p>
             </div>
-             {/*<div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-           
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> */}
-          {/*  <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
-                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
-                    <span className="icon is-small is-left">
-                    <i className="fas  fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div> */}
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
@@ -244,22 +164,22 @@ export function ProductCreate(){
 }
 
 export function ProductList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const ProductServ=client.service('products')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedProduct, setSelectedProduct]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedProduct, setSelectedProduct]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
 
 
@@ -270,14 +190,14 @@ export function ProductList(){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
-       //console.log(state)
+       
         
 
     }
     const handleRow= async(Product)=>{
-        //console.log("b4",state)
+        
 
-        //console.log("handlerow",Product)
+        
 
         await setSelectedProduct(Product)
 
@@ -286,7 +206,7 @@ export function ProductList(){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
-       //console.log(state)
+       
 
     }
 
@@ -299,7 +219,7 @@ export function ProductList(){
                     $options:'i'
                    
                 },
-              // facility:user.currentEmployee.facilityDetail._id || "",
+              
                 $limit:10,
                 $sort: {
                     createdAt: -1
@@ -322,7 +242,7 @@ export function ProductList(){
             
         const findProduct= await ProductServ.find(
                 {query: {
-                   // facility:user.currentEmployee.facilityDetail._id,
+                   
                     $limit:20,
                     $sort: {
                         createdAt: -1
@@ -346,16 +266,6 @@ export function ProductList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Product  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Product, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
             
@@ -365,13 +275,6 @@ export function ProductList(){
                 if (user){
                     getFacilities()
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 ProductServ.on('created', (obj)=>getFacilities())
                 ProductServ.on('updated', (obj)=>getFacilities())
@@ -383,7 +286,6 @@ export function ProductList(){
             },[])
 
 
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -421,11 +323,6 @@ export function ProductList(){
                                         <th>Name</th>
                                         
                                        <th><abbr title="Base Unit">Base Unit</abbr></th>
-                                         {/* <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
-                                        <th><abbr title="Facility">facility</abbr></th>*/}
                                         <th><abbr title="Last Name">Product Category</abbr></th>
                                         <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
@@ -441,11 +338,6 @@ export function ProductList(){
                                             <th>{Product.name}</th>
                                             <td>{Product.baseunit}</td>
                                            < td>{Product.category}</td>
-                                             {/*<td>{Product.phone}</td>
-                                            <td>{Product.email}</td>
-                                            <td>{Product.department}</td>
-                                            <td>{Product.deptunit}</td> 
-                                            <td>{Product.facility}</td>*/}
                                             <td><span   className="showAction"  >...</span></td>
                                            
                                             </tr>
@@ -463,15 +355,15 @@ export function ProductList(){
 
 
 export function ProductDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const ProductServ=client.service('/Product')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    
+     
+    const [error, setError] =useState(false) 
+    
+     
+    const [message, setMessage] = useState("") 
+    
+    
+    
     const {state,setState} = useContext(ObjectContext)
 
    
@@ -484,7 +376,7 @@ export function ProductDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
-       //console.log(state)
+       
        
     }
  
@@ -536,60 +428,6 @@ export function ProductDetail(){
                 <span className="is-size-7 padleft "  name="ProductCity">{Product.category}</span> 
                 </td>
                 </tr>
-             {/*         <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="ProductContactPhone" >{Product.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="ProductEmail" >{Product.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="ProductOwner">{Product.department}</span>
-                    </td>
-               
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="ProductType">{Product.deptunit}</span>
-                </td>
-              
-                </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "ProductCategory">{Product.ProductCategory}</span>
-                </label>
-                 </div> */}
 
             </tbody> 
             </table> 
@@ -612,17 +450,17 @@ export function ProductDetail(){
 }
 
 export function ProductModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
+    const { register, handleSubmit, setValue,reset, errors } = useForm(); 
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
+    
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
+    
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line 
+    
     const ProductServ=client.service('products')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -641,26 +479,6 @@ export function ProductModify(){
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /* setValue("phone", Product.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", Product.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("department", Product.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", Product.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("ProductCategory", Product.ProductCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
             
             return () => {
                 
@@ -673,7 +491,6 @@ export function ProductModify(){
         show :'create'
       }
    await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
-   //console.log(state)
            }
 
 
@@ -693,14 +510,7 @@ export function ProductModify(){
              
         ProductServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Product successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Product deleted succesfully',
                     type: 'is-success',
@@ -710,8 +520,6 @@ export function ProductModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Product, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting Product, probable network issues or "+ err,
                     type: 'is-danger',
@@ -723,23 +531,13 @@ export function ProductModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
-       // console.log(data)
-      //  data.facility=Product.facility
-          //console.log(data);
           
         ProductServ.patch(Product._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Product successfully")
                  toast({
                     message: 'Product updated succesfully',
                     type: 'is-success',
@@ -751,8 +549,6 @@ export function ProductModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Product, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error updating Product, probable network issues or "+ err,
                     type: 'is-danger',
@@ -807,57 +603,6 @@ export function ProductModify(){
                 </p>
                 </label>
                 </div>
-             {/*<div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Product Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="ProductCategory" type="text" placeholder="Product Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
            
            
             </form>
@@ -873,11 +618,6 @@ export function ProductModify(){
                         Cancel
                     </button>
                 </p>
-               {/*  <p className="control">
-                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-                       Delete
-                    </button>
-                </p> */}
             </div>
         </div>
         </div>
@@ -890,64 +630,37 @@ export function ProductModify(){
 
 export  function InputSearch({getSearchfacility,clear}) {
     const ProductServ=client.service('products')
-   // const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='facilityName' //field variable
+        const field='facilityName' 
        
         if (val.length>=3){
-            ProductServ.find({query: {     //service
+            ProductServ.find({query: {     
                  [field]: {
                      $regex:val,
                      $options:'i'
