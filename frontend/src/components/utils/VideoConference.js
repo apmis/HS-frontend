@@ -2,7 +2,6 @@
 import React, {useState,useContext, useEffect,useRef} from 'react'
 import Draggable from 'react-draggable';
 import { Jutsu } from 'react-jutsu'
-//import { useJitsi } from 'react-jutsu' // Custom hook
 import {UserContext,ObjectContext} from '../../context'
  
 const VideoConference = () => {
@@ -10,8 +9,7 @@ const VideoConference = () => {
   const [name, setName] = useState('')
   const [call, setCall] = useState(false)
   const [password, setPassword] = useState('')
-  const {state}=useContext(ObjectContext) //,setState
-  // eslint-disable-next-line
+  const {state}=useContext(ObjectContext) 
   const [selectedClient,setSelectedClient]=useState() 
   const client =state.ClientModule.selectedClient
   const {user,setUser}=useContext(UserContext)
@@ -21,10 +19,8 @@ const VideoConference = () => {
     setRoom(client._id)
     setName(user.firstname)
     if (room && name) setCall(true)
-   // alert(`Kindly share link with client and other collaborators: https://meet.jit.si/${client._id}`)
   }
 
- //<Draggable> </Draggable> 
  
   return call ? (
     
@@ -45,9 +41,6 @@ const VideoConference = () => {
     
   ) : (
     <form>
-      {/* <input id='room' type='text' placeholder='Room' value={room} onChange={(e) => setRoom(e.target.value)} />
-      <input id='name' type='text' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} /> */}
-     {/*  <input id='password' type='text' placeholder='Password (optional)' value={password} onChange={(e) => setPassword(e.target.value)} /> */}
       <button className="button is-success is-small mt-1" onClick={(e)=>handleClick(e)} type='submit'>
         Start / Join Teleconsultation
       </button>

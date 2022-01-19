@@ -1,5 +1,4 @@
 /* eslint-disable */
-//import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Route,  Switch, Redirect} from 'react-router-dom'
 import Home from './components/Home'
@@ -128,7 +127,6 @@ function App() {
  
   return (
     <ObjectContext.Provider value={{state,setState}}>
-   {/*  <UserContext.Provider value={{user,setUser}}> */}
    <MyUserProvider>
     <Router>
       <div className="App has-background-info">
@@ -149,16 +147,13 @@ function App() {
       </div>
     </Router>
     </MyUserProvider>
-    {/* </UserContext.Provider> */}
     </ObjectContext.Provider>
   );
 }
 
 export default App;
 
-// eslint-disable-next-line 
 const ProtectedRoute =({children,...props})=>{
- // const history = useHistory()
   const {user,setUser} = useContext(UserContext)
 
  
@@ -167,45 +162,30 @@ const check=async ()=>{
   if (!user){
     (async () => {
       try {
-        // First try to log in with an existing JWT
         const resp= await client.reAuthenticate();
-           // console.log(resp)
-          // const user1=await resp.user 
               await setUser(resp.user)
-              //history.push('/app')
 
               return
         
       } catch (error) {
-        // If that errors, log in with email/password
-        // Here we would normally show a login page
-        // to get the login information
-        /* return await client.authenticate({
-          strategy: 'local',
-          email: 'hello@feathersjs.com',
-          password: 'supersecret'
-        }); */
         console.log(error)
       }
     })()
    }
 }
  check().then((resp)=>{
-  //console.log("testing")
  })
-// eslint-disable-next-line 
 }, [])
 
 
   return  (<Route {...props} render={({location}) => {
-    return  user/* fakeAuth.isAuthenticated === true */
+    return  user
       ? children
       : <Redirect to={{
         pathname: '/',
         state: { from: location }
       }} />
   }} />)
-  /* user? <Route {...props}>{children}</Route>:<Redirect to='/'></Redirect> */
 
 }
 
