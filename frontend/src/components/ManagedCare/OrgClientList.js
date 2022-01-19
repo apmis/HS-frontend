@@ -4,7 +4,7 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {toast} from 'bulma-toast'
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {FacilitySearch} from '../helpers/FacilitySearch'
 
@@ -12,21 +12,21 @@ import {FacilitySearch} from '../helpers/FacilitySearch'
 
 
 export function OrgList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const facilityServ=client.service('facility')
     const orgServ=client.service('organizationclient')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedFacility, setSelectedFacility]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedFacility, setSelectedFacility]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
     const {user} = useContext(UserContext)
 
@@ -38,14 +38,14 @@ export function OrgList(){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule}))
-       //console.log(state)
+       
         
 
     }
     const handleRow= async(facility)=>{
-        //console.log("b4",state)
+        
 
-        //console.log("handlerow",facility)
+        
 
         await setSelectedFacility(facility.organizationDetail)
 
@@ -54,7 +54,7 @@ export function OrgList(){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule}))
-       //console.log(state)
+       
 
     }
 
@@ -63,11 +63,6 @@ export function OrgList(){
        console.log(val)
        if (val.length >0){
        orgServ.find({query: {
-                /* [field]: {
-                    $regex:val,
-                    $options:'i'
-                   
-                }, */
                 $search:val,
                 $limit:10,
                 $sort: {
@@ -89,13 +84,6 @@ export function OrgList(){
         }
         }
 
-           /*  if (val.length>2){
-                console.log("in")
-               
-            }
-
-        }
-     */
         const getFacilities=()=>{
             orgServ.find({query: {
                 facility:user.currentEmployee.facilityDetail._id,
@@ -129,10 +117,9 @@ export function OrgList(){
         }
     },[])
 
-    //todo: pagination and vertical scroll bar
 
     return(
-            <>   {/* <OrganizationCreate /> */}
+            <>   
                 <div className="level">
                     <div className="level-left">
                         <div className="level-item">
@@ -151,11 +138,6 @@ export function OrgList(){
                         </div>
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Contracted Organizations </span></div>
-                   {/*  <div className="level-right">
-                        <div className="level-item"> 
-                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div>
-                    </div> */}
 
                 </div>
                {!!facilities[1] && <div className="table-container pullup ">
@@ -164,13 +146,8 @@ export function OrgList(){
                                         <tr>
                                         <th><abbr title="S/No">S/No</abbr></th>
                                         <th>Organization Name</th>
-                                       {/*  <th><abbr title="Address"> Address</abbr></th>
-                                        <th><abbr title="City">City</abbr></th>
-                                        <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th> */}
                                         <th><abbr title="Type">Type</abbr></th>
                                         <th><abbr title="Category">Category</abbr></th>
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -182,14 +159,9 @@ export function OrgList(){
                                             <tr key={facility.organizationDetail._id} onClick={()=>handleRow(facility)} className={facility.organizationDetail._id===(selectedFacility?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{facility.organizationDetail.facilityName}</th>
-                                           {/*  <td>{facility.organizationDetail.facilityAddress}</td>
-                                            <td>{facility.organizationDetail.facilityCity}</td>
-                                            <td>{facility.organizationDetail.facilityContactPhone}</td>
-                                            <td>{facility.organizationDetail.facilityEmail}</td>*/}
                                             <td>{facility.organizationDetail.facilityType}</td>
                                             <td>{facility.organizationDetail.facilityCategory}</td> 
                                            
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
