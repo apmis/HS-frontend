@@ -11,6 +11,7 @@ import EpidModule from './EpidemiologyModule'
 import Ward from './WardModule'
 import ManagedCareModule from './ManagedCareModule'
 import CommunicationModule from './CommunicationModule'
+import RadiologyModule from './RadiologyModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
@@ -60,6 +61,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/communication`} >
                     <CommunicationModule />
+                </Route>
+                <Route path={`${path}/radiology`} >
+                    <RadiologyModule />
                 </Route>
             </Switch>
         </div>
@@ -246,6 +250,9 @@ function NavBar({url}){
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/communication`}>Communication</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/radiology`}>Radiology</NavLink>
                                 </div>}
                                
                                
