@@ -67,6 +67,7 @@ export function LabOrdersCreate(){
     const [test,setTest] = useState()
     const [instruction,setInstruction] = useState()
     const [productItem,setProductItem] = useState([])
+    const [selectedTestGroup, setSelectedTestGroup]  = useState();
     const {state}=useContext(ObjectContext)
     const ClientServ=client.service('clinicaldocument')
     
@@ -79,6 +80,7 @@ export function LabOrdersCreate(){
         source,
 
     })
+
  
     const handlecloseModal =()=>{
         setDestinationModal(false)
@@ -270,11 +272,36 @@ export function LabOrdersCreate(){
             <div className="card-content ">
    
            {/*  <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit)  </form>  */}
-           
-               
-           
+
          {/* array of ProductEntry items */}
         
+         <div className="field">    
+                 <div className="control">
+                     <div className="select is-small ">
+                         <select name="testType"  onChange={(e)=>handleChangeTestType(e.target.value)}  className="selectadd" >
+                         <option value="">Choose Test Type </option>
+                           {testGroups.map((option,i)=>(
+                               <option key={i} value={option.name}> {option.name}</option>
+                           ))}
+                         </select>
+                     </div>
+                 </div>
+            </div>
+            <div className="field is-horizontal">
+                       
+              <div className="field ml-3 ">
+              {/* <label className= "mr-2 "> <b>Modules:</b></label> */}
+                  {
+                    selectedTestGroup && selectedTestGroup.tests.map((c) => 
+                        <div><label  className=" is-small" key={c.name}>
+                            <input type="checkbox" value={c.name} name="appointmentClass" />{c.name + " "}
+                        </label>
+                         <br/>hello
+                        </div>
+                    )
+                  }
+              </div>  
+           </div>
         <label className="label is-small">Add Test:</label>
          <div className="field is-horizontal">
             <div className="field-body">

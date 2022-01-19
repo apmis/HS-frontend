@@ -25,7 +25,134 @@ import {
 import 'react-accessible-accordion/dist/fancy-example.css';
 //import BillPrescriptionCreate from './BillPrescriptionCreate';
 
-
+const testGroups = [
+ {
+  name: 'Haematology',
+  tests: [
+   {
+     name: 'HB',
+     min:  '12',
+     max: '16',
+     unit: 'g/dl'
+   },
+   {
+    name: 'PCV',
+    min:  '36',
+    max: '48',
+    unit: '%'
+   },
+   {
+    name: 'WBC',
+    min:  '3000',
+    max: '11000',
+    unit: 'cmm'
+   },
+   {
+    name: 'ESR',
+    min:  '0',
+    max: '7',
+    unit: 'mm'
+   },
+   {
+    name: 'Platelets',
+    min:  '150000',
+    max: '400000',
+    unit: 'unit'
+   },
+   {
+    name: 'Retics',
+    min:  '0',
+    max: '3',
+    unit: '%'
+   },
+   {
+    name: 'RBC',
+    min:  '4',
+    max: '6',
+    unit: 'X 10~12'
+   },
+   {
+    name: 'MCHC',
+    min:  '31',
+    max: '32',
+    unit: 'pg'
+   },
+   {
+    name: 'Neutrophills',
+    min:  '40',
+    max: '70',
+    unit: '%'
+   },
+   {
+    name: 'Lymphocytes',
+    min:  '20',
+    max: '50',
+    unit: '%'
+   },
+   {
+    name: 'Monocytes',
+    min:  '2',
+    max: '10',
+    unit: '%'
+   },
+  ]
+ }
+  , {
+   name: 'Serology',
+   tests: [{
+    name: 'HIV/ANTIGEN'
+   }]
+  }
+   , {
+    name: 'Clinical Checmistry',
+    tests: [{
+     name: 'Blood Glucose Fasting'
+    }]
+   }
+   , {
+    name: 'Cytology/Histology',
+    tests: [{
+     name: 'Pap Smear'
+    }]
+   }
+    
+   , {
+    name: 'Hepatitis',
+    tests: [{
+     name: 'Hepatitis A'
+    }]
+   }
+   , {
+    name: 'Microbiology',
+    tests: [{
+     name: 'Urinalysis & MCS'
+    }]
+   }
+   , {
+    name: 'Tumor Markers',
+    tests: [{
+     name: 'PSA'
+    }]
+   }
+   , {
+    name: 'Cardiac Markers',
+    tests: [{
+     name: 'Myoglobin'
+    }]
+   }
+   , {
+    name: 'Special Test',
+    tests: [{
+     name: 'T3, T4, TSH'
+    }]
+   }
+   , {
+    name: 'Hormonal Assays',
+    tests: [{
+     name: 'FSH'
+    }]
+   }
+];
 
 export default function LabReport() {
     //const {state}=useContext(ObjectContext) //,setState
@@ -363,6 +490,9 @@ export function LabNoteCreate(){
     const [reportStatus,setReportStatus] = useState("Draft")
     const {state, setState}=useContext(ObjectContext)
 
+    const [selectedTestGroup, setSelectedTestGroup]  = useState();
+    const  [testValues,  setTestValues] = useState({});
+
     const order=state.financeModule.selectedFinance
     const bill_report_status=state.financeModule.report_status
 
@@ -394,6 +524,9 @@ export function LabNoteCreate(){
     })
 
     const onSubmit = async(data,e) =>{
+
+       console.log({data});
+       return;
         e.preventDefault();
         setMessage("")
         setError(false)
@@ -493,10 +626,25 @@ export function LabNoteCreate(){
 
     }
 
+    const getStatus = (value, test)  => {
+      if (+value >= +test.max) {
+        return 'HIGH';
+      } else if(+value <= +test.min)  {
+       return  'LOW';
+      } else if (+value > +test.min  && +value < +test.max) {
+       return 'NORMAL';
+      }else {
+       return  'UNKNOWN';
+      }
+    }
+    const handleChangeTestType = (testGroupName) => {
+      setSelectedTestGroup(testGroups.find((obj  =>  obj.name ===   testGroupName)));
+    }
+
     useEffect(() => {
-        if (typeof order.resultDetail.documentdetail ==="undefined"){
+        if (!order.resultDetail?.documentdetail){
             console.log(order)
-            alert("No Status")
+            //alert("No Status")
             return
 
         }
@@ -535,6 +683,53 @@ export function LabNoteCreate(){
                  Test:  {order.serviceInfo.name}
                 </label>
             <form onSubmit={handleSubmit(onSubmit)}>
+
+            <div className="field">    
+                 <div className="control">
+                     <div className="select is-small ">
+                         <select name="testType"  onChange={(e)=>handleChangeTestType(e.target.value)}  className="selectadd" >
+                         <option value="">Choose Test Type </option>
+                           {testGroups.map((option,i)=>(
+                               <option key={i} value={option.name}> {option.name}</option>
+                           ))}
+                         </select>
+                     </div>
+                 </div>
+            </div>
+            
+                {
+                    selectedTestGroup && selectedTestGroup.tests.map((test,  j) => 
+                      <div key={j} className="field is-horizontal">
+                       <div className="field-body">
+                       <p className="control">
+                            <input ref={register()} name="testName" type="checkbox" value={test.value} />{test.name + " "}                   
+                        </p>
+                        <p className="control has-icons-left has-icons-right">
+                            <input ref={register()} name={`${test.name}`} type="text" placeholder={`Enter Result Value - ${test.unit}`} onChange={(e) => {setTestValues({...testValues, [test.name]: e.target.value})}} className="input is-small is-danger"/>
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-hospital"></i>
+                            </span>                    
+                        </p>
+                        {test.min && <p className="control has-icons-left has-icons-right">
+                            <input name={`min-${test.name}`} readOnly type="text" placeholder="Min Value" value={`Min(${test.min}${test.unit})`} className="input is-small is-danger" />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-hospital"></i>
+                            </span>                    
+                        </p>}
+                        {test.max && <p className="control has-icons-left has-icons-right">
+                            <input  name={`max-${test.name}`} readOnly type="text" placeholder="Max Value" value={`Max(${test.max}${test.unit})`} className="input is-small is-danger" />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-hospital"></i>
+                            </span>                    
+                        </p>}
+                        <p className="control has-icons-left has-icons-right">
+                          { getStatus(testValues[test.name], test)  }                 
+                        </p>
+                        <br/>
+                        </div>
+                        </div>
+                    )
+                }
             <div className="field is-horizontal">
                 <div className="field-body">
                     <div className="field">
