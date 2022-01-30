@@ -73,6 +73,19 @@ function App() {
       show:'create',
       selectedDocumentClass:{}
     },
+    WardModule:{
+      show:'create',
+      selectedWard:{}
+    },
+    AdmissionModule:{
+      show:'create',
+      selectedAdmission:{}
+    },
+
+    EndEncounterModule:{
+      show:'',
+      selectedEndEncounter:{}
+    },
     AppointmentModule:{
       show:'create',
       selectedAppointment:{}

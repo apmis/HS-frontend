@@ -6,29 +6,31 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
+import InfiniteScroll from "react-infinite-scroll-component";
+
 // eslint-disable-next-line
 const searchfacility={};
 
 
-export default function Location() {
+export default function Product() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedLocation,setSelectedLocation]=useState()
+    const [selectedProduct,setSelectedProduct]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Location  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Product  Module</span></div>
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-                <LocationList />
+                <ProductList />
                 </div>
             <div className="column is-4 ">
-                {(state.LocationModule.show ==='create')&&<LocationCreate />}
-                {(state.LocationModule.show ==='detail')&&<LocationDetail  />}
-                {(state.LocationModule.show ==='modify')&&<LocationModify Location={selectedLocation} />}
+                {(state.ProductModule.show ==='create')&&<ProductCreate />}
+                {(state.ProductModule.show ==='detail')&&<ProductDetail  />}
+                {(state.ProductModule.show ==='modify')&&<ProductModify Product={selectedProduct} />}
                
             </div>
 
@@ -39,19 +41,19 @@ export default function Location() {
     
 }
 
-export function LocationCreate(){
+export function ProductCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const LocationServ=client.service('location')
+    const ProductServ=client.service('products')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const locationTypeOptions =["Front Desk","Clinic","Ward", "Store", "Laboratory", "Finance","Theatre","Pharmacy", "Radiology" ]
+
 
 
     const getSearchfacility=(obj)=>{
@@ -72,38 +74,29 @@ export function LocationCreate(){
 
   //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeLocation.FacilityId)//
+        //setFacility(user.activeProduct.FacilityId)//
       if (!user.stacker){
-          console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        }) 
       }
     })
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
-        if (data.locationType===""){
-            alert("Kindly choose location type")
-            return
-        }
         setMessage("")
         setError(false)
         setSuccess(false)
          // data.createdby=user._id
-          console.log(data);
+         // console.log(data);
           if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+        // data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        LocationServ.create(data)
+        ProductServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Location successfully") */
+               /*  setMessage("Created Product successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Location created succesfully',
+                    message: 'Product created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -112,7 +105,7 @@ export function LocationCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Location ' + err,
+                    message: 'Error creating Product ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -126,121 +119,42 @@ export function LocationCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Location
+                    Create Product
                 </p>
             </div>
             <div className="card-content vscrollable">
-   
+            {/* <p className=" is-small">
+                    Kindly search product list before creating new products!
+                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
-               {/*  <div className="field">
+
+                <div className="field mb-2">
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small"  ref={register({ required: true })}  name="locationType" type="text" placeholder="Type of Location" />
+                        <input className="input is-small" ref={register({ required: true })}  name="category" type="text" placeholder="Category of Product" />
                         <span className="icon is-small is-left">
                             <i className="fas fa-hospital"></i>
                         </span>                    
                     </p>
-                </div> */}
-                <div className="field">    
-                 <div className="control">
-                     <div className="select is-small ">
-                         <select name="locationType"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                         <option value="">Choose Location Type </option>
-                           {locationTypeOptions.map((option,i)=>(
-                               <option key={i} value={option}> {option}</option>
-                           ))}
-                         </select>
-                     </div>
-                 </div>
                 </div>
-                <div className="field">
+                <div className="field mb-2">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Location" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Product" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
                     
                 </p>
             </div>
-           {/*  <div className="field">
+            <div className="field mb-2">
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
+                    <input className="input is-small" ref={register({ required: true })} name="baseunit" type="text" placeholder="Base unit of product"/>
                     <span className="icon is-small is-left">
                     <i className=" fas fa-user-md "></i>
                     </span>
                 </p>
             </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
            
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> */}
-           <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
-                <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
-                <p className="control has-icons-left " style={{display:"none"}}>
-                    <input className="input is-small" ref={register ({ required: true }) } name="facility" type="text" placeholder="Facility" />
-                    <span className="icon is-small is-left">
-                    <i className="fas  fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div>
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
-            <div className="field">
+            <div className="field ">
                 <p className="control">
                     <button className="button is-success is-small">
                         Create
@@ -256,7 +170,7 @@ export function LocationCreate(){
    
 }
 
-export function LocationList(){
+export function ProductList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -264,41 +178,45 @@ export function LocationList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const LocationServ=client.service('location')
+    const ProductServ=client.service('products')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedLocation, setSelectedLocation]=useState() //
+   const [selectedProduct, setSelectedProduct]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
+    const [page, setPage] = useState(0) 
+    const [limit, setLimit] = useState(20) 
+    const [total, setTotal] = useState(0) 
+    const [restful, setRestful] = useState(true) 
 
 
 
     const handleCreateNew = async()=>{
-        const    newLocationModule={
-            selectedLocation:{},
+        const    newProductModule={
+            selectedProduct:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
        //console.log(state)
         
 
     }
-    const handleRow= async(Location)=>{
+    const handleRow= async(Product)=>{
         //console.log("b4",state)
 
-        //console.log("handlerow",Location)
+        //console.log("handlerow",Product)
 
-        await setSelectedLocation(Location)
+        await setSelectedProduct(Product)
 
-        const    newLocationModule={
-            selectedLocation:Location,
+        const    newProductModule={
+            selectedProduct:Product,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
        //console.log(state)
 
     }
@@ -306,79 +224,80 @@ export function LocationList(){
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       LocationServ.find({query: {
+       ProductServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
-               facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:100,
+              // facility:user.currentEmployee.facilityDetail._id || "",
+                $limit:20,
                 $sort: {
-                    createdAt: -1
+                    name: 1
                   }
                     }}).then((res)=>{
-                console.log(res)
+               // console.log(res)
+
                setFacilities(res.data)
-                setMessage(" Location  fetched successfully")
+               setTotal(res.total)
+
+                setMessage(" Product  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Location, probable network issues "+ err )
+                setMessage("Error fetching Product, probable network issues "+ err )
                 setError(true)
             })
         }
    
-        const getFacilities= async()=>{
+const getFacilities= async()=>{
             if (user.currentEmployee){
+            //    console.log(page,limit)
             
-        const findLocation= await LocationServ.find(
+        const findProduct= await ProductServ.find(
                 {query: {
-                    facility:user.currentEmployee.facilityDetail._id,
-                    $limit:200,
+                   // facility:user.currentEmployee.facilityDetail._id,
+                    $limit:limit,
+                    $skip:page * limit,
                     $sort: {
                         createdAt: -1
                     }
                     }})
-
-         await setFacilities(findLocation.data)
+        await setFacilities(prevstate=>prevstate.concat(findProduct.data))
+        await setTotal(findProduct.total)
+       // console.log(findProduct)
+        setPage(page=>page+1)
+        // await setFacilities(findProduct.data) original
                 }
                 else {
                     if (user.stacker){
-                        const findLocation= await LocationServ.find(
+                        const findProduct= await ProductServ.find(
                             {query: {
                                 
                                 $limit:200,
                                 $sort: {
-                                    facility: -1
+                                    createdAt: -1
                                 }
                                 }})
             
-                    await setFacilities(findLocation.data)
+                    await setFacilities(findProduct.data)
 
                     }
                 }
           /*   .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
-                    setMessage(" Location  fetched successfully")
+                    setMessage(" Product  fetched successfully")
                     setSuccess(true)
                 })
                 .catch((err)=>{
-                    setMessage("Error creating Location, probable network issues "+ err )
+                    setMessage("Error creating Product, probable network issues "+ err )
                     setError(true)
                 }) */
             }
             
-            useEffect(() => {
-             
-
-                return () => {
-                    
-
-                }
-            },[])
+           
 
             useEffect(() => {
                
@@ -392,17 +311,30 @@ export function LocationList(){
                     fetchUser(user1)
                     console.log(user)
                     getFacilities(user) */
+                   // setFacilities(prevstate=>prevstate.concat(findProduct.data)
                 }
-                LocationServ.on('created', (obj)=>getFacilities())
-                LocationServ.on('updated', (obj)=>getFacilities())
-                LocationServ.on('patched', (obj)=>getFacilities())
-                LocationServ.on('removed', (obj)=>getFacilities())
+                
+               ProductServ.on('created', (obj)=>rest())
+                ProductServ.on('updated', (obj)=>rest())
+                ProductServ.on('patched', (obj)=>rest())
+                ProductServ.on('removed', (obj)=>rest())
                 return () => {
                 
                 }
             },[])
 
-
+            const rest = async ()=>{
+               // console.log("starting rest")
+               await setRestful(true)
+                  await  setPage(0) 
+                  //await  setLimit(2) 
+                  await    setTotal(0) 
+                  await  setFacilities([])
+                 await getFacilities()
+                 //await  setPage(0) 
+                 await setRestful(false)
+        
+            }
     //todo: pagination and vertical scroll bar
 
     return(
@@ -414,7 +346,7 @@ export function LocationList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Locations"
+                                        type="text" placeholder="Search Products"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -425,7 +357,7 @@ export function LocationList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Locations </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Products </span></div>
                     <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -433,46 +365,45 @@ export function LocationList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                <div className="table-container pullup vscrola" id="scrollableDiv">
+                <InfiniteScroll
+            dataLength={facilities.length}
+            next={getFacilities}
+            hasMore={total>facilities.length}
+            loader={<h4>Loading...</h4>}
+            scrollableTarget="scrollableDiv"
+          >
+                                <table className="table is-striped is-narrow is-hoverable is-fullwidth  ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
-                                        <th><abbr title="Last Name">Location Type</abbr></th>
-                                        {/*<th><abbr title="Profession">Profession</abbr></th>
-                                         <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
-                                       {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                                        
+                                       <th><abbr title="Base Unit">Base Unit</abbr></th>
+                                        <th><abbr title="Last Name">Product Category</abbr></th>
+                                        <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         
                                     </tfoot>
-                                    <tbody>
-                                        {facilities.map((Location, i)=>(
+                                    <tbody > 
+                                        {facilities.map((Product, i)=>(
 
-                                            <tr key={Location._id} onClick={()=>handleRow(Location)} className={Location._id===(selectedLocation?._id||null)?"is-selected":""}>
+                                            <tr key={Product._id} onClick={()=>handleRow(Product)}>
                                             <th>{i+1}</th>
-                                            <th>{Location.name}</th>
-                                            <td>{Location.locationType}</td>
-                                            {/*< td>{Location.profession}</td>
-                                            <td>{Location.phone}</td>
-                                            <td>{Location.email}</td>
-                                            <td>{Location.department}</td>
-                                            <td>{Location.deptunit}</td> */}
-                                           {user.stacker &&  <td>{Location.facility}</td>}
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
+                                            <th>{Product.name}</th>
+                                            <td>{Product.baseunit}</td>
+                                            <td>{Product.category}</td>
+                                             
+                                            <td><span   className="showAction"  >...</span></td>
                                            
                                             </tr>
 
                                         ))}
                                     </tbody>
                                     </table>
-                                    
+                  </InfiniteScroll>                  
                 </div>              
             </>):<div>loading</div>}
             </>
@@ -481,97 +412,38 @@ export function LocationList(){
     }
 
 
-export function LocationDetail(){
-    const { register, handleSubmit, watch, setValue,reset } = useForm(); //errors,
+export function ProductDetail(){
+    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const LocationServ=client.service('/Location')
+    //const ProductServ=client.service('/Product')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
-    const [showSub, setShowSub] = useState(false) 
-    const [showUpdate, setShowUpdate] = useState(false) 
     const {state,setState} = useContext(ObjectContext)
-    
-    const LocationServ=client.service('location')
 
-    const sublocationTypeOptions =["Bed","Unit", ]
+   
 
-   const Location =state.LocationModule.selectedLocation 
+   const Product =state.ProductModule.selectedProduct 
 
     const handleEdit= async()=>{
-        const    newLocationModule={
-            selectedLocation:Location,
+        const    newProductModule={
+            selectedProduct:Product,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
        //console.log(state)
        
     }
-    const handleSublocation= ()=>{
-        setShowSub(true)
-        // show popup to create new sublocation.
-    }
  
-    const onSubmit = (data,e) =>{
-        e.preventDefault();
-        if (data.type===""|| data.typeName===""){
-            alert("Kindly enter missing data ")
-            return
-        }
-       
-          console.log(data);
-        /*   if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
-          } */
-          if (!Location.sublocations){
-              Location.sublocations=[]
-          }
-
-          Location.sublocations.push(data)
-          reset()
-          setShowUpdate(true)
-       
-        }
-    
-    const handleUpdate = ()=>{
-
-        LocationServ.patch(Location._id,Location)
-        .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Location successfully")
-                 toast({
-                    message: 'Location updated succesfully',
-                    type: 'is-success',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-                  
-               setShowUpdate(false)
-
-            })
-            .catch((err)=>{
-                //setMessage("Error creating Location, probable network issues "+ err )
-               // setError(true)
-                toast({
-                    message: "Error updating Location, probable network issues or "+ err,
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-            })
-        
-    }
-
     return (
         <>
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Location Details
+                    Product Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -588,112 +460,99 @@ export function LocationDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"> {Location.name} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Product.name} </span>
                         </td>
                     </tr>
                     <tr>
                     <td>
                 <label className="label is-small"><span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
-                    </span>Location Type:
+                    </span>Base Unit:
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft"   name="LocationType">{Location.locationType} </span> 
+                    <span className="is-size-7 padleft"   name="ProductType">{Product.baseunit} </span> 
                     </td>
-                </tr>         
+                </tr>
+                   <tr>
+                    <td>
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-map-marker-alt"></i>
+                    </span>Product Category: 
+                
+                    
+                    </label>
+                    </td>
+                <td>
+                <span className="is-size-7 padleft "  name="ProductCity">{Product.category}</span> 
+                </td>
+                </tr>
+             {/*         <tr>
+            <td>
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-phone-alt"></i>
+                    </span>Phone:           
+                    
+                        </label>
+                        </td>
+                        <td>
+                        <span className="is-size-7 padleft "  name="ProductContactPhone" >{Product.phone}</span>
+                        </td>
+                  </tr>
+                    <tr><td>
+            
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>Email:                     
+                    
+                         </label></td><td>
+                         <span className="is-size-7 padleft "  name="ProductEmail" >{Product.email}</span>
+                         </td>
+             
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"> <span className="icon is-small is-left">
+                    <i className="fas fa-user-md"></i></span>Department:
+                    
+                    </label></td>
+                    <td>
+                    <span className="is-size-7 padleft "  name="ProductOwner">{Product.department}</span>
+                    </td>
+               
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"> <span className="icon is-small is-left">
+                    <i className="fas fa-hospital-symbol"></i>
+                    </span>Departmental Unit:              
+                    
+                </label></td>
+                <td>
+                <span className="is-size-7 padleft "  name="ProductType">{Product.deptunit}</span>
+                </td>
+              
+                </tr> */}
+                    
+          {/*   <div className="field">
+             <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-clinic-medical"></i>
+                    </span>Category:              
+                    <span className="is-size-7 padleft "  name= "ProductCategory">{Product.ProductCategory}</span>
+                </label>
+                 </div> */}
 
             </tbody> 
             </table> 
-            {  (Location.sublocations?.length>0 ||showSub) &&
-            <>
-                <label className="label is-size-7 mt-2">Sublocations:</label>
-                <div>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                    <div class="field is-horizontal">
-                    <div class="field-body">
-                <div className="field">    
-                    <div className="control">
-                        <div className="select is-small ">
-                            <select name="type"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                            <option value="">Choose Sub-location Type </option>
-                            {sublocationTypeOptions.map((option,i)=>(
-                                <option key={i} value={option}> {option}</option>
-                            ))}
-                            </select>
-                        </div>
-                    </div>
-                    </div>
-                    <div className="field">
-                        <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="typeName" type="text" placeholder="Name of Sub-location" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-map-signs"></i>
-                        </span>
-                        
-                    </p>
-                </div>
-                <div className="field">
-                    <p className="control">
-                        <button className="button is-success is-small selectadd">
-                            Add
-                        </button>
-                    </p>
-                    </div>
-                </div>
-                </div>
-                    </form>
-                </div>
-           {      (Location.sublocations?.length>0 ) &&
-                <div>
-                    
-                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
-                    <thead>
-                        <tr>
-                        <th><abbr title="Serial No">S/No</abbr></th>
-                        <th><abbr title="Type">Type</abbr></th>
-                        <th><abbr title="Name">Name</abbr></th>
-                    
-                    
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        
-                    </tfoot>
-                    <tbody>
-                    { Location.sublocations?.map((ProductEntry, i)=>(  
-
-                            <tr key={i}>
-                            <th>{i+1}</th>
-                            <td>{ProductEntry.type}</td>
-                            <td>{ProductEntry.typeName}</td>                        
-                            </tr>
-
-                        ))}
-                    </tbody>
-                    </table>
-                </div> }       
-              
-           </>
-           }
-            <div className="field mt-2  is-grouped">
+           
+            <div className="field mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
-             {!showSub &&   <p className={Location.sublocations?.length>0?"is-hidden control":" control"}>
-                    <button className="button is-info is-small" onClick={handleSublocation}>
-                        Create Sublocation
-                    </button>
-                </p>}
-               {showUpdate &&  <p className= "control" >
-                    <button className="button is-info is-small" onClick={handleUpdate}>
-                        Update
-                    </button>
-                </p>}
-                
             </div>
-               
+            { error && <div className="message"> {message}</div>}
+           
         </div>
         </div>
         </>
@@ -702,7 +561,7 @@ export function LocationDetail(){
    
 }
 
-export function LocationModify(){
+export function ProductModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -711,44 +570,44 @@ export function LocationModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const LocationServ=client.service('location')
+    const ProductServ=client.service('products')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const Location =state.LocationModule.selectedLocation 
+    const Product =state.ProductModule.selectedProduct 
 
         useEffect(() => {
-            setValue("name", Location.name,  {
+            setValue("name", Product.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("locationType", Location.locationType,  {
+            setValue("baseunit", Product.baseunit,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Location.profession,  {
+             setValue("category", Product.category,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("phone", Location.phone,  {
+           /* setValue("phone", Product.phone,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("email", Location.email,  {
+            setValue("email", Product.email,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("department", Location.department,  {
+            setValue("department", Product.department,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("deptunit", Location.deptunit,  {
+            setValue("deptunit", Product.deptunit,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
-          /*   setValue("LocationCategory", Location.LocationCategory,  {
+          /*   setValue("ProductCategory", Product.ProductCategory,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
@@ -759,41 +618,41 @@ export function LocationModify(){
         })
 
    const handleCancel=async()=>{
-    const    newLocationModule={
-        selectedLocation:{},
+    const    newProductModule={
+        selectedProduct:{},
         show :'create'
       }
-   await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+   await setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newLocationModule={
-            selectedLocation:{},
+        const    newProductModule={
+            selectedProduct:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+        setState((prevstate)=>({...prevstate, ProductModule:newProductModule}))
 
         }
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=Location._id
+        const dleteId=Product._id
         if (conf){
              
-        LocationServ.remove(dleteId)
+        ProductServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Location successfully")
+               /*  setMessage("Deleted Product successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'Location deleted succesfully',
+                    message: 'Product deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -801,10 +660,10 @@ export function LocationModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Location, probable network issues "+ err )
+               // setMessage("Error deleting Product, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting Location, probable network issues or "+ err,
+                    message: "Error deleting Product, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -822,17 +681,17 @@ export function LocationModify(){
         e.preventDefault();
         
         setSuccess(false)
-        console.log(data)
-        data.facility=Location.facility
+       // console.log(data)
+      //  data.facility=Product.facility
           //console.log(data);
           
-        LocationServ.patch(Location._id,data)
+        ProductServ.patch(Product._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated Location successfully")
+               // setMessage("updated Product successfully")
                  toast({
-                    message: 'Location updated succesfully',
+                    message: 'Product updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -842,10 +701,10 @@ export function LocationModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Location, probable network issues "+ err )
+                //setMessage("Error creating Product, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Location, probable network issues or "+ err,
+                    message: "Error updating Product, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -861,7 +720,7 @@ export function LocationModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Location Details-Modify
+                    Product Details-Modify
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -878,9 +737,9 @@ export function LocationModify(){
                     </label>
                     </div>
                 <div className="field">
-                <label className="label is-small">Location Type
+                <label className="label is-small">Base Unit
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="locationType" type="text" placeholder="Location Type" />
+                    <input className="input is-small " ref={register({ required: true })}  name="baseunit" type="text" placeholder="Base Unit" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -888,17 +747,17 @@ export function LocationModify(){
                 </p>
                 </label>
                 </div>
-            {/* <div className="field">
-            <label className="label is-small">Profession
+            <div className="field">
+            <label className="label is-small">Product Category
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
+                    <input className="input is-small" ref={register({ required: true })}  disabled name="category" type="text" placeholder="Product Category"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-map-marker-alt"></i>
                     </span>
                 </p>
                 </label>
                 </div>
-            <div className="field">
+             {/*<div className="field">
             <label className="label is-small">Phone
                 <p className="control has-icons-left">
                     <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
@@ -911,7 +770,7 @@ export function LocationModify(){
             <div className="field">
             <label className="label is-small">Email
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Location Email"/>
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Product Email"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
@@ -942,7 +801,7 @@ export function LocationModify(){
            {/*  <div className="field">
             <label className="label is-small">Category
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="LocationCategory" type="text" placeholder="Location Category"/>
+                    <input className="input is-small" ref={register({ required: true })} name="ProductCategory" type="text" placeholder="Product Category"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>
@@ -964,11 +823,11 @@ export function LocationModify(){
                         Cancel
                     </button>
                 </p>
-                <p className="control">
+               {/*  <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p>
+                </p> */}
             </div>
         </div>
         </div>
@@ -980,8 +839,8 @@ export function LocationModify(){
 }   
 
 export  function InputSearch({getSearchfacility,clear}) {
-    
-    const facilityServ=client.service('facility')
+    const ProductServ=client.service('products')
+   // const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
@@ -1038,7 +897,7 @@ export  function InputSearch({getSearchfacility,clear}) {
         const field='facilityName' //field variable
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            ProductServ.find({query: {     //service
                  [field]: {
                      $regex:val,
                      $options:'i'

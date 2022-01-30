@@ -10,27 +10,27 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Location() {
+export default function EndEncounter() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedLocation,setSelectedLocation]=useState()
+    const [selectedDocumentClass,setSelectedDocumentClass]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Location  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">DocumentClass  Module</span></div>
             </div> */}
-            <div className="columns ">
-            <div className="column is-8 ">
-                <LocationList />
-                </div>
-            <div className="column is-4 ">
-                {(state.LocationModule.show ==='create')&&<LocationCreate />}
-                {(state.LocationModule.show ==='detail')&&<LocationDetail  />}
-                {(state.LocationModule.show ==='modify')&&<LocationModify Location={selectedLocation} />}
+            <div >
+           {/*  <div className="column is-8 "> */}
+                <EndEncounterList />
+                {/* </div> */}
+           {/*  <div className="column is-4 ">
+                {(state.DocumentClassModule.show ==='create')&&<EndEncounterCreate />}
+                {(state.DocumentClassModule.show ==='detail')&&<EndEncounterDetail  />}
+                {(state.DocumentClassModule.show ==='modify')&&<EndEncounterModify DocumentClass={selectedDocumentClass} />}
                
-            </div>
+            </div> */}
 
             </div>                            
             </section>
@@ -39,22 +39,22 @@ export default function Location() {
     
 }
 
-export function LocationCreate(){
+export function EndEncounterCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const LocationServ=client.service('location')
+    const DocumentClassServ=client.service('documentclass')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const locationTypeOptions =["Front Desk","Clinic","Ward", "Store", "Laboratory", "Finance","Theatre","Pharmacy", "Radiology" ]
 
 
-    const getSearchfacility=(obj)=>{
+
+    const getSearchfacility=(obj)=>{ // buble-up from inputsearch for creating resource
         
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -72,9 +72,9 @@ export function LocationCreate(){
 
   //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeLocation.FacilityId)//
+        //setFacility(user.activeDocumentClass.FacilityId)//
       if (!user.stacker){
-          console.log(currentUser)
+         // console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
             shouldValidate: true,
             shouldDirty: true
@@ -84,10 +84,6 @@ export function LocationCreate(){
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
-        if (data.locationType===""){
-            alert("Kindly choose location type")
-            return
-        }
         setMessage("")
         setError(false)
         setSuccess(false)
@@ -96,14 +92,15 @@ export function LocationCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        LocationServ.create(data)
+          data.locationType="DocumentClass"
+        DocumentClassServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Location successfully") */
+               /*  setMessage("Created DocumentClass successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Location created succesfully',
+                    message: 'DocumentClass created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -112,7 +109,7 @@ export function LocationCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Location ' + err,
+                    message: 'Error creating DocumentClass ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -126,67 +123,23 @@ export function LocationCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Location
+                    Create DocumentClass
                 </p>
             </div>
             <div className="card-content vscrollable">
    
             <form onSubmit={handleSubmit(onSubmit)}>
-               {/*  <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small"  ref={register({ required: true })}  name="locationType" type="text" placeholder="Type of Location" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div> */}
-                <div className="field">    
-                 <div className="control">
-                     <div className="select is-small ">
-                         <select name="locationType"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                         <option value="">Choose Location Type </option>
-                           {locationTypeOptions.map((option,i)=>(
-                               <option key={i} value={option}> {option}</option>
-                           ))}
-                         </select>
-                     </div>
-                 </div>
-                </div>
+
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Location" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of DocumentClass" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
                     
                 </p>
             </div>
-           {/*  <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-           
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> */}
+         
            <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
                 <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                 <p className="control has-icons-left " style={{display:"none"}}>
@@ -196,50 +149,7 @@ export function LocationCreate(){
                     </span>
                 </p>
             </div>
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
+          
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
@@ -256,7 +166,7 @@ export function LocationCreate(){
    
 }
 
-export function LocationList(){
+export function EndEncounterList({standalone,closeModal}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -264,143 +174,165 @@ export function LocationList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const LocationServ=client.service('location')
+   // const DocumentClassServ=client.service('documentclass')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedLocation, setSelectedLocation]=useState() //
+   const [selectedEndEncounter, setSelectedEndEncounter]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
+    const endEncounterOptions=["Continue Management", "Set Next Appointment", "Discharge", "Admit to Ward","Refer","Dead" ]
 
-
+   
 
     const handleCreateNew = async()=>{
-        const    newLocationModule={
-            selectedLocation:{},
+        const    newDocumentClassModule={
+            selectedDocumentClass:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
        //console.log(state)
         
 
     }
-    const handleRow= async(Location)=>{
+    const handleRow= async(DocumentClass)=>{
         //console.log("b4",state)
 
-        //console.log("handlerow",Location)
+        //console.log("handlerow",DocumentClass)
 
-        await setSelectedLocation(Location)
+        await setSelectedEndEncounter(DocumentClass)
 
-        const    newLocationModule={
-            selectedLocation:Location,
+        const    newDocumentClassModule={
+            selectedEndEncounter:DocumentClass,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, EndEncounterModule:newDocumentClassModule}))
        //console.log(state)
+
+      // const expr = 'Papayas';
+       
+       
+          closeModal()
+       
 
     }
 
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       LocationServ.find({query: {
+       DocumentClassServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
-               facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:100,
+               facility:user.currentEmployee.facilityDetail._id,
+                /* locationType:"DocumentClass", */
+               $limit:10,
                 $sort: {
-                    createdAt: -1
+                    name: 1
                   }
                     }}).then((res)=>{
                 console.log(res)
                setFacilities(res.data)
-                setMessage(" Location  fetched successfully")
+                setMessage(" DocumentClass  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Location, probable network issues "+ err )
+                setMessage("Error fetching DocumentClass, probable network issues "+ err )
                 setError(true)
             })
         }
    
-        const getFacilities= async()=>{
+    const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findLocation= await LocationServ.find(
+        const findDocumentClass= await DocumentClassServ.find(
                 {query: {
-                    facility:user.currentEmployee.facilityDetail._id,
-                    $limit:200,
+                    /* locationType:"DocumentClass",*/
+                    facility:user.currentEmployee.facilityDetail._id, 
+                    $limit:20,
                     $sort: {
-                        createdAt: -1
+                        name: 1
                     }
                     }})
 
-         await setFacilities(findLocation.data)
+         await setFacilities(findDocumentClass.data)
                 }
                 else {
                     if (user.stacker){
-                        const findLocation= await LocationServ.find(
+                        const findDocumentClass= await DocumentClassServ.find(
                             {query: {
-                                
-                                $limit:200,
+                               /*  locationType:"DocumentClass", */
+                                $limit:20,
                                 $sort: {
-                                    facility: -1
+                                    name: 1
                                 }
                                 }})
             
-                    await setFacilities(findLocation.data)
+                    await setFacilities(findDocumentClass.data)
 
                     }
                 }
           /*   .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
-                    setMessage(" Location  fetched successfully")
+                    setMessage(" DocumentClass  fetched successfully")
                     setSuccess(true)
                 })
                 .catch((err)=>{
-                    setMessage("Error creating Location, probable network issues "+ err )
+                    setMessage("Error creating DocumentClass, probable network issues "+ err )
                     setError(true)
                 }) */
             }
+     
+
+    useEffect(() => {
+        switch (selectedEndEncounter) {
+            case 'Continue Present Management':
+                console.log('Oranges are $0.59 a pound.');
+                break;
+            case 'Set Next Appointment':
+                break;
+            case 'Discharge':
+                console.log('Mangoes and papayas are $2.79 a pound.');
+                // expected output: "Mangoes and papayas are $2.79 a pound."
+                break;
+            case 'Admit to Ward':
+                //alert("Admit now!")
+               /*  await setSelectedEndEncounter(DocumentClass)
+
+                const    newDocumentClassModule={
+                    selectedEndEncounter:DocumentClass,
+                    show :'detail'
+                }
+               await setState((prevstate)=>({...prevstate, EndEncounterModule:newDocumentClassModule}))
+               //console.log(state) */
+
+                break;
+            case 'Refer':
+                break;
+            case 'Patient Died':
+                console.log('Mangoes and papayas are $2.79 a pound.');
+                // expected output: "Mangoes and papayas are $2.79 a pound."
+                break;    
+            default:
+                console.log(`Sorry, we are out of `);
+            }
+       /*  getFacilities()
             
-            useEffect(() => {
-             
-
-                return () => {
-                    
-
-                }
-            },[])
-
-            useEffect(() => {
-               
-                if (user){
-                    getFacilities()
-                }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
-                }
-                LocationServ.on('created', (obj)=>getFacilities())
-                LocationServ.on('updated', (obj)=>getFacilities())
-                LocationServ.on('patched', (obj)=>getFacilities())
-                LocationServ.on('removed', (obj)=>getFacilities())
-                return () => {
-                
-                }
-            },[])
+            DocumentClassServ.on('created', (obj)=>getFacilities())
+            DocumentClassServ.on('updated', (obj)=>getFacilities())
+            DocumentClassServ.on('patched', (obj)=>getFacilities())
+            DocumentClassServ.on('removed', (obj)=>getFacilities()) */
+            return () => {
+            
+            }
+        },[selectedEndEncounter])
 
 
     //todo: pagination and vertical scroll bar
@@ -409,12 +341,12 @@ export function LocationList(){
         <>
            {user?( <>  
                 <div className="level">
-                    <div className="level-left">
+                    {/* <div className="level-left">
                         <div className="level-item">
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Locations"
+                                        type="text" placeholder="Search DocumentClass"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -424,48 +356,48 @@ export function LocationList(){
                                 </p>
                             </div>
                         </div>
-                    </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Locations </span></div>
-                    <div className="level-right">
-                        <div className="level-item"> 
+                    </div> */}
+                   {/*  <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Document Class</span></div> */}
+                  {/*   <div className="level-right">
+                { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div>
-                    </div>
+                        </div>}
+                    </div> */}
 
                 </div>
                 <div className="table-container pullup ">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th>Name</th>
-                                        <th><abbr title="Last Name">Location Type</abbr></th>
-                                        {/*<th><abbr title="Profession">Profession</abbr></th>
+                                        <th>Options</th>
+                                        {/* <th><abbr title="Last Name">DocumentClass Type</abbr></th>
+                                       <th><abbr title="Profession">Profession</abbr></th>
                                          <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
                                         <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
-                                       {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                                       {/* {user.stacker &&  <th><abbr title="Facility">Facility</abbr></th>}
+                                       { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>} */}
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((Location, i)=>(
+                                        {endEncounterOptions.map((DocumentClass, i)=>(
 
-                                            <tr key={Location._id} onClick={()=>handleRow(Location)} className={Location._id===(selectedLocation?._id||null)?"is-selected":""}>
+                                            <tr key={i} onClick={()=>handleRow(DocumentClass)}  className={DocumentClass===selectedEndEncounter?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Location.name}</th>
-                                            <td>{Location.locationType}</td>
-                                            {/*< td>{Location.profession}</td>
-                                            <td>{Location.phone}</td>
-                                            <td>{Location.email}</td>
-                                            <td>{Location.department}</td>
-                                            <td>{Location.deptunit}</td> */}
-                                           {user.stacker &&  <td>{Location.facility}</td>}
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
+                                            <th>{DocumentClass}</th>
+                                            {/*<td>{DocumentClass.DocumentClassType}</td>
+                                            < td>{DocumentClass.profession}</td>
+                                            <td>{DocumentClass.phone}</td>
+                                            <td>{DocumentClass.email}</td>
+                                            <td>{DocumentClass.department}</td>
+                                            <td>{DocumentClass.deptunit}</td>*/}
+                                          {/*  {user.stacker &&  <td>{DocumentClass.facility}</td>} */}
+                                         {/*  { !standalone &&   <td><span   className="showAction"  >...</span></td>} */}
                                            
                                             </tr>
 
@@ -481,97 +413,42 @@ export function LocationList(){
     }
 
 
-export function LocationDetail(){
-    const { register, handleSubmit, watch, setValue,reset } = useForm(); //errors,
+export function EndEncounterDetail(){
+    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const LocationServ=client.service('/Location')
+    //const DocumentClassServ=client.service('/DocumentClass')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
-    const [showSub, setShowSub] = useState(false) 
-    const [showUpdate, setShowUpdate] = useState(false) 
     const {state,setState} = useContext(ObjectContext)
-    
-    const LocationServ=client.service('location')
 
-    const sublocationTypeOptions =["Bed","Unit", ]
+   
 
-   const Location =state.LocationModule.selectedLocation 
+   const DocumentClass =state.DocumentClassModule.selectedDocumentClass 
 
     const handleEdit= async()=>{
-        const    newLocationModule={
-            selectedLocation:Location,
+        const    newDocumentClassModule={
+            selectedDocumentClass:DocumentClass,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
        //console.log(state)
        
     }
-    const handleSublocation= ()=>{
-        setShowSub(true)
-        // show popup to create new sublocation.
-    }
- 
-    const onSubmit = (data,e) =>{
-        e.preventDefault();
-        if (data.type===""|| data.typeName===""){
-            alert("Kindly enter missing data ")
-            return
-        }
-       
-          console.log(data);
-        /*   if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
-          } */
-          if (!Location.sublocations){
-              Location.sublocations=[]
-          }
-
-          Location.sublocations.push(data)
-          reset()
-          setShowUpdate(true)
-       
-        }
-    
-    const handleUpdate = ()=>{
-
-        LocationServ.patch(Location._id,Location)
-        .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Location successfully")
-                 toast({
-                    message: 'Location updated succesfully',
-                    type: 'is-success',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-                  
-               setShowUpdate(false)
-
-            })
-            .catch((err)=>{
-                //setMessage("Error creating Location, probable network issues "+ err )
-               // setError(true)
-                toast({
-                    message: "Error updating Location, probable network issues or "+ err,
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-            })
+            
+    const handleCreateForm=async()=>{
         
-    }
-
+    }    
+ 
     return (
         <>
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Location Details
+                    DocumentClass Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -588,112 +465,29 @@ export function LocationDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"> {Location.name} </span>
+                        <span className="is-size-7 padleft"   name="name"> {DocumentClass.name} </span>
                         </td>
                     </tr>
                     <tr>
-                    <td>
-                <label className="label is-small"><span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>Location Type:
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft"   name="LocationType">{Location.locationType} </span> 
-                    </td>
-                </tr>         
-
+               
+                </tr>
             </tbody> 
             </table> 
-            {  (Location.sublocations?.length>0 ||showSub) &&
-            <>
-                <label className="label is-size-7 mt-2">Sublocations:</label>
-                <div>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                    <div class="field is-horizontal">
-                    <div class="field-body">
-                <div className="field">    
-                    <div className="control">
-                        <div className="select is-small ">
-                            <select name="type"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                            <option value="">Choose Sub-location Type </option>
-                            {sublocationTypeOptions.map((option,i)=>(
-                                <option key={i} value={option}> {option}</option>
-                            ))}
-                            </select>
-                        </div>
-                    </div>
-                    </div>
-                    <div className="field">
-                        <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="typeName" type="text" placeholder="Name of Sub-location" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-map-signs"></i>
-                        </span>
-                        
-                    </p>
-                </div>
-                <div className="field">
-                    <p className="control">
-                        <button className="button is-success is-small selectadd">
-                            Add
-                        </button>
-                    </p>
-                    </div>
-                </div>
-                </div>
-                    </form>
-                </div>
-           {      (Location.sublocations?.length>0 ) &&
-                <div>
-                    
-                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
-                    <thead>
-                        <tr>
-                        <th><abbr title="Serial No">S/No</abbr></th>
-                        <th><abbr title="Type">Type</abbr></th>
-                        <th><abbr title="Name">Name</abbr></th>
-                    
-                    
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        
-                    </tfoot>
-                    <tbody>
-                    { Location.sublocations?.map((ProductEntry, i)=>(  
-
-                            <tr key={i}>
-                            <th>{i+1}</th>
-                            <td>{ProductEntry.type}</td>
-                            <td>{ProductEntry.typeName}</td>                        
-                            </tr>
-
-                        ))}
-                    </tbody>
-                    </table>
-                </div> }       
-              
-           </>
-           }
-            <div className="field mt-2  is-grouped">
+           
+            <div className="field is-grouped mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
-             {!showSub &&   <p className={Location.sublocations?.length>0?"is-hidden control":" control"}>
-                    <button className="button is-info is-small" onClick={handleSublocation}>
-                        Create Sublocation
+                {/* <p className="control">
+                    <button className="button is-info is-small" onClick={handleCreateForm}>
+                        Create Form
                     </button>
-                </p>}
-               {showUpdate &&  <p className= "control" >
-                    <button className="button is-info is-small" onClick={handleUpdate}>
-                        Update
-                    </button>
-                </p>}
-                
+                </p> */}
             </div>
-               
+            { error && <div className="message"> {message}</div>}
+           
         </div>
         </div>
         </>
@@ -702,7 +496,7 @@ export function LocationDetail(){
    
 }
 
-export function LocationModify(){
+export function EndEncounterModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -711,44 +505,44 @@ export function LocationModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const LocationServ=client.service('location')
+    const DocumentClassServ=client.service('documentclass')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const Location =state.LocationModule.selectedLocation 
+    const DocumentClass =state.DocumentClassModule.selectedDocumentClass 
 
         useEffect(() => {
-            setValue("name", Location.name,  {
+            setValue("name", DocumentClass.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("locationType", Location.locationType,  {
+            setValue("locationType", DocumentClass.locationType,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Location.profession,  {
+           /*  setValue("profession", DocumentClass.profession,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("phone", Location.phone,  {
+            setValue("phone", DocumentClass.phone,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("email", Location.email,  {
+            setValue("email", DocumentClass.email,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("department", Location.department,  {
+            setValue("department", DocumentClass.department,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("deptunit", Location.deptunit,  {
+            setValue("deptunit", DocumentClass.deptunit,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
-          /*   setValue("LocationCategory", Location.LocationCategory,  {
+          /*   setValue("DocumentClassCategory", DocumentClass.DocumentClassCategory,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
@@ -759,41 +553,41 @@ export function LocationModify(){
         })
 
    const handleCancel=async()=>{
-    const    newLocationModule={
-        selectedLocation:{},
+    const    newDocumentClassModule={
+        selectedDocumentClass:{},
         show :'create'
       }
-   await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+   await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newLocationModule={
-            selectedLocation:{},
+        const    newDocumentClassModule={
+            selectedDocumentClass:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+        setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
 
         }
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=Location._id
+        const dleteId=DocumentClass._id
         if (conf){
              
-        LocationServ.remove(dleteId)
+        DocumentClassServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Location successfully")
+               /*  setMessage("Deleted DocumentClass successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'Location deleted succesfully',
+                    message: 'DocumentClass deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -801,10 +595,10 @@ export function LocationModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Location, probable network issues "+ err )
+               // setMessage("Error deleting DocumentClass, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting Location, probable network issues or "+ err,
+                    message: "Error deleting DocumentClass, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -823,16 +617,16 @@ export function LocationModify(){
         
         setSuccess(false)
         console.log(data)
-        data.facility=Location.facility
+        data.facility=DocumentClass.facility
           //console.log(data);
           
-        LocationServ.patch(Location._id,data)
+        DocumentClassServ.patch(DocumentClass._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated Location successfully")
+               // setMessage("updated DocumentClass successfully")
                  toast({
-                    message: 'Location updated succesfully',
+                    message: 'DocumentClass updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -842,10 +636,10 @@ export function LocationModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Location, probable network issues "+ err )
+                //setMessage("Error creating DocumentClass, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Location, probable network issues or "+ err,
+                    message: "Error updating DocumentClass, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -861,7 +655,7 @@ export function LocationModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Location Details-Modify
+                    DocumentClass Details-Modify
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -877,17 +671,17 @@ export function LocationModify(){
                     </p>
                     </label>
                     </div>
-                <div className="field">
+                {/* <div className="field">
                 <label className="label is-small">Location Type
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="locationType" type="text" placeholder="Location Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="DocumentClassType" type="text" placeholder="DocumentClass Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
                     
                 </p>
                 </label>
-                </div>
+                </div> */}
             {/* <div className="field">
             <label className="label is-small">Profession
                 <p className="control has-icons-left">
@@ -911,7 +705,7 @@ export function LocationModify(){
             <div className="field">
             <label className="label is-small">Email
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Location Email"/>
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="DocumentClass Email"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
@@ -942,9 +736,9 @@ export function LocationModify(){
            {/*  <div className="field">
             <label className="label is-small">Category
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="LocationCategory" type="text" placeholder="Location Category"/>
+                    <input className="input is-small" ref={register({ required: true })} name="DocumentClassCategory" type="text" placeholder="DocumentClass Category"/>
                     <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
+                    <i className="fas fa-DocumentClass-medical"></i>
                     </span>
                 </p>
                 </label>
@@ -964,11 +758,11 @@ export function LocationModify(){
                         Cancel
                     </button>
                 </p>
-                <p className="control">
+                {/* <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p>
+                </p> */}
             </div>
         </div>
         </div>

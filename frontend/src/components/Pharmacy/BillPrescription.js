@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-import AdmissionCreate from './AdmissionCreate'
+import BillPrescriptionCreate from './BillPrescriptionCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
@@ -22,11 +22,11 @@ import {
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-import ClientBilledAdmission from './ClientAdmission';
+import ClientBilledPrescription from './ClientPrescription';
 
 
 
-export default function Admission() {
+export default function BillPrescription() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -67,16 +67,16 @@ export default function Admission() {
             </div> */}
             <div className="columns ">
                 <div className="column is-5 ">
-                    <AdmissionList />
+                    <BillPrescriptionList />
                     </div>
               
                 <div className="column is-4 ">
                 
-                {(state.AdmissionModule.show ==='detail')&&<AdmissionCreate />}
+                {(state.medicationModule.show ==='detail')&&<BillPrescriptionCreate />}
                 </div>
                 <div className="column is-3 ">
                 
-                {(state.AdmissionModule.show ==='detail')&&<PatientProfile />}
+                {(state.medicationModule.show ==='detail')&&<PatientProfile />}
                 </div>
 
             </div>                            
@@ -86,7 +86,7 @@ export default function Admission() {
     
 }
 
-export function AdmissionList(){
+export function BillPrescriptionList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -125,10 +125,10 @@ export function AdmissionList(){
         await setSelectedMedication(ProductEntry)
     
         const    newProductEntryModule={
-            selectedAdmission:ProductEntry,
+            selectedMedication:ProductEntry,
             show :'detail'
         }
-      await setState((prevstate)=>({...prevstate, AdmissionModule:newProductEntryModule}))
+      await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
        //console.log(state)
       // ProductEntry.show=!ProductEntry.show
     
@@ -167,10 +167,9 @@ export function AdmissionList(){
                    
                 }}
                 ],
-                order_category:"Admission Order",
+                order_category:"Prescription",
                 fulfilled:false,
                 destination: user.currentEmployee.facilityDetail._id,
-                destination_location:state.WardModule.selectedWard._id,
                 order_status:"Pending",
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
@@ -191,16 +190,14 @@ export function AdmissionList(){
                 setError(true)
             })
         }
-
     const getFacilities= async()=>{
        
              console.log("here b4 server")
     const findProductEntry= await OrderServ.find(
             {query: {
-                order_category:"Admission Order",
+                order_category:"Prescription",
                 fulfilled:"False",
                 destination: user.currentEmployee.facilityDetail._id,
-                destination_location:state.WardModule.selectedWard._id,
                 order_status:"Pending",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
@@ -210,9 +207,9 @@ export function AdmissionList(){
                 }
                 }})
 
-           console.log("updatedorder", findProductEntry.data)
-            await setFacilities(findProductEntry.data)
-            await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.data}))
+           // console.log("updatedorder", findProductEntry.groupedOrder)
+            await setFacilities(findProductEntry.groupedOrder)
+            await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
 
     //1.consider using props for global data
@@ -251,7 +248,7 @@ export function AdmissionList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Tests"
+                                        type="text" placeholder="Search Medications"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -262,36 +259,42 @@ export function AdmissionList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Pending Admissions </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Pending Prescriptions </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
-                            <div nclassName="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
+                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
                         </div> 
                     </div>*/}
 
                 </div>
                 <div className=" pullup">
                     <div className=" is-fullwidth vscrollable pr-1">   
-                
+                    <Accordion allowZeroExpanded>
+                        {facilities.map((Clinic, i)=>(
+                            <AccordionItem  key={Clinic.client_id} >
+                               <AccordionItemHeading >
+                               <AccordionItemButton  >
+                                      <strong> {i+1} {Clinic.clientname} with {Clinic.orders.length} Pending Prescription(s)  </strong>
+                                </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
                                     <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
                                             <thead>
                                                 <tr>
                                                     <th><abbr title="Serial No">S/No</abbr></th>
                                                     <th><abbr title="Date">Date</abbr></th>
-                                                    <th><abbr title="Name">Name</abbr></th>
-                                                    <th><abbr title="Order">Admission Order</abbr></th>
+                                                    <th><abbr title="Order">Medication</abbr></th>
                                                     <th>Fulfilled</th>
                                                     <th><abbr title="Status">Status</abbr></th>
                                                     <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            { facilities.map((order, i)=>(
+                                            { Clinic.orders.map((order, i)=>(
 
                                                         <tr key={order._id} onClick={()=>handleMedicationRow(order)} className={order._id===(selectedMedication?._id||null)?"is-selected":""}>                                         
                                                         <th>{i+1}</th>
                                                         <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
-                                                        <th>{order.client.firstname} {order.client.lastname}</th>
                                                         <th>{order.order}</th>
                                                         <td>{order.fulfilled==="True"?"Yes":"No"}</td>
                                                         <td>{order.order_status}</td>
@@ -300,12 +303,19 @@ export function AdmissionList(){
                                                 ))}
                                             </tbody>
                                             </table>
-                                            
-                             
+                                            {/*   */}<ClientBilledPrescription  selectedClient={Clinic.client_id}/>{/*  } */}
+                              </AccordionItemPanel>                                          
+                                </AccordionItem>
+                            ))}
+                            {/* <!-- Add Ref to Load More div --> */}
+                            {/*  <div className="loading" ref={loader}>
+                                    <h2>Load More</h2>
+                        </div> */}
+                        </Accordion>
                     </div>                   
                 </div>  
             </>          
-        )
+    )
     }
 
 
