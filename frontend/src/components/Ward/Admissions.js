@@ -241,7 +241,14 @@ export function AdmissionList(){
         
         }
 
-   
+   useEffect(() =>{
+    getFacilities()
+
+            return ()=>{
+                
+            }
+
+   }, [state.WardModule.selectedWard])
 
     return(     
             <>  
