@@ -282,10 +282,5 @@
         Cancel
     </button>
 </p>
-{/*  <p className="control">
-    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-       Delete
-    </button>
-</p> */}
 </div>
 </>}

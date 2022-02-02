@@ -4,7 +4,7 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
@@ -12,28 +12,28 @@ import  VideoConference  from '../utils/VideoConference';
 import  Prescription, { PrescriptionCreate } from './Prescription';
 
 export default function DispensaryMain() {
- // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+ 
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const ClinicServ=client.service('clinicaldocument')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedClinic, setSelectedClinic]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedClinic, setSelectedClinic]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
     const [showModal,setShowModal]=useState(false)
     const [showPrescriptionModal,setShowPrescriptionModal]=useState(false)
-    // tracking on which page we currently are
+    
     const [page, setPage] = useState(0);
-    // add loader refrence 
+    
     const loader = useRef(null);
     
     const standalone=false
@@ -54,14 +54,14 @@ export default function DispensaryMain() {
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
-       //console.log(state)
+       
         
 
     }
     const handleRow= async(Clinic)=>{
-        //console.log("b4",state)
+        
 
-        //console.log("handlerow",Clinic)
+        
 
         await setSelectedClinic(Clinic)
 
@@ -70,7 +70,7 @@ export default function DispensaryMain() {
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
-       //console.log(state)
+       
        Clinic.show=!Clinic.show
 
     }
@@ -84,8 +84,8 @@ export default function DispensaryMain() {
                     $options:'i'
                    
                 },
-              // facility:user.currentEmployee.facilityDetail._id || "",
-               // locationType:"Clinic",
+              
+               
                client:state.ClientModule.selectedClient._id,
                $limit:10,
                 $sort: {
@@ -105,29 +105,22 @@ export default function DispensaryMain() {
         }
    
     const getFacilities= async(page=0)=>{
-            /* const limit=20
-            alert(page) */
             if (user.currentEmployee){
             
         const findClinic= await ClinicServ.find(
                 {query: {
-                    //locationType:"Clinic",
-                    //facility:user.currentEmployee.facilityDetail._id,
+                    
+                    
                     client:state.ClientModule.selectedClient._id,
                     $limit:20,
-                   /*  $skip:page*limit, */
                     $sort: {
                         createdAt: -1
                     }
                     }})
             const total= findClinic.total
             const ulimit=total*page
-           /*  if (total>(ulimit)){ //only load if we have not reached the total
-                alert("skip:",ulimit )
-                console.log("skip:",ulimit ) */
             await setFacilities(findClinic.data)
             console.log(findClinic.data)
-           /*  } */
                 }
                 else {
                     if (user.stacker){
@@ -144,16 +137,6 @@ export default function DispensaryMain() {
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Clinic  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Clinic, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
            
@@ -163,48 +146,16 @@ export default function DispensaryMain() {
                 if (user){
                     
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 ClinicServ.on('created', (obj)=>getFacilities(page))
                 ClinicServ.on('updated', (obj)=>getFacilities(page))
                 ClinicServ.on('patched', (obj)=>getFacilities(page))
                 ClinicServ.on('removed', (obj)=>getFacilities(page))
 
-                /* var options = {
-                    root: null,
-                    rootMargin: "20px",
-                    threshold: 1.0
-                 }; */
-                // initialize IntersectionObserver
-                // and attaching to Load More div
-                /*  const observer = new IntersectionObserver(handleObserver, options);
-                 if (loader.current) {
-                    observer.observe(loader.current)
-                 } */
                 return () => {
                 
                 }
             },[])
-           /*  useEffect(() => {
-                // here we simulate adding new posts to List
-                getFacilities()
-            }, [page]) */
-
-             // here we handle what happens when user scrolls to Load More div
-            // in this case we just update page variable
-                /* const handleObserver = (entities) => {
-                    const target = entities[0];
-                    if (target.isIntersecting) {   
-                        setPage((page) => page + 1) //load more 
-                        
-                    }
-                } */
 
     return (
         <div>
@@ -226,7 +177,6 @@ export default function DispensaryMain() {
                             </div>
                         </div>
                     </div>
-                   {/*  <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div> */}
                     <div className="level-right">
                 { !standalone &&   <div className="level-item"> 
                             <div className="level-item">
@@ -250,11 +200,6 @@ export default function DispensaryMain() {
                                                         <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
                                                         <p className="right ml-2 mr-0">{Clinic.status} </p> 
                                                         </div>
-                                                       {/*  <button className="card-header-icon" aria-label="more options">
-                                                        <span className="icon">
-                                                            <i className="fas fa-angle-down" aria-hidden="true"></i>
-                                                        </span>
-                                                        </button> */}
                                                     </header>
                                                   {Clinic.documentname!=="Prescription" &&  <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"}>
                                                         { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
@@ -295,7 +240,6 @@ export default function DispensaryMain() {
 
                                                                         <tr key={i}>
                                                                         <th>{i+1}</th>
-                                                                        {/* <td>{ProductEntry.name}</td> */}
                                                                         <td>{ProductEntry.medication}<br/>
                                                                         <span className="help is-size-7">{ProductEntry.instruction}</span></td> 
                                                                         <td>{ProductEntry.destination}</td>                                                                     
@@ -310,10 +254,6 @@ export default function DispensaryMain() {
                                             </div>
 
                                         ))}
-                                      {/* <!-- Add Ref to Load More div --> */}
-                                       {/*  <div className="loading" ref={loader}>
-                                                <h2>Load More</h2>
-                                    </div> */}
                                 </div>
                                     
                 </div> 
@@ -327,10 +267,6 @@ export default function DispensaryMain() {
                                         <section className="modal-card-body">
                                         <DocumentClassList standalone="true" />
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>
                                 <div className={`modal ${showPrescriptionModal?"is-active":""}` }>
@@ -343,10 +279,6 @@ export default function DispensaryMain() {
                                         <section className="modal-card-body">
                                         <Prescription standalone="true" />
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>                            
         </div>

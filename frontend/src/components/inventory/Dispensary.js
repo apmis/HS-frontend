@@ -3,15 +3,10 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-//import PaymentCreate from './PaymentCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
-/* import {ProductCreate} from './Products' */
-// eslint-disable-next-line
-//const searchfacility={};
 import {
     Accordion,
     AccordionItem,
@@ -21,39 +16,34 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-// Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
 import { ProductExitCreate } from './DispenseExit';
-//import BillPrescriptionCreate from './BillPrescriptionCreate';
 
 
 
 export default function Dispense() {
-    //const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+   
+   
     const [selectedProductEntry,setSelectedProductEntry]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+   
     const [error, setError] =useState(false)
-    // eslint-disable-next-line
+   
    const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line
+   
   const [message, setMessage] = useState("") 
    const BillServ=client.service('bills')
-   //const history = useHistory()
-  // const {user,setUser} = useContext(UserContext)
+  
+ 
    const [facilities,setFacilities]=useState([])
-    // eslint-disable-next-line
-  const [selectedOrders, setSelectedOrders]=useState([]) //
-   // eslint-disable-next-line
+   
+  const [selectedOrders, setSelectedOrders]=useState([])
+  
    const {state,setState}=useContext(ObjectContext)
-   // eslint-disable-next-line
+  
    const {user,setUser}=useContext(UserContext)
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
-            </div> */}
             <div className="columns ">
                 <div className="column is-6 ">
                     <DispenseList />
@@ -63,10 +53,6 @@ export default function Dispense() {
                 
                 {(state.financeModule.show ==='detail')&& <ProductExitCreate />}
                 </div>
-               {/*  <div className="column is-3 ">
-                
-                {(state.financeModule.show ==='detail')&&<PatientProfile />}
-                </div> */}
 
             </div>                            
             </section>
@@ -76,30 +62,30 @@ export default function Dispense() {
 }
 
 export function DispenseList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
    const BillServ=client.service('bills')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedDispense, setSelectedDispense]=useState() //
+     
+   const [selectedDispense, setSelectedDispense]=useState() 
    const [selectedOrders, setSelectedOrders]=useState([]) 
-    // eslint-disable-next-line
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
     const [selectedFinance, setSelectedFinance] =useState("")
     const [expanded, setExpanded] =useState("")
     const [oldClient, setOldClient] =useState("")
 
     const handleSelectedClient= async(Client)=>{
-        // await setSelectedClient(Client)
+        
          const    newClientModule={
              selectedClient:Client,
              show :'detail'
@@ -111,16 +97,16 @@ export function DispenseList(){
         setOldClient(client.clientname)
         let newClient=client.clientname
         if(oldClient!==newClient){
-            //alert("New Client Onboard")
-            //remove all checked clientsly
+            
+            
             selectedOrders.forEach(el=>el.checked="")
             setSelectedOrders([])
         }
 
-       // console.log(e.target.checked)
+       
         order.checked=e.target.checked
         await handleSelectedClient(order.participantInfo.client)
-        //handleMedicationRow(order)
+        
         await setSelectedFinance(order)
         const    newProductEntryModule={
             selectedFinance:order,
@@ -134,26 +120,12 @@ export function DispenseList(){
         setSelectedOrders( prevstate=>prevstate.filter(el=>el._id!==order._id))
       }
     
-       // console.log(selectedOrders)
+       
     }
-    const handleMedicationRow= async(ProductEntry,e)=>{ //handle selected single order
-        //console.log("b4",state)
+    const handleMedicationRow= async(ProductEntry,e)=>{ 
+        
         alert("Header touched")
     
-        //console.log("handlerow",ProductEntry)
-       /* alert(ProductEntry.checked)*/
-       /*  ProductEntry.checked=!ProductEntry.checked */
-    
-       /*  await setSelectedFinance(ProductEntry)
-    
-        const    newProductEntryModule={
-            selectedFinance:ProductEntry,
-            show :'detail'
-
-        }
-      await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule})) */
-       //console.log(state)
-      // ProductEntry.show=!ProductEntry.show
     
     }
 
@@ -162,16 +134,13 @@ export function DispenseList(){
             selectedDispense:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
-       //console.log(state)
-        
+       await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))        
 
     }
   
 
     const handleSearch=(val)=>{
        const field='name'
-       //console.log(val)
        BillServ.find({query: {
                 order: {
                     $regex:val,
@@ -184,37 +153,24 @@ export function DispenseList(){
                    
                 },
                 order_category:"Prescription",
-               // storeId:state.StoreModule.selectedStore._id,
-               //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
                 $sort: {
                     createdAt: -1
                   }``
                     }}).then((res)=>{
-               // console.log(res)
                setFacilities(res.data)
                 setMessage(" ProductEntry  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
-               // console.log(err)
                 setMessage("Error fetching ProductEntry, probable network issues "+ err )
                 setError(true)
             })
         }
     const getFacilities= async()=>{
        
-            // console.log("here b4 server")
     const findProductEntry= await BillServ.find(
             {query: {
-                /* $or:[
-                    {
-                       'participantInfo.paymentmode.type':"Cash"
-                    },
-                    {
-                       'participantInfo.paymentmode.type':"Family Cover"
-                    }
-                ], */
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
                 'orderInfo.orderObj.order_category':"Prescription",
                 billing_status:{
@@ -223,8 +179,6 @@ export function DispenseList(){
                'orderInfo.orderObj.fulfilled':{
                 $ne:"True"
                },
-                //billing_status:"Fully Paid",
-               // fulfilled:false,  
                 $limit:100,
                 $sort: {
                     updatedAt: 1
@@ -233,15 +187,11 @@ export function DispenseList(){
 
             console.log("updatedorder", findProductEntry.groupedOrder)
             await setFacilities(findProductEntry.groupedOrder)
-          //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
     const handleRow= async(Client,e)=>{
-           // alert(expanded)
               
             }
-    //1.consider using props for global data
     useEffect(() => {
-        // console.log("started")
             getFacilities()
             BillServ.on('created', (obj)=>getFacilities())
             BillServ.on('updated', (obj)=>getFacilities())
@@ -271,7 +221,6 @@ export function DispenseList(){
     }
 
     useEffect(() => {
-        //changes with checked box
         console.log(selectedOrders)
         
         return () => {
@@ -312,11 +261,6 @@ export function DispenseList(){
                         </div>
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Paid Prescriptions </span></div>
-                     {/* <div className="level-right">
-                       <div className="level-item"> 
-                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div> 
-                    </div>*/}
 
                 </div>
                 <div className=" pullup ">
@@ -326,8 +270,7 @@ export function DispenseList(){
                             <AccordionItem  key={Clinic.client_id}  >
                                <AccordionItemHeading >
                                     <AccordionItemButton  >
-                                   {/*  <input type = "checkbox" name={Clinic.client_id}  />  */} 
-                                    <strong> {i+1} {Clinic.clientname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
+                                    <strong> {i+1} {Clinic.clientname} </strong> 
                                     </AccordionItemButton>
                                 </AccordionItemHeading>
                                 <AccordionItemPanel>
@@ -337,8 +280,7 @@ export function DispenseList(){
                                                 <AccordionItem  key={Clinic.client_id} >
                                                     <AccordionItemHeading >
                                                     <AccordionItemButton  >
-                                                   {/*  <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} />   */}
-                                                         {category.catName} with {category.order.length} Paid bill(s). {/* Total amount: N */}
+                                                         {category.catName} with {category.order.length} Paid bill(s). 
                                                     </AccordionItemButton>
                                                     </AccordionItemHeading>
                                                     <AccordionItemPanel>
@@ -356,11 +298,10 @@ export function DispenseList(){
                                                                 <tbody>
                                                      { category.order.map((order, i)=>(
 
-                                                        <tr key={order._id}  /*  onClick={()=>handleMedicationRow(order)} */  className={order._id===(selectedFinance?._id||null)?"is-selected":""}>                                         
+                                                        <tr key={order._id}  className={order._id===(selectedFinance?._id||null)?"is-selected":""}>                                         
                                                         <th><input type = "checkbox" name={order._id} onChange={(e)=>handleChoseClient(Clinic,e, order)}  checked={order.checked}/>  {i+1}</th>
-                                                        <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
+                                                        <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> 
                                                         <th>{order.serviceInfo.name}</th>
-                                                       {/*  <td>{order.fulfilled==="True"?"Yes":"No"}</td> */}
                                                         <td>{order.billing_status}</td>
                                                         <td>{order.serviceInfo.amount}</td>
                                                         </tr>
@@ -385,28 +326,23 @@ export function DispenseList(){
 
 
 export function DispenseDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
+    
+     
+    const [error, setError] =useState(false) 
     const [selectedMedication, setSelectedMedication] =useState("")
     const [currentOrder, setCurrentOrder] =useState("")
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const ProductEntryServ=client.service('/ProductEntry')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+     
+    const [message, setMessage] = useState("") 
+    
+    
+    
     const {state,setState} = useContext(ObjectContext)
     const BillServ=client.service('order')
-    /* const [ProductEntry, setProductEntry] = useState("")
-    const [facilities, setFacilities] = useState("") */
 
  let ProductEntry =state.DispenseModule.selectedDispense
-   //const facilities=ProductEntry.orders
+   
 
    const handleRow= async(ProductEntry)=>{
-    //console.log("b4",state)
-
-    //console.log("handlerow",ProductEntry)
 
     await setSelectedMedication(ProductEntry)
 
@@ -415,8 +351,6 @@ export function DispenseDetail(){
         show :'detail'
     }
   await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-   //console.log(state)
-  // ProductEntry.show=!ProductEntry.show
 
 }
 
@@ -426,7 +360,6 @@ export function DispenseDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
-       //console.log(state)
        
     }
 
@@ -438,30 +371,17 @@ export function DispenseDetail(){
         })
 
     setCurrentOrder(client1)
-   // console.log(client1)
         return () => {
         
         }
     }, [])
    
 
- /*  
-     const setprod=async()=>{
-        await setProductEntry(state.DispenseModule.selectedDispense)
-    } */
  
     useEffect(() => {
-        /* BillServ.on('created', (obj)=>getFacilities())
-        BillServ.on('updated', (obj)=>getFacilities())
-       
-        BillServ.on('removed', (obj)=>getFacilities()) */
         BillServ.on('patched',  (obj)=>{
-            //update state.DispenseModule.selectedDispense
-           // console.log(obj.clientId)
-           // console.log("currentClients",state.currentClients)
            const current1=state.currentClients.find(el=>(JSON.stringify(el.client_id)===JSON.stringify(obj.clientId)))
            setCurrentOrder(current1)
-          // console.log("currentone",current1)
         })
       
         return () => {
@@ -478,21 +398,17 @@ export function DispenseDetail(){
                 </p>
             </div>
             <div className="card-content vscrollable">
-            {/* {JSON.stringify(ProductEntry.orders,2,10)} */}
             <div className="table-container pullup ">
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        {/* <th><abbr title="Client Name">Client Name</abbr></th> */}
-                                        {/* <th><abbr title="Number of Orders"># of Medication</abbr></th> */}
                                         <th><abbr title="Date">Date</abbr></th>
                                         <th><abbr title="Order">Medication</abbr></th>
                                         <th>Fulfilled</th>
                                         <th><abbr title="Status">Status</abbr></th>
                                         <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
                                         
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -504,17 +420,14 @@ export function DispenseDetail(){
                                             <tr key={order._id} onClick={()=>handleRow(order)} className={order._id===(selectedMedication?._id||null)?"is-selected":""}>
                                             
                                                <th>{i+1}</th>
-                                                 {/* <td>{ProductEntry.clientname}</td> 
-                                                <td>{ProductEntry.orders.length}</td> */}
                                            
                                            
-                                            <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
+                                            <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> 
                                           <th>{order.order}</th>
                                             <td>{order.fulfilled==="True"?"Yes":"No"}</td>
                                             <td>{order.order_status}</td>
                                             <td>{order.requestingdoctor_Name}</td>
                                             
-                                           {/*  <td><span className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 

@@ -3,22 +3,22 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 
 export default function AsthmaIntake() {
 
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const [allergy,setAllergy] = useState("")
     const [reaction,setReaction] = useState("")
@@ -41,7 +41,7 @@ export default function AsthmaIntake() {
                })
 
            ))
-          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
+          
            setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
    }
         return () => {
@@ -58,21 +58,17 @@ export default function AsthmaIntake() {
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
+       
       }
     })
 
@@ -82,24 +78,21 @@ export default function AsthmaIntake() {
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-          //console.log(data)
           data.Allergy_Skin_Test=allergies
         
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
-          document.documentname="Adult Asthma Questionnaire"  //"Lab Result"
-         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.documentname="Adult Asthma Questionnaire"  
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status=docStatus==="Draft"?"Draft":"completed"
-          //console.log(document)
+          
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -117,10 +110,9 @@ export default function AsthmaIntake() {
             if (!!draftDoc &&  draftDoc.status==="Draft"){
                 ClientServ.patch(draftDoc._id, document)
                 .then((res)=>{
-                    //console.log(JSON.stringify(res))
+                    
                     e.target.reset();
                     setAllergies([])
-                   /*  setMessage("Created Client successfully") */
                     setSuccess(true)
                     toast({
                         message: 'Adult Asthma Questionnaire updated succesfully',
@@ -142,10 +134,8 @@ export default function AsthmaIntake() {
             }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
                 setAllergies([])
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Adult Asthma Questionnaire created succesfully',
@@ -167,33 +157,24 @@ export default function AsthmaIntake() {
         }
       } 
         const handleChangePart=async (e)=>{
-            //console.log(e)
-            //const (name, value) = e.target
             let {name, value}= e.target
             console.log(name,value)
         await   setDataset((prev ) => ({...prev, [name]:value}))
-        //  console.log(dataset)
 
         }
         const handleChangeType=async (e)=>{
-        // await setAppointment_type(e.target.value)
         console.log(e)
         }
         const handleChangeStatus=async (e)=>{
-            // await setAppointment_type(e.target.value)
            
             setDocStatus(e.target.value)
     
-            //console.log(e.target.value)
     
             }
 
         const handleAllergy=async (e)=>{
-            //console.log(e)
-            //const (name, value) = e.target
             const {name, value}= e.target
             console.log(name,value)
-           // [name]=value
          await   setAllergy((prev ) => ({...prev, [name]:value}))
           console.log(allergy)
 
@@ -220,12 +201,6 @@ export default function AsthmaIntake() {
             </div>
             <div className="card-content vscrollable remPad1">
 
-              {/*   <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label> */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
                         <p className="control ">
@@ -2630,7 +2605,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={allergine} /* ref={register} */ onChange={(e)=>{setAllergine(e.target.value)}} name="allergine" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"  value={allergine} onChange={(e)=>{setAllergine(e.target.value)}} name="allergine" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         
@@ -2643,7 +2618,7 @@ injection, such as prednisone </label>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={reaction}  /* ref={register} */ onChange={(e)=>{setReaction(e.target.value)}}  name="reaction" type="text" placeholder="Specify" />           
+                                    <input className="input is-small"  value={reaction}  onChange={(e)=>{setReaction(e.target.value)}}  name="reaction" type="text" placeholder="Specify" />           
                                 </p>
                             </div>
                         </div>
@@ -2706,9 +2681,6 @@ injection, such as prednisone </label>
                     </div>
 
 
-                       {/*  <p className="control ">
-                            <input className="input is-small"   ref={register} name="Education" type="text" placeholder="Hihest Level of Education" />           
-                        </p> */}
                
                <div className="field">
                     <label className=" is-small">

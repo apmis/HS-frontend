@@ -32,13 +32,9 @@ export default function ClientFinInfo({closeModal}){
      const {state,setState}=useContext(ObjectContext)
      const ClientServ=client.service('client')
      const HMOServ=client.service('organizationclient')
-   //  const [productEntry,setProductEntry]=useState({
-       
-    //})
     
   let medication =state.ClientModule.selectedClient 
 
-  //console.log(state.financeModule.state)
 
   const handleChangeMode= async(value)=>{
       
@@ -74,12 +70,10 @@ export default function ClientFinInfo({closeModal}){
      }
 
      const getSearchfacility1=async (obj)=>{
-        //setPrincipalId(obj._id)
         setPrincipalName(obj.firstname +" "+obj.lastname)
         setPrincipal(obj._id)
         
          if (!obj){
-             //"clear stuff"
              setPrincipalId("")
              setPrincipalName("")
              setPrincipal(null)
@@ -95,7 +89,6 @@ export default function ClientFinInfo({closeModal}){
       await setOrganizationName(obj.facilityName)
       getBenfittingPlans(obj)
       getBenfittingHMO(obj)
-      // setOrgType(obj.facilityType)
        if(!obj){
         setOrganizationId(null)
         setOrganizationName("")
@@ -104,7 +97,6 @@ export default function ClientFinInfo({closeModal}){
      }
 
     useEffect(() => {
-       // console.log("success", success)
         if (success){
             setSuccess(false)
         }
@@ -112,7 +104,6 @@ export default function ClientFinInfo({closeModal}){
      }, [success])
 
      useEffect(() => {
-        // console.log("success", success)
          if (success1){
              setSuccess1(false)
          }
@@ -132,7 +123,6 @@ export default function ClientFinInfo({closeModal}){
        setSuccess(true)
        setPaymentMode("HMO")
        setPlanHMO("")
-       //setSuccess(false)
 
      }
  
@@ -143,7 +133,6 @@ export default function ClientFinInfo({closeModal}){
        } 
 
     const handleAdd=async()=>{
-       //setSuccess(false)
         console.log(productItemI)
         setProductItem(prev=>prev.concat(productItemI))
         resetform()
@@ -152,7 +141,6 @@ export default function ClientFinInfo({closeModal}){
 
 
     const handlePayment= async ()=>{
-       // console.log(productItem)
        console.log(productItem)
         ClientServ.patch(medication._id, {
             paymentinfo:productItem
@@ -162,7 +150,6 @@ export default function ClientFinInfo({closeModal}){
            let client=resp
             console.log(client)
             medication=resp
-           // setProductItem([])
             toast({
                 message: 'Client financial info updated succesfully',
                 type: 'is-success',
@@ -210,12 +197,6 @@ export default function ClientFinInfo({closeModal}){
         .then((res)=>{
             console.log(res)
             setBenefittingHMO(res.data)
-          /*   toast({
-                message: 'Client financial info updated succesfully',
-                type: 'is-success',
-                dismissible: true,
-                pauseOnHover: true,
-              }) */
             })
             .catch((err)=>{
                 console.log(err)
@@ -237,13 +218,9 @@ export default function ClientFinInfo({closeModal}){
                 
             const findServices= await ServicesServ.find(
                     {query: {
-                        //facility: obj._id, // user.currentEmployee.facilityDetail._id,
-                        'contracts.source_org' :obj._id,// user.currentEmployee.facilityDetail._id ,
-                        'contracts.dest_org' : obj._id,//user.currentEmployee.facilityDetail._id ,
+                        'contracts.source_org' :obj._id,
+                        'contracts.dest_org' : obj._id,
                         category:"Managed Care",
-                       // storeId:state.StoreModule.selectedStore._id,
-                       // $limit:20,
-                    //   paginate:false,
                         $sort: {
                             category: 1
                         }
@@ -271,24 +248,10 @@ export default function ClientFinInfo({closeModal}){
            const abc=e.target.value
            const hmo=benefittingHMO.find((el=>el._id===abc))
            
-            /*  if (e.target.value===undefined||e.target.value===""){
-                toast({
-                    message: 'Kindly select Agent HMO ',
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-                  return
-             }else{ */
                 console.log(e.target.value)
                 if (!!hmo){
                     await setPlanHMO(hmo)
                 }
-
-      
-    
-      //console.log(benefittingHMO[e.target.value].organizationDetail.facilityName)
-     /*  } */
     }
 
      return (
@@ -348,14 +311,6 @@ export default function ClientFinInfo({closeModal}){
             </div>
             <div className="field is-horizontal">
              <div className="field-body">
-            {/*  <div className="field" >
-                 <p className="control has-icons-left" >
-                     <input className="input is-small"  name="plan" value={plan} type="text" onChange={ e=> setPlan(e.target.value)} placeholder="Plan"  />
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-hashtag"></i>
-                     </span>
-                 </p>
-             </div>  */}
              <div className="field">    
                         <div className="control">
                             <div className="select is-small ">
@@ -372,7 +327,6 @@ export default function ClientFinInfo({closeModal}){
                         <div className="control">
                             <div className="select is-small ">
                                 <select name="bandType"  value={planHMO?._id}  onChange={(e)=>handleHMO(e)} className="selectadd" >
-                               {/*  <option value="">Choose HMO </option>  */}
                                 {benefittingHMO.map((options,i)=>(
                                     <option key={i} value={options._id}> {options.organizationDetail.facilityName}</option>
                                 ))}
@@ -456,7 +410,6 @@ export default function ClientFinInfo({closeModal}){
                      <th><abbr title="Plan">Plan</abbr></th>
                      <th><abbr title="Active">Active</abbr></th>
                      {/*  */}
-                     {/* <th><abbr title="Actions">Actions</abbr></th> */}
                      </tr>
                  </thead>
                  <tfoot>
@@ -465,17 +418,13 @@ export default function ClientFinInfo({closeModal}){
                  <tbody>
                     { productItem.map((ProductEntry, i)=>(
                           <tr key={i}>
-                         <th>{i+1}</th>
-                         <th>{ProductEntry.paymentmode}</th>
-                         <td>{ProductEntry.principalName}</td>
-                         <td>{ProductEntry.organizationName}</td>
-                         <td>{ProductEntry.agentName}</td>
-                         <td>{ProductEntry.plan}</td>
-                         <td>{ProductEntry.active?"Yes":"No"}</td>
-
-                          
-                        {/* <td>{ProductEntry.amount}</td> */}
-                        {/*  <td><span className="showAction"  >x</span></td> */}
+                            <th>{i+1}</th>
+                            <th>{ProductEntry.paymentmode}</th>
+                            <td>{ProductEntry.principalName}</td>
+                            <td>{ProductEntry.organizationName}</td>
+                            <td>{ProductEntry.agentName}</td>
+                            <td>{ProductEntry.plan}</td>
+                            <td>{ProductEntry.active?"Yes":"No"}</td>
                          </tr>
                      ))}
                  </tbody>

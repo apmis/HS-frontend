@@ -4,7 +4,6 @@ import Store, { StoreList } from './Labs'
 import {UserContext,ObjectContext} from '../../context'
 
 export default function InventoryHome() {
-   // const [activeModal, setActiveModal]=useState("modal is-active ")
     const {state,setState}=useContext(ObjectContext)
     const handleCloseModal=()=>{
         state.showStoreModal  =  "modal"                                                                                                                                                        
