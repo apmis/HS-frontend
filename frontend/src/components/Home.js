@@ -53,11 +53,6 @@ export default function Home() {
                 <Route path={`${path}/epid`} >
                     <EpidModule />
                 </Route>
-<<<<<<< HEAD
-                {/* <Route path={`${path}/comm`} >
-                    <Communication />
-                </Route> */}
-=======
                 <Route path={`${path}/ward`} >
                     <Ward />
                 </Route>
@@ -67,7 +62,6 @@ export default function Home() {
                 <Route path={`${path}/radiology`} >
                     <RadiologyModule />
                 </Route>
->>>>>>> 129ec3832e25fedb2547d8898d8354638fffacf7
             </Switch>
         </div>
     )
@@ -230,14 +224,11 @@ function NavBar({url}){
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
-<<<<<<< HEAD
                                     <NavLink to={`${url}/comm`}>Communication</NavLink>
-=======
                                     <NavLink to={`${url}/communication`}>Communication</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/radiology`}>Radiology</NavLink>
->>>>>>> 129ec3832e25fedb2547d8898d8354638fffacf7
                                 </div>}
                                
                                
