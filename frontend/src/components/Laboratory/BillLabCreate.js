@@ -3,29 +3,29 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {ProductCreate} from './Products'
 import Encounter from '../EncounterMgt/Encounter';
 import  ServiceSearch  from '../helpers/ServiceSearch';
 var random = require('random-string-generator');
-// eslint-disable-next-line
+
 const searchfacility={};
 
 export default function BillLabCreate(){
-    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
-     //const [error, setError] =useState(false)
+    
+     
      const [success, setSuccess] =useState(false)
      const [message,setMessage] = useState("")
-     // eslint-disable-next-line
+     
      const [facility,setFacility] = useState()
      const ProductEntryServ=client.service('productentry')
      const OrderServ=client.service('order')
      const BillCreateServ=client.service('createbilldirect')
-     //const history = useHistory()
-     const {user} = useContext(UserContext) //,setUser
-     // eslint-disable-next-line
+     
+     const {user} = useContext(UserContext) 
+     
      const [currentUser,setCurrentUser] = useState()
      const [type,setType] = useState("Bill")
      const [documentNo,setDocumentNo] = useState("")
@@ -63,51 +63,40 @@ export default function BillLabCreate(){
 
     
   let medication =state.medicationModule.selectedMedication
-   //console.log(medication)
+   
 
   const showDocumentation = async (value)=>{
     setProductModal(true)
   }
   const handlecloseModal =()=>{
     setProductModal(false)
-   // handleSearch(val)
+   
     }
 
 
     const handleChangeMode= async(value)=>{
-       // console.log(value)
+       
        await setPaymentMode(value)
-       // console.log(paymentOptions)
+       
        let billm= paymentOptions.filter(el=>el.name===value)
        await setBillMode(billm[0])
-        //console.log(billm)
-        // at startup
-        // check payment mode options from patient financial info
-        // load that to select options
-        // default to HMO-->company-->family-->cash
-        //when chosen
-        //append payment mode to order
-        //check service contract for pricing info
-        // calculate pricing 
-        // pricing
-
-
+        
     }
 
     const handleRow= async(ProductEntry)=>{
-    //console.log("b4",state)
+    
 
-    //console.log("handlerow",ProductEntry)
+    
 
-    //await setMedication(ProductEntry)
+    
 
             const    newProductEntryModule={
                 selectedMedication:ProductEntry,
                 show :'detail'
             }
             await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-   //console.log(state)
-  // ProductEntry.show=!ProductEntry.show
+   
+  
 
         } 
  
@@ -126,10 +115,10 @@ export default function BillLabCreate(){
          name,
          quantity,
          sellingprice,
-         amount:calcamount, //||qamount
+         amount:calcamount, 
          baseunit,
          costprice,
-         category:"Prescription",  //category==="Inventory"?"Prescription":category,
+         category:"Prescription",  
          billingId,
          billMode
  
@@ -138,12 +127,12 @@ export default function BillLabCreate(){
      const checkPrice= async(contracts,billMode)=>{
          
 
-        if( billMode.type==="HMO Cover"){ //paymentmode
+        if( billMode.type==="HMO Cover"){ 
          if (billMode.detail.plan==="NHIS"){
-             //find contract for NHIS
+             
              let contract=contracts.filter(el=>el.source_org_name==="NHIS")
              if (contract.length){
-                // console.log(contract[0].price)
+                
                await  setSellingPrice(contract[0].price)     
           }else{
              toast({
@@ -159,7 +148,7 @@ export default function BillLabCreate(){
 
          let contract=contracts.filter(el=>el.source_org===billMode.detail.organizationId)
          if (contract.length){
-           // console.log(contract[0].price)
+           
             await setSellingPrice(contract[0].price)
             
           }else{
@@ -174,10 +163,10 @@ export default function BillLabCreate(){
      
      }
      }
-     if( billMode.type==="Company Cover"){ //paymentmode
+     if( billMode.type==="Company Cover"){ 
          let contract=contracts.filter(el=>el.source_org===billMode.detail.organizationId)
          if (contract.length){
-        // console.log(contract[0].price)
+        
        await   setSellingPrice(contract[0].price)
          
         
@@ -193,10 +182,10 @@ export default function BillLabCreate(){
       }
 
   }
-  if( billMode.type==="Cash" || billMode.type==="Family Cover"){ //paymentmode
+  if( billMode.type==="Cash" || billMode.type==="Family Cover"){ 
      let contract=contracts.filter(el=>el.source_org===el.dest_org)
      if (contract.length){
-    // console.log(contract[0].price)
+    
      await setSellingPrice(contract[0].price)
     
     
@@ -214,13 +203,13 @@ export default function BillLabCreate(){
   }
 
     }
-     // consider batchformat{batchno,expirydate,qtty,baseunit}
-     //consider baseunoit conversions
+     
+     
      const getSearchfacility=async (service)=>{
-        // console.log(obj)
+        
        
         if (!service){
-            //"clear stuff"
+            
             setProductId("")
             setName("")
             setBaseunit("")
@@ -233,14 +222,14 @@ export default function BillLabCreate(){
             setCategory("")
             setInventoryId("")
             setBilllingId("")
-           // setCalcAmount(null)
+           
             return
         }
  
         setContracts(service.contracts)
          setProductId(service.productId)
          setName(service.name)
-         setCategory(service.category) //Lab Order
+         setCategory(service.category) 
          setBaseunit(service.baseunit)
          setInventoryId(service.inventoryId)
          setBilllingId(service._id)
@@ -249,23 +238,10 @@ export default function BillLabCreate(){
        
     }
      useEffect(() => {
-       /*  console.log(obj)
-        console.log(billMode)
-        if( paymentmode!=="Cash" && obj){
-            const contracts=obj.billingDetails.contracts
-            let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-           console.log(contract[0].price)
-           setSellingPrice(contract[0].price)
-           console.log(sellingprice)
-       }
-         return () => {
-            
-         } */
      }, [obj])
 
      useEffect(() => {
          setCurrentUser(user)
-         //console.log(currentUser)
          return () => {
          
          }
@@ -276,19 +252,14 @@ export default function BillLabCreate(){
      }
  
      const handleChangeType=async (e)=>{
-         //console.log(e.target.value)
          await setType(e.target.value)
      }
  
      const handleAmount= async()=>{
          await setQAmount(null)
-        // alert("Iam chaning qamount")
      }
 
      const handleClickProd=async()=>{
-       /*   console.log("amount: ",productItemI.amount)
-         console.log("qamount: ",qamount)
-         console.log("calcamount: ",calcamount) */
         if ( quantity===0||quantity===""|| productId===""||paymentmode==="" ){
             toast({
                 message: 'You need to choose a product and quantity to proceed',
@@ -304,7 +275,6 @@ export default function BillLabCreate(){
              prevProd=>prevProd.concat(productItemI)
          )
         handleUpdateTotal()
-            // generate billing info
             const billInfo={
                 orderInfo:{
                     orderId:medication._id,
@@ -339,25 +309,24 @@ export default function BillLabCreate(){
                   billing_status:"Unpaid"
                 }
 
-        //update order
         
         OrderServ.patch(medication._id,{
-            order_status:"Billed", //Billed
+            order_status:"Billed",
             billInfo,
         }).then((resp)=>{
-           // medication=resp
-           // console.log(resp)
+          
+          
              handleRow(resp) 
-            //update dispense
+           
 
         })
         .catch((err)=>{
             console.log(err)
         })
         
-        //update status(billed) + action()
-        //?attached chosen product to medication
-        //dispense helper?
+       
+       
+       
          setName("")
          setBaseunit("")
          setQuantity("")
@@ -365,46 +334,18 @@ export default function BillLabCreate(){
          setSellingPrice("")
          setInvQuantity("")
              handleAmount()
-        // setCalcAmount(null)
         await setSuccess(true)
         getSearchfacility(false)
         setObj("")
-        /* console.log(success)
-        console.log(qamount)
-        console.log(productItem) */
         setChangeAmount(true)
        
      }
-   //check user for facility or get list of facility  
-    /*  useEffect(()=>{
-         //setFacility(user.activeProductEntry.FacilityId)//
-       if (!user.stacker){
-           console.log(currentUser)
-            /* setValue("facility", user.currentEmployee.facilityDetail._id,  {
-             shouldValidate: true,
-             shouldDirty: true
-         })  
- 
-       }
-     }) */
  
      const handleQtty=async(e)=>{
-        /*  if (invquantity<e.target.value){
-             toast({
-                 message: 'You can not sell more quantity than exist in inventory ' ,
-                 type: 'is-danger',
-                 dismissible: true,
-                 pauseOnHover: true,
-               })
-             return
-         } */
          setQuantity(e.target.value)
          if (e.target.vlue===""){
             setQuantity(1)
          }
-        /*  calcamount1=quantity*sellingprice
-         await setCalcAmount(calcamount1) */
-         //console.log(calcamount)
      }
  
      useEffect( () => {

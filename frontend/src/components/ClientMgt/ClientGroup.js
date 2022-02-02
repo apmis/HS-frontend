@@ -5,26 +5,20 @@ export default function ClientGroup({list,closeModal,choosen,dupl,reg,depen}) {
     const [selectedClient, setSelectedClient]=useState("") 
     const handleRow= async(Client)=>{
         await setSelectedClient(Client)
-        const    newClientModule={
+
+        const newClientModule={
             selectedClient:Client,
             show :'detail'
         }
-       // choosen(Client)
+
         closeModal()
 
-      // await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+    //   await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
     }
 
     return ( 
         <div>
              <div className="table-container pullup  vscrola"  id="scrollableDiv">
-               {/*  <InfiniteScroll
-                        dataLength={facilities.length}
-                        next={getFacilities}
-                        hasMore={total>facilities.length}
-                        loader={<h4>Loading...</h4>}
-                        scrollableTarget="scrollableDiv"
-                    > */}
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth  ">
                                     <thead>
                                         <tr>
@@ -36,7 +30,6 @@ export default function ClientGroup({list,closeModal,choosen,dupl,reg,depen}) {
                                         <th><abbr title="Gender">Gender</abbr></th> 
                                         <th><abbr title="Phone">Phone</abbr></th>
                                         <th><abbr title="Email">Email</abbr></th>
-                                        {/* <th><abbr title="Tags">Tags</abbr></th> */}
                                         <th><abbr title="Actions">Actions</abbr></th>
                                         </tr>
                                     </thead>
@@ -55,7 +48,6 @@ export default function ClientGroup({list,closeModal,choosen,dupl,reg,depen}) {
                                             <td>{Client.gender}</td>
                                              <td>{Client.phone}</td>
                                             <td>{Client.email}</td>
-                                           {/*  <td>{Client.clientTags}</td> */}
                                             <td><button className="button selectadd" onClick={()=>dupl(Client)}>Duplicate</button><button className="button selectadd" onClick={()=>reg(Client)}>Register</button><button className="button selectadd" onClick={()=>depen(Client)}>Dependent</button></td>
                                            
                                             </tr>
@@ -63,7 +55,6 @@ export default function ClientGroup({list,closeModal,choosen,dupl,reg,depen}) {
                                         ))}
                                     </tbody>
                                     </table>
-                                   {/*  </InfiniteScroll> */}
               </div>                      
         </div>
     )

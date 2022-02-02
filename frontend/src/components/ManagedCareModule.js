@@ -18,9 +18,9 @@ import BillService from './Finance/BillService'
 import FacilityAccount from './Finance/FacilityAccount'
 
 export default function ManagedCareModule() {
-    const {state,setState}=useContext(ObjectContext) //,setState
+    const {state,setState}=useContext(ObjectContext) 
     const {user,setUser}=useContext(UserContext)
-    // eslint-disable-next-line
+    
     const [selectedStore,setSelectedStore]=useState()
     const [showModal,setShowModal]=useState(false)
     const [showmenu, setShowMenu]=useState(false)
@@ -66,7 +66,6 @@ export default function ManagedCareModule() {
     return (
             <section className="section has-background-info remPad">
                
-               {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
                         <div className="container minHt ">
                             <div className="navbar-brand minHt">
@@ -76,9 +75,6 @@ export default function ManagedCareModule() {
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>
                                 
-                            {/* <div className="navbar-item">
-                                <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
-                            </div> */}
                                 <span className="navbar-burger minHt" data-target="navbarMenuHeroB" onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
@@ -91,28 +87,6 @@ export default function ManagedCareModule() {
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
 
-                                   {/*  <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/revenue`}>Funds</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/revenue`}>Care Provider</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/revenue`}>Employer</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/revenue`}>HIA</NavLink>
-                                    </div>
-
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/revenue`}>Complaints</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/billservice`}>Premiums</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/billservice`}>Health Plans</NavLink>
-                                    </div> */}
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/payment`}>Claims Payment</NavLink>
                                     </div>
@@ -139,32 +113,11 @@ export default function ManagedCareModule() {
                                         <NavLink to={`${url}/services`}>Tariff</NavLink>
                                     </div>
                                      
-                                   {/* <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-exit`}>Product Exit</NavLink>
-                                    </div>
-                                    <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-products`}>Products</NavLink>
-                                    </div>
-                                    <div className="navbar-item">
-                                        <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
-                                    </div> */}
-                                {/* <span className="navbar-item">
-                                <div className="button is-info is-inverted">
-                                    <span className="icon">
-                                    <i className="fab fa-github"></i>
-                                    </span>
-                                    <span>Download</span>
-                                </div>
-                                </span> */}
                                 </div>
                             </div>
                         </div>
                     </nav>
                     
-               {/*  </div> */}
-                
-                {/* <div className="section"> */}
-                {/* <div className="container mvUp " > */}
                        
                     <Switch>
                         <Route path={path} exact>
@@ -203,10 +156,6 @@ export default function ManagedCareModule() {
                                         <section className="modal-card-body">
                                         <StoreListStandalone standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>        
             </section>

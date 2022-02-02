@@ -3,25 +3,25 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {ProductCreate} from './Products'
 var random = require('random-string-generator');
-// eslint-disable-next-line
+
 const searchfacility={};
 
 export default function BillDispenseCreate(){
-    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    
      const [error, setError] =useState(false)
      const [success, setSuccess] =useState(false)
      const [message,setMessage] = useState("")
-     // eslint-disable-next-line
+     
      const [facility,setFacility] = useState()
      const ProductEntryServ=client.service('productentry')
-     //const history = useHistory()
-     const {user} = useContext(UserContext) //,setUser
-     // eslint-disable-next-line
+     
+     const {user} = useContext(UserContext) 
+     
      const [currentUser,setCurrentUser] = useState()
      const [type,setType] = useState("Sales")
      const [documentNo,setDocumentNo] = useState("")
@@ -60,14 +60,14 @@ export default function BillDispenseCreate(){
          name,
          quantity,
          sellingprice,
-         amount:calcamount, //qamount||
+         amount:calcamount, 
          baseunit,
          costprice,
          billingId
  
      }
-     // consider batchformat{batchno,expirydate,qtty,baseunit}
-     //consider baseunoit conversions
+     
+     
      const getSearchfacility=(obj)=>{
  
          setProductId(obj.productId)
@@ -79,7 +79,7 @@ export default function BillDispenseCreate(){
          setCostprice(obj.costprice)
          setBilllingId(obj.billingId)
          if (!obj){
-             //"clear stuff"
+             
              setProductId("")
              setName("")
              setBaseunit("")
@@ -88,19 +88,14 @@ export default function BillDispenseCreate(){
              setInvQuantity("")
              setQAmount(null)
              setCostprice("")
-            // setCalcAmount(null)
+            
  
          }
          
-        /*  setValue("facility", obj._id,  {
-             shouldValidate: true,
-             shouldDirty: true
-         }) */
      }
      
      useEffect(() => {
          setCurrentUser(user)
-         //console.log(currentUser)
          return () => {
          
          }
@@ -118,7 +113,6 @@ export default function BillDispenseCreate(){
  
      const handleAmount= async()=>{
          await setQAmount(null)
-        // alert("Iam chaning qamount")
      }
      const handleClickProd=async()=>{
          console.log("amount: ",productItemI.amount)
@@ -147,25 +141,9 @@ export default function BillDispenseCreate(){
          setSellingPrice("")
          setInvQuantity("")
              handleAmount()
-        // setCalcAmount(null)
         await setSuccess(true)
-       /*  console.log(success)
-        console.log(qamount)
-        console.log(productItem) */
         setChangeAmount(true)
      }
-   //check user for facility or get list of facility  
-    /*  useEffect(()=>{
-         //setFacility(user.activeProductEntry.FacilityId)//
-       if (!user.stacker){
-           console.log(currentUser)
-            /* setValue("facility", user.currentEmployee.facilityDetail._id,  {
-             shouldValidate: true,
-             shouldDirty: true
-         })  
- 
-       }
-     }) */
  
      const handleQtty=async(e)=>{
          if (invquantity<e.target.value){
@@ -233,7 +211,7 @@ export default function BillDispenseCreate(){
         
            console.log("b4 facility",productEntry);
            if (user.currentEmployee){
-          productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+          productEntry.facility=user.currentEmployee.facilityDetail._id  
            }else{
              toast({
                  message: 'You can not remove inventory from any organization',
@@ -258,9 +236,8 @@ export default function BillDispenseCreate(){
            console.log("b4 create",productEntry);
          ProductEntryServ.create(productEntry)
          .then((res)=>{
-                 //console.log(JSON.stringify(res))
+                 
                  resetform()
-                /*  setMessage("Created ProductEntry successfully") */
                  setSuccess(true)
                  toast({
                      message: 'ProductExit created succesfully',
@@ -292,7 +269,6 @@ export default function BillDispenseCreate(){
          setChangeAmount((rev)=>(!rev))
          
      }
-    // console.log("i am rendering")
  
      useEffect(() => {
          const today=new Date().toLocaleString()
@@ -325,7 +301,7 @@ export default function BillDispenseCreate(){
              </div>
              <div className="card-content ">
     
-             <form onSubmit={onSubmit}> {/* handleSubmit(onSubmit) */}
+             <form onSubmit={onSubmit}> 
              <div className="field is-horizontal">
              <div className="field-body">
              <div className="field">    
@@ -343,7 +319,7 @@ export default function BillDispenseCreate(){
              </div>
              <div className="field">
                      <p className="control has-icons-left has-icons-right">
-                         <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
+                         <input className="input is-small" value={source} name="client" type="text" onChange={e=>setSource(e.target.value)} placeholder="Client" />
                          <span className="icon is-small is-left">
                              <i className="fas fa-hospital"></i>
                          </span>                    
@@ -351,20 +327,12 @@ export default function BillDispenseCreate(){
                  </div>
             
              </div>
-             </div> {/* horizontal end */}
-            {/*  <div className="field">
-                 <p className="control has-icons-left"> // Audit/initialization/Purchase Invoice 
-                     <input className="input is-small"  ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                     <span className="icon is-small is-left">
-                     <i className=" fas fa-user-md "></i>
-                     </span>
-                 </p>
-             </div> */}
+             </div> 
                 <div className="field is-horizontal">
                 <div className="field-body">
                 <div className="field">
                  <p className="control has-icons-left has-icons-right">
-                     <input className="input is-small"  /* ref={register({ required: true })} */ value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
+                     <input className="input is-small"  value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
                      <span className="icon is-small is-left">
                          <i className="fas fa-map-signs"></i>
                      </span>
@@ -372,7 +340,7 @@ export default function BillDispenseCreate(){
              </div>
              <div className="field">
                  <p className="control has-icons-left">
-                     <input className="input is-small" /* ref={register} */ name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
+                     <input className="input is-small"  name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
                      <span className="icon is-small is-left">
                      <i className="fas fa-phone-alt"></i>
                      </span>
@@ -380,7 +348,7 @@ export default function BillDispenseCreate(){
              </div>
              <div className="field">
                  <p className="control has-icons-left">
-                     <input className="input is-small" /* ref={register({ required: true })} */ value={totalamount} name="totalamount" type="text" onChange={e=>setTotalamount(e.target.value)} placeholder=" Total Amount"/>
+                     <input className="input is-small" value={totalamount} name="totalamount" type="text" onChange={e=>setTotalamount(e.target.value)} placeholder=" Total Amount"/>
                      <span className="icon is-small is-left">
                      <i className="fas fa-coins"></i>
                      </span>
@@ -393,15 +361,14 @@ export default function BillDispenseCreate(){
                  </form>   
                 
             
-          {/* array of ProductEntry items */}
          
          <label className="label is-small">Add Product Items:</label>
           <div className="field is-horizontal">
              <div className="field-body">
-             <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+             <div className="field is-expanded" >
                      <InventorySearch  getSearchfacility={getSearchfacility} clear={success} /> 
                      <p className="control has-icons-left " style={{display:"none"}}>
-                         <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
+                         <input className="input is-small"  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
                          <span className="icon is-small is-left">
                          <i className="fas  fa-map-marker-alt"></i>
                          </span>
@@ -414,7 +381,7 @@ export default function BillDispenseCreate(){
              <div className="field-body" >
                  <div className="field" style={{width:"40%"}}>
                  <p className="control has-icons-left" >
-                     <input className="input is-small"  /* ref={register({ required: true })} */ name="quantity" value={quantity} type="text" onChange={ e=> handleQtty(e)} placeholder="Quantity"  />
+                     <input className="input is-small"  name="quantity" value={quantity} type="text" onChange={ e=> handleQtty(e)} placeholder="Quantity"  />
                      <span className="icon is-small is-left">
                      <i className="fas fa-hashtag"></i>
                      </span>
@@ -423,10 +390,10 @@ export default function BillDispenseCreate(){
          <label >{baseunit}</label>
              </div> 
              <div className="field">
-             <label>Amount:</label>{/* <p>{quantity*sellingprice}</p> */}
+             <label>Amount:</label>
              </div>
              <div className="field" style={{width:"40%"}}>
-                 <p className="control has-icons-left " /* style={{display:"none"}} */>
+                 <p className="control has-icons-left " >
                      <input className="input is-small" name="qamount" disabled={changeAmount} value={calcamount} type="text"  onChange={async e=> await setCalcAmount(e.target.value)}  placeholder="Amount"   />
                      <span className="icon is-small is-left">
                      <i className="fas fa-dollar-sign"></i>
@@ -485,7 +452,7 @@ export default function BillDispenseCreate(){
                      </button>
                  </p>
                  <p className="control">
-                     <button className="button is-warning is-small" disabled={!productItem.length>0} /* onClick={onSubmit} */>
+                     <button className="button is-warning is-small" disabled={!productItem.length>0} >
                          Clear
                      </button>
                  </p>
@@ -506,17 +473,11 @@ export  function InventorySearch({getSearchfacility,clear}) {
     
     const productServ=client.service('inventory')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
@@ -526,38 +487,18 @@ export  function InventorySearch({getSearchfacility,clear}) {
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.name)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
     }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(value)=>{
         setVal(value)
@@ -566,11 +507,11 @@ export  function InventorySearch({getSearchfacility,clear}) {
             getSearchfacility(false)
             return
         }
-        const field='name' //field variable
+        const field='name' 
 
        
         if (value.length>=3 ){
-            productServ.find({query: {     //service
+            productServ.find({query: {     
                  [field]: {
                      $regex:value,
                      $options:'i'
@@ -642,10 +583,9 @@ export  function InventorySearch({getSearchfacility,clear}) {
                                 <i className="fas fa-search"></i>
                             </span>
                         </div>
-                        {/* {searchError&&<div>{searchMessage}</div>} */}
                         <div className="dropdown-menu expanded" style={{width:"100%"}}>
                             <div className="dropdown-content">
-                          { facilities.length>0?"":<div className="dropdown-item" /* onClick={handleAddproduct} */> <span> {val} is not in your inventory</span> </div>}
+                          { facilities.length>0?"":<div className="dropdown-item" > <span> {val} is not in your inventory</span> </div>}
 
                               {facilities.map((facility, i)=>(
                                     
@@ -673,13 +613,8 @@ export  function InventorySearch({getSearchfacility,clear}) {
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        {/* <StoreList standalone="true" /> */}
                                         <ProductCreate />
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>       
         </div>

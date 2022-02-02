@@ -3,7 +3,7 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -16,14 +16,14 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-// Demo styles, see 'Styles' section below for some notes on use.
+
 import 'react-accessible-accordion/dist/fancy-example.css';
 import { PrescriptionList } from '../EncounterMgt/Prescription';
 import BillServiceCreate from '../Finance/BillServiceCreate'
 
 export default function PatientProfile () {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedClient,setSelectedClient]=useState() 
     const [billingModal, setBillingModal] =useState(false)
     const client =state.ClientModule.selectedClient
@@ -52,23 +52,13 @@ export default function PatientProfile () {
         address,
         city,
         lga,
-        //state,
+        
         country,
         allergies,
         comorbidities,
         paymentinfo
     } =state.ClientModule.selectedClient 
 
-  /*   const {
-        cash,
-        cashDetails,
-        familycover,
-        familyDetails,
-        companycover,
-        companyDetails,
-        hmocover,
-        hmoDetails
-        } =state.ClientModule.selectedClient.paymentinfo */
 
     useEffect(() => {
         
@@ -79,8 +69,6 @@ export default function PatientProfile () {
 
     useEffect(() => {
       setSelectedClient(state.ClientModule.selectedClient)
-       /*  console.log(client)
-        console.log(selectedClient) */
         return () => {
             
         }
@@ -90,7 +78,6 @@ export default function PatientProfile () {
         }
   const showBilling = () =>{
         setBillingModal(true)
-       //history.push('/app/finance/billservice')
         }
 
     return (
@@ -106,10 +93,6 @@ export default function PatientProfile () {
                         <div className="media-content">
                             <p className="title is-7">{firstname} {middlename} {lastname}</p>
                             <p className="subtitle is-7 payment">
-                                {/* {cash && "Cash"}
-                                {familycover && "Family Cover"}
-                                {companycover && "Company Cover"}
-                                {hmocover && "HMO Cover"} */}
                                 </p>
                                 <button className="button is-success is-small btnheight mt-2" onClick={showBilling}>Bill Client</button>
                         </div>
@@ -120,7 +103,6 @@ export default function PatientProfile () {
                         <time dateTime="2016-1-1"> {formatDistanceToNowStrict(new Date(dob))}</time> { gender} {maritalstatus} {religion} {profession}<br/>
                         {bloodgroup} {genotype} <br/>
                         <strong> {clientTags}</strong>
-                       {/*  {phone} {email} */}
                         
                        
                         </div>
@@ -128,10 +110,6 @@ export default function PatientProfile () {
                     </div>
                     <div className="card mt-1">
                         <div className="card-content p-1">
-                            {/*<div >
-                             <label className="label is-size-7">Tags:</label> 
-                           <strong> {clientTags}</strong>
-                            </div>*/}
                             <div>
                             <label className="label is-size-7">Specific Instructions:</label>
                             {specificDetails}
@@ -223,7 +201,6 @@ export default function PatientProfile () {
                         </div>
                         <div>                       
                     </div>
-                    {/* <VideoConference /> */}
                 <div className={`modal ${billingModal?"is-active":""}` }>
                 <div className="modal-background"></div>
                 <div className="modal-card">
@@ -232,13 +209,8 @@ export default function PatientProfile () {
                     <button className="delete" aria-label="close"  onClick={handlecloseModal1}></button>
                     </header>
                     <section className="modal-card-body">
-                    {/* <StoreList standalone="true" /> */}
                     <BillServiceCreate closeModal={handlecloseModal1}/>
                     </section>
-                    {/* <footer className="modal-card-foot">
-                    <button className="button is-success">Save changes</button>
-                    <button className="button">Cancel</button>
-                    </footer> */}
                 </div>
             </div>          
         </div>

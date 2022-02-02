@@ -3,15 +3,14 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-//import BillDispenseCreate from './BillPrescriptionCreate'
+
 import PatientProfile from '../ClientMgt/PatientProfile'
-/* import {ProductCreate} from './Products' */
-// eslint-disable-next-line
-//const searchfacility={};
+
+
 import {
     Accordion,
     AccordionItem,
@@ -20,26 +19,26 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-// Demo styles, see 'Styles' section below for some notes on use.
+
 import 'react-accessible-accordion/dist/fancy-example.css';
 
 export default function ClientBilledPrescription({selectedClient}){
-    // const { register, handleSubmit, watch, errors } = useForm();
-     // eslint-disable-next-line
+    
+     
      const [error, setError] =useState(false)
-      // eslint-disable-next-line
+      
      const [success, setSuccess] =useState(false)
-      // eslint-disable-next-line
+      
     const [message, setMessage] = useState("") 
      const OrderServ=client.service('order')
-     //const history = useHistory()
-    // const {user,setUser} = useContext(UserContext)
+     
+    
      const [clientOrders,setClientOrders]=useState([])
-      // eslint-disable-next-line
-    const [selectedDispense, setSelectedDispense]=useState() //
-     // eslint-disable-next-line
+      
+    const [selectedDispense, setSelectedDispense]=useState() 
+     
      const {state,setState}=useContext(ObjectContext)
-     // eslint-disable-next-line
+     
      const {user,setUser}=useContext(UserContext)
      const [selectedMedication, setSelectedMedication] =useState("")
 
@@ -47,7 +46,7 @@ export default function ClientBilledPrescription({selectedClient}){
      console.log(selectedClient)
  
      const handleSelectedClient= async(Client)=>{
-         // await setSelectedClient(Client)
+         
           const    newClientModule={
               selectedClient:Client,
               show :'detail'
@@ -55,10 +54,10 @@ export default function ClientBilledPrescription({selectedClient}){
          await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
       }
  
-     const handleMedicationRow= async(ProductEntry)=>{ //handle selected single order
-         //console.log("b4",state)
+     const handleMedicationRow= async(ProductEntry)=>{ 
+         
      
-         //console.log("handlerow",ProductEntry)
+         
          await handleSelectedClient(ProductEntry.client)
  
      
@@ -69,8 +68,8 @@ export default function ClientBilledPrescription({selectedClient}){
              show :'detail'
          }
        await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-        //console.log(state)
-       // ProductEntry.show=!ProductEntry.show
+        
+       
      
      }
  
@@ -80,7 +79,7 @@ export default function ClientBilledPrescription({selectedClient}){
              show :'create'
              }
         await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
-        //console.log(state)
+        
          
  
      }
@@ -88,7 +87,7 @@ export default function ClientBilledPrescription({selectedClient}){
  
      const handleSearch=(val)=>{
         const field='name'
-        //console.log(val)
+        
         OrderServ.find({query: {
                  order: {
                      $regex:val,
@@ -103,37 +102,37 @@ export default function ClientBilledPrescription({selectedClient}){
                  order_status:"Billed",  
                  clientId:selectedClient,
                  order_category:"Prescription",
-                // storeId:state.StoreModule.selectedStore._id,
-                //facility:user.currentEmployee.facilityDetail._id || "",
+                
+                
                  $limit:10,
                  $sort: {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-                // console.log(res)
+                
                 setClientOrders(res.data)
                  setMessage(" ProductEntry  fetched successfully")
                  setSuccess(true) 
              })
              .catch((err)=>{
-                // console.log(err)
+                
                  setMessage("Error fetching ProductEntry, probable network issues "+ err )
                  setError(true)
              })
          }
      const getFacilities= async()=>{
         
-             // console.log("here b4 server")
+             
      const findProductEntry= await OrderServ.find(
              {query: {
                  order_category:"Prescription",
                  fulfilled:false,
                  destination: user.currentEmployee.facilityDetail._id,
                  order_status:"Billed",  
-                 clientId:selectedClient,//selectedClient, //
-                 // need to set this finally
-                 //storeId:state.StoreModule.selectedStore._id,
-                 //clientId:state.ClientModule.selectedClient._id,
+                 clientId:selectedClient,
+                 
+                 
+                 
                  $limit:50,
                  $sort: {
                      createdAt: -1
@@ -142,12 +141,12 @@ export default function ClientBilledPrescription({selectedClient}){
  
              console.log("clientorders", findProductEntry)
              await setClientOrders(findProductEntry.data)
-             //await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
+             
              }   
  
-     //1.consider using props for global data
+     
      useEffect(() => {
-         // console.log("started")
+         
              getFacilities()
              OrderServ.on('created', (obj)=>getFacilities())
              OrderServ.on('updated', (obj)=>getFacilities())
@@ -167,38 +166,13 @@ export default function ClientBilledPrescription({selectedClient}){
              show :'detail'
          }
          await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
-         //console.log(state)
+         
          
          }
  
  
      return(     
              <>  
-                 {/* <div className="level">
-                     <div className="level-left">
-                         <div className="level-item">
-                             <div className="field">
-                                 <p className="control has-icons-left  ">
-                                     <DebounceInput className="input is-small " 
-                                         type="text" placeholder="Search Medications"
-                                         minLength={3}
-                                         debounceTimeout={400}
-                                         onChange={(e)=>handleSearch(e.target.value)} />
-                                     <span className="icon is-small is-left">
-                                         <i className="fas fa-search"></i>
-                                     </span>
-                                 </p>
-                             </div>
-                         </div>
-                     </div> */}
-                     {/* <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Billed Prescriptions </span></div> */}
-                      {/* <div className="level-right">
-                        <div className="level-item"> 
-                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                         </div> 
-                     </div>*/}
- 
-                 {/* </div> */}
                  <div className=" pullupx ">
                      <div className=" is-fullwidth vscrollable pr-1">   
                      <Accordion allowZeroExpanded>
@@ -206,7 +180,7 @@ export default function ClientBilledPrescription({selectedClient}){
                              <AccordionItem  >
                                 <AccordionItemHeading >
                                 <AccordionItemButton  >
-                                       {/*  {i+1}  {Clinic.clientname} with  */ } {clientOrders.length} billed medication(s)  
+                                    {clientOrders.length} billed medication(s)  
                                  </AccordionItemButton>
                                  </AccordionItemHeading>
                                  <AccordionItemPanel>
@@ -224,9 +198,9 @@ export default function ClientBilledPrescription({selectedClient}){
                                              <tbody>
                                              { clientOrders.map((order, i)=>(
  
-                                                         <tr key={order._id} /* onClick={()=>handleMedicationRow(order)} */ className={order._id===(selectedMedication?._id||null)?"is-selected":""}>                                         
+                                                         <tr key={order._id}className={order._id===(selectedMedication?._id||null)?"is-selected":""}>                                         
                                                          <th>{i+1}</th>
-                                                         <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
+                                                         <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> 
                                                          <th>{order.order}</th>
                                                          <td>{order.fulfilled==="True"?"Yes":"No"}</td>
                                                          <td>{order.order_status}</td>
@@ -239,10 +213,6 @@ export default function ClientBilledPrescription({selectedClient}){
                                </AccordionItemPanel>                                          
                                  </AccordionItem>
                            
-                             {/* <!-- Add Ref to Load More div --> */}
-                             {/*  <div className="loading" ref={loader}>
-                                     <h2>Load More</h2>
-                         </div> */}
                          </Accordion>
                      </div>                   
                  </div>  

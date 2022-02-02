@@ -4,7 +4,7 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import AsthmaIntake from './AsthmaIntake';
@@ -40,16 +40,16 @@ export default function EncounterRight() {
 }
 
 export function VitalSignCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
     const [docStatus,setDocStatus] = useState("Draft")
@@ -67,8 +67,8 @@ export function VitalSignCreate(){
                })
 
            ))
-          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
-          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+          
+          
    }
         return () => {
             draftDoc={}
@@ -84,21 +84,16 @@ export function VitalSignCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -108,11 +103,8 @@ export function VitalSignCreate(){
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-         // console.log(data);
         if (!!data.Height && !!data.Weight){
             data.BMI=Number(data.Weight)/((Number(data.Height))**2)
-          //  console.log(data.Height,data.Weight)
            
                 if (data.BMI>=30){
                     data.BMI_Status="Obese"
@@ -126,13 +118,11 @@ export function VitalSignCreate(){
                 if (data.BMI< 18.5){
                     data.BMI_Status="Underweight "
                 }
-              //  console.log(data.BMI, data.BMI_Status)
-           // return
         }
         
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
@@ -155,17 +145,13 @@ export function VitalSignCreate(){
               return
           }
 
-         // console.log(document)
          let confirm = window.confirm(`You are about to save this document ${ document.documentname} ?`)
          if (confirm){
            if (!!draftDoc &&  draftDoc.status==="Draft"){
                ClientServ.patch(draftDoc._id, document)
                .then((res)=>{
-                   //console.log(JSON.stringify(res))
                    e.target.reset();
                    setDocStatus("Draft")
-                  // setAllergies([])
-                  /*  setMessage("Created Client successfully") */
                    setSuccess(true)
                    toast({
                        message: 'Documentation updated succesfully',
@@ -187,9 +173,7 @@ export function VitalSignCreate(){
            }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Documentation created succesfully',
@@ -213,11 +197,9 @@ export function VitalSignCreate(){
     } 
 
       const handleChangeStatus=async (e)=>{
-        // await setAppointment_type(e.target.value)
        
         setDocStatus(e.target.value)
 
-        //console.log(e.target.value)
 
         }
 
@@ -230,9 +212,6 @@ export function VitalSignCreate(){
                 </p>
             </div>
             <div className="card-content vscrollable">
-            {/* <p className=" is-small">
-                    Kindly search Client list before creating new Clients!
-                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field is-horizontal">
                 <div className="field-body">
@@ -380,7 +359,7 @@ export function VitalSignCreate(){
 }
 
 export function ClinicalNoteCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
@@ -406,8 +385,6 @@ export function ClinicalNoteCreate(){
                })
 
            ))
-          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
-          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
    }
         return () => {
             draftDoc={}
@@ -423,21 +400,13 @@ export function ClinicalNoteCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -447,11 +416,9 @@ export function ClinicalNoteCreate(){
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-          //console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
@@ -462,7 +429,6 @@ export function ClinicalNoteCreate(){
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status=docStatus==="Draft"?"Draft":"completed"
-          //console.log(document)
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -480,11 +446,8 @@ export function ClinicalNoteCreate(){
             if (!!draftDoc &&  draftDoc.status==="Draft"){
                 ClientServ.patch(draftDoc._id, document)
                 .then((res)=>{
-                    //console.log(JSON.stringify(res))
                     e.target.reset();
                     setDocStatus("Draft")
-                   // setAllergies([])
-                   /*  setMessage("Created Client successfully") */
                     setSuccess(true)
                     toast({
                         message: 'Documentation updated succesfully',
@@ -506,9 +469,7 @@ export function ClinicalNoteCreate(){
             }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Documentation created succesfully',
@@ -531,11 +492,9 @@ export function ClinicalNoteCreate(){
     }
 }
 const handleChangeStatus=async (e)=>{
-    // await setAppointment_type(e.target.value)
    
     setDocStatus(e.target.value)
 
-    //console.log(e.target.value)
 
     }
     return (
@@ -547,18 +506,12 @@ const handleChangeStatus=async (e)=>{
                 </p>
             </div>
             <div className="card-content vscrollable">
-            {/* <p className=" is-small">
-                    Kindly search Client list before creating new Clients!
-                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field is-horizontal">
                 <div className="field-body">
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
                             <textarea className="textarea is-small" ref={register()}  name="Symptoms" type="text" placeholder="Symptoms" />
-                           {/*  <span className="icon is-small is-left">
-                                <i className="fas fa-hospital"></i>
-                            </span>   */}                  
                         </p>
                     </div>
                     </div>
@@ -568,9 +521,6 @@ const handleChangeStatus=async (e)=>{
                     <div className="field">
                         <div className="control has-icons-left has-icons-right">
                         <textarea className="textarea is-small" ref={register()}  name="Clinical Findings" type="text" placeholder="Clinical Findings" />
-                        {/* <span className="icon is-small is-left">
-                            <i className="fas fa-map-signs"></i>
-                        </span> */}
                         
                         </div>
                     </div>
@@ -581,15 +531,10 @@ const handleChangeStatus=async (e)=>{
                 <div className="field">
                     <p className="control has-icons-left">
                         <textarea className="textarea is-small" ref={register()} name="Diagnosis" type="text" placeholder="Diagnosis"/>
-                        {/* <span className="icon is-small is-left">
-                        <i className=" fas fa-user-md "></i>
-                        </span> */}
                     </p>
                 </div>
                 </div>
                 </div>
-        {/* <div className="field is-horizontal">
-            <div className="field-body"> */}       
                 <div className="field">
                     <div className="control has-icons-left">
                     
@@ -633,16 +578,16 @@ const handleChangeStatus=async (e)=>{
 }
 
 export function LabNoteCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
 
@@ -660,8 +605,6 @@ export function LabNoteCreate(){
                })
 
            ))
-          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
-          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
    }
         return () => {
             draftDoc={}
@@ -677,21 +620,13 @@ export function LabNoteCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -701,23 +636,21 @@ export function LabNoteCreate(){
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-          //console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
-          document.documentname=`${data.Investigation} Result`  //"Lab Result"
+          document.documentname=`${data.Investigation} Result`  
           document.documentType="Diagnostic Result"
-         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+         
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status=docStatus==="Draft"?"Draft":"completed"
-         // console.log(document)
+         
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -734,11 +667,10 @@ export function LabNoteCreate(){
             if (!!draftDoc &&  draftDoc.status==="Draft"){
                 ClientServ.patch(draftDoc._id, document)
                 .then((res)=>{
-                    //console.log(JSON.stringify(res))
+                    
                     e.target.reset();
                     setDocStatus("Draft")
-                   // setAllergies([])
-                   /*  setMessage("Created Client successfully") */
+                   
                     setSuccess(true)
                     toast({
                         message: 'Documentation updated succesfully',
@@ -760,9 +692,7 @@ export function LabNoteCreate(){
             }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Lab Result created succesfully',
@@ -787,11 +717,9 @@ export function LabNoteCreate(){
 } 
 
 const handleChangeStatus=async (e)=>{
-    // await setAppointment_type(e.target.value)
    
     setDocStatus(e.target.value)
 
-    //console.log(e.target.value)
 
     }
 const handleChangePart=(e)=>{
@@ -807,12 +735,6 @@ const handleChangePart=(e)=>{
             </div>
             <div className="card-content vscrollable remPad1">
 
-              {/*   <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label> */}
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field">
                         <p className="control has-icons-left has-icons-right">
@@ -875,16 +797,16 @@ const handleChangePart=(e)=>{
 }
 
 export function NursingNoteCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
 
@@ -902,8 +824,8 @@ export function NursingNoteCreate(){
                })
 
            ))
-          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
-          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+          
+          
    }
         return () => {
             draftDoc={}
@@ -919,21 +841,16 @@ export function NursingNoteCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -943,23 +860,19 @@ export function NursingNoteCreate(){
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-          //console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
           document.documentname="Nursing Note"
           document.documentType="Nursing Note"
-         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status=docStatus==="Draft"?"Draft":"completed"
-         // console.log(document)
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -976,11 +889,8 @@ export function NursingNoteCreate(){
             if (!!draftDoc &&  draftDoc.status==="Draft"){
                 ClientServ.patch(draftDoc._id, document)
                 .then((res)=>{
-                    //console.log(JSON.stringify(res))
                     e.target.reset();
                     setDocStatus("Draft")
-                   // setAllergies([])
-                   /*  setMessage("Created Client successfully") */
                     setSuccess(true)
                     toast({
                         message: 'Documentation updated succesfully',
@@ -1002,9 +912,7 @@ export function NursingNoteCreate(){
             }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Lab Result created succesfully',
@@ -1029,11 +937,9 @@ export function NursingNoteCreate(){
 } 
 
 const handleChangeStatus=async (e)=>{
-    // await setAppointment_type(e.target.value)
    
     setDocStatus(e.target.value)
 
-    //console.log(e.target.value)
 
     }
 const handleChangePart=(e)=>{
@@ -1049,12 +955,6 @@ const handleChangePart=(e)=>{
             </div>
             <div className="card-content vscrollable remPad1">
 
-              {/*   <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label> */}
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field">
                         <p className="control has-icons-left has-icons-right">
@@ -1117,16 +1017,16 @@ const handleChangePart=(e)=>{
 }
 
 export function DoctorsNoteCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
 
@@ -1144,8 +1044,8 @@ export function DoctorsNoteCreate(){
                })
 
            ))
-          // setSymptoms(draftDoc.documentdetail.Presenting_Complaints)
-          // setAllergies(draftDoc.documentdetail.Allergy_Skin_Test)
+          
+          
    }
         return () => {
             draftDoc={}
@@ -1161,21 +1061,16 @@ export function DoctorsNoteCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -1185,23 +1080,19 @@ export function DoctorsNoteCreate(){
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-          //console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
           document.documentname="Doctor Note"
           document.documentType="Doctor Note"
-         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status=docStatus==="Draft"?"Draft":"completed"
-         // console.log(document)
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -1218,11 +1109,8 @@ export function DoctorsNoteCreate(){
             if (!!draftDoc &&  draftDoc.status==="Draft"){
                 ClientServ.patch(draftDoc._id, document)
                 .then((res)=>{
-                    //console.log(JSON.stringify(res))
                     e.target.reset();
                     setDocStatus("Draft")
-                   // setAllergies([])
-                   /*  setMessage("Created Client successfully") */
                     setSuccess(true)
                     toast({
                         message: 'Documentation updated succesfully',
@@ -1244,9 +1132,7 @@ export function DoctorsNoteCreate(){
             }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Lab Result created succesfully',
@@ -1271,11 +1157,9 @@ export function DoctorsNoteCreate(){
 } 
 
 const handleChangeStatus=async (e)=>{
-    // await setAppointment_type(e.target.value)
    
     setDocStatus(e.target.value)
 
-    //console.log(e.target.value)
 
     }
 const handleChangePart=(e)=>{
@@ -1291,12 +1175,6 @@ const handleChangePart=(e)=>{
             </div>
             <div className="card-content vscrollable remPad1">
 
-              {/*   <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label> */}
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field">
                         <p className="control has-icons-left has-icons-right">
@@ -1360,16 +1238,16 @@ const handleChangePart=(e)=>{
 
 
 export function PrescriptionCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
 
@@ -1384,21 +1262,16 @@ export function PrescriptionCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -1408,11 +1281,10 @@ export function PrescriptionCreate(){
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
           console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
@@ -1426,9 +1298,7 @@ export function PrescriptionCreate(){
           console.log(document)
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Documentation created succesfully',
@@ -1458,9 +1328,6 @@ export function PrescriptionCreate(){
                 </p>
             </div>
             <div className="card-content vscrollable">
-            {/* <p className=" is-small">
-                    Kindly search Client list before creating new Clients!
-                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field is-horizontal">
                 <div className="field-body">
@@ -1579,16 +1446,11 @@ export function PrescriptionCreate(){
    
 }
 export function LabrequestCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
     const {state}=useContext(ObjectContext)
 
@@ -1603,21 +1465,13 @@ export function LabrequestCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
       }
     })
 
@@ -1627,11 +1481,10 @@ export function LabrequestCreate(){
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
           console.log(data);
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName 
           }
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
@@ -1645,9 +1498,7 @@ export function LabrequestCreate(){
           console.log(document)
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Documentation created succesfully',
@@ -1677,9 +1528,6 @@ export function LabrequestCreate(){
                 </p>
             </div>
             <div className="card-content vscrollable">
-            {/* <p className=" is-small">
-                    Kindly search Client list before creating new Clients!
-                </p> */}
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field is-horizontal">
                 <div className="field-body">

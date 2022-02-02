@@ -3,25 +3,22 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import ModuleList from './ModuleList'
 import {toast} from 'bulma-toast'
-// eslint-disable-next-line
+
 const searchfacility={};
 
 
 export default function Employee() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedEmployee,setSelectedEmployee]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Employee  Module</span></div>
-            </div> */}
             <div className="columns ">
             <div className="column is-8 ">
                 <EmployeeList />
@@ -41,16 +38,16 @@ export default function Employee() {
 }
 
 export function EmployeeCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const EmployeeServ=client.service('employee')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
 
 
@@ -65,15 +62,15 @@ export function EmployeeCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeEmployee.FacilityId)//
+        
       if (!user.stacker){
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
             shouldValidate: true,
@@ -88,15 +85,14 @@ export function EmployeeCreate(){
         setError(false)
         setSuccess(false)
           data.createdby=user._id
-          //console.log(data);
+          
           if (user.currentEmployee){
-         // data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         
           }
         EmployeeServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 e.target.reset();
-               /*  setMessage("Created Employee successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Employee created succesfully',
@@ -242,22 +238,22 @@ export function EmployeeCreate(){
 }
 
 export function EmployeeList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const EmployeeServ=client.service('employee')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedEmployee, setSelectedEmployee]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedEmployee, setSelectedEmployee]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
 
 
@@ -268,14 +264,14 @@ export function EmployeeList(){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, EmployeeModule:newEmployeeModule}))
-       //console.log(state)
+       
         
 
     }
     const handleRow= async(Employee)=>{
-        //console.log("b4",state)
+        
 
-        //console.log("handlerow",Employee)
+        
 
         await setSelectedEmployee(Employee)
 
@@ -284,7 +280,7 @@ export function EmployeeList(){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, EmployeeModule:newEmployeeModule}))
-       //console.log(state)
+       
 
     }
 
@@ -361,20 +357,12 @@ export function EmployeeList(){
                 if (user){
                     getFacilities()
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 EmployeeServ.on('created', (obj)=>getFacilities())
                 EmployeeServ.on('updated', (obj)=>getFacilities())
                 EmployeeServ.on('patched', 
                     (obj)=>{
                         getFacilities()
-                        //console.log(facilities.filter(el=>(el._id=selectedEmployee._id)))
 
                 })
                 EmployeeServ.on('removed', (obj)=>getFacilities())
@@ -384,7 +372,6 @@ export function EmployeeList(){
             },[])
 
 
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -426,8 +413,6 @@ export function EmployeeList(){
                                         <th><abbr title="Email">Email</abbr></th>
                                         <th><abbr title="Department">Department</abbr></th>
                                         <th><abbr title="Departmental Unit">Departmental Unit</abbr></th>
-                                       {/*  <th><abbr title="Facility">Facility</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -445,8 +430,6 @@ export function EmployeeList(){
                                             <td>{Employee?.email}</td>
                                             <td>{Employee?.department}</td>
                                             <td>{Employee?.deptunit}</td>
-                                            {/* <td>{Employee.facility}</td>
-                                            <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -463,15 +446,8 @@ export function EmployeeList(){
 
 
 export function EmployeeDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const EmployeeServ=client.service('/Employee')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    const [error, setError] =useState(false)  
+    const [message, setMessage] = useState("") 
     const {state,setState} = useContext(ObjectContext)
     const [showRoles, setShowRoles] = useState("") 
 
@@ -485,7 +461,6 @@ export function EmployeeDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, EmployeeModule:newEmployeeModule}))
-       //console.log(state)
        
     }
     const handleRoles=()=>{
@@ -589,13 +564,6 @@ export function EmployeeDetail(){
               
                 </tr>
                     
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-small "  name= "EmployeeCategory">{Employee.EmployeeCategory}</span>
-                </label>
-                 </div> */}
 
 
         <div className="field mt-2 is-grouped"> 
@@ -626,13 +594,8 @@ export function EmployeeDetail(){
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        {/* <StoreList standalone="true" /> */}
                                         <ModuleList handlecloseModal={handlecloseModal}/>
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>  
         </>
@@ -642,17 +605,17 @@ export function EmployeeDetail(){
 }
 
 export function EmployeeModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
+    const { register, handleSubmit, setValue,reset, errors } = useForm(); 
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
+    
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
+    
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line 
+    
     const EmployeeServ=client.service('employee')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -687,10 +650,6 @@ export function EmployeeModify(){
                 shouldValidate: true,
                 shouldDirty: true
             })
-          /*   setValue("EmployeeCategory", Employee.EmployeeCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
             
             return () => {
                 
@@ -703,7 +662,6 @@ export function EmployeeModify(){
         show :'create'
       }
    await setState((prevstate)=>({...prevstate, EmployeeModule:newEmployeeModule}))
-   //console.log(state)
            }
 
 
@@ -723,14 +681,7 @@ export function EmployeeModify(){
              
         EmployeeServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Employee successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Employee deleted succesfully',
                     type: 'is-success',
@@ -740,8 +691,6 @@ export function EmployeeModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Employee, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting Employee, probable network issues or "+ err,
                     type: 'is-danger',
@@ -753,23 +702,19 @@ export function EmployeeModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
         console.log(data)
         data.facility=Employee.facility
-          //console.log(data);
+          
           
         EmployeeServ.patch(Employee._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Employee successfully")
+                
+               
+               
                  toast({
                     message: 'Employee updated succesfully',
                     type: 'is-success',
@@ -781,8 +726,8 @@ export function EmployeeModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Employee, probable network issues "+ err )
-               // setError(true)
+                
+               
                 toast({
                     message: "Error updating Employee, probable network issues or "+ err,
                     type: 'is-danger',
@@ -878,16 +823,6 @@ export function EmployeeModify(){
                 </p>
                 </label>
                 </div>
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="EmployeeCategory" type="text" placeholder="Employee Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
            
            
             </form>
@@ -924,62 +859,36 @@ export  function InputSearch({getSearchfacility,clear}) {
     
     const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='facilityName' //field variable
+        const field='facilityName' 
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            facilityServ.find({query: {     
                  [field]: {
                      $regex:val,
                      $options:'i'

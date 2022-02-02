@@ -26,16 +26,12 @@ export default function FacilityModule() {
     }
     return (
             <section className="section has-background-info remPad">
-               {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
                         <div className="container minHt ">
                             <div className="navbar-brand minHt ">
                                 <div className="navbar-item ">
                                     <span className="is-small has-text-weight-medium">Health Stack::Facility</span> 
                                 </div>
-                            {/* <div className="navbar-item">
-                                <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
-                            </div> */}
                                 <span className="navbar-burger minHt" data-target="navbarMenuHeroB" onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
@@ -47,21 +43,6 @@ export default function FacilityModule() {
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                      {/*  <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/accessibility`}>User Access</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/careteam`}>Care Teams</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/department`}>Department</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/dept-unit`}>Department Units</NavLink>
-                                    </div> 
-                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/hsmodules`}>Modules</NavLink>
-                                    </div>*/}
                                      <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/bands`}>Bands</NavLink>
                                     </div>
@@ -77,29 +58,10 @@ export default function FacilityModule() {
                                     {user.stacker &&  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
                                     </div>}
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/roaster`}>Roaster</NavLink>
-                                    </div>
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/workspace`}>Workspace</NavLink>
-                                    </div> */}
-                                    
-                                {/* <span className="navbar-item">
-                                <div className="button is-info is-inverted">
-                                    <span className="icon">
-                                    <i className="fab fa-github"></i>
-                                    </span>
-                                    <span>Download</span>
-                                </div>
-                                </span> */}
                                 </div>
                             </div>
                         </div>
                     </nav>
-               {/*  </div> */}
-                
-                {/* <div className="section"> */}
-                {/* <div className="container mvUp " > */}
                        
                     <Switch>
                         <Route path={path} exact>

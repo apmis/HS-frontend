@@ -3,23 +3,22 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
-//import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import Roaster from '../facility/Roaster';
 
 export default function NewPatientConsult() {
 
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const [allergy,setAllergy] = useState("")
     const [reaction,setReaction] = useState("")
@@ -37,7 +36,7 @@ export default function NewPatientConsult() {
      let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
    
 
-     //state.DocumentClassModule.selectedDocumentClass.name
+     
 
      useEffect(() => {
          if(!!draftDoc && draftDoc.status==="Draft"){
@@ -66,21 +65,17 @@ export default function NewPatientConsult() {
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
+        
       if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
+      
       }
     })
 
@@ -141,39 +136,27 @@ export default function NewPatientConsult() {
     const clerk=["Assessment","Plan"]
 
 
-    /*  const joins=(p)=>{ "Chest Discomfort","SOB, 
-        let x=p.split(" ")
-        console.log(x)
-        x.forEach((el,i)=>({
-            setSub(prev => (prev+"_"+el))
-        }
-        ))
-    } */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         setMessage("")
         setError(false)
         setSuccess(false)
         let document={}
-         // data.createdby=user._id
-         // console.log(data)
-          //data.Presenting_Complaints=symptoms
-        //  data.Allergy_Skin_Test=allergies
         
           if (user.currentEmployee){
           document.facility=user.currentEmployee.facilityDetail._id 
-          document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+          document.facilityname=user.currentEmployee.facilityDetail.facilityName
           }
          document.documentdetail=data
-          document.documentname="New Patient Consultation Form"  //"Lab Result"
-         // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+          document.documentname="New Patient Consultation Form"  
+         
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status=docStatus==="Draft"?"Draft":"completed"
-          //console.log(document)
+          
 
           if (
             document.location===undefined ||!document.createdByname || !document.facilityname ){
@@ -191,11 +174,10 @@ export default function NewPatientConsult() {
         if (!!draftDoc &&  draftDoc.status==="Draft"){
             ClientServ.patch(draftDoc._id, document)
             .then((res)=>{
-                    //console.log(JSON.stringify(res))
+                    
                     e.target.reset();
-                  //  setAllergies([])
-                  //  setSymptoms([])
-                   /*  setMessage("Created Client successfully") */
+                  
+                  
                     setSuccess(true)
                     toast({
                         message: 'New Patient Consultation Form updated succesfully',
@@ -217,11 +199,7 @@ export default function NewPatientConsult() {
         }else{
         ClientServ.create(document)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-                //setAllergies([])
-              //  setSymptoms([])
-               /*  setMessage("Created Client successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Pediatric Pulmonology Form created succesfully',
@@ -247,36 +225,22 @@ export default function NewPatientConsult() {
 
 
         const handleChangePart=async (e)=>{
-            //console.log(e)
-            //const (name, value) = e.target
             let {name, value}= e.target
             console.log(name,value)
         await   setDataset((prev ) => ({...prev, [name]:value}))
-        //  console.log(dataset)
 
         }
         const handleChangeStatus=async (e)=>{
-        // await setAppointment_type(e.target.value)
        
         setDocStatus(e.target.value)
 
-        //console.log(e.target.value)
 
         }
 
-      /*   useEffect(() => {
-           
-            return () => {
-               
-            }
-        }, [docStatus]) */
 
         const handleAllergy=async (e)=>{
-            //console.log(e)
-            //const (name, value) = e.target
             const {name, value}= e.target
             console.log(name,value)
-           // [name]=value
          await   setAllergy((prev ) => ({...prev, [name]:value}))
           console.log(allergy)
 
@@ -300,7 +264,6 @@ export default function NewPatientConsult() {
             duration
         } 
         setSymptoms((prev)=>([...prev, newsymptom]))
-       // setAllergy({})
         setSymptom("")
         setDuration("")
 
@@ -311,10 +274,8 @@ export default function NewPatientConsult() {
         documentobj.name=""
         documentobj.facility=""
         documentobj.document=""
-      //  alert("I am in draft mode : " + Clinic.documentname)
         const    newDocumentClassModule={
             selectedDocumentClass:documentobj,
-            //state.DocumentClassModule.selectedDocumentClass.name
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
@@ -331,12 +292,6 @@ export default function NewPatientConsult() {
             </div>
             <div className="card-content vscrollable remPad1">
 
-              {/*   <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label> */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="field">
                         <p className="control ">
@@ -402,10 +357,6 @@ export default function NewPatientConsult() {
                 
             
                 <div className="field">
-                     {/*    <p className="control ">
-                            <input className="input is-small"   ref={register} name="Marital_Status" type="text" placeholder="Marital Status" />
-                                      
-                        </p> */}
                         <label  className=" is-small" >
                                     <input type="checkbox"  name="Medication_list_filled" ref={register} /> Medication list filled
                                 </label>
@@ -431,11 +382,10 @@ export default function NewPatientConsult() {
                 </div>
                <b> Review of Systems </b>
                <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             ROS.map((c,i) => 
                                 <label  className=" is-small mr-1" key={c}>
-                                    <input type="checkbox" /* value={c + ", "} */ name="ROS" ref={register} />{c + " "}
+                                    <input type="checkbox"  name="ROS" ref={register} />{c + " "}
                                 </label>
                             )
                         }
@@ -447,7 +397,6 @@ export default function NewPatientConsult() {
                 </div>
                 <b> Risk Factors </b>
                <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             risk.map((c,i) => 
                                 <label  className=" is-small mr-1" key={c}>
@@ -480,12 +429,11 @@ export default function NewPatientConsult() {
                     } 
                 <b> Family History </b>
                 <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             familyHx.map((c,i) => 
                             <p className="control ">
                                 <label  className=" is-size-7 mr-1" key={c}>
-                                  {c +" "}  <input className="input is-small" type="text" /* value={c + ", "} */ name={c} ref={register} />
+                                  {c +" "}  <input className="input is-small" type="text" name={c} ref={register} />
                                 </label>
                             </p>
                             )
@@ -493,7 +441,6 @@ export default function NewPatientConsult() {
                     </div>
                 <b> Past Medical History </b>
                <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             PMH.map((c,i) => 
                                 <span>
@@ -508,12 +455,11 @@ export default function NewPatientConsult() {
                             </p>
                     </div>  
                     <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             hx.map((c,i) => 
                             <p className="control ">
                                 <label  className=" is-size-7 mr-1" key={c}>
-                                  {c +" "}  <input className="input is-small" type="text" /* value={c + ", "} */ name={c} ref={register} />
+                                  {c +" "}  <input className="input is-small" type="text" name={c} ref={register} />
                                 </label>
                             </p>
                             )
@@ -521,12 +467,11 @@ export default function NewPatientConsult() {
                     </div>         
                 <b> Physical Examination </b>
                 <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             physicalexam.map((c,i) => 
                             <p className="control ">
                                 <label  className=" is-size-7 mr-1" key={c}>
-                                  {c +" "}  <input className="input is-small" type="text" /* value={c + ", "} */ name={c} ref={register} />
+                                  {c +" "}  <input className="input is-small" type="text" name={c} ref={register} />
                                 </label>
                             </p>
                             )
@@ -645,12 +590,11 @@ export default function NewPatientConsult() {
 
                 <b>Vascular System Examination </b>
                 <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                            vasc.map((c,i) => 
                             <p className="control ">
                                 <label  className=" is-size-7 mr-1" key={c}>
-                                  {c +" "}  <input className="input is-small" type="text" /* value={c + ", "} */ name={c} ref={register} />
+                                  {c +" "}  <input className="input is-small" type="text" name={c} ref={register} />
                                 </label>
                             </p>
                             )
@@ -795,7 +739,6 @@ export default function NewPatientConsult() {
 
             <b>Test Ordered</b>
             <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             tests.map((c,i) => 
                                 <label  className=" is-small mr-1" key={c}>
@@ -805,13 +748,12 @@ export default function NewPatientConsult() {
                         }
                          <p className="control ">
                                 <label  className=" is-size-7 mr-1" >
-                                  CT Details  <input className="input is-small" type="text" /* value={c + ", "} */ name="CT_Details" ref={register} />
+                                  CT Details  <input className="input is-small" type="text" name="CT_Details" ref={register} />
                                 </label>
                             </p>
                     </div>
             <b>Labs</b>
             <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             labo.map((c,i) => 
                                 <label  className=" is-small mr-1" key={c}>
@@ -822,7 +764,6 @@ export default function NewPatientConsult() {
                     </div>
                     <b>Followup in</b>
             <div className="field ml-3 ">
-                    {/* <label className= "mr-2 "> <b>Cough nature:</b></label> */}
                         {
                             followup.map((c,i) => 
                                 <label  className=" is-small mr-1" key={c}>
@@ -838,7 +779,7 @@ export default function NewPatientConsult() {
                             physiciandetails.map((c,i) => 
                             <p className="control ">
                                 <label  className=" is-size-7 mr-1" key={c}>
-                                  {c +" "}  <input className="input is-small" type="text" /* value={c + ", "} */ name={c} ref={register} />
+                                  {c +" "}  <input className="input is-small" type="text" name={c} ref={register} />
                                 </label>
                             </p>
                             )

@@ -2,35 +2,32 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {DocumentClassList} from './DocumentClass'
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 
 export default function ModuleList({handlecloseModal}) {
 
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const EmployeeServ=client.service('employee')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
  
     const {state}=useContext(ObjectContext)
 
     let draftDoc={}
      draftDoc=state.EmployeeModule.selectedEmployee 
-    // console.log(draftDoc)
+    
    
-     const mList=[ "Client","Clinic","Ward", "Laboratory","Pharmacy","Radiology","Inventory","Finance","Managed Care", "Epidemiology","Admin", "Bill Client","Adjust Price"] //"Frontdesk",
-     //state.DocumentClassModule.selectedDocumentClass.name
+     const mList=[ "Client","Clinic","Ward", "Laboratory","Pharmacy","Radiology","Inventory","Finance","Managed Care", "Epidemiology","Admin", "Bill Client","Adjust Price"]
 
      useEffect(() => {
-          //  console.log(draftDoc.roles,"loading")
+          
 
             Object.entries(draftDoc).map(([keys,value],i)=>(
                 setValue(keys, value,  {
@@ -64,12 +61,11 @@ export default function ModuleList({handlecloseModal}) {
          
         let confirm = window.confirm(`You are about to update roles for the employee ?`)
         if (confirm){
-            EmployeeServ.patch(draftDoc._id, data) // draftDoc._id
+            EmployeeServ.patch(draftDoc._id, data) 
             .then((res)=>{
-                    //console.log(JSON.stringify(res))
+                    
                     e.target.reset();
                    
-                   /*  setMessage("Created Client successfully") */
                     setSuccess(true)
                     toast({
                         message: 'Roles updated succesfully',
