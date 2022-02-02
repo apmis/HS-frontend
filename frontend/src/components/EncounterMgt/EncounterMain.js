@@ -4,6 +4,7 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
+import EndEncounter, {EndEncounterList} from './EndEncounter'
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
@@ -11,6 +12,8 @@ import {format, formatDistanceToNowStrict } from 'date-fns'
 import  VideoConference  from '../utils/VideoConference';
 import  Prescription, { PrescriptionCreate } from './Prescription';
 import LabOrders from './LabOrders';
+import AdmitOrders from './AdmitOrders';
+import RadiologyOrders from './RadiologyOrders';
 import { useReactToPrint } from 'react-to-print';
 
 export default function EncounterMain ({nopresc}) {
@@ -33,8 +36,11 @@ export default function EncounterMain ({nopresc}) {
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
     const [showModal,setShowModal]=useState(false)
+    
+    const [showEncounterModal,setShowEncounterModal]=useState(false)
     const [showPrescriptionModal,setShowPrescriptionModal]=useState(false)
     const [showLabModal,setShowLabModal]=useState(false)
+    const [showRadModal,setShowRadModal]=useState(false)
     const componentRef = useRef();
     const myRefs = useRef([]);
     
@@ -50,6 +56,7 @@ export default function EncounterMain ({nopresc}) {
         await setShowModal(true)                                                                                                                                                        
         console.log( showModal)
     }
+
     const handleNewPrescription= async()=>{
         await setShowPrescriptionModal(true)                                                                                                                                                        
         console.log( showPrescriptionModal)
@@ -148,7 +155,7 @@ export default function EncounterMain ({nopresc}) {
                 alert("skip:",ulimit )
                 console.log("skip:",ulimit ) */
             await setFacilities(findClinic.data)
-           // console.log(findClinic.data)
+           console.log(findClinic.data)
            /*  } */
                 }
                 else {
@@ -170,7 +177,19 @@ export default function EncounterMain ({nopresc}) {
             }
     const handleLabOrders =async()=>{
         await setShowLabModal(true)    
-    }   
+    } 
+    
+    const handleOtherOrders =async()=>{
+       // await setShowLabModal(true)    
+    } 
+
+    const handleRadOrders =async()=>{
+        await setShowRadModal(true)    
+    } 
+
+    const handleEndEncounter =async()=>{
+        await setShowEncounterModal(true)    
+    } 
 
    const handlePrint =async(i)=>{
        var content = document.getElementById(i);
@@ -223,7 +242,7 @@ export default function EncounterMain ({nopresc}) {
                 /* const handleObserver = (entities) => {
                     const target = entities[0];
                     if (target.isIntersecting) {   
-                        setPage((page) => page + 1) //load more 
+                        setPage((page) => page + 1) //load  more 
                         
                     }
                 } */
@@ -252,6 +271,17 @@ export default function EncounterMain ({nopresc}) {
      }
     }
 
+    const handleAdmit = async()=>{
+        
+
+        const    newDocumentClassModule={
+            selectedEndEncounter:"",
+            show :''
+        }
+       await setState((prevstate)=>({...prevstate, EndEncounterModule:newDocumentClassModule}))
+       //console.log(state)
+    }
+
     return (
         <div>
             <VideoConference/>
@@ -277,7 +307,10 @@ export default function EncounterMain ({nopresc}) {
                    {!standalone &&   <div className="level-item"> 
                         <div className="level-item ">
                            {!nopresc && <>
-                                <div className="button is-warning is-small mr-2" onClick={handleLabOrders}>Lab Orders</div>
+                            <div className="button is-dark is-small mr-2" onClick={handleEndEncounter}>End Encounter</div>
+                            <div className="button is-black is-small mr-2" onClick={handleOtherOrders}> Other Orders</div>
+                            <div className="button is-primary is-small mr-2" onClick={handleRadOrders}>Radiology</div>
+                                <div className="button is-warning is-small mr-2" onClick={handleLabOrders}>Lab</div>
                                 <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Prescription</div>
                                 </>}
                                 <div className="button is-success is-small" onClick={handleNewDocument}>New Document</div>
@@ -308,10 +341,15 @@ export default function EncounterMain ({nopresc}) {
                                                         </button>  }
                                                     </header>
 
-                                                        {/* is not prescription,billed orders, or lab order, medication List or asthma docs */}
-                                                        {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders" 
+                                                        {/* is not prescription,billed orders, or lab order, medication List or asthma docs 
+                                                            change to switch
+                                                        */}
+                                                        {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  
+                                                        && Clinic.documentname!=="Lab Orders" 
+                                                        && Clinic.documentname!=="Radiology Orders" 
                                                         && Clinic.documentname!=="Adult Asthma Questionnaire" 
                                                         && Clinic.documentname!=="Medication List" 
+                                                        && Clinic.documentname!=="Admission Order"
                                                         && Clinic.documentname!=="Pediatric Pulmonology Form") &&  Clinic.status!=="Draft"
                                                          && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}  >
                                                                 { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
@@ -330,6 +368,39 @@ export default function EncounterMain ({nopresc}) {
                                                                     ))
                                                                 }
                                                         </div>}
+
+                                                       { Clinic.documentname=="Admission Order" &&  Clinic.status!=="Draft"
+                                                         && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}  >
+                                                                <div > 
+                                                                            <div className="ml-4">
+                                                                                <p>
+                                                                                   Admit to { Clinic.documentdetail.ward.name}
+                                                                                </p>
+                                                                               {Clinic.documentdetail.instruction &&<p>
+                                                                                <label className="label is-size-7"> Instructions:</label> 
+                                                                                {Clinic.documentdetail.instruction}
+                                                                                </p> }
+                                                                            </div>                                                 
+                                                                    </div>
+                                                                {/* { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                                    <div className="field is-horizontal"> 
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                  
+                                                                    ))
+                                                                } */}
+                                                        </div>}
+
+
+
+
                                                     {/* is  Medication List */}
                                                     {Clinic.documentname==="Medication List" &&  Clinic.status!=="Draft" &&
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
@@ -603,6 +674,40 @@ export default function EncounterMain ({nopresc}) {
                                                                         </table>
                                                                         </div>}                                                   
                                                                     </div>}
+                                                         {/* is  Radiology orders,  */}
+                                                         {Clinic.documentname==="Radiology Orders" &&  
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
+                                                                
+                                                                {(Clinic.documentdetail.length>0) && <div>
+                                                                    <label>Tests:</label>
+                                                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                        <thead>
+                                                                            <tr>
+                                                                            <th><abbr title="Serial No">S/No</abbr></th>
+                                                                        
+                                                                            <th><abbr title="Test">Test</abbr></th>
+                                                                            <th><abbr title="Destination">Destination</abbr></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tfoot>
+                                                                            
+                                                                        </tfoot>
+                                                                        <tbody>
+                                                                        { Clinic.documentdetail.map((ProductEntry, i)=>(
+
+                                                                                <tr key={i}>
+                                                                                <th>{i+1}</th>
+                                                                                {/* <td>{ProductEntry.name}</td> */}
+                                                                                <td>{ProductEntry.test}<br/>
+                                                                                {/* <span className="help is-size-7">{ProductEntry.instruction}</span> */}</td> 
+                                                                                <td>{ProductEntry.destination}</td>                                                                     
+                                                                                </tr>
+
+                                                                            ))}
+                                                                        </tbody>
+                                                                        </table>
+                                                                        </div>}                                                   
+                                                                    </div>}
                                                     
                                                         {/* is  lab orders,  */}
                                                         {Clinic.documentname==="Lab Orders" &&  
@@ -733,14 +838,62 @@ export default function EncounterMain ({nopresc}) {
                         <button className="delete" aria-label="close"  onClick={()=>setShowLabModal(false)}></button>
                         </header>
                         <section className="modal-card-body card-overflow">
-                        <LabOrders standalone="true" />
+                        <LabOrders standalone="true"  closeModal={()=>setShowLabModal(false)} />
                         </section>
                         {/* <footer className="modal-card-foot">
                         <button className="button is-success">Save changes</button>
                         <button className="button">Cancel</button>
                         </footer> */}
                     </div>
-                </div>                                      
+                </div>
+                <div className={`modal  ${showEncounterModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card ">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">End Encounter</p>
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowEncounterModal(false)}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        <EndEncounterList standalone = "true" closeModal={()=>setShowEncounterModal(false)} />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>  
+                <div className={`modal ${state.EndEncounterModule.selectedEndEncounter==='Admit to Ward'?"is-active":""}` }>
+                    <div className="modal-background"></div>
+                    <div className="modal-card larger card-overflow">
+                        <header className="modal-card-head">
+                        <p className="modal-card-title">Admit Orders</p>
+                        <button className="delete" aria-label="close"  onClick={()=>handleAdmit()}></button>
+                        </header>
+                        <section className="modal-card-body card-overflow">
+                        <AdmitOrders standalone="true" closeModal={()=>handleAdmit()} />
+                        </section>
+                        {/* <footer className="modal-card-foot">
+                        <button className="button is-success">Save changes</button>
+                        <button className="button">Cancel</button>
+                        </footer> */}
+                    </div>
+                </div>
+               <div className={`modal ${showRadModal?"is-active":""}` }>
+                    <div className="modal-background"></div>
+                    <div className="modal-card larger card-overflow">
+                        <header className="modal-card-head">
+                        <p className="modal-card-title">Radiology Orders</p>
+                        <button className="delete" aria-label="close"  onClick={()=>setShowRadModal(false)}></button>
+                        </header>
+                        <section className="modal-card-body card-overflow">
+                        <RadiologyOrders standalone="true" closeModal={()=>setShowRadModal(false)} />
+                        </section>
+                        {/* <footer className="modal-card-foot">
+                        <button className="button is-success">Save changes</button>
+                        <button className="button">Cancel</button>
+                        </footer> */}
+                    </div>
+                </div>                                    
         </div>
     )
 }

@@ -8,7 +8,7 @@ const url= 'http://localhost:3035'
 const API = process.env.NODE_ENV !== 'production' ?  url :'https://healthstack-backend.herokuapp.com' ;
 const socket=io(herok, {
     transports: ['websocket'],
-    forceNew: true
+    forceNew: true                                                                
   })
 const client=feathers()
 client.configure(socketio(socket,{timeout:700000}))

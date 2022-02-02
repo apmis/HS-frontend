@@ -9,7 +9,7 @@ import Inpatient from './Ward/Inpatient'
 import Admissions from './Ward/Admissions'
 import Encounter from './EncounterMgt/Encounter'
 import Patients from './ClientMgt/Patient'
-import FrontDesk, { FrontDeskList } from './ClientMgt/FrontDesk'
+import Ward, { WardList } from './Ward/Ward'
 import {UserContext,ObjectContext} from '../context'
 
 export default function WardModule() {
@@ -33,18 +33,18 @@ export default function WardModule() {
         }, [])
    
     useEffect(()=>{
-     setSelectedClinic(state.FrontDesk.selectedFrontDesk)
+     setSelectedClinic(state.WardModule.selectedWard)
 
      const    newEmployeeLocation={
-        locationName:state.FrontDesk.selectedFrontDesk.name,
+        locationName:state.WardModule.selectedWard.name,
         locationType:"Ward",
-        locationId:state.FrontDesk.selectedFrontDesk._id,
+        locationId:state.WardModule.selectedWard._id,
         facilityId:user.currentEmployee.facilityDetail._id   ,
         facilityName:user.currentEmployee.facilityDetail.facilityName
     }
    setState((prevstate)=>({...prevstate, employeeLocation:newEmployeeLocation}))
 
-    },[state.FrontDesk.selectedFrontDesk])
+    },[state.WardModule.selectedWard])
 
     const handleChangeClinic= async()=>{
         await setShowModal(true)                                                                                                                                                        
@@ -56,7 +56,6 @@ export default function WardModule() {
         setShowMenu(prev=>(!prev))
     }
 //
-
     return (
             <section className="section has-background-info remPad">
 
@@ -163,7 +162,7 @@ export default function WardModule() {
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <FrontDeskList standalone="true"  closeModal={()=>setShowModal(false)}/>
+                                        <WardList standalone="true"  closeModal={()=>setShowModal(false)}/>
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

@@ -494,14 +494,23 @@ export function LabNoteCreate(){
     }
 
     useEffect(() => {
-        if (typeof order.resultDetail.documentdetail ==="undefined"){
-            console.log(order)
-            alert("No Status")
+        if (!order.resultDetail?.documentdetail ){
+            setValue("Finding", "",  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("Recommendation","",  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+           // setReportStatus(order.report_status)
+           
             return
 
         }
         if (order.report_status !=="Pending"){
             console.log(order.resultDetail.documentdetail)
+
         setValue("Finding", order.resultDetail.documentdetail.Finding,  {
             shouldValidate: true,
             shouldDirty: true
