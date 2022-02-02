@@ -19,9 +19,11 @@ export default function Bands() {
         <section className= "section remPadTop">
             <div className="columns ">
             <div className="column is-8 ">
-                <BandList />
+            <BandList />
                 </div>
-            <div className="column is-4 ">
+            <div className="column is-8 ">
+                
+                
                 {(state.BandModule.show ==='create')&&<BandCreate />}
                 {(state.BandModule.show ==='detail')&&<BandDetail  />}
                 {(state.BandModule.show ==='modify')&&<BandModify Band={selectedBand} />}
@@ -496,7 +498,7 @@ export function BandModify(){
    const handleCancel=async()=>{
     const    newBandModule={
         selectedBand:{},
-        show :'create'
+        show :'list'
       }
    await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
            }

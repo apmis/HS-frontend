@@ -51,8 +51,8 @@ export function ClientCreate(){
     
     const [facility,setFacility] = useState()
     const ClientServ=client.service('client')
-    
-    const {user} = useContext(UserContext) 
+    const mpiServ=client.service('mpi')
+    const {user} = useContext(UserContext) //,setUser
     const [billModal, setBillModal] =useState(false)
     const [patList, setPatList] =useState([])
     const [dependant, setDependant] =useState(false)
@@ -197,8 +197,9 @@ export function ClientCreate(){
                 facility:user.currentEmployee.facilityDetail._id,
                 mrn:client.mrn,
                 clientTags:client.clientTags,
-                relfacilities:client.relatedfacilites
+                relfacilities:client.relatedfacilities
                }
+               //console.log(newPat)
                await mpiServ.create(newPat).then((resp)=>{
                 toast({
                     message: 'Client created succesfully',

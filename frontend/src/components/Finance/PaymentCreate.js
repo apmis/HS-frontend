@@ -777,7 +777,7 @@ export default function PaymentCreate(){
                                 <option value="">Payment Mode </option>
                                 <option value="Cash">Cash</option>
                                 <option value="Wallet">Wallet </option>
-                                <option value="Wallet">Bank Transfer </option>
+                                <option value="Bank Transfer">Bank Transfer </option>
                                 <option value="Card">Card</option>
                                 <option value="Cheque">Cheque</option> 
                             </select>

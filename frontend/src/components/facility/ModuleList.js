@@ -24,8 +24,7 @@ export default function ModuleList({handlecloseModal}) {
      draftDoc=state.EmployeeModule.selectedEmployee 
     
    
-     const mList=[ "Client","Clinic", "Laboratory","Pharmacy","Finance", "Epidemiology","Admin", "Bill Client","Adjust Price"] 
-     
+     const mList=[ "Client","Clinic", "Laboratory","Pharmacy","Finance", "Epidemiology","Admin","Ward", "Bill Client","Adjust Price"] 
 
      useEffect(() => {
           
