@@ -3,7 +3,7 @@ FROM node:14-alpine3.12 as build-stage
 WORKDIR /app
 COPY package*.json /app/
 RUN npm install
-COPY ./ /app/
+COPY ./frontend /app/
 ARG API_HOST=http://host.docker.internal:3000
 ARG DOLLAR=$
 RUN apk --no-cache add gettext
