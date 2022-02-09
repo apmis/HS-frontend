@@ -13,6 +13,34 @@ import NewPatientConsult from './NewPatientConsult';
 import ProgressNote from './ProgressNote';
 import MedicationList from './MedicationList';
 import Clerking from './Clerking';
+import AdmissionConsentForm from "../../clientForm/forms/admissionConsentForm";
+import BinCard from "../../clientForm/forms/binCard";
+import ContinuationSheet from "../../clientForm/forms/continuationSheet";
+import DailyShiftHandoverNote from "../../clientForm/forms/dailyShiftHandoverNote";
+import DamaForm from "../../clientForm/forms/damaForm";
+import DiabetesMelitus from "../../clientForm/forms/diabetesMelitus";
+import DialysisLogSheet from "../../clientForm/forms/dialysisLogSheet";
+import DietOrder from "../../clientForm/forms/dietOrder";
+import DischargeSummary from "../../clientForm/forms/dischargeSummary";
+import ECGForm from "../../clientForm/forms/ecgForm";
+import EmergencyForm from "../../clientForm/forms/emergencyForm";
+import FluidIntakeOutput from "../../clientForm/forms/fluidIntake";
+import GreenDiagnosticCentre from "../../clientForm/forms/greenDiagnosticCentre";
+import MedicalBillingSheet from "../../clientForm/forms/medicalBillingSheet";
+import LaboratoryReportForm from "../../clientForm/forms/laboratoryReportForm";
+import LaboratoryObservationChart from "../../clientForm/forms/laboratoryObservationChart";
+import MedicalSickLeave from "../../clientForm/forms/medicalSickLeave";
+import OutpatientBillingSheet from "../../clientForm/forms/outpatientBillingSheet";
+import OutpatientRegistrationForm from "../../clientForm/forms/outpatientRegistrationForm";
+import PatientAppointmentCard from "../../clientForm/forms/patientAppointmentCard";
+import PaymentVoucher from "../../clientForm/forms/paymentVoucher";
+import PressureAreasTreatmentChart from "../../clientForm/forms/pressureAreasTreatmentChart";
+import RadiologyRequestForm from "../../clientForm/forms/radiologyRequestForm";
+import Receipt from "../../clientForm/forms/receipt";
+import ReferralFormForConsultation from "../../clientForm/forms/referralFormForConsultation";
+import VitalSignsFlowSheet from "../../clientForm/forms/vitalSignsFlowSheet";
+import VitalSignsRecord from "../../clientForm/forms/vitalSignsRecord";
+import SurgicalBookletConsentForm from "../../clientForm/forms/surgicalBookletConsentForm";
 
 export default function EncounterRight() {
     const {state,setState}=useContext(ObjectContext)
@@ -32,6 +60,66 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='Progress Note') &&   <ProgressNote />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Medication List') &&   <MedicationList />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Clerking') &&   <Clerking />}
+          {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Laboratory Report Form" && <LaboratoryReportForm />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Labour Observation Chart" && <LaboratoryObservationChart />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Green Diagnostic Center Request" && <GreenDiagnosticCentre />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Admission Consent Form" && <AdmissionConsentForm />}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Bin Card" && (
+        <BinCard />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Outpatient Registration Form" && <OutpatientRegistrationForm />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Outpatient Billing Sheet" && <OutpatientBillingSheet />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Medical Sick Leave Form" && <MedicalSickLeave />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Daily Shift Handover Note" && <DailyShiftHandoverNote />}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Dama Form" && (
+        <DamaForm />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Inpatient Billing Sheet" && <MedicalBillingSheet />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Emergency Form" && <EmergencyForm />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Discharge Summary" && <DischargeSummary />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Diet Order" && <DietOrder />}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Ecg Form" && (
+        <ECGForm />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Vital Signs Flow Sheet" && <VitalSignsFlowSheet />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Referral Form For Consultation" && <ReferralFormForConsultation />}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Receipt" && (
+        <Receipt />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Radiology Request Form" && <RadiologyRequestForm />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Pressure Areas Treatment Chart" && <PressureAreasTreatmentChart />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Payment Voucher" && <PaymentVoucher />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Surgical Booklet Consent Form" && <SurgicalBookletConsentForm />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Vital Signs Record" && <VitalSignsRecord />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Patient Appointment Card" && <PatientAppointmentCard />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Fluid Intake And Output Record" && <FluidIntakeOutput />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Diabetes Melitus Flowsheet" && <DiabetesMelitus />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Dialysis Log Sheet" && <DialysisLogSheet />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Continuation Sheet" && <ContinuationSheet />}
          {( typeof state.DocumentClassModule.selectedDocumentClass.document !=='undefined' ) &&( typeof state.DocumentClassModule.selectedDocumentClass.document.documentType !=='undefined' ) && (state.DocumentClassModule.selectedDocumentClass.document.documentType==='Diagnostic Result') &&   <LabNoteCreate />} 
           
           

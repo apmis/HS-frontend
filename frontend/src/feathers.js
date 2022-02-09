@@ -3,10 +3,10 @@ import feathers from '@feathersjs/feathers'
 import socketio from '@feathersjs/socketio-client'
 import authentication from '@feathersjs/authentication-client'
 
-const herok= 'http://18.170.52.169:8080'
+const develop= 'http://ec2-3-8-150-201.eu-west-2.compute.amazonaws.com:8080';
 const url= 'http://localhost:3035'
 const API = process.env.NODE_ENV !== 'production' ?  url :'https://healthstack-backend.herokuapp.com' ;
-const socket=io(herok, {
+const socket=io(develop, {
     transports: ['websocket'],
     forceNew: true                                                                
   })

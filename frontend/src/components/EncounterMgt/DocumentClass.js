@@ -3,6 +3,7 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
+import documentListForm from "../../clientForm/documentList";
 
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
@@ -181,6 +182,10 @@ export function DocumentClassList({standalone,closeModal}){
    
     const {user,setUser}=useContext(UserContext)
 
+
+  let classList = [...facilities];
+  classList.push(...documentListForm);
+
    
 
     const handleCreateNew = async()=>{
@@ -326,7 +331,7 @@ export function DocumentClassList({standalone,closeModal}){
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((DocumentClass, i)=>(
+                                        {classList.map((DocumentClass, i)=>(
 
                                             <tr key={DocumentClass._id} onClick={()=>handleRow(DocumentClass)}  className={DocumentClass._id===(selectedDocumentClass?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
