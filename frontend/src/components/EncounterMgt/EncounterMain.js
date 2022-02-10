@@ -367,8 +367,22 @@ export default function EncounterMain ({nopresc}) {
                                                                     </div>
                                                                     ))
                                                                     :
+                                                                    <div className="field">
+                                                                    {    Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                                     <div className="field is-horizontal"> 
-                                                                            <div className="field-label">
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                            </div>                                                 
+                                                                    </div>
+                                                                    )) }
+                                                                           {/*  <div className="field-label">
                                                                                 <label className="label is-size-7" >
                                                                                     {Object.keys(Clinic.documentdetail)[0]}:
                                                                                     </label>
@@ -377,7 +391,7 @@ export default function EncounterMain ({nopresc}) {
                                                                                 <div className="field" >
                                                                                     {Object.values(Clinic.documentdetail)[0]}   
                                                                                 </div>  
-                                                                            </div>                                                 
+                                                                            </div> */}                                                 
                                                                     </div>
 
                                                                 }
