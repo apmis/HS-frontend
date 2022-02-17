@@ -13,7 +13,7 @@
 
     <div className="field">
         <p className="control has-icons-left has-icons-right">
-        <label className="label is-small"   name="middlename" type="text"> Middle Name </label><label>{client.middlename }</label>
+        <label className="label is-small"   name="middlename" type="text">Middle Name  </label><label>{client.middlename }</label>
         <span className="icon is-small is-left">
             <i className="fas fa-map-signs"></i>
         </span>
@@ -36,7 +36,8 @@
 <div className="field">
     <p className="control has-icons-left">
     
-        <label className="label is-small"  name="dob" type="text">Date of Birth"  </label><label>{client.dob }</label>
+        <label className="label is-small"  name="dob" type="text">Date of Birth  </label>
+        <label>{client.dob }</label>
         <span className="icon is-small is-left">
         <i className="fas fa-envelope"></i>
         </span>
@@ -282,10 +283,5 @@
         Cancel
     </button>
 </p>
-{/*  <p className="control">
-    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-       Delete
-    </button>
-</p> */}
 </div>
 </>}

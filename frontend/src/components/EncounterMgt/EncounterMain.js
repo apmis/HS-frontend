@@ -4,43 +4,48 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
-//import {useHistory} from 'react-router-dom'
+import EndEncounter, {EndEncounterList} from './EndEncounter'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 import  VideoConference  from '../utils/VideoConference';
 import  Prescription, { PrescriptionCreate } from './Prescription';
 import LabOrders from './LabOrders';
+import AdmitOrders from './AdmitOrders';
+import RadiologyOrders from './RadiologyOrders';
 import { useReactToPrint } from 'react-to-print';
 
 export default function EncounterMain ({nopresc}) {
- // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+ 
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const ClinicServ=client.service('clinicaldocument')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedClinic, setSelectedClinic]=useState() //
+     
+   const [selectedClinic, setSelectedClinic]=useState() 
    const [selectedNote, setSelectedNote]=useState() 
-    // eslint-disable-next-line
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
     const [showModal,setShowModal]=useState(false)
+    
+    const [showEncounterModal,setShowEncounterModal]=useState(false)
     const [showPrescriptionModal,setShowPrescriptionModal]=useState(false)
     const [showLabModal,setShowLabModal]=useState(false)
+    const [showRadModal,setShowRadModal]=useState(false)
     const componentRef = useRef();
     const myRefs = useRef([]);
     
-    // tracking on which page we currently are
+    
     const [page, setPage] = useState(0);
-    // add loader refrence 
+    
     const loader = useRef(null);
     
     const standalone=false
@@ -50,6 +55,7 @@ export default function EncounterMain ({nopresc}) {
         await setShowModal(true)                                                                                                                                                        
         console.log( showModal)
     }
+
     const handleNewPrescription= async()=>{
         await setShowPrescriptionModal(true)                                                                                                                                                        
         console.log( showPrescriptionModal)
@@ -62,14 +68,11 @@ export default function EncounterMain ({nopresc}) {
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, ClinicModule:newClinicModule}))
-       //console.log(state)
         
 
     }
     const handleRow= async(Clinic)=>{
-        //console.log("b4",state)
 
-        //console.log("handlerow",Clinic)
         if (Clinic.status==="completed"){
             await setSelectedNote(Clinic)
 
@@ -78,17 +81,14 @@ export default function EncounterMain ({nopresc}) {
                 show :true
             }
         await setState((prevstate)=>({...prevstate, NoteModule:newClinicModule})) 
-       //console.log(state)
        Clinic.show=!Clinic.show
         }else{
             let documentobj={}
             documentobj.name=Clinic.documentname
             documentobj.facility=Clinic.facility
             documentobj.document=Clinic
-          //  alert("I am in draft mode : " + Clinic.documentname)
             const    newDocumentClassModule={
                 selectedDocumentClass:documentobj,
-                //state.DocumentClassModule.selectedDocumentClass.name
                 show :'detail'
             }
            await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
@@ -106,8 +106,6 @@ export default function EncounterMain ({nopresc}) {
                     $options:'i'
                    
                 },
-              // facility:user.currentEmployee.facilityDetail._id || "",
-               // locationType:"Clinic",
                client:state.ClientModule.selectedClient._id,
                $limit:50,
                 $sort: {
@@ -127,28 +125,20 @@ export default function EncounterMain ({nopresc}) {
         }
    
     const getFacilities= async(page=0)=>{
-            /* const limit=20
-            alert(page) */
             if (user.currentEmployee){
             
         const findClinic= await ClinicServ.find(
                 {query: {
-                    //locationType:"Clinic",
-                    //facility:user.currentEmployee.facilityDetail._id,
                     client:state.ClientModule.selectedClient._id,
                     $limit:50,
-                   /*  $skip:page*limit, */
                     $sort: {
                         createdAt: -1
                     }
                     }})
             const total= findClinic.total
             const ulimit=total*page
-           /*  if (total>(ulimit)){ //only load if we have not reached the total
-                alert("skip:",ulimit )
-                console.log("skip:",ulimit ) */
             await setFacilities(findClinic.data)
-           // console.log(findClinic.data)
+           console.log(findClinic.data)
            /*  } */
                 }
                 else {
@@ -170,7 +160,19 @@ export default function EncounterMain ({nopresc}) {
             }
     const handleLabOrders =async()=>{
         await setShowLabModal(true)    
-    }   
+    } 
+    
+    const handleOtherOrders =async()=>{
+       // await setShowLabModal(true)    
+    } 
+
+    const handleRadOrders =async()=>{
+        await setShowRadModal(true)    
+    } 
+
+    const handleEndEncounter =async()=>{
+        await setShowEncounterModal(true)    
+    } 
 
    const handlePrint =async(i)=>{
        var content = document.getElementById(i);
@@ -181,9 +183,6 @@ export default function EncounterMain ({nopresc}) {
             pri.focus();
             pri.print();
     }     
-   /*  const handlePrint =(i)=> useReactToPrint({
-        content: () => myRefs.current[i]
-      }); */
     
 
  useEffect(() => {
@@ -197,38 +196,12 @@ export default function EncounterMain ({nopresc}) {
                 ClinicServ.on('patched', (obj)=>getFacilities(page))
                 ClinicServ.on('removed', (obj)=>getFacilities(page))
 
-                /* var options = {
-                    root: null,
-                    rootMargin: "20px",
-                    threshold: 1.0
-                 }; */
-                // initialize IntersectionObserver
-                // and attaching to Load More div
-                /*  const observer = new IntersectionObserver(handleObserver, options);
-                 if (loader.current) {
-                    observer.observe(loader.current)
-                 } */
                 return () => {
                 
                 }
             },[])
-            
-           /*  useEffect(() => {
-                // here we simulate adding new posts to List
-                getFacilities()
-            }, [page]) */
 
-             // here we handle what happens when user scrolls to Load More div
-            // in this case we just update page variable
-                /* const handleObserver = (entities) => {
-                    const target = entities[0];
-                    if (target.isIntersecting) {   
-                        setPage((page) => page + 1) //load more 
-                        
-                    }
-                } */
     const handleDelete=(doc)=>{
-       // console.log(doc)
         let confirm = window.confirm(`You are about to delete a document: ${doc.documentname} created on ${format(new Date(doc.createdAt),'dd-MM-yy')} ?`)
         if (confirm){
         ClinicServ.remove(doc._id)
@@ -252,6 +225,17 @@ export default function EncounterMain ({nopresc}) {
      }
     }
 
+    const handleAdmit = async()=>{
+        
+
+        const    newDocumentClassModule={
+            selectedEndEncounter:"",
+            show :''
+        }
+       await setState((prevstate)=>({...prevstate, EndEncounterModule:newDocumentClassModule}))
+       //console.log(state)
+    }
+
     return (
         <div>
             <VideoConference/>
@@ -272,12 +256,14 @@ export default function EncounterMain ({nopresc}) {
                             </div>
                         </div>
                     </div>
-                   {/*  <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Clinics</span></div> */}
                     <div className="level-right my-2">
                    {!standalone &&   <div className="level-item"> 
                         <div className="level-item ">
                            {!nopresc && <>
-                                <div className="button is-warning is-small mr-2" onClick={handleLabOrders}>Lab Orders</div>
+                            <div className="button is-dark is-small mr-2" onClick={handleEndEncounter}>End Encounter</div>
+                            <div className="button is-black is-small mr-2" onClick={handleOtherOrders}> Other Orders</div>
+                            <div className="button is-primary is-small mr-2" onClick={handleRadOrders}>Radiology</div>
+                                <div className="button is-warning is-small mr-2" onClick={handleLabOrders}>Lab</div>
                                 <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Prescription</div>
                                 </>}
                                 <div className="button is-success is-small" onClick={handleNewDocument}>New Document</div>
@@ -308,10 +294,15 @@ export default function EncounterMain ({nopresc}) {
                                                         </button>  }
                                                     </header>
 
-                                                        {/* is not prescription,billed orders, or lab order, medication List or asthma docs */}
-                                                        {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  && Clinic.documentname!=="Lab Orders" 
+                                                        {/* is not prescription,billed orders, or lab order, medication List or asthma docs 
+                                                            change to switch
+                                                        */}
+                                                        {(Clinic.documentname!=="Prescription" && Clinic.documentname!=="Billed Orders"  
+                                                        && Clinic.documentname!=="Lab Orders" 
+                                                        && Clinic.documentname!=="Radiology Orders" 
                                                         && Clinic.documentname!=="Adult Asthma Questionnaire" 
                                                         && Clinic.documentname!=="Medication List" 
+                                                        && Clinic.documentname!=="Admission Order"
                                                         && Clinic.documentname!=="Pediatric Pulmonology Form") &&  Clinic.status!=="Draft"
                                                          && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}  >
                                                                 { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
@@ -330,6 +321,39 @@ export default function EncounterMain ({nopresc}) {
                                                                     ))
                                                                 }
                                                         </div>}
+
+                                                       { Clinic.documentname=="Admission Order" &&  Clinic.status!=="Draft"
+                                                         && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}  >
+                                                                <div > 
+                                                                            <div className="ml-4">
+                                                                                <p>
+                                                                                   Admit to { Clinic.documentdetail.ward.name}
+                                                                                </p>
+                                                                               {Clinic.documentdetail.instruction &&<p>
+                                                                                <label className="label is-size-7"> Instructions:</label> 
+                                                                                {Clinic.documentdetail.instruction}
+                                                                                </p> }
+                                                                            </div>                                                 
+                                                                    </div>
+                                                                {/* { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                                    <div className="field is-horizontal"> 
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                  
+                                                                    ))
+                                                                } */}
+                                                        </div>}
+
+
+
+
                                                     {/* is  Medication List */}
                                                     {Clinic.documentname==="Medication List" &&  Clinic.status!=="Draft" &&
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
@@ -421,7 +445,6 @@ export default function EncounterMain ({nopresc}) {
                                                                 }
                                                                                                             
                                                         </div>}
-                                                         {/* is  Pediatric Pulmonology Form  */}
                                                     {Clinic.documentname==="Pediatric Pulmonology Form" &&  Clinic.status!=="Draft" &&
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
                                                              { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
@@ -513,7 +536,6 @@ export default function EncounterMain ({nopresc}) {
 
 
 
-                                                          {/* is  Adult asthma questionaire,  */}
                                                           {Clinic.documentname==="Adult Asthma Questionnaire" &&  Clinic.status!=="Draft" &&
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}>
                                                              { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
@@ -569,7 +591,6 @@ export default function EncounterMain ({nopresc}) {
                                                                                                             
                                                         </div>}
                                                     
-                                                        {/* is  prescription,  */}
                                                         {Clinic.documentname==="Prescription" &&  
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}>
                                                                 
@@ -592,7 +613,6 @@ export default function EncounterMain ({nopresc}) {
 
                                                                                 <tr key={i}>
                                                                                 <th>{i+1}</th>
-                                                                                {/* <td>{ProductEntry.name}</td> */}
                                                                                 <td>{ProductEntry.medication}<br/>
                                                                                 <span className="help is-size-7">{ProductEntry.instruction}</span></td> 
                                                                                 <td>{ProductEntry.destination}</td>                                                                     
@@ -603,9 +623,8 @@ export default function EncounterMain ({nopresc}) {
                                                                         </table>
                                                                         </div>}                                                   
                                                                     </div>}
-                                                    
-                                                        {/* is  lab orders,  */}
-                                                        {Clinic.documentname==="Lab Orders" &&  
+                                                         {/* is  Radiology orders,  */}
+                                                         {Clinic.documentname==="Radiology Orders" &&  
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
                                                                 
                                                                 {(Clinic.documentdetail.length>0) && <div>
@@ -638,7 +657,39 @@ export default function EncounterMain ({nopresc}) {
                                                                         </table>
                                                                         </div>}                                                   
                                                                     </div>}
-                                                            {/* is  billed orders,  */}  
+                                                    
+                                                        {Clinic.documentname==="Lab Orders" &&  
+                                                        <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
+                                                                
+                                                                {(Clinic.documentdetail.length>0) && <div>
+                                                                    <label>Tests:</label>
+                                                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                        <thead>
+                                                                            <tr>
+                                                                            <th><abbr title="Serial No">S/No</abbr></th>
+                                                                        
+                                                                            <th><abbr title="Test">Test</abbr></th>
+                                                                            <th><abbr title="Destination">Destination</abbr></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tfoot>
+                                                                            
+                                                                        </tfoot>
+                                                                        <tbody>
+                                                                        { Clinic.documentdetail.map((ProductEntry, i)=>(
+
+                                                                                <tr key={i}>
+                                                                                <th>{i+1}</th>
+                                                                                <td>{ProductEntry.test}<br/>
+                                                                                </td> 
+                                                                                <td>{ProductEntry.destination}</td>                                                                     
+                                                                                </tr>
+
+                                                                            ))}
+                                                                        </tbody>
+                                                                        </table>
+                                                                        </div>}                                                   
+                                                                    </div>}
                                                         {Clinic.documentname==="Billed Orders" &&  
                                                         <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)} >
                                                                 
@@ -686,10 +737,6 @@ export default function EncounterMain ({nopresc}) {
                                         ))}
 
                                     
-                                      {/* <!-- Add Ref to Load More div --> */}
-                                       {/*  <div className="loading" ref={loader}>
-                                                <h2>Load More</h2>
-                                    </div> */}
                                 </div>
                                     
                 </div> 
@@ -703,10 +750,6 @@ export default function EncounterMain ({nopresc}) {
                                         <section className="modal-card-body">
                                         <DocumentClassList standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>
                 <div className={`modal ${showPrescriptionModal?"is-active":""}` }>
@@ -719,10 +762,6 @@ export default function EncounterMain ({nopresc}) {
                         <section className="modal-card-body card-overflow">
                         <Prescription standalone="true" />
                         </section>
-                        {/* <footer className="modal-card-foot">
-                        <button className="button is-success">Save changes</button>
-                        <button className="button">Cancel</button>
-                        </footer> */}
                     </div>
                 </div>   
                 <div className={`modal ${showLabModal?"is-active":""}` }>
@@ -733,14 +772,58 @@ export default function EncounterMain ({nopresc}) {
                         <button className="delete" aria-label="close"  onClick={()=>setShowLabModal(false)}></button>
                         </header>
                         <section className="modal-card-body card-overflow">
-                        <LabOrders standalone="true" />
+                        <LabOrders standalone="true"  closeModal={()=>setShowLabModal(false)} />
                         </section>
                         {/* <footer className="modal-card-foot">
                         <button className="button is-success">Save changes</button>
                         <button className="button">Cancel</button>
                         </footer> */}
                     </div>
-                </div>                                      
+                </div>
+                <div className={`modal  ${showEncounterModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card ">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">End Encounter</p>
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowEncounterModal(false)}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        <EndEncounterList standalone = "true" closeModal={()=>setShowEncounterModal(false)} />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>  
+                <div className={`modal ${state.EndEncounterModule.selectedEndEncounter==='Admit to Ward'?"is-active":""}` }>
+                    <div className="modal-background"></div>
+                    <div className="modal-card larger card-overflow">
+                        <header className="modal-card-head">
+                        <p className="modal-card-title">Admit Orders</p>
+                        <button className="delete" aria-label="close"  onClick={()=>handleAdmit()}></button>
+                        </header>
+                        <section className="modal-card-body card-overflow">
+                        <AdmitOrders standalone="true" closeModal={()=>handleAdmit()} />
+                        </section>
+                        {/* <footer className="modal-card-foot">
+                        <button className="button is-success">Save changes</button>
+                        <button className="button">Cancel</button>
+                        </footer> */}
+                    </div>
+                </div>
+               <div className={`modal ${showRadModal?"is-active":""}` }>
+                    <div className="modal-background"></div>
+                    <div className="modal-card larger card-overflow">
+                        <header className="modal-card-head">
+                        <p className="modal-card-title">Radiology Orders</p>
+                        <button className="delete" aria-label="close"  onClick={()=>setShowRadModal(false)}></button>
+                        </header>
+                        <section className="modal-card-body card-overflow">
+                        <RadiologyOrders standalone="true" closeModal={()=>setShowRadModal(false)} />
+                        </section>
+                    </div>
+                </div>                                    
         </div>
     )
 }

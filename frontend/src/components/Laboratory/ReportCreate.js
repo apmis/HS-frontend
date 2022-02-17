@@ -3,29 +3,29 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {ProductCreate} from './Products'
 import Encounter from '../EncounterMgt/Encounter';
 var random = require('random-string-generator');
-// eslint-disable-next-line
+
 const searchfacility={};
 
 export default function ReportCreate(){
-    // const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
-     //const [error, setError] =useState(false)
+    
+     
      const [success, setSuccess] =useState(false)
      const [message,setMessage] = useState("")
-     // eslint-disable-next-line
+     
      const [facility,setFacility] = useState()
      const SubwalletTxServ=client.service('subwallettransactions')
      const SubwalletServ=client.service('subwallet')
      const OrderServ=client.service('order')
      const InvoiceServ=client.service('invoice')
-     //const history = useHistory()
-     const {user} = useContext(UserContext) //,setUser
-     // eslint-disable-next-line
+     
+     const {user} = useContext(UserContext) 
+     
      const [currentUser,setCurrentUser] = useState()
      const [type,setType] = useState("Bill")
      const [documentNo,setDocumentNo] = useState("")
@@ -63,50 +63,33 @@ export default function ReportCreate(){
 
     
   let medication =state.financeModule.selectedFinance
-  //console.log(state.financeModule.state)
+  
 
   const showDocumentation = async (value)=>{
     setProductModal(true)
   }
   const handlecloseModal =()=>{
     setProductModal(false)
-   // handleSearch(val)
+   
     }
 
   const handleChangeMode= async(value)=>{
-        //console.log(value)
        await setPaymentMode(value)
-      /*   console.log(paymentOptions)
-       let billm= paymentOptions.filter(el=>el.name===value)
-       await setBillMode(billm)
-        console.log(billm) */
-        // at startup
-        // check payment mode options from patient financial info
-        // load that to select options
-        // default to HMO-->company-->family-->cash
-        //when chosen
-        //append payment mode to order
-        //check service contract for pricing info
-        // calculate pricing 
-        // pricing
 
 
     }
 
   const handleRow= async(ProductEntry)=>{
-    //console.log("b4",state)
 
-    //console.log("handlerow",ProductEntry)
 
-    //await setMedication(ProductEntry)
 
     const    newProductEntryModule={
         selectedMedication:ProductEntry,
         show :'detail'
     }
   await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-   //console.log(state)
-  // ProductEntry.show=!ProductEntry.show
+  
+ 
 
         }  
  
@@ -125,18 +108,18 @@ export default function ReportCreate(){
          name,
          quantity,
          sellingprice,
-         amount:calcamount, //||qamount
+         amount:calcamount,
          baseunit,
          costprice,
          billingId
  
      }
-     // consider batchformat{batchno,expirydate,qtty,baseunit}
-     //consider baseunoit conversions
+    
+    
   const getSearchfacility=async (obj)=>{
        await setObj(obj)
         if (!obj){
-            //"clear stuff"
+           
             setProductId("")
             setName("")
             setBaseunit("")
@@ -145,7 +128,7 @@ export default function ReportCreate(){
             setInvQuantity("")
             setDescription("")
             setCostprice("")
-           // setCalcAmount(null)
+          
             return
         }
  
@@ -153,52 +136,35 @@ export default function ReportCreate(){
          setName(obj.name)
          setBaseunit(obj.baseunit)
          setInventoryId(obj.inventoryId)
-         setSellingPrice(obj.sellingprice) //modify this based on billing mode
+         setSellingPrice(obj.sellingprice)
          setInvQuantity(obj.quantity)
          setCostprice(obj.costprice)
          setBilllingId(obj.billingId)
 
          const contracts=obj.billingDetails.contracts
-         //const billingserv=client.service('billing')
-        if( billMode.type==="HMO Cover"){ //paymentmode
+        
+        if( billMode.type==="HMO Cover"){
          let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-       //  console.log(contract[0].price)
+      
          setSellingPrice(contract[0].price)
-       //  console.log(sellingprice)
+      
         
         }
-        if( billMode.type==="Company Cover"){ //paymentmode
+        if( billMode.type==="Company Cover"){
             let contract=contracts.filter(el=>el.source_org===billMode.detail.company)
-         //   console.log(contract[0].price)
+        
             setSellingPrice(contract[0].price)
-         //   console.log(sellingprice)
+        
            
            }
           
-        /*  setValue("facility", obj._id,  {
-             shouldValidate: true,
-             shouldDirty: true
-         }) */
      }
 
      useEffect(() => {
-       /*  console.log(obj)
-        console.log(billMode)
-        if( paymentmode!=="Cash" && obj){
-            const contracts=obj.billingDetails.contracts
-            let contract=contracts.filter(el=>el.source_org===billMode.detail.hmo)
-           console.log(contract[0].price)
-           setSellingPrice(contract[0].price)
-           console.log(sellingprice)
-       }
-         return () => {
-            
-         } */
      }, [obj])
 
      useEffect(() => {
          setCurrentUser(user)
-         //console.log(currentUser)
          return () => {
          
          }
@@ -209,19 +175,14 @@ export default function ReportCreate(){
      }
  
      const handleChangeType=async (e)=>{
-         //console.log(e.target.value)
          await setType(e.target.value)
      }
  
      const handleAmount= async()=>{
          await setDescription("")
-        // alert("Iam chaning qamount")
      }
 
      const handleClickProd=async()=>{
-       /*   console.log("amount: ",productItemI.amount)
-         console.log("qamount: ",qamount)
-         console.log("calcamount: ",calcamount) */
         if ( quantity===0||quantity===""|| productId===""){
             toast({
                 message: 'You need to choose a product and quantity to proceed',
@@ -237,7 +198,6 @@ export default function ReportCreate(){
              prevProd=>prevProd.concat(productItemI)
          )
         handleUpdateTotal()
-            // generate billing info
             const billInfo={
                 orderInfo:{
                     orderId:medication._id,
@@ -257,7 +217,7 @@ export default function ReportCreate(){
                   participantInfo:{
                     billingFacility:medication.destination,
                     billingFacilityName:medication.destination_name,
-                    locationId:state.StoreModule.selectedStore._id, //selected location,
+                    locationId:state.StoreModule.selectedStore._id, 
                     clientId:medication.clientId,
                     client:medication.client,
                     paymentmode:billMode
@@ -266,25 +226,18 @@ export default function ReportCreate(){
                   billing_status:"Unpaid"
                 }
 
-        //update order
         
         OrderServ.patch(medication._id,{
             order_status:"Billed",
             billInfo,
         }).then((resp)=>{
-           // medication=resp
-           // console.log(resp)
              handleRow(resp) 
-            //update dispense
 
         })
         .catch((err)=>{
             console.log(err)
         })
         
-        //update status(billed) + action()
-        //?attached chosen product to medication
-        //dispense helper?
          setName("")
          setBaseunit("")
          setQuantity("")
@@ -292,11 +245,7 @@ export default function ReportCreate(){
          setSellingPrice("")
          setInvQuantity("")
              handleAmount()
-        // setCalcAmount(null)
         await setSuccess(true)
-        /* console.log(success)
-        console.log(qamount)
-        console.log(productItem) */
         setChangeAmount(true)
      }
    
@@ -314,7 +263,6 @@ export default function ReportCreate(){
          setQuantity(e.target.value)
          calcamount1=quantity*sellingprice
          await setCalcAmount(calcamount1)
-       //  console.log(calcamount)
      }
  
      useEffect( () => {
@@ -347,12 +295,13 @@ export default function ReportCreate(){
      }
 
 
-     const handleMedicationDone= async()=>{ //handle selected single order
-        //console.log("b4",state)
+     const handleMedicationDone= async()=>{ 
+         
+        
     
-        //console.log("handlerow",ProductEntry)
+        
     
-       // await setSelectedMedication("")
+       
     
         const    newProductEntryModule={
             selectedMedication:{},
@@ -360,15 +309,15 @@ export default function ReportCreate(){
         }
         
       await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-       //console.log(state)
-      // ProductEntry.show=!ProductEntry.show
+       
+      
     
     }
  
      const onSubmit = async(e) =>{
          e.preventDefault();
          setMessage("")
-         //setError(false)
+         
          setSuccess(false)
          await setProductEntry({
              
@@ -382,9 +331,9 @@ export default function ReportCreate(){
          productEntry.createdby=user._id
          productEntry.transactioncategory="debit"
         
-          // console.log("b4 facility",productEntry);
+          
            if (user.currentEmployee){
-          productEntry.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+          productEntry.facility=user.currentEmployee.facilityDetail._id  
            }else{
              toast({
                  message: 'You can not remove inventory from any organization',
@@ -429,12 +378,12 @@ export default function ReportCreate(){
               return
         }
         let obj={
-           // toWallet:{ type: Schema.Types.ObjectId, ref:'facility', }, //receiving money
-            //fromWallet:{ type: Schema.Types.ObjectId, ref:'facility', },//sending money
-            //subwallet:{ type: Schema.Types.ObjectId, ref:'subwallet', },
+           
+            
+            
             client:medication.participantInfo.client._id,
             organization:user.employeeData[0].facilityDetail._id,
-            category:"credit", //debit/credit
+            category:"credit", 
             amount:amountPaid,
             description: description,
            
@@ -442,8 +391,6 @@ export default function ReportCreate(){
             fromName:medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname,
             createdby: user._id,
             
-           // refBill:[{ type: Schema.Types.ObjectId, ref:'bills'  }], //billid to be paid : ref invoice to pay
-           // info:{ type: Schema.Types.Mixed},
             paymentmode:paymentmode,
             
             facility: user.employeeData[0].facilityDetail._id,
@@ -453,7 +400,6 @@ export default function ReportCreate(){
         }
        SubwalletTxServ.create(obj)
        .then((resp)=>{
-          // console.log(resp)
 
         toast({
             message: 'Deposit accepted succesfully',
@@ -477,13 +423,13 @@ export default function ReportCreate(){
 
     useEffect(() => {
         const oldname=medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname
-       // console.log("oldname",oldname)
+       
         setSource(medication.participantInfo.client.firstname + " "+ medication.participantInfo.client.lastname)
 
         const newname=source
-       // console.log("newname",newname)
+       
         if (oldname!==newname){
-            //newdispense
+            
         
         setProductItem([])
         setTotalamount(0)
@@ -496,7 +442,7 @@ export default function ReportCreate(){
                 paidup:medication.paymentInfo.paidup + medication.paymentInfo.balance,
                 amount:medication.paymentInfo.balance
             }
-            //no payment detail push
+            
           
          setProductItem(
             prevProd=>prevProd.concat(medication)
@@ -509,9 +455,9 @@ export default function ReportCreate(){
             }
         }
 
-       // const paymentoptions= []
-        //const info = medication.participantInfo.client.paymentinfo
-        //let billme={}
+       
+        
+        
         getFacilities()
        
         return () => {
@@ -529,7 +475,7 @@ export default function ReportCreate(){
                 setTotalamount(prevtotal=>Number(prevtotal) + Number(el.partPay) )
             }
           
-            // 
+            
         })
     }
 
@@ -543,14 +489,14 @@ export default function ReportCreate(){
 
     const getFacilities= async()=>{
        
-        // console.log("here b4 server")
+        
         const findProductEntry= await SubwalletServ.find(
         {query: {
            
             client:medication.participantInfo.client._id,
             organization:user.employeeData[0].facilityDetail._id,
-            //storeId:state.StoreModule.selectedStore._id,
-            //clientId:state.ClientModule.selectedClient._id,
+            
+            
             $limit:100,
             $sort: {
                 createdAt: -1
@@ -558,7 +504,7 @@ export default function ReportCreate(){
             }})
              console.log(findProductEntry)
 
-     // console.log("balance", findProductEntry.data[0].amount)
+     
         if (findProductEntry.data.length>0){
             await setBalance(findProductEntry.data[0].amount)
         }else{
@@ -566,15 +512,15 @@ export default function ReportCreate(){
             
         } 
 
-      //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
+      
         }   
 
 
 
      useEffect(() => {
-       // const medication =state.medicationModule.selectedMedication
+       
          const today=new Date().toLocaleString()
-         //console.log(today)
+         
          setDate(today)
          const invoiceNo=random(6,'uppernumeric')
          setDocumentNo(invoiceNo)
@@ -595,15 +541,6 @@ export default function ReportCreate(){
          }
      }, [])
 
-  /*   useEffect(() => {
-        calcamount1=quantity*sellingprice
-         setCalcAmount(calcamount1)
-         console.log(calcamount)
-         setChangeAmount(true)
-        return () => {
-            
-        }
-    }, [quantity]) */
 
     
     const handleChangePart= async(bill, e)=>{
@@ -624,15 +561,11 @@ export default function ReportCreate(){
                 mode:"Full",
                 date: new Date().toLocaleString()
             }
-            //item.partPay=""
-           // item.paymentInfo.paymentDetails.push(payObj)
             item.proposedpayment={
                 balance:Number(item.paymentInfo.balance) - Number(payObj.amount),
                 paidup:Number(item.paymentInfo.paidup) + Number(payObj.amount),
                 amount:payObj.amount
             }
-           // item.paymentInfo.balance=item.paymentInfo.balance - item.paymentInfo.balance
-          //  item.paymentInfo.paidup=Number(item.paymentInfo.paidup) + Number(payObj.amount)
             getTotal()
             setPartPay((prev)=>prev.concat(bill))
 
@@ -643,8 +576,6 @@ export default function ReportCreate(){
     const handlePartAmount= async(bill,e)=>{
         
         let partAmount = e.target.value
-       // bill.partPay=partAmount
-       //const itemList=productItem
        if (partAmount==="" ||partAmount===0  ){
         toast({
             message: 'Please enter an amount as part payment',
@@ -659,7 +590,6 @@ export default function ReportCreate(){
         )
     item.partPay=partAmount
     setPartPay((prev)=>prev.concat(bill))     
-        //setProductItem(productItem)
     }
 
     const handleUpdate= async(bill,e)=>{
@@ -672,14 +602,9 @@ export default function ReportCreate(){
               })
             return
            }
-       // console.log(bill)
         let item=  await productItem.find(el=>
             el._id===bill._id
         )
-       // console.log(item)
-        /* item.partPay=partAmount
-        console.log(item)
-        console.log(productItem) */
         
         let partAmount= item.partPay
        
@@ -689,28 +614,14 @@ export default function ReportCreate(){
                 mode:"Part",
                 date: new Date().toLocaleString()
             }
-           // item.paymentInfo.paymentDetails.push(payObj)
             item.proposedpayment={
                 balance:Number(item.paymentInfo.balance) - Number(payObj.amount),
                 paidup:Number(item.paymentInfo.paidup) + Number(payObj.amount),
                 amount:payObj.amount
             }
-            /* item.paymentInfo.balance=item.paymentInfo.balance-partAmount
-            item.paymentInfo.paidup=Number(item.paymentInfo.paidup)+ Number(partAmount) */
 
         }
 
-        /* if (bill.show==="none"){
-            const   payObj={
-                amount:  item.paymentInfo.balance,
-                mode:"Full",
-                date: new Date().toLocaleString()
-            }
-            item.paymentInfo.paymentDetails.push(payObj)
-            item.paymentInfo.balance=item.paymentInfo.balance - item.paymentInfo.balance
-            }
-            
- */
         
         getTotal()
         setPartPay((prev)=>prev.concat(bill))
@@ -724,7 +635,6 @@ export default function ReportCreate(){
     }
 
     const handlePayment= async ()=>{
-           //1. check if there is sufficient amount
            if ( totalamount>balance){
             toast({
                 message: 'Total amount due greater than money received. Kindly top up account or reduce number of bills to be paid',
@@ -750,7 +660,6 @@ export default function ReportCreate(){
              }
             })
 
-             //transform 
     productItem.forEach(el=>{
             if (el.show==="flex"){
                     const  payObj={
@@ -793,14 +702,14 @@ export default function ReportCreate(){
            
 
            const obj ={
-            clientId:medication.participantInfo.client._id,//sending money
+            clientId:medication.participantInfo.client._id,
             clientName: source ,
             client:medication.participantInfo.client,
             facilityId:user.employeeData[0].facilityDetail._id,
             invoiceNo:documentNo,
             totalamount:totalamount,
             createdby:user._id,
-            status:"Fully Paid", //billid to be paid : ref invoice to pay
+            status:"Fully Paid", 
             bills:allItems,
             balance:balance,
             facilityName:user.employeeData[0].facilityDetail.facilityName
@@ -834,19 +743,8 @@ export default function ReportCreate(){
             })
 
         
-           
-           //2. call single end point for billspayment?
-
-           //2.1 create subwallet transaction- debit
-
-           //2.2 update subwallet
-
-           //2.3 mark orders as paid
-
-           //2.4 mark bills as paid
-
         }
-// console.log("simpa")
+
      return (
         <>
             <div className="card card-overflow">

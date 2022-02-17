@@ -26,7 +26,7 @@ export default function CommunicationModule() {
                             <div className="navbar-brand minHt">
                                 <div className="navbar-item ">
                                     <span className="is-small has-text-weight-medium">
-                                        Health Stack::Epidemiology{/* ::{selectedStore?selectedStore.name:""} */}</span>
+                                        Health Stack::Communication{/* ::{selectedStore?selectedStore.name:""} */}</span>
                                        {/*  <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change LGA</button>  */}
                                 </div>
                                 

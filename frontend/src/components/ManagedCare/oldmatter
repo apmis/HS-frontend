@@ -25,9 +25,6 @@
             <label className="label is-small">Panel
                 <p className="control has-icons-left">
                     <input className="checkbox is-small" ref={register({ required: true })} name="panel" type="checkbox" placeholder="Panel"/>
-                   {/*  <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span> */}
                 </p>
                 </label>
                 </div>
@@ -67,57 +64,6 @@
 
 
 
-           {/*  <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Services Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="ServicesCategory" type="text" placeholder="Services Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
            
            
             </form>
@@ -125,29 +71,25 @@
              </div>
    </div>
 
-   // from orglist
+   
    export default function OrganizationClient() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedFacility,setSelectedFacility]=useState()
     const [success, setSuccess] =useState(false)
   
-    //const [showState,setShowState]=useState() //create|modify|detail
     
-    //console.log("Organization parent", state)
+    
+    
     
 
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Organization  Module</span></div>
-            </div> */}
             <div className="columns ">
             <div className="column is-8 ">
                 <OrganizationList />
                 </div>
             <div className="column is-4 ">
-                {/* {(state.facilityModule.show ==='create')&&<OrganizationCreate />} */}
                 {(state.facilityModule.show ==='detail')&&<OrganizationDetail  />}
                 {(state.facilityModule.show ==='modify')&&<OrganizationModify facility={selectedFacility} />}
                
@@ -161,15 +103,15 @@
 }
 
 export function OrganizationCreate(){
-    const { register, handleSubmit} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     const facilityServ=client.service('facility')
     const orgServ=client.service('organizationclient')
     const [chosen, setChosen] =useState("")
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
+    
+    const {user} = useContext(UserContext) 
 
     
     const onSubmit = (data,e) =>{
@@ -178,11 +120,11 @@ export function OrganizationCreate(){
         setError(false)
         setSuccess(false)
           data.createdby=user._id
-          //console.log(data);
+          
           
         facilityServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 e.target.reset();
                 setMessage("Created Organization successfully")
                 setSuccess(true)
@@ -204,8 +146,8 @@ export function OrganizationCreate(){
         }
         orgServ.create(stuff)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
+                
+               
                setSuccess(true)
                 toast({
                     message: 'Organization added succesfully',
@@ -228,13 +170,9 @@ export function OrganizationCreate(){
       const getSearchfacility=(obj)=>{
           setChosen(obj)
 
-       /*  setCategoryName(obj.categoryname)
-        setChosen2(obj) */
         
          if (!obj){
-             //"clear stuff"
-            /*  setCategoryName("")
-             setChosen2() */
+             
             
          }
      }
@@ -262,106 +200,20 @@ export function OrganizationCreate(){
                         </div>
                     </div>
                     </div>
-      {/*   <div className="card ">
-            <div className="card-header">
-                <p className="card-header-title">
-                    Create Organization
-                </p>
-            </div>
-            <div className="card-content vscrollable">
-            { success && <div className="message"> {message}</div>}
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="field mb-2">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="facilityName" type="text" placeholder="Name of Facility" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div>
-                <div className="field mb-2">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="facilityAddress" type="text" placeholder="Address of Facility" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div>
-            <div className="field mb-2">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="facilityCity" type="text" placeholder="City/Town"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field mb-2">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="facilityContactPhone" type="text" placeholder="Contact Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-           
-            <div className="field mb-2">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="facilityEmail" type="email" placeholder="Organization Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field mb-2">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="facilityOwner" type="text" placeholder="Organization CEO"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field mb-2">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="facilityType" type="text" placeholder="Organization Type"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field mb-2">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="facilityCategory" type="text" placeholder="Organization Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field mb-2">
-                <p className="control">
-                    <button className="button is-success is-small">
-                        Create
-                    </button>
-                </p>
-            </div>
-            { error && <div className="message"> {message}</div>}
-            </form>
-        </div>
-        </div>
-         */}</>
+         </>
     )
    
 }
 
 export function OrganizationDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const facilityServ=client.service('/facility')
-    //const history = useHistory()
+    
+     
+    const [error, setError] =useState(false) 
+    
+     
+    const [message, setMessage] = useState("") 
+    
+    
     const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -375,7 +227,7 @@ export function OrganizationDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule}))
-       //console.log(state)
+       
        
     }
     const closeForm=async()=>{
@@ -486,13 +338,13 @@ export function OrganizationDetail(){
 }
 
 export function OrganizationModify(){
-    const { register, handleSubmit, setValue,reset } = useForm(); //watch, errors,
+    const { register, handleSubmit, setValue,reset } = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     const facilityServ=client.service('/facility')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -543,7 +395,7 @@ export function OrganizationModify(){
         show :'create'
       }
    await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule}))
-   //console.log(state)
+   
            }
 
 
@@ -563,7 +415,7 @@ export function OrganizationModify(){
              
         facilityServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 reset();
                 setMessage("Deleted Organization successfully")
                 setSuccess(true)
@@ -584,23 +436,15 @@ export function OrganizationModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         setMessage("")
         setError(false)
         setSuccess(false)
         console.log(data)
-          //data.createdby=user._id
-          //console.log(data);
           
         facilityServ.update(facility._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
                 setMessage("updated Organization successfully")
                 setSuccess(true)
                 changeState()
@@ -751,5 +595,4 @@ export function OrganizationModify(){
             <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
             </div>
             </div>
-{/*  {ProductEntry.partPay} */}
  </td>

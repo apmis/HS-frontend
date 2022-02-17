@@ -3,25 +3,22 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import FacilityAccount from "./FacilityAccount"
-// eslint-disable-next-line
+
 const searchfacility={};
 
 
 export default function Collections() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedInventory,setSelectedInventory]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
-            </div> */}
             <div className="columns ">
                 <div className="column is-5 ">
                     <CollectionList />
@@ -29,8 +26,6 @@ export default function Collections() {
            <div className="column is-7 ">
           
                 { (state.SelectedClient.show ==='detail') && <ClientAccount />}
-                {/*  {(state.InventoryModule.show ==='detail')&&<InventoryDetail  />}
-                {(state.InventoryModule.show ==='modify')&&<InventoryModify Inventory={selectedInventory} />}*/}
                
             </div> 
 
@@ -42,50 +37,34 @@ export default function Collections() {
 }
 
 export function ClientAccount(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState([])
     const InventoryServ=client.service('subwallettransactions')
     const SubwalletServ=client.service('subwallet')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
+    
+    const {user} = useContext(UserContext) 
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const [currentUser,setCurrentUser] = useState()
     const [balance, setBalance]=useState(0)
 
 
     const clientSel= state.SelectedClient.client
     const getSearchfacility=(obj)=>{
-      /*   
-        setValue("facility", obj._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        }) */
     }
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
-   /*  useEffect(()=>{
-        //setFacility(user.activeInventory.FacilityId)//
-      if (!user.stacker){
-          console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        }) 
-      }
-    }) */
 
     useEffect(() => {
         getaccountdetails()
@@ -101,8 +80,6 @@ export function ClientAccount(){
         InventoryServ.find({query: {
             facility:user.currentEmployee.facilityDetail._id,
             client:clientSel.client,
-           // storeId:state.StoreModule.selectedStore._id,
-           // category:"credit",
             
             $sort: {
                 createdAt: -1
@@ -111,16 +88,12 @@ export function ClientAccount(){
         .then((res)=>{
                 console.log(res)
                 setFacility(res.data)
-                //e.target.reset();
-               /*  setMessage("Created Inventory successfully") */
-               // setSuccess(true)
                 toast({
                     message: 'Account details succesful',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
                   })
-                 // setSuccess(false)
             })
             .catch((err)=>{
                 toast({
@@ -138,8 +111,6 @@ export function ClientAccount(){
                
                 client:clientSel.client,
                 organization:user.currentEmployee.facilityDetail._id,
-                //storeId:state.StoreModule.selectedStore._id,
-                //clientId:state.ClientModule.selectedClient._id,
                 $limit:100,
                 $sort: {
                     createdAt: -1
@@ -147,7 +118,7 @@ export function ClientAccount(){
                 }})
                  console.log(findProductEntry)
     
-         // console.log("balance", findProductEntry.data[0].amount)
+         
             if (findProductEntry.data.length>0){
                 await setBalance(findProductEntry.data[0].amount)
             }else{
@@ -155,7 +126,7 @@ export function ClientAccount(){
                 
             } 
     
-          //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
+          
             }   
     
 
@@ -164,10 +135,10 @@ export function ClientAccount(){
         setMessage("")
         setError(false)
         setSuccess(false)
-         // data.createdby=user._id
+         
           console.log(data);
           if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         data.facility=user.currentEmployee.facilityDetail._id  
           }
         
 
@@ -187,9 +158,6 @@ export function ClientAccount(){
                 </div>
                 <div className="card-content ">
                 
-           {/*  <div className="level"> vscrollable
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Inventory  Module</span></div>
-            </div> */}
             <div className="columns ">
                 <div className="column is-6 ">
                     <div className="card cardht80">
@@ -208,12 +176,6 @@ export function ClientAccount(){
                                         <th><abbr title="Cost Price">Date</abbr></th>
                                         <th><abbr title="Quantity">Amount</abbr></th>
                                         <th><abbr title="Base Unit">Mode</abbr></th>
-                                       {/*  <th><abbr title="Stock Value">Stock Value</abbr></th>
-                                         
-                                        <th><abbr title="Selling Price">Selling Price</abbr></th>
-                                        <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
-                                        <th><abbr title="Expiry">Expiry</abbr></th> 
-                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -225,16 +187,10 @@ export function ClientAccount(){
                                         {Inventory.category==="credit" && 
                                             <tr key={Inventory._id} >
                                             <th>{i+1}</th>
-                                            <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> {/*add time  */}
+                                            <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> 
                                             
                                             <td>{Inventory.amount}</td>
                                             <td>{Inventory.paymentmode}</td>
-                                            {/* <td>{Inventory.stockvalue}</td>
-                                            <td>{Inventory.costprice}</td>
-                                            <td>{Inventory.sellingprice}</td>
-                                            <td>{Inventory.reorder_level}</td> 
-                                            <td>{Inventory.expiry}</td>
-                                            <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
                                              }
@@ -267,12 +223,6 @@ export function ClientAccount(){
                                         
                                         <th><abbr title="Quantity">Amount</abbr></th>
                                         <th><abbr title="Base Unit">Mode</abbr></th>
-                                       {/*  <th><abbr title="Stock Value">Stock Value</abbr></th>
-                                         
-                                        <th><abbr title="Selling Price">Selling Price</abbr></th>
-                                        <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
-                                        <th><abbr title="Expiry">Expiry</abbr></th> 
-                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -287,12 +237,6 @@ export function ClientAccount(){
                                             <th>{Inventory.description}</th>
                                             <td>{Inventory.amount}</td>
                                             <td>{Inventory.paymentmode}</td>
-                                            {/* <td>{Inventory.stockvalue}</td>
-                                            <td>{Inventory.costprice}</td>
-                                            <td>{Inventory.sellingprice}</td>
-                                            <td>{Inventory.reorder_level}</td> 
-                                            <td>{Inventory.expiry}</td>
-                                            <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -320,22 +264,22 @@ export function ClientAccount(){
 }
 
 export function CollectionList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const InventoryServ=client.service('subwallettransactions')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedInventory, setSelectedInventory]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedInventory, setSelectedInventory]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
 
 
@@ -346,13 +290,13 @@ export function CollectionList(){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-       //console.log(state)
+       
     }
 
     const handleRow= async(Inventory)=>{
-        //console.log("b4",state)
+        
 
-        //console.log("handlerow",Inventory)
+        
 
         await setSelectedInventory(Inventory)
 
@@ -361,7 +305,7 @@ export function CollectionList(){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, SelectedClient:newInventoryModule}))
-       //console.log(state)
+       
 
     }
 
@@ -380,10 +324,8 @@ export function CollectionList(){
                     createdAt: -1
                   }
                     }}).then((res)=>{
-                //console.log(res)
+                
                setFacilities(res.data)
-                /* setMessage(" Inventory  fetched successfully")
-                setSuccess(true)  */
             })
             .catch((err)=>{
                 console.log(err)
@@ -403,10 +345,10 @@ export function CollectionList(){
         const findInventory= await InventoryServ.find(
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
-                   // storeId:state.StoreModule.selectedStore._id,
+                   
                     category:"credit",
                     createdAt:{
-                        $gt: new Date().getTime() - DAY_MS //last 30days
+                        $gt: new Date().getTime() - DAY_MS 
 
                     },
                     $sort: {
@@ -431,22 +373,11 @@ export function CollectionList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Inventory  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Inventory, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
             useEffect(() => {
                
                     console.log(facilities)
-                    //getFacilities(user)
               
                 return () => {
                     
@@ -459,13 +390,6 @@ export function CollectionList(){
                 if (user){
                     getFacilities()
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 InventoryServ.on('created', (obj)=>getFacilities())
                 InventoryServ.on('updated', (obj)=>getFacilities())
@@ -483,7 +407,6 @@ export function CollectionList(){
             }
         }, [state.StoreModule.selectedStore])
 
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -507,9 +430,6 @@ export function CollectionList(){
                     </div>
                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Collections in last 30 days </span></div>
                     <div className="level-right">
-                        {/* <div className="level-item"> 
-                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div> */}
                     </div>
 
                 </div>
@@ -519,16 +439,9 @@ export function CollectionList(){
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th><abbr title="Cost Price">Date</abbr></th>
-                                        {/* <th><abbr title="Category">Category</abbr></th> */}
                                         <th>Client</th>
                                         <th><abbr title="Quantity">Amount</abbr></th>
                                         <th><abbr title="Base Unit">Mode</abbr></th>
-                                       {/*  <th><abbr title="Stock Value">Stock Value</abbr></th>
-                                         
-                                        <th><abbr title="Selling Price">Selling Price</abbr></th>
-                                        <th><abbr title="Re-Order Level">Re-Order Level</abbr></th>
-                                        <th><abbr title="Expiry">Expiry</abbr></th> 
-                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -539,17 +452,10 @@ export function CollectionList(){
 
                                             <tr key={Inventory._id} onClick={()=>handleRow(Inventory)} className={Inventory._id===(selectedInventory?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> {/*add time  */}
+                                            <td>{new Date(Inventory.createdAt).toLocaleString('en-GB')}</td> 
                                             <th>{Inventory.fromName}</th>
                                             <td>{Inventory.amount}</td>
-                                            <td>{Inventory.paymentmode}</td>
-                                            {/* <td>{Inventory.stockvalue}</td>
-                                            <td>{Inventory.costprice}</td>
-                                            <td>{Inventory.sellingprice}</td>
-                                            <td>{Inventory.reorder_level}</td> 
-                                            <td>{Inventory.expiry}</td>
-                                            <td><span   className="showAction"  >...</span></td> */}
-                                           
+                                            <td>{Inventory.paymentmode}</td>                                           
                                             </tr>
 
                                         ))}
@@ -565,17 +471,17 @@ export function CollectionList(){
 
 
 export function InventoryDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const InventoryServ=client.service('/Inventory')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+   
+    
+    const [error, setError] =useState(false)
+   
+    
+    const [message, setMessage] = useState("")
+   
+   
+   
     const {state,setState} = useContext(ObjectContext)
-    const {user} = useContext(UserContext) //,setUser
+    const {user} = useContext(UserContext) 
     
    
 
@@ -604,40 +510,6 @@ export function InventoryDetail(){
                
            }
        }, [Inventory])
- /* await setFacilities(findProductEntry.data)
-        }
-        else {
-            if (user.stacker){ */
-                /* toast({
-                    message: 'You do not qualify to view this',
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  }) 
-                  return */
-               /*  const findProductEntry= await ProductEntryServ.find(
-                    {query: {
-                        
-                        $limit:20,
-                        $sort: {
-                            createdAt: -1
-                        }
-                        }})
-    
-            await setFacilities(findProductEntry.data)
-
-            }
-        }  */
-  /*   .then((res)=>{
-        console.log(res)
-            setFacilities(res.data)
-            setMessage(" ProductEntry  fetched successfully")
-            setSuccess(true)
-        })
-        .catch((err)=>{
-            setMessage("Error creating ProductEntry, probable network issues "+ err )
-            setError(true)
-        }) */
     
     
 
@@ -649,7 +521,6 @@ export function InventoryDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-       //console.log(state)
        
     }
  
@@ -678,16 +549,6 @@ export function InventoryDetail(){
                         <span className="is-size-7 padleft"   name="name"><strong> {Inventory.name} </strong></span>
                         </td>
                     </tr>
-                   {/*  <tr>
-                    <td>
-                <label className="label is-small"><span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>Inventory Type:
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft"   name="InventoryType">{Inventory.InventoryType} </span> 
-                    </td>
-                </tr> */}
 
             </tbody> 
             </table> 
@@ -699,17 +560,17 @@ export function InventoryDetail(){
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-danger is-small"  /*  onClick={handleSetPrice} */>
+                    <button className="button is-danger is-small" >
                         Audit
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-info is-small" /* onClick={handleEdit} */>
+                    <button className="button is-info is-small">
                         Transaction History
                     </button>
                 </p>
                 <p className="control">
-                    <button className="button is-warning is-small" /* onClick={handleEdit} */>
+                    <button className="button is-warning is-small">
                         Reorder Level
                     </button>
                 </p>
@@ -725,26 +586,26 @@ export function InventoryDetail(){
 }
 
 export function InventoryModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
+    const { register, handleSubmit, setValue,reset, errors } = useForm(); 
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
+    
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
+    
     const [message,setMessage] = useState("")
     const [billservice,setBillService] = useState()
-    // eslint-disable-next-line 
+    
     const InventoryServ=client.service('inventory')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
     const billServ=client.service('billing')
 
-    const Inventory =state.InventoryModule.selectedInventory // set inventory
+    const Inventory =state.InventoryModule.selectedInventory 
     const handleSetPrice = async()=>{
     
-        const service = await  billServ.get(Inventory.billingId) // get the service
+        const service = await  billServ.get(Inventory.billingId) 
             const contractSel= service.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
             
             setValue("price", contractSel[0].price,  {
@@ -774,7 +635,7 @@ export function InventoryModify(){
         show :'detail'
       }
         await setState((prevstate)=>({...prevstate, InventoryModule:newInventoryModule}))
-   //console.log(state)
+   
            }
 
 
@@ -796,14 +657,8 @@ export function InventoryModify(){
              
         InventoryServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 reset();
-               /*  setMessage("Deleted Inventory successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Inventory deleted succesfully',
                     type: 'is-success',
@@ -813,8 +668,8 @@ export function InventoryModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Inventory, probable network issues "+ err )
-               // setError(true)
+               
+               
                 toast({
                     message: "Error deleting Inventory, probable network issues or "+ err,
                     type: 'is-danger',
@@ -826,24 +681,15 @@ export function InventoryModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
         console.log(data)
-       // data.facility=Inventory.facility
-          //console.log(data);
           const contractSel= billservice.contracts.filter(element=>(element.source_org===Inventory.facility && element.dest_org===Inventory.facility))
           contractSel[0].price=data.price 
           billServ.patch(billservice._id,billservice)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Inventory successfully")
                  toast({
                     message: 'Price updated succesfully',
                     type: 'is-success',
@@ -855,8 +701,6 @@ export function InventoryModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Inventory, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error updating Price, probable network issues or "+ err,
                     type: 'is-danger',
@@ -917,11 +761,6 @@ export function InventoryModify(){
                         Cancel
                     </button>
                 </p>
-               {/*  <p className="control">
-                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-                       Delete
-                    </button>
-                </p> */}
             </div>
         </div>
         </div>
@@ -936,62 +775,36 @@ export  function ProductSearch({getSearchfacility,clear}) {
     
     const facilityServ=client.service('products')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='name' //field variable
+        const field='name' 
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            facilityServ.find({query: {     
                  [field]: {
                      $regex:val,
                      $options:'i'

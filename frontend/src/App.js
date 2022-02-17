@@ -6,7 +6,9 @@ import Home from './components/Home'
 import Login from './components/Login' 
 import SignUp from './components/SignUp'
 import {useState, useContext, useEffect} from 'react'
+
 import {UserContext,ObjectContext} from './context'
+
 import MyUserProvider from './context'
 import client from './feathers'
 
@@ -72,6 +74,19 @@ function App() {
     DocumentClassModule:{
       show:'create',
       selectedDocumentClass:{}
+    },
+    WardModule:{
+      show:'create',
+      selectedWard:{}
+    },
+    AdmissionModule:{
+      show:'create',
+      selectedAdmission:{}
+    },
+
+    EndEncounterModule:{
+      show:'',
+      selectedEndEncounter:{}
     },
     AppointmentModule:{
       show:'create',

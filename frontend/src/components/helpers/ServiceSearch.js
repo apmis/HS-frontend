@@ -3,7 +3,6 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {ServicesCreate} from '../Finance/Services'
@@ -16,26 +15,18 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-// Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-// eslint-disable-next-line
 const searchfacility={};
 
 export default function ServiceSearch({getSearchfacility,clear,mode}) {
     const {user} = useContext(UserContext)
     const productServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
@@ -43,37 +34,12 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        await setSimpa(obj.name)
        getSearchfacility(obj)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
-      /*   await setCount(2) */
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
-        /*  if (count===2){
-             console.log("stuff was chosen")
-         }
-        */
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(value)=>{
         console.log(mode)
@@ -84,14 +50,14 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
             await setFacilities([])
             return
         }
-        const field='name' //field variable
+        const field='name' 
 
        
         if (value.length>=3 ){
             if (mode.value=== "Cash" ||mode.value=== "Family Cover"){
 
           
-            productServ.find({query: {     //service
+            productServ.find({query: {     
                  name: {
                      $regex:value,
                      $options:'i'
@@ -103,8 +69,6 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-             // console.log("product  fetched successfully") 
-              //console.log(res.data) 
                 setFacilities(res.data)
                  setSearchMessage(" product  fetched successfully")
                  setShowPanel(true)
@@ -119,10 +83,7 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
              })
             }
             if (mode.value=== "CompanyCover"){
-                //if it is hmo or company cover
-                //band of hospital
-                //hmo facility Id
-                productServ.find({query: {     //service
+                productServ.find({query: {     
                     name: {
                         $regex:value,
                         $options:'i'
@@ -134,8 +95,8 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
                         createdAt: -1
                       }
                         }}).then((res)=>{
-                // console.log("product  fetched successfully") 
-                 //console.log(res.data) 
+                
+                 
                    setFacilities(res.data)
                     setSearchMessage(" product  fetched successfully")
                     setShowPanel(true)
@@ -151,13 +112,13 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
 
             }
             if (mode.value=== "HMOCover"){
-                //if it is hmo or company cover
-                //band of hospital
-                //hmo facility Id
-                //check if the hmo is a state hmo or not
+                
+                
+                
+                
                 console.log(mode)
                 if(true){
-                    productServ.find({query: {     //service
+                    productServ.find({query: {     
                         name: {
                             $regex:value,
                             $options:'i'
@@ -171,8 +132,8 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
                             createdAt: -1
                         }
                             }}).then((res)=>{
-                    // console.log("product  fetched successfully") 
-                    //console.log(res.data) 
+                    
+                    
                     setFacilities(res.data)
                         setSearchMessage(" product  fetched successfully")
                         setShowPanel(true)
@@ -190,11 +151,11 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
             }
          }
         else{
-           // console.log("less than 3 ")
-            //console.log(val)
+           
+            
             setShowPanel(false)
             await setFacilities([])
-            //console.log(facilities)
+            
         }
     }
 
@@ -207,7 +168,7 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
     }
     useEffect(() => {
        if (clear){
-           //console.log("success has changed",clear)
+           
            setSimpa("")
        }
         return () => {
@@ -233,7 +194,6 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
                                 <i className="fas fa-search"></i>
                             </span>
                         </div>
-                        {/* {searchError&&<div>{searchMessage}</div>} */}
                         <div className="dropdown-menu" style={{width:"100%"}} >
                             <div className="dropdown-content">
                           { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to service list</span> </div>}
@@ -261,13 +221,8 @@ export default function ServiceSearch({getSearchfacility,clear,mode}) {
                                         <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        {/* <StoreList standalone="true" /> */}
                                         <ServicesCreate />
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>       
         </div>

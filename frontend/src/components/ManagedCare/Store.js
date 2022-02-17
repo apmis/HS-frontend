@@ -3,24 +3,21 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
-// eslint-disable-next-line
+
 const searchfacility={};
 
 
 export default function Store() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedStore,setSelectedStore]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Store  Module</span></div>
-            </div> */}
             <div className="columns ">
             <div className="column is-8 ">
                 <StoreList />
@@ -40,21 +37,21 @@ export default function Store() {
 }
 
 export function StoreCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const StoreServ=client.service('location')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
 
 
 
-    const getSearchfacility=(obj)=>{ // buble-up from inputsearch for creating resource
+    const getSearchfacility=(obj)=>{ 
         
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -64,15 +61,15 @@ export function StoreCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
+        
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
+  
     useEffect(()=>{
-        //setFacility(user.activeStore.FacilityId)//
+        
       if (!user.stacker){
           console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -87,17 +84,16 @@ export function StoreCreate(){
         setMessage("")
         setError(false)
         setSuccess(false)
-         // data.createdby=user._id
+         
           console.log(data);
           if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         data.facility=user.currentEmployee.facilityDetail._id  
           }
           data.locationType="Store"
         StoreServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 e.target.reset();
-               /*  setMessage("Created Store successfully") */
                 setSuccess(true)
                 toast({
                     message: 'Store created succesfully',
@@ -129,14 +125,6 @@ export function StoreCreate(){
             <div className="card-content vscrollable">
    
             <form onSubmit={handleSubmit(onSubmit)}>
-               {/*  <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="StoreType" type="text" placeholder="Type of Store" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div> */}
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
                     <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Location" />
@@ -146,32 +134,6 @@ export function StoreCreate(){
                     
                 </p>
             </div>
-           {/*  <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className=" fas fa-user-md "></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-            </div>
-           
-            <div className="field">
-                <p className="control has-icons-left">
-                
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div> */}
            <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
                 <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                 <p className="control has-icons-left " style={{display:"none"}}>
@@ -181,50 +143,6 @@ export function StoreCreate(){
                     </span>
                 </p>
             </div>
-           {/*  <div className="field">
-                <div className="control has-icons-left">
-                    <div className="dropdown ">
-                        <div className="dropdown-trigger">
-                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                            <span className="icon is-small is-left">
-                            <i className="fas fa-hospital-symbol"></i>
-                            </span>
-                        </div>
-                        <div className="dropdown-menu">
-                            <div className="dropdown-content">
-                                <div className="dropdown-item">
-                                    simpa
-                                </div>
-                                <div className="dropdown-item is-active">
-                                    simpa 2
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 3
-                                </div>
-                                <div className="dropdown-item">
-                                    simpa 4
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div>
-            <div className="field">
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-            </div> */}
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
@@ -242,22 +160,22 @@ export function StoreCreate(){
 }
 
 export function StoreList({standalone,closeModal}){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+   
+    
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+     
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+     
    const [message, setMessage] = useState("") 
     const StoreServ=client.service('location')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+    
+   
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedStore, setSelectedStore]=useState() //
-    // eslint-disable-next-line
+     
+   const [selectedStore, setSelectedStore]=useState() 
+    
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+    
     const {user,setUser}=useContext(UserContext)
 
 
@@ -268,14 +186,14 @@ export function StoreList({standalone,closeModal}){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-       //console.log(state)
+       
         
 
     }
     const handleRow= async(Store)=>{
-        //console.log("b4",state)
+        
 
-        //console.log("handlerow",Store)
+        
 
         await setSelectedStore(Store)
 
@@ -284,8 +202,8 @@ export function StoreList({standalone,closeModal}){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-       //console.log(state)
-       //closeModal()
+       
+       
 
     }
 
@@ -347,16 +265,6 @@ export function StoreList({standalone,closeModal}){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Store  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Store, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
             useEffect(() => {
@@ -373,13 +281,6 @@ export function StoreList({standalone,closeModal}){
                 if (user){
                     getFacilities()
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 StoreServ.on('created', (obj)=>getFacilities())
                 StoreServ.on('updated', (obj)=>getFacilities())
@@ -391,7 +292,6 @@ export function StoreList({standalone,closeModal}){
             },[])
 
 
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -427,13 +327,6 @@ export function StoreList({standalone,closeModal}){
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
-                                        {/* <th><abbr title="Last Name">Store Type</abbr></th>
-                                       <th><abbr title="Profession">Profession</abbr></th>
-                                         <th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
-                                        <th><abbr title="Facility">Facility</abbr></th>*/}
                                        { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                         </tr>
                                     </thead>
@@ -446,13 +339,6 @@ export function StoreList({standalone,closeModal}){
                                             <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
                                             <th>{Store.name}</th>
-                                            {/*<td>{Store.StoreType}</td>
-                                            < td>{Store.profession}</td>
-                                            <td>{Store.phone}</td>
-                                            <td>{Store.email}</td>
-                                            <td>{Store.department}</td>
-                                            <td>{Store.deptunit}</td> 
-                                            <td>{Store.facility}</td>*/}
                                           { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
                                             </tr>
@@ -470,22 +356,22 @@ export function StoreList({standalone,closeModal}){
 
 
     export function StoreListStandalone({standalone,closeModal}){
-        // const { register, handleSubmit, watch, errors } = useForm();
-         // eslint-disable-next-line
+        
+         
          const [error, setError] =useState(false)
-          // eslint-disable-next-line
+          
          const [success, setSuccess] =useState(false)
-          // eslint-disable-next-line
+          
         const [message, setMessage] = useState("") 
          const StoreServ=client.service('location')
-         //const history = useHistory()
-        // const {user,setUser} = useContext(UserContext)
+         
+        
          const [facilities,setFacilities]=useState([])
-          // eslint-disable-next-line
-        const [selectedStore, setSelectedStore]=useState() //
-         // eslint-disable-next-line
+          
+        const [selectedStore, setSelectedStore]=useState() 
+         
          const {state,setState}=useContext(ObjectContext)
-         // eslint-disable-next-line
+         
          const {user,setUser}=useContext(UserContext)
      
      
@@ -496,14 +382,14 @@ export function StoreList({standalone,closeModal}){
                  show :'create'
                  }
             await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-            //console.log(state)
+            
              
      
          }
          const handleRow= async(Store)=>{
-             //console.log("b4",state)
+             
      
-             //console.log("handlerow",Store)
+             
      
              await setSelectedStore(Store)
      
@@ -512,7 +398,7 @@ export function StoreList({standalone,closeModal}){
                  show :'detail'
              }
             await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-            //console.log(state)
+            
             closeModal()
      
          }
@@ -575,16 +461,6 @@ export function StoreList({standalone,closeModal}){
      
                          }
                      }
-               /*   .then((res)=>{
-                     console.log(res)
-                         setFacilities(res.data)
-                         setMessage(" Store  fetched successfully")
-                         setSuccess(true)
-                     })
-                     .catch((err)=>{
-                         setMessage("Error creating Store, probable network issues "+ err )
-                         setError(true)
-                     }) */
                  }
                  
                  useEffect(() => {
@@ -601,13 +477,6 @@ export function StoreList({standalone,closeModal}){
                      if (user){
                          getFacilities()
                      }else{
-                         /* const localUser= localStorage.getItem("user")
-                         const user1=JSON.parse(localUser)
-                         console.log(localUser)
-                         console.log(user1)
-                         fetchUser(user1)
-                         console.log(user)
-                         getFacilities(user) */
                      }
                      StoreServ.on('created', (obj)=>getFacilities())
                      StoreServ.on('updated', (obj)=>getFacilities())
@@ -619,7 +488,6 @@ export function StoreList({standalone,closeModal}){
                  },[])
      
      
-         //todo: pagination and vertical scroll bar
      
          return(
              <>
@@ -655,13 +523,6 @@ export function StoreList({standalone,closeModal}){
                                              <tr>
                                              <th><abbr title="Serial No">S/No</abbr></th>
                                              <th>Name</th>
-                                             {/* <th><abbr title="Last Name">Store Type</abbr></th>
-                                            <th><abbr title="Profession">Profession</abbr></th>
-                                              <th><abbr title="Phone">Phone</abbr></th>
-                                             <th><abbr title="Email">Email</abbr></th>
-                                             <th><abbr title="Department">Department</abbr></th>
-                                             <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
-                                             <th><abbr title="Facility">Facility</abbr></th>*/}
                                             { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                              </tr>
                                          </thead>
@@ -674,13 +535,6 @@ export function StoreList({standalone,closeModal}){
                                                  <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
                                                  <th>{i+1}</th>
                                                  <th>{Store.name}</th>
-                                                 {/*<td>{Store.StoreType}</td>
-                                                 < td>{Store.profession}</td>
-                                                 <td>{Store.phone}</td>
-                                                 <td>{Store.email}</td>
-                                                 <td>{Store.department}</td>
-                                                 <td>{Store.deptunit}</td> 
-                                                 <td>{Store.facility}</td>*/}
                                                { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                                 
                                                  </tr>
@@ -697,15 +551,15 @@ export function StoreList({standalone,closeModal}){
          }
 
 export function StoreDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const StoreServ=client.service('/Store')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    
+     
+    const [error, setError] =useState(false) 
+    
+     
+    const [message, setMessage] = useState("") 
+    
+    
+    
     const {state,setState} = useContext(ObjectContext)
 
    
@@ -718,7 +572,6 @@ export function StoreDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-       //console.log(state)
        
     }
  
@@ -757,73 +610,6 @@ export function StoreDetail(){
                     <span className="is-size-7 padleft"   name="StoreType">{Store.locationType} </span> 
                     </td>
                 </tr>
-                  {/*   <tr>
-                    <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>Profession: 
-                
-                    
-                    </label>
-                    </td>
-                <td>
-                <span className="is-size-7 padleft "  name="StoreCity">{Store.profession}</span> 
-                </td>
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>Phone:           
-                    
-                        </label>
-                        </td>
-                        <td>
-                        <span className="is-size-7 padleft "  name="StoreContactPhone" >{Store.phone}</span>
-                        </td>
-                  </tr>
-                    <tr><td>
-            
-            <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>Email:                     
-                    
-                         </label></td><td>
-                         <span className="is-size-7 padleft "  name="StoreEmail" >{Store.email}</span>
-                         </td>
-             
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i></span>Department:
-                    
-                    </label></td>
-                    <td>
-                    <span className="is-size-7 padleft "  name="StoreOwner">{Store.department}</span>
-                    </td>
-               
-                </tr>
-                    <tr>
-            <td>
-            <label className="label is-small"> <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>Departmental Unit:              
-                    
-                </label></td>
-                <td>
-                <span className="is-size-7 padleft "  name="StoreType">{Store.deptunit}</span>
-                </td>
-              
-                </tr> */}
-                    
-          {/*   <div className="field">
-             <label className="label is-small"><span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>Category:              
-                    <span className="is-size-7 padleft "  name= "StoreCategory">{Store.StoreCategory}</span>
-                </label>
-                 </div> */}
 
             </tbody> 
             </table> 
@@ -846,17 +632,17 @@ export function StoreDetail(){
 }
 
 export function StoreModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
+    const { register, handleSubmit, setValue,reset, errors } = useForm(); 
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
+    
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
+    
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line 
+    
     const StoreServ=client.service('location')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -871,30 +657,6 @@ export function StoreModify(){
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Store.profession,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("phone", Store.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", Store.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("department", Store.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", Store.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("StoreCategory", Store.StoreCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
             
             return () => {
                 
@@ -907,7 +669,7 @@ export function StoreModify(){
         show :'create'
       }
    await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
-   //console.log(state)
+   
            }
 
 
@@ -927,14 +689,8 @@ export function StoreModify(){
              
         StoreServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
+                
                 reset();
-               /*  setMessage("Deleted Store successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Store deleted succesfully',
                     type: 'is-success',
@@ -944,8 +700,6 @@ export function StoreModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Store, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting Store, probable network issues or "+ err,
                     type: 'is-danger',
@@ -957,23 +711,19 @@ export function StoreModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
         console.log(data)
         data.facility=Store.facility
-          //console.log(data);
+          
           
         StoreServ.patch(Store._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Store successfully")
+                
+               
+               
                  toast({
                     message: 'Store updated succesfully',
                     type: 'is-success',
@@ -985,8 +735,8 @@ export function StoreModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Store, probable network issues "+ err )
-               // setError(true)
+                
+               
                 toast({
                     message: "Error updating Store, probable network issues or "+ err,
                     type: 'is-danger',
@@ -1031,67 +781,6 @@ export function StoreModify(){
                 </p>
                 </label>
                 </div>
-            {/* <div className="field">
-            <label className="label is-small">Profession
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Store Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="StoreCategory" type="text" placeholder="Store Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
            
            
             </form>
@@ -1107,11 +796,6 @@ export function StoreModify(){
                         Cancel
                     </button>
                 </p>
-                {/* <p className="control">
-                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-                       Delete
-                    </button>
-                </p> */}
             </div>
         </div>
         </div>
@@ -1126,62 +810,36 @@ export  function InputSearch({getSearchfacility,clear}) {
     
     const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='facilityName' //field variable
+        const field='facilityName' 
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            facilityServ.find({query: {     
                  [field]: {
                      $regex:val,
                      $options:'i'

@@ -3,15 +3,11 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 import ReportCreate from './ReportCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
-/* import {ProductCreate} from './Products' */
-// eslint-disable-next-line
-//const searchfacility={};
 import {
     Accordion,
     AccordionItem,
@@ -21,38 +17,33 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-// Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-//import BillPrescriptionCreate from './BillPrescriptionCreate';
 
 
 
 export default function CaseDefinition() {
-    //const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    
+    
     const [selectedProductEntry,setSelectedProductEntry]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line
+    
    const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line
+    
   const [message, setMessage] = useState("") 
    const BillServ=client.service('casedefinition')
-   //const history = useHistory()
-  // const {user,setUser} = useContext(UserContext)
+   
+  
    const [facilities,setFacilities]=useState([])
-    // eslint-disable-next-line
-  const [selectedOrders, setSelectedOrders]=useState([]) //
-   // eslint-disable-next-line
+    
+  const [selectedOrders, setSelectedOrders]=useState([]) 
+   
    const {state,setState}=useContext(ObjectContext)
-   // eslint-disable-next-line
+   
    const {user,setUser}=useContext(UserContext)
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
-            </div> */}
             <div className="columns ">
                 <div className="column is-6 ">
                     <CaseDefinitionList/>
@@ -62,10 +53,6 @@ export default function CaseDefinition() {
                 {(state.EpidemiologyModule.show ==='create')&&  <CaseDefinitionCreate />}
                 {(state.EpidemiologyModule.show ==='detail')&&  <CaseDefinitionDetail />}
                 </div>
-               {/*  <div className="column is-3 ">  <ReportCreate />
-                
-                {(state.financeModule.show ==='detail')&&<PatientProfile />}
-                </div> */}
 
             </div>                            
             </section>
@@ -75,16 +62,16 @@ export default function CaseDefinition() {
 }
 
 export function CaseDefinitionCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const BandServ=client.service('casedefinition')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [currentUser,setCurrentUser] = useState()
     const bandTypeOptions =["Immediate Notification","Weekly", "Monthly" ]
     const notifierOptions =["Facility Focal Person","DSNO", "Asst DSNO","State Epidemiologist" ]
@@ -101,7 +88,6 @@ export function CaseDefinitionCreate(){
     const [lab,setLab] = useState("")
     const [labs,setLabs] = useState([])
     const [labvalue,setLabvalue] = useState("")
-    /* const [sympreq,setSympreq] = useState(false) */
     const [observations,setObservations]=useState([])
     const [mgtProtocol,setMgtProtocol] = useState("")
     const [notified,setNotified] = useState("")
@@ -116,15 +102,12 @@ export function CaseDefinitionCreate(){
     
     useEffect(() => {
         setCurrentUser(user)
-        //console.log(currentUser)
         return () => {
         
         }
     }, [user])
 
-  //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeBand.FacilityId)//
       if (!user.stacker){
          
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -134,20 +117,15 @@ export function CaseDefinitionCreate(){
       }
     })
     const handleChecked=e=>{
-       // console.log(e.target.checked)
         setSympreq(e.target.checked)
     }
 
     const handleChecked2=e=>{
-       // console.log(e.target.checked)
         setFindingreq(e.target.checked)
     }
 
     const onSubmit = async(data,e) =>{
         e.preventDefault();
-       /*  data.Presenting_Complaints=symptoms
-        data.Clinical_Findings=findings */
-        //data.LaboratoryConfirmation=labconfirms
         data.observations=[]
         data.disease={
             name:data.disease,
@@ -168,11 +146,7 @@ export function CaseDefinitionCreate(){
                     category:"symptoms" ,
                     name:el.symptom ,
                     duration:el.duration ,
-                    /* note:"",
-                    snomed:"" ,
-                    response:"" , */
                     required:el.sympreq,
-                    /* value:""  */
                 }
                 console.log(obs)
                 sympcollection.push(obs)
@@ -187,12 +161,7 @@ export function CaseDefinitionCreate(){
                 let obs={
                     category:"Signs" ,
                     name:el.finding ,
-                   /*  duration:el.duration , */
-                    /* note:"",
-                    snomed:"" ,
-                    response:"" , */
                     required:el.findingreq,
-                    /* value:""  */
                 }
                 findingscollection.push(obs)
 
@@ -206,11 +175,6 @@ export function CaseDefinitionCreate(){
                 let obs={
                     category:"Laboratory" ,
                     name:el.lab ,
-                   /*  duration:el.duration , */
-                    /* note:"",
-                    snomed:"" ,
-                    response:"" , */
-                   /*  required:el.findingreq, */
                     value:el.labvalue 
                 }
                labscollection.push(obs)
@@ -224,22 +188,17 @@ export function CaseDefinitionCreate(){
         console.log(notifiedlist)
         data.notification_destination= notifiedlist[0]
         data.treatmentprotocol=mgtProtocol
-      // await setObservations((prev)=>([...prev, symp]))
         setMessage("")
         setError(false)
         setSuccess(false)
-         // data.createdby=user._id
           console.log(data);
           if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         data.facility=user.currentEmployee.facilityDetail._id  
           }
         BandServ.create(data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Band successfully") */
                 setSuccess(true)
-              /*   setAllergies([]) */
                 setSymptoms([])
                 setFindings([])
                 setLabs([])
@@ -270,7 +229,6 @@ export function CaseDefinitionCreate(){
         } 
         console.log(newsymptom)
         setSymptoms((prev)=>([...prev, newsymptom]))
-       // setAllergy({})
         setSymptom("")
         setDuration("")
         setSympreq(false)
@@ -282,7 +240,6 @@ export function CaseDefinitionCreate(){
         } 
         console.log(newFinding)
         setFindings((prev)=>([...prev, newFinding]))
-       // setAllergy({})
         setFinding("")
         setFindingreq(false)
     }
@@ -293,21 +250,16 @@ export function CaseDefinitionCreate(){
         } 
         console.log(newLabs)
         setLabs((prev)=>([...prev, newLabs]))
-       // setAllergy({})
         setLab("")
         setLabvalue("")
-       /*  setFindingreq(false) */
     }
     const onDelete = (comp,i)=>{
-        //console.log(comp,i)
        setSymptoms(prevstate=>prevstate.filter((el,index)=>index!==i))
     }
     const onDeleteFinding = (comp,i)=>{
-        //console.log(comp,i)
        setFindings(prevstate=>prevstate.filter((el,index)=>index!==i))
     }
     const onDeleteLab = (comp,i)=>{
-        //console.log(comp,i)
        setLabs(prevstate=>prevstate.filter((el,index)=>index!==i))
     }
     return (
@@ -321,18 +273,10 @@ export function CaseDefinitionCreate(){
             <div className="card-content vscrollable">
    
             <form onSubmit={handleSubmit(onSubmit)}>
-               {/*  <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small"  ref={register({ required: true })}  name="bandType" type="text" placeholder="Type of Band" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-hospital"></i>
-                        </span>                    
-                    </p>
-                </div> */}
             <div className="field">    
                  <div className="control">
                      <div className="select is-small ">
-                         <select name="notificationtype"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
+                         <select name="notificationtype"  ref={register({ required: true })} className="selectadd" >
                          <option value="">Choose Notification Type </option>
                            {bandTypeOptions.map((option,i)=>(
                                <option key={i} value={option}> {option}</option>
@@ -350,28 +294,24 @@ export function CaseDefinitionCreate(){
                     
                 </p>
             </div>
-        {/* Symptoms */}
             <>
              <h3 className=" mt-2"><b>Symptoms</b></h3>
                 <input className="input is-small is-hidden"   ref={register} name="Symptoms" type="text" placeholder="Specify" />  
                     <div className="field is-horizontal">
                         <div className="field-body ml-3">  
-                           {/*  <div className="field">
-                                <label className="is-small"> Symptom</label>
-                            </div> */}
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={symptom} /* ref={register} */ onChange={(e)=>{setSymptom(e.target.value)}} name="symptom" type="text" placeholder="Symptom" />           
+                                    <input className="input is-small"  value={symptom} onChange={(e)=>{setSymptom(e.target.value)}} name="symptom" type="text" placeholder="Symptom" />           
                                 </p>
                             </div>
                             <div className="field">
                                 <p className="control ">
-                                    <input className="input is-small"  value={duration}  /* ref={register} */ onChange={(e)=>{setDuration(e.target.value)}}  name="durationn" type="text" placeholder="Duration" />           
+                                    <input className="input is-small"  value={duration}  onChange={(e)=>{setDuration(e.target.value)}}  name="durationn" type="text" placeholder="Duration" />           
                                 </p>
                             </div>
                             <div className="field">
                             <label  className=" is-small" >
-                                    <input type="checkbox" value={sympreq} name="sympreq"  onChange={(e)=>{handleChecked(e)}}/* ref={register} */ />Required
+                                    <input type="checkbox" value={sympreq} name="sympreq"  onChange={(e)=>{handleChecked(e)}} />Required
                                 </label>
                                 </div>
                             <div className="field">
@@ -415,18 +355,14 @@ export function CaseDefinitionCreate(){
                         </table>
 
             </>
-            {/* findings */}
             <>
                         <h3 className=" mt-2"><b>Clinical Signs</b></h3>
                             <input className="input is-small is-hidden"   ref={register} name="ClinicalFindings" type="text" placeholder="Specify" />  
                                 <div className="field is-horizontal">
                                     <div className="field-body ml-3">  
-                                    {/*  <div className="field">
-                                            <label className="is-small"> Symptom</label>
-                                        </div> */}
                                         <div className="field">
                                             <p className="control ">
-                                                <input className="input is-small"  value={finding} /* ref={register} */ onChange={(e)=>{setFinding(e.target.value)}} name="finding" type="text" placeholder="Finding" />           
+                                                <input className="input is-small"  value={finding}  onChange={(e)=>{setFinding(e.target.value)}} name="finding" type="text" placeholder="Finding" />           
                                             </p>
                                         </div>
                                         
@@ -476,30 +412,21 @@ export function CaseDefinitionCreate(){
                                     </table>
 
             </>
-            {/* lab confirm */}
             <>
                         <h3 className=" mt-2"><b>Laboratory Confirmation</b></h3>
                             <input className="input is-small is-hidden"   ref={register} name="LaboratoryConfirmation" type="text" placeholder="Specify" />  
                                 <div className="field is-horizontal">
                                     <div className="field-body ml-3">  
-                                    {/*  <div className="field">
-                                            <label className="is-small"> Symptom</label>
-                                        </div> */}
                                         <div className="field">
                                             <p className="control ">
-                                                <input className="input is-small"  value={lab} /* ref={register} */ onChange={(e)=>{setLab(e.target.value)}} name="lab" type="text" placeholder="Lab" />           
+                                                <input className="input is-small"  value={lab}  onChange={(e)=>{setLab(e.target.value)}} name="lab" type="text" placeholder="Lab" />           
                                             </p>
                                         </div>
                                         <div className="field">
                                             <p className="control ">
-                                                <input className="input is-small"  value={labvalue}  /* ref={register} */ onChange={(e)=>{setLabvalue(e.target.value)}}  name="lab value" type="text" placeholder=" Value" />           
+                                                <input className="input is-small"  value={labvalue}   onChange={(e)=>{setLabvalue(e.target.value)}}  name="lab value" type="text" placeholder=" Value" />           
                                             </p>
                                         </div>
-                                    {/*  <div className="field">
-                                        <label  className=" is-small" >
-                                                <input type="checkbox" value={sympreq} name="sympreq"  onChange={(e)=>{handleChecked(e)}}/* ref={register} */ /* />Required */
-                                            /* </label>
-                                            </div> */} 
                                         <div className="field">
                                         <div className="control">
                                         <div  className="button is-success is-small selectadd" onClick={handleAddLabs}>
@@ -518,7 +445,6 @@ export function CaseDefinitionCreate(){
                                     
                                         <th><abbr title="Type"> Test</abbr></th>
                                         <th><abbr title="Destination">Value</abbr></th>
-                                    {/*   <th><abbr title="Destination">Required</abbr></th> */}
                                         <th><abbr title="Action"> Action</abbr></th>
                                         </tr>
                                     </thead>
@@ -533,7 +459,6 @@ export function CaseDefinitionCreate(){
                                             <td>{ProductEntry.lab}</td> 
                                             <td>{ProductEntry.labvalue}</td>
                                             <td onClick={()=>onDeleteLab(ProductEntry, i)}>x</td>
-                                            {/* <td>{ProductEntry.sympreq.toString()}</td>   */}                                                                   
 
                                             </tr>
 
@@ -542,16 +467,13 @@ export function CaseDefinitionCreate(){
                                     </table>
 
             </>
-             {/* Management Protocol */}
             <>
                             
                                     <div className="field-body ml-3">  
                                     <div className="field">
                                             <label className="is-small">Management Protocol</label>
-                                        {/* </div>  */}
-                                       {/*  <div className="field"> */}
                                             <p className="control mt-1 mb-2">
-                                                <textarea className="textarea is-small"  value={mgtProtocol} /* ref={register} */ onChange={(e)=>{setMgtProtocol(e.target.value)}} name="mgtProtocol" type="text" placeholder="Mangement Protocol" />           
+                                                <textarea className="textarea is-small"  value={mgtProtocol} onChange={(e)=>{setMgtProtocol(e.target.value)}} name="mgtProtocol" type="text" placeholder="Mangement Protocol" />           
                                             </p>
                                         </div>
                                         </div>
@@ -562,7 +484,7 @@ export function CaseDefinitionCreate(){
             <div className="field  ml-3 mt-2">    
                  <div className="control">
                      <div className="select is-small ">
-                         <select name="notifiedPerson"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
+                         <select name="notifiedPerson"  ref={register({ required: true })} className="selectadd" >
                          <option value="">Choose Person to Notify </option>
                            {notifierOptions.map((option,i)=>(
                                <option key={i} value={option}> {option}</option>
@@ -588,22 +510,12 @@ export function CaseDefinitionCreate(){
 }
 
 export function CaseDefinitionList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
    const [message, setMessage] = useState("") 
     const BandServ=client.service('casedefinition')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedBand, setSelectedBand]=useState() //
-    // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
 
 
@@ -614,14 +526,11 @@ export function CaseDefinitionList(){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, EpidemiologyModule:newBandModule}))
-       //console.log(state)
         
 
     }
     const handleRow= async(Band)=>{
-        //console.log("b4",state)
 
-        //console.log("handlerow",Band)
 
         await setSelectedBand(Band)
        
@@ -690,16 +599,6 @@ export function CaseDefinitionList(){
 
                     }
                 }
-          /*   .then((res)=>{
-                console.log(res)
-                    setFacilities(res.data)
-                    setMessage(" Band  fetched successfully")
-                    setSuccess(true)
-                })
-                .catch((err)=>{
-                    setMessage("Error creating Band, probable network issues "+ err )
-                    setError(true)
-                }) */
             }
             
             useEffect(() => {
@@ -716,13 +615,6 @@ export function CaseDefinitionList(){
                 if (user){
                     getFacilities()
                 }else{
-                    /* const localUser= localStorage.getItem("user")
-                    const user1=JSON.parse(localUser)
-                    console.log(localUser)
-                    console.log(user1)
-                    fetchUser(user1)
-                    console.log(user)
-                    getFacilities(user) */
                 }
                 BandServ.on('created', (obj)=>getFacilities())
                 BandServ.on('updated', (obj)=>getFacilities())
@@ -734,7 +626,6 @@ export function CaseDefinitionList(){
             },[])
 
 
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -771,14 +662,7 @@ export function CaseDefinitionList(){
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Disease</th>
                                         <th><abbr title="Notification Type">Notification Type</abbr></th>
-                                      {/*  <th><abbr title="Description">Description</abbr></th> */}
-                                      {/*  <th><abbr title="Notified">Description</abbr></th> */}
-                                          {/*<th><abbr title="Phone">Phone</abbr></th>
-                                        <th><abbr title="Email">Email</abbr></th>
-                                        <th><abbr title="Department">Department</abbr></th>
-                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
                                        {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -791,13 +675,7 @@ export function CaseDefinitionList(){
                                             <th>{i+1}</th>
                                             <th>{Band.disease.name}</th>
                                             <td>{Band.notificationtype}</td>
-                                           {/*  < td>{Band.description}</td> */}
-                                            {/*<td>{Band.phone}</td>
-                                            <td>{Band.email}</td>
-                                            <td>{Band.department}</td>
-                                            <td>{Band.deptunit}</td> */}
                                            {user.stacker &&  <td>{Band.facility}</td>}
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -814,15 +692,6 @@ export function CaseDefinitionList(){
 
 
 export function CaseDefinitionDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const BandServ=client.service('/Band')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
    
@@ -835,7 +704,6 @@ export function CaseDefinitionDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate,  EpidemiologyModule:newBandModule}))
-       //console.log(state)
        
     }
  
@@ -925,7 +793,7 @@ export function CaseDefinitionDetail(){
                                 <th>{i+1}</th>
                                 <td>{ProductEntry.name}</td> 
                                 <td>{ProductEntry.required}</td>
-                                {/* <td>{ProductEntry.required.toString()}</td>  */}                                                                    
+                                                                                                  
 
                                 </tr>
                         }
@@ -945,7 +813,6 @@ export function CaseDefinitionDetail(){
                         
                             <th><abbr title="Type"> Lab Test </abbr></th>
                             <th><abbr title="Destination">Value</abbr></th>
-                           {/*  <th><abbr title="Destination">Required</abbr></th> */}
                             </tr>
                         </thead>
                         <tfoot>
@@ -988,14 +855,6 @@ export function CaseDefinitionDetail(){
                        
                         
                     </div>
-          {/*  
-            <div className="field mt-2">
-                <p className="control">
-                    <button className="button is-success is-small is-disabled" onClick={handleEdit}>
-                        Edit
-                    </button>
-                </p>
-            </div> */}
           
            
         </div>
@@ -1007,17 +866,10 @@ export function CaseDefinitionDetail(){
 }
 
 export function CaseDefinitionModify(){
-    const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
     const [success, setSuccess] =useState(false)
-    // eslint-disable-next-line 
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line 
     const BandServ=client.service('casedefinition')
-    //const history = useHistory()
-     // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -1032,30 +884,6 @@ export function CaseDefinitionModify(){
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Band.profession,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("phone", Band.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", Band.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("department", Band.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", Band.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("BandCategory", Band.BandCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
             
             return () => {
                 
@@ -1068,7 +896,6 @@ export function CaseDefinitionModify(){
         show :'create'
       }
    await setState((prevstate)=>({...prevstate, BandModule:newBandModule}))
-   //console.log(state)
            }
 
 
@@ -1088,14 +915,7 @@ export function CaseDefinitionModify(){
              
         BandServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Band successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Band deleted succesfully',
                     type: 'is-success',
@@ -1105,8 +925,6 @@ export function CaseDefinitionModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Band, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting Band, probable network issues or "+ err,
                     type: 'is-danger',
@@ -1118,23 +936,15 @@ export function CaseDefinitionModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = (data,e) =>{
         e.preventDefault();
         
         setSuccess(false)
         console.log(data)
         data.facility=Band.facility
-          //console.log(data);
           
         BandServ.patch(Band._id,data)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Band successfully")
                  toast({
                     message: 'Band updated succesfully',
                     type: 'is-success',
@@ -1146,8 +956,6 @@ export function CaseDefinitionModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Band, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error updating Band, probable network issues or "+ err,
                     type: 'is-danger',
@@ -1192,67 +1000,6 @@ export function CaseDefinitionModify(){
                 </p>
                 </label>
                 </div>
-            {/* <div className="field">
-            <label className="label is-small">Profession
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-map-marker-alt"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Phone
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder="Phone No"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-phone-alt"></i>
-                    </span>
-                </p>
-                </label>
-                 </div>
-            <div className="field">
-            <label className="label is-small">Email
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Band Email"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-                </label>
-                </div>
-            <div className="field">
-            <label className="label is-small">Department
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-user-md"></i>
-                    </span>
-                </p>
-                </label>
-                {errors.department && <span>This field is required</span>}
-                </div>
-            <div className="field">
-            <label className="label is-small">Departmental Unit
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Departmental Unit"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-hospital-symbol"></i>
-                    </span>
-                </p>
-                </label>
-                </div> */}
-           {/*  <div className="field">
-            <label className="label is-small">Category
-                <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="BandCategory" type="text" placeholder="Band Category"/>
-                    <span className="icon is-small is-left">
-                    <i className="fas fa-clinic-medical"></i>
-                    </span>
-                </p>
-                </label>
-            </div> */}
            
            
             </form>
@@ -1287,62 +1034,36 @@ export  function InputSearch({getSearchfacility,clear}) {
     
     const facilityServ=client.service('facility')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
 
 
    const handleRow= async(obj)=>{
         await setChosen(true)
-        //alert("something is chaning")
        getSearchfacility(obj)
        
        await setSimpa(obj.facilityName)
        
-        // setSelectedFacility(obj)
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(val)=>{
         
-        const field='facilityName' //field variable
+        const field='facilityName' 
        
         if (val.length>=3){
-            facilityServ.find({query: {     //service
+            facilityServ.find({query: {    
                  [field]: {
                      $regex:val,
                      $options:'i'

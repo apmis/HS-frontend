@@ -3,7 +3,7 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
-//import {useHistory} from 'react-router-dom'
+
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {FacilitySearch} from '../helpers/FacilitySearch'
@@ -20,37 +20,28 @@ import {
 } from 'react-accessible-accordion';
 
 
-// Demo styles, see 'Styles' section below for some notes on use.
+
 import 'react-accessible-accordion/dist/fancy-example.css';
 import { StoreModify } from '../inventory/Store';
-// eslint-disable-next-line
+
 const searchfacility={};
 
 
 export default function ManagedServices() {
-    const {state}=useContext(ObjectContext) //,setState
-    // eslint-disable-next-line
+    const {state}=useContext(ObjectContext) 
+    
     const [selectedServices,setSelectedServices]=useState()
-    //const [showState,setShowState]=useState() //create|modify|detail
+    
     
     return(
         <section className= "section remPadTop">
-           {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Services  Module</span></div>
-            </div> */}
             <div className="columns ">
-            {/* <div className="column is-4 ">
-            <OrgList/>    
-                </div> */}
 
             <div className="column is-6 ">
                 <ManagedServicesList />
                 </div>
             <div className="column is-6 ">
                 {(state.ServicesModule.show ==='create')&&<ManagedServicesCreate />}
-              {/*   {(state.ServicesModule.show ==='detail')&&<ManagedServicesDetail  />}
-                {(state.ServicesModule.show ==='modify')&&<ManagedServicesModify Services={selectedServices} />}
-                */}
             </div>
 
             </div>                            
@@ -61,20 +52,20 @@ export default function ManagedServices() {
 }
 
 export function ManagedServicesCreate(){
-    const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
+    const { register, handleSubmit,setValue} = useForm(); 
     const [categoryname, setCategoryName] =useState("")
     const [success, setSuccess] =useState(false)
     const [success2, setSuccess2] =useState(false)
     const [cash,setCash] = useState("Cash")
-    // eslint-disable-next-line
+    
     const [facility,setFacility] = useState()
     const [providerBand,setProviderBand] = useState([])
     const [benefittingPlans1,setBenefittingPlans1] = useState([])
     const ServicesServ=client.service('billing')
     const BandsServ=client.service('bands')
-    //const history = useHistory()
-    const {user} = useContext(UserContext) //,setUser
-    // eslint-disable-next-line
+    
+    const {user} = useContext(UserContext) 
+    
     const [facilityId,setFacilityId] = useState("")
     const [source,setSource] = useState("")
     const [panel,setPanel] = useState(false)
@@ -100,8 +91,8 @@ export function ManagedServicesCreate(){
                                                             name:""
                                                             })
 
-   // const bandTypeOptions =["band 1", "Band 2"]
-   // const benefittingplans1 =["NHIS", "Gold","Platinium"]
+   
+   
    const [checked, setChecked] = useState(false);
  
    const handleChange = async(e,i,c) => {
@@ -112,9 +103,9 @@ export function ManagedServicesCreate(){
         name:c.name,
         checked:false
     }
-    // console.log(c.checked)
+    
      if (c.checked){
-         //add to benefiting plan
+         
          let planx={
             name:c.name,
             serviceClass:"",
@@ -124,11 +115,11 @@ export function ManagedServicesCreate(){
             reqCopay:false,
             copay:""
             }
-         //   console.log(planx)
+         
         await setBenefittingPlans((prev)=>([...prev, planx])) 
 
      }else{
-       await setBenefittingPlans( prevstate=>prevstate.filter(el=>el.name!==c.name))//remove from benefiting plan
+       await setBenefittingPlans( prevstate=>prevstate.filter(el=>el.name!==c.name))
      }
 
    };
@@ -136,11 +127,11 @@ export function ManagedServicesCreate(){
   const updateObjectInArray= (array, child) => {
       array.map((item, index) => {
       if (item.name !== child.name) {
-        // This isn't the item we care about - keep it as-is
+        
         return item
       }
-      // Otherwise, this is the one we want - return an updated value
-      //console.log(child)
+      
+      
       return {  
         ...child
       }
@@ -206,8 +197,8 @@ export function ManagedServicesCreate(){
    
   
 
-    // consider batchformat{batchno,expirydate,qtty,baseunit}
-    //consider baseunoit conversions
+    
+    
     const getSearchfacility=(obj)=>{
 
         setFacilityId(obj._id)
@@ -215,17 +206,13 @@ export function ManagedServicesCreate(){
         setOrgType(obj.facilityType)
 
         if(!obj){
-       // setName("")
+       
         setOrgType("")
         setFacilityId("")
         setCostprice("")
 
         }
         
-       /*  setValue("facility", obj._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        }) */
     }
     const getSearchfacility2=(obj)=>{
 
@@ -233,7 +220,7 @@ export function ManagedServicesCreate(){
         setChosen2(obj)
         
          if (!obj){
-             //"clear stuff"
+             
              setCategoryName("")
              setChosen2()
             
@@ -250,20 +237,20 @@ export function ManagedServicesCreate(){
 
     const notfound= async(obj)=>{
 
-        //alert(obj)
+       
        await  setServiceUnavailable(obj)
         await setSuccessService(true)
         if (!obj){
         await  setServiceUnavailable("")
         }
-       // console.log(obj)
-        //here
+      
+       
     }
     
     useEffect(() => {
         setCurrentUser(user)
         
-        //console.log(currentUser)
+       
         return () => {
         
         }
@@ -279,9 +266,9 @@ export function ManagedServicesCreate(){
                     'contracts.source_org' : user.currentEmployee.facilityDetail._id ,
                     'contracts.dest_org' : user.currentEmployee.facilityDetail._id ,
                     category:"Managed Care",
-                   // storeId:state.StoreModule.selectedStore._id,
-                   // $limit:20,
-                //   paginate:false,
+                  
+                  
+               
                     $sort: {
                         category: 1
                     }
@@ -308,22 +295,22 @@ export function ManagedServicesCreate(){
                     facility: user.currentEmployee.facilityDetail._id,
                     bandType:(user.currentEmployee.facilityDetail.facilityType==="HMO")?"Provider":"Company",
                     
-                   // storeId:state.StoreModule.selectedStore._id,
-                   // $limit:20,
-                //   paginate:false,
+                  
+                  
+               
                     $sort: {
                         category: 1
                     }
                     }})
-                   // console.log(findServices)
+                  
          await setProviderBand(findServices.data)
-        // console.log(findServices)
+       
                 }
        
 }
 
     useEffect(() => {
-       // console.log("starting...")
+      
         setBenefittingPlans1([])
         setFacilityId(user.currentEmployee.facilityDetail._id) 
         setName(user.currentEmployee.facilityDetail.facilityName) 
@@ -339,21 +326,17 @@ export function ManagedServicesCreate(){
         let pricingInfo ={
             band,
             costprice,
-            benefittingplans //=array of planx
+            benefittingplans
         }
         
         let productItemI={
-           /* facilityId,
-            name,
-            quantity,
-            costprice, */
             name: service.name,
             categoryname,
             comments,
             pricingInfo      
         }
-      //  if (productItem.length>0){
-        //Check that fields are filled appropriately
+     
+       
                 if(!costprice ){
                     toast({
                         message: 'You need to enter price ' ,
@@ -442,10 +425,8 @@ export function ManagedServicesCreate(){
 
     const resetform=()=>{
   
-    //setFacilityId("")
     setSource("")
     setPanel(false)
-    //setName("")
     setComments("")
     setCostprice("")
     setProductItem([])
@@ -462,7 +443,6 @@ export function ManagedServicesCreate(){
     }
     const handleClear=()=>{
         resetform()
-        /*  setMessage("Created Services successfully") */
             setSuccess(true)
             setSuccess2(true)
             setSuccessService(true)
@@ -480,7 +460,6 @@ export function ManagedServicesCreate(){
     }
 
     const onSubmit = async() =>{
-       // e.preventDefault();
         let check= await handleCheck()
         if (check){
             console.log(check)
@@ -499,7 +478,7 @@ export function ManagedServicesCreate(){
         setSuccess(false)
             
         let data ={
-                        name: serviceUnavailable.status? serviceUnavailable.name:service.name, //source
+                        name: serviceUnavailable.status? serviceUnavailable.name:service.name, 
                         category:categoryname,
                         facility:user.currentEmployee.facilityDetail._id,
                         facilityname:user.currentEmployee.facilityDetail.facilityName,
@@ -508,14 +487,11 @@ export function ManagedServicesCreate(){
                         contracts:productItem,
                         createdBy:user._id
                     }
-                  //  console.log(data)
                     
         ServicesServ.create(data)
         .then((res)=>{
             setSuccessService(true)
-                //console.log(JSON.stringify(res))
                 resetform()
-            /*  setMessage("Created Services successfully") */
                 setSuccess(true)
                 setSuccess2(true)
                 
@@ -534,7 +510,6 @@ export function ManagedServicesCreate(){
                     status:false,
                     name:""
                 })
-                // setSuccessService(true)
             })
             .catch((err)=>{
                 toast({
@@ -556,7 +531,6 @@ const handleBenefit=(e)=>{
     }
 
 const handleRemove=(index, contract)=>{
-    //console.log(index)
     if (contract.billing_type==="Cash"){
         toast({
             message: 'You cannot remove cash billing' ,
@@ -567,15 +541,10 @@ const handleRemove=(index, contract)=>{
         return
     }
 
-   //setProductItem(prevstate=> prevstate.splice(i,1))
    setProductItem(prevstate=> prevstate.filter((ProductionItem, i) => i !== index));
    
-  /*  const newProductitem = [...productItem]
-   newProductitem.splice(i,1)
-   setProductItem(newProductitem) */
 }
 const handleAddPanel =()=>{
-   // setSuccessService(false) 
    let newService={
        serviceId:service._id,
        service_name:service.name,
@@ -603,18 +572,15 @@ const handleCheck= async ()=>{
    console.log("availb:", service.name)
    const resp= await ServicesServ.find({
         query:{
-            name: serviceUnavailable.name||service.name, //source
+            name: serviceUnavailable.name||service.name, 
             facility: user.currentEmployee.facilityDetail._id,
             category:categoryname
         }
     })
     console.log(resp)
-    //.  
-    /*then((resp)=>{
-        console.log(resp)*/
         if (resp.data.length>0){
         toast({
-            message: 'Service already exist. Kindly modify it ',//+ resp.data ,
+            message: 'Service already exist. Kindly modify it ',
             type: 'is-danger',
             dismissible: true,
             pauseOnHover: true,
@@ -623,15 +589,6 @@ const handleCheck= async ()=>{
         }else{
             return false
         }
-   // })
-   /*  .catch((err)=>{
-        toast({
-            message: 'Error checking services  '+ err ,
-            type: 'is-danger',
-            dismissible: true,
-            pauseOnHover: true,
-          })  */
-  //  })
 }
     
 
@@ -645,14 +602,11 @@ const handleCheck= async ()=>{
             </div>
             <div className="card-content vscrollable remPad1 ">
    
-            {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
-            {/* <div className="field is-horizontal">
-            <div className="field-body"> */}
             <div className="field">
-                    <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                    <div className="field is-expanded"  >
                         <ServiceSearch  getSearchService={getSearchService} clear={successService} notfound={notfound}  /> 
                         <p className="control has-icons-left " style={{display:"none"}}>
-                            <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
+                            <input className="input is-small"  />
                             <span className="icon is-small is-left">
                             <i className="fas  fa-map-marker-alt"></i>
                             </span>
@@ -661,16 +615,13 @@ const handleCheck= async ()=>{
                 </div>
            
                      
-                {/* {sellingprice}  {sellingprice &&   "N"}{sellingprice} {sellingprice &&   "per"}  {baseunit} {invquantity} {sellingprice &&   "remaining"}  */}
-                {/*  </div> */}
-             
           
               
            
-                <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+                <div className="field is-expanded"   >
                     <CategorySearch  getSearchfacility={getSearchfacility2} clear={success2} /> 
                     <p className="control has-icons-left " style={{display:"none"}}>
-                        <input className="input is-small"  /* ref={register ({ required: true }) } */  /* add array no */  value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
+                        <input className="input is-small"  value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" />
                         <span className="icon is-small is-left">
                         <i className="fas  fa-map-marker-alt"></i>
                         </span>
@@ -705,9 +656,8 @@ const handleCheck= async ()=>{
 
                 <div className="field">
                     <p className="control has-icons-left">
-                        <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
+                        <input className="input is-small"  name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
                         <span className="icon naira is-left">
-                        {/* <i className="fas fa-dollar-sign"></i> */}
                         <b>&#8358;</b>
                         </span>
                     </p>
@@ -721,16 +671,6 @@ const handleCheck= async ()=>{
         <div className="field is-horizontal">
             <div className="field-body">
             <div className="field">    
-                      {/*   <div className="control">
-                            <div className="select is-small ">
-                                <select name="bandType"   className="selectadd" >
-                                <option value="">Choose Benefitting Plans </option>
-                                {benefittingplans1.map((option,i)=>(
-                                    <option key={i} value={option}> {option}</option>
-                                ))}
-                                </select>
-                            </div>
-                            </div> */}
                         
                         <div className="field ">
                             {
@@ -745,7 +685,6 @@ const handleCheck= async ()=>{
                                                             type="checkbox" 
                                                             value={i} 
                                                             name={`selectedPlans +${i}`}
-                                                            /*  checked={c.checked}  */
                                                             onChange={(e)=>handleChange(e,i,c)}
                                                             />
                                                             {c.name + " "}
@@ -799,23 +738,6 @@ const handleCheck= async ()=>{
                         
                     </div>
 
-               {/*  <div className="field">
-                    <div className="field has-addons"  >
-                        <div className="control">
-                                  <input  className="input selectadd" type="text" name="plan"  value={plan} onChange={e=>setPlan(e.target.value)} placeholder="Benefitting Plans" />
-                                  </div> 
-                                  <div className="control">
-                                  <button className="button is-info selectadd" onClick={(e)=>handleBenefit(e)}>add</button>
-                        </div>
-                    </div>               
-                    </div>
-                <div className="field">
-                 {benefittingplans.map((plan,i)=>(
-                        <span key={i} className="ml-1">
-                            {plan};
-                        </span>
-                     ))}
-                </div> */}
                
 
                 </div>
@@ -844,7 +766,6 @@ const handleCheck= async ()=>{
                     <th><abbr title="Price">Amount</abbr></th>
                     <th><abbr title="Billing Type">Billing Type</abbr></th>
                     <th><abbr title="Benefitting Plans">Plans</abbr></th>
-                      {/*  <th><abbr title="Cost Price">Amount</abbr></th>*/}
                     <th><abbr title="Actions">Actions</abbr></th> 
                     </tr>
                 </thead>
@@ -864,7 +785,6 @@ const handleCheck= async ()=>{
                             <b>{plan.name}</b>:{plan.serviceClass}/{plan.reqAuthCode.toString()}/{plan.copay};<br></br>
                         </span>
                      ))}</td>
-                          {/*<td>{Services.amount}</td> */}
                         <td><span className="showAction" onClick={()=>handleRemove(i,Services)} >x</span></td>
                         
                         </tr>
@@ -897,22 +817,22 @@ const handleCheck= async ()=>{
 }
 
 export function ManagedServicesList(){
-   // const { register, handleSubmit, watch, errors } = useForm();
-    // eslint-disable-next-line
+  
+   
     const [error, setError] =useState(false)
-     // eslint-disable-next-line
+    
     const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
+    
    const [message, setMessage] = useState("") 
     const ServicesServ=client.service('billing')
-    //const history = useHistory()
-   // const {user,setUser} = useContext(UserContext)
+   
+  
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
-   const [selectedServices, setSelectedServices]=useState() //
-    // eslint-disable-next-line
+    
+   const [selectedServices, setSelectedServices]=useState()
+   
     const {state,setState}=useContext(ObjectContext)
-    // eslint-disable-next-line
+   
     const {user,setUser}=useContext(UserContext)
 
 
@@ -923,14 +843,14 @@ export function ManagedServicesList(){
             show :'create'
             }
        await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
-       //console.log(state)
+      
         
 
     }
     const handleRow= async(Service)=>{
-        //console.log("b4",state)
+       
 
-        //console.log("handlerow",Services)
+       
 
         await setSelectedServices(Service)
 
@@ -939,7 +859,7 @@ export function ManagedServicesList(){
             show :'detail'
         }
        await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
-       //console.log(state)
+      
 
     }
 
@@ -952,7 +872,7 @@ export function ManagedServicesList(){
                     $options:'i'
                    
                 },
-               // storeId:state.StoreModule.selectedStore._id,
+              
                facility:user.currentEmployee.facilityDetail._id ,
                 $limit:20,
                 $sort: {
@@ -981,16 +901,16 @@ export function ManagedServicesList(){
                 {query: {
                     facility: user.currentEmployee.facilityDetail._id,
                     'contracts.source_org' : state.facilityModule.selectedFacility._id ,
-                   // storeId:state.StoreModule.selectedStore._id,
-                   // $limit:20,
-                //   paginate:false,
+                  
+                  
+               
                     $sort: {
                         category: 1
                     }
                     }})
                     console.log(findServices)
          await setFacilities(findServices.groupedOrder)
-        // console.log(findServices)
+       
                 }
                 else {
                     if (user.stacker){
@@ -1034,14 +954,6 @@ export function ManagedServicesList(){
                 }
             }, [state.facilityModule.selectedFacility])
 
- /*    useEffect(() => {
-                getFacilities()
-                console.log("store changed")
-                return () => {
-                   
-                }
-            }, [state.StoreModule.selectedStore]) */
-    //todo: pagination and vertical scroll bar
 
     return(
         <>
@@ -1078,8 +990,7 @@ export function ManagedServicesList(){
                             <AccordionItem  key={Clinic.categoryname}  >
                                 <AccordionItemHeading >
                                     <AccordionItemButton  >
-                                    {/* <input type = "checkbox" name={Clinic.client_id}  />   */}
-                                    <strong> {i+1} {Clinic.categoryname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
+                                    <strong> {i+1} {Clinic.categoryname} </strong> 
                                     </AccordionItemButton>
                                 </AccordionItemHeading>
                                 <AccordionItemPanel>
@@ -1091,10 +1002,6 @@ export function ManagedServicesList(){
                                         <th><abbr title="Date">Name</abbr></th>
                                         <th><abbr title="Type">Panel?</abbr></th>
                                         <th>Cash Price</th>
-                                         {/*<th><abbr title="Document No">Document No</abbr></th>
-                                        <th><abbr title="Total Amount">Total Amount</abbr></th>
-                                        <th><abbr title="Enteredby">Entered By</abbr></th>
-                                        <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -1113,10 +1020,6 @@ export function ManagedServicesList(){
                                                     {el.price} 
                                                 </p>
                                             ))}</td>
-                                             {/*<td>{Services.documentNo}</td>
-                                            <td>{Services.totalamount}</td>
-                                            <td>{Services.enteredby}</td>
-                                            <td><span className="showAction"  >...</span></td> */}
                                            
                                             </tr>
 
@@ -1139,21 +1042,20 @@ export function ManagedServicesList(){
 }
 
 export function ManagedServicesDetail(){
-    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
-     // eslint-disable-next-line
-    const [error, setError] =useState(false) //, 
-    //const [success, setSuccess] =useState(false)
-     // eslint-disable-next-line
-    const [message, setMessage] = useState("") //,
-    //const ServicesServ=client.service('/Services')
-    //const history = useHistory()
-    //const {user,setUser} = useContext(UserContext)
+    
+     
+    const [error, setError] =useState(false) 
+    
+     
+    const [message, setMessage] = useState("") 
+    
+    
+    
     const {state,setState} = useContext(ObjectContext)
 
    
 
    const Services =state.ServicesModule.selectedServices 
-   /* console.log(Services) */
 
     const handleEdit= async()=>{
         const    newServicesModule={
@@ -1161,7 +1063,7 @@ export function ManagedServicesDetail(){
             show :'modify'
         }
        await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
-       //console.log(state)
+       
        
     }
  
@@ -1232,19 +1134,6 @@ export function ManagedServicesDetail(){
             }     </p> }
                     </td>
                 </tr>
-               {/*  <tr>
-                    <td>
-                
-                        <label className="label is-small"> <span className="icon is-small is-left">
-                        <i className="fas fa-hospital"></i>
-                    </span>            
-                        Total Amount:
-                    </label>
-                    </td>
-                    <td>
-                        <span className="is-size-7 padleft"   name="name"> {Services.totalamount} </span>
-                    </td>
-                </tr> */}
 
                 </tbody> 
             </table> 
@@ -1258,8 +1147,6 @@ export function ManagedServicesDetail(){
                     <th><abbr title="Price">Amount</abbr></th>
                     <th><abbr title="Billing Type">Billing Type</abbr></th>
                     <th><abbr title="Benefitting Plans">Plans</abbr></th>
-                      {/*  <th><abbr title="Cost Price">Amount</abbr></th>
-                    <th><abbr title="Actions">Actions</abbr></th> */}
                     </tr>
                 </thead>
                 <tfoot>
@@ -1278,8 +1165,6 @@ export function ManagedServicesDetail(){
                             {plan};
                         </span>
                      ))}</td>
-                          {/*<td>{Services.amount}</td> */}
-                        {/* <td><span className="showAction" onClick={()=>handleRemove(i)} >x</span></td> */}
                         
                         </tr>
 
@@ -1293,7 +1178,6 @@ export function ManagedServicesDetail(){
                     </button>
                 </p>
             </div>
-          {/*    { error && <div className="message"> {message}</div>} */}
            
         </div>
         </div>
@@ -1304,18 +1188,18 @@ export function ManagedServicesDetail(){
 }
 
 export function ManagedServicesModify(){
-   // const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
-    // eslint-disable-next-line 
+   
+    
     const [error, setError] =useState(false)
-    // eslint-disable-next-line 
+    
     const [success, setSuccess] =useState(false)
     const [success2, setSuccess2] =useState(false)
-    // eslint-disable-next-line 
+    
     const [message,setMessage] = useState("")
-    // eslint-disable-next-line 
+    
     const ServicesServ=client.service('billing')
-    //const history = useHistory()
-     // eslint-disable-next-line
+    
+     
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
@@ -1333,7 +1217,7 @@ export function ManagedServicesModify(){
     const [currentUser,setCurrentUser] = useState("")
     const [panelList,setPanelList] = useState([])
     const [successService,setSuccessService] = useState(false)
-  //  const {state}=useContext(ObjectContext)
+  
     const [cash,setCash] = useState("Cash")
     const [categoryname, setCategoryName] =useState("")
     const [facility,setFacility] = useState()
@@ -1345,45 +1229,6 @@ export function ManagedServicesModify(){
     let Services =state.ServicesModule.selectedServices 
     let productItemI
 
-       /*  useEffect(() => {
-            /* setValue("name", Services.name,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("category", Services.category,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-         setValue("panel", Services.panel,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-            /*  setValue("phone", Services.phone,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("email", Services.email,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-              setValue("department", Services.department,  {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-            setValue("deptunit", Services.deptunit,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-          /*   setValue("ServicesCategory", Services.ServicesCategory,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
-           /*  
-            return () => {
-                
-            }
-        })
- */
 
   useEffect(() => {
     setFacilityId(modcon.source_org)
@@ -1439,7 +1284,7 @@ export function ManagedServicesModify(){
                 console.log(resp)
                 if (resp.data.length>0){
                 toast({
-                    message: 'Service already exist. Kindly modify it ' , //+ resp.data
+                    message: 'Service already exist. Kindly modify it ' , 
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -1568,7 +1413,7 @@ export function ManagedServicesModify(){
             setChosen2(obj)
             
              if (!obj){
-                 //"clear stuff"
+                 
                  setCategoryName("")
                  setChosen2()
                 
@@ -1587,10 +1432,6 @@ export function ManagedServicesModify(){
     
             }
             
-           /*  setValue("facility", obj._id,  {
-                shouldValidate: true,
-                shouldDirty: true
-            }) */
         }
         const handleBenefit=(e)=>{
    
@@ -1599,7 +1440,6 @@ export function ManagedServicesModify(){
             }
         
         const handleRemove=(index, contract)=>{
-            //console.log(index)
             if (contract.billing_type==="Cash"){
                 toast({
                     message: 'You cannot remove cash billing' ,
@@ -1610,15 +1450,10 @@ export function ManagedServicesModify(){
                 return
             }
         
-           //setProductItem(prevstate=> prevstate.splice(i,1))
            setProductItem(prevstate=> prevstate.filter((ProductionItem, i) => i !== index));
            
-          /*  const newProductitem = [...productItem]
-           newProductitem.splice(i,1)
-           setProductItem(newProductitem) */
         }
         const handleAddPanel =()=>{
-           // setSuccessService(false) 
            let newService={
                serviceId:service._id,
                service_name:service.name,
@@ -1637,7 +1472,6 @@ export function ManagedServicesModify(){
         show :'detail'
       }
    await setState((prevstate)=>({...prevstate, ServicesModule:newServicesModule}))
-   //console.log(state)
            }
 
 
@@ -1657,14 +1491,7 @@ export function ManagedServicesModify(){
              
         ServicesServ.remove(dleteId)
         .then((res)=>{
-                //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Services successfully")
-                setSuccess(true)
-                changeState()
-               setTimeout(() => {
-                setSuccess(false)
-                }, 200); */
                 toast({
                     message: 'Services deleted succesfully',
                     type: 'is-success',
@@ -1674,8 +1501,6 @@ export function ManagedServicesModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Services, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error deleting Services, probable network issues or "+ err,
                     type: 'is-danger',
@@ -1687,12 +1512,7 @@ export function ManagedServicesModify(){
     }
         
 
-   /* ()=> setValue("firstName", "Bill", , {
-            shouldValidate: true,
-            shouldDirty: true
-          })) */
     const onSubmit = () =>{
-       // e.preventDefault();
        if(panel && (panelList.length===0)){
         toast({
             message: "Please choose services that make up panel or uncheck panel ",
@@ -1716,14 +1536,10 @@ export function ManagedServicesModify(){
         }
         console.log(Services)
         console.log(data)
-        //data.facility=Services.facility
-          //console.log(data);
           
        ServicesServ.patch(Services._id,data)
         .then((res)=>{
                 console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Services successfully")
                   toast({
                     message: 'Services updated succesfully',
                     type: 'is-success',
@@ -1735,8 +1551,6 @@ export function ManagedServicesModify(){
 
             })
             .catch((err)=>{ 
-                //setMessage("Error creating Services, probable network issues "+ err )
-               // setError(true)
                 toast({
                     message: "Error updating Services, probable network issues or "+ err,
                     type: 'is-danger',
@@ -1766,13 +1580,11 @@ export function ManagedServicesModify(){
             
             <div className="card-content vscrollable">
    
-   {/* <form onSubmit={onSubmit}>  */}{/* handleSubmit(onSubmit) */}
    <div className="field is-horizontal">
    <div className="field-body">
-       <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+       <div className="field is-expanded"  >
                     <CategorySearch id={Services.category}  getSearchfacility={getSearchfacility2} clear={success2} /> 
                     <p className="control has-icons-left " style={{display:"none"}}>
-                        {/* <input className="input is-small"   ref={register ({ required: true }) }  add array no   value={categoryname} name="categoryname" type="text" onChange={e=>setCategoryName(e.target.value)} placeholder="Category of Service" /> */}
                         <span className="icon is-small is-left">
                         <i className="fas  fa-map-marker-alt"></i>
                         </span>
@@ -1780,7 +1592,7 @@ export function ManagedServicesModify(){
                 </div>
    <div className="field">
            <p className="control has-icons-left has-icons-right">
-               <input className="input is-small" /* ref={register({ required: true })} */ value={source} name="source" type="text" onChange={e=>setSource(e.target.value)} onBlur={handleCheck} placeholder="Name of Service" autoComplete="false" />
+               <input className="input is-small"  value={source} name="source" type="text" onChange={e=>setSource(e.target.value)} onBlur={handleCheck} placeholder="Name of Service" autoComplete="false" />
                <span className="icon is-small is-left">
                    <i className="fas fa-hospital"></i>
                </span>                    
@@ -1796,7 +1608,7 @@ export function ManagedServicesModify(){
        <div className="field">
            <p className="control has-icons-left has-icons-right">
                <label className="label is-small" >
-               <input className="checkbox is-small"  /* ref={register({ required: true })} */ checked={panel}  name="panel" type="checkbox" onChange={e=>setPanel(e.target.checked)} /* placeholder="Date" */ />
+               <input className="checkbox is-small"  checked={panel}  name="panel" type="checkbox" onChange={e=>setPanel(e.target.checked)} />
            
                <span>Panel</span></label>
            </p>
@@ -1804,10 +1616,10 @@ export function ManagedServicesModify(){
 
    {panel && <>
        <div className="field">
-           <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+           <div className="field is-expanded"   >
                <ServiceSearch  getSearchService={getSearchService} clear={successService} /> 
                <p className="control has-icons-left " style={{display:"none"}}>
-                   <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no   value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id"*/ />
+                   <input className="input is-small"/>
                    <span className="icon is-small is-left">
                    <i className="fas  fa-map-marker-alt"></i>
                    </span>
@@ -1832,36 +1644,23 @@ export function ManagedServicesModify(){
     </div>
    }       
 
-     {/*   </form>    */}
-      
-  
-{/* array of Services items */}
 
 <label className="label is-small">Add Pricing Info:</label>
 {(productItem.length>0) ? <> 
        <div className="field is-horizontal">
        <div className="field-body">
-           <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
+           <div className="field is-expanded"  >
                <FacilitySearch  getSearchfacility={getSearchfacility} clear={success} /> 
                <p className="control has-icons-left " style={{display:"none"}}>
-                   <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id" />
+                   <input className="input is-small" value={facilityId} name="facilityId" type="text" onChange={e=>setFacilityId(e.target.value)} placeholder="Product Id" />
                    <span className="icon is-small is-left">
                    <i className="fas  fa-map-marker-alt"></i>
                    </span>
                </p>
            </div>
-       {/*  <div className="field">
-           <p className="control has-icons-left">
-               <input className="input is-small"  ref={register({ required: true })}  name="quantity" value={quantity} type="text" onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"  />
-               <span className="icon is-small is-left">
-               <i className="fas fa-envelope"></i>
-               </span>
-           </p>
-
-       </div>  */}
        <div className="field">
            <p className="control has-icons-left">
-               <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
+               <input className="input is-small"  name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
                <span className="icon is-small is-left">
                <i className="fas fa-dollar-sign"></i>
                </span>
@@ -1880,7 +1679,7 @@ export function ManagedServicesModify(){
        <div className="field-body">
         <div className="field">
            
-           <div className="field has-addons" /* style={{display:`${ProductEntry.show}`} }*/ >
+           <div className="field has-addons"  >
                      <div className="control">
                          <input  className="input selectadd" type="text" name="plan"  value={plan} onChange={e=>setPlan(e.target.value)} placeholder="Benefitting Plans" />
                          </div> 
@@ -1905,7 +1704,7 @@ export function ManagedServicesModify(){
        <div className="field-body">
            <div className="field">
                <p className="control has-icons-left">
-                   <input className="input is-small" /* ref={register({ required: true })} */ disabled name="cash" value={cash} type="text" onChange={e=>setCash(e.target.value)} /* placeholder="Cost Price" */  />
+                   <input className="input is-small"  disabled name="cash" value={cash} type="text" onChange={e=>setCash(e.target.value)} /* placeholder="Cost Price" */  />
                    <span className="icon is-small is-left">
                    <i className="fas fa-dollar-sign"></i>
                    </span>
@@ -1913,7 +1712,7 @@ export function ManagedServicesModify(){
                </div>
            <div className="field">
                <p className="control has-icons-left">
-                   <input className="input is-small" /* ref={register({ required: true })} */ name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
+                   <input className="input is-small"  name="costprice" value={costprice} type="text" onChange={e=>setCostprice(e.target.value)} placeholder="Price"  />
                    <span className="icon is-small is-left">
                    <i className="fas fa-dollar-sign"></i>
                    </span>
@@ -1943,7 +1742,6 @@ export function ManagedServicesModify(){
            <th><abbr title="Price">Amount</abbr></th>
            <th><abbr title="Billing Type">Billing Type</abbr></th>
            <th><abbr title="Benefitting Plans">Plans</abbr></th>
-             {/*  <th><abbr title="Cost Price">Amount</abbr></th>*/}
            <th><abbr title="Actions">Actions</abbr></th> 
            </tr>
        </thead>
@@ -1963,7 +1761,6 @@ export function ManagedServicesModify(){
                    {plan};
                </span>
             ))}</td>
-                 {/*<td>{Services.amount}</td> */}
                <td><span className="showAction" onClick={()=>handleRemove(i,Services)} >x</span>
                </td>
                
@@ -1972,13 +1769,6 @@ export function ManagedServicesModify(){
            ))}
        </tbody>
        </table>
-      {/*  <div className="field mt-2">
-       <p className="control">
-           <button className="button is-success is-small" disabled={!productItem.length>0} onClick={onSubmit}>
-               Create
-           </button>
-       </p>
-       </div> */}
        </div>
   
    } 
@@ -1993,11 +1783,6 @@ export function ManagedServicesModify(){
                         Cancel
                     </button>
                 </p>
-                {/* <p className="control">
-                    <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
-                       Delete
-                    </button>
-                </p> */}
             </div>
         </div>
         </div>
@@ -2009,17 +1794,17 @@ export  function ServiceSearch({getSearchService,clear,notfound}) {
     
     const productServ=client.service('billing')
     const [facilities,setFacilities]=useState([])
-     // eslint-disable-next-line
+     
      const [searchError, setSearchError] =useState(false)
-     // eslint-disable-next-line
+     
     const [showPanel, setShowPanel] =useState(false)
-     // eslint-disable-next-line
+     
    const [searchMessage, setSearchMessage] = useState("") 
-   // eslint-disable-next-line 
+   
    const [simpa,setSimpa]=useState("")
-   // eslint-disable-next-line 
+   
    const [chosen,setChosen]=useState(false)
-   // eslint-disable-next-line 
+   
    const [count,setCount]=useState(0)
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
@@ -2028,39 +1813,22 @@ export  function ServiceSearch({getSearchService,clear,notfound}) {
    const handleRow= async(obj)=>{
         await setChosen(true)
         await setSimpa(obj.name)
-       // alert("something is chaning")
-        //console.log(obj)
+       
+        
        getSearchService(obj)
        
       
        
-        // setSelectedFacility(obj)
+        
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
+   
 }
     const handleBlur=async(e)=>{
          if (count===2){
              console.log("stuff was not chosen")
          }
        
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
     }
     const handleSearch=async(value)=>{
         setVal(value)
@@ -2070,11 +1838,11 @@ export  function ServiceSearch({getSearchService,clear,notfound}) {
             await setFacilities([])
             return
         }
-        const field='name' //field variable
+        const field='name' 
 
        
         if (value.length>=3 ){
-            productServ.find({query: {     //service
+            productServ.find({query: {     
                  [field]: {
                      $regex:value,
                      $options:'i'
@@ -2085,18 +1853,12 @@ export  function ServiceSearch({getSearchService,clear,notfound}) {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-             // console.log("product  fetched successfully") 
-              //console.log(res.data) 
-              //...new Set(array)
              
               const uniqueArr = [...new Set(res.data.map(data => data.name ))]
-             // console.log(uniqueArr)
               let uniqueObj=[]
               uniqueArr.forEach((obj)=>{
                 uniqueObj.push((res.data.find((el)=>el.name==obj)))
-              //  console.log(uniqueObj)
               })
-              //console.log(uniqueObj)
                 setFacilities(uniqueObj)
                  setSearchMessage(" product  fetched successfully")
                  setShowPanel(true)
@@ -2111,11 +1873,8 @@ export  function ServiceSearch({getSearchService,clear,notfound}) {
              })
          }
         else{
-           // console.log("less than 3 ")
-            //console.log(val)
             setShowPanel(false)
             await setFacilities([])
-            //console.log(facilities)
         }
     }
 
@@ -2164,7 +1923,6 @@ export  function ServiceSearch({getSearchService,clear,notfound}) {
                                 <i className="fas fa-search"></i>
                             </span>
                         </div>
-                        {/* {searchError&&<div>{searchMessage}</div>} */}
                         <div className="dropdown-menu"   style={{width:"100%"}}>
                             <div className="dropdown-content">
                           { facilities.length>0?"":<div className="dropdown-item" onClick={()=>handleAddproduct(val)}> <span>Add {val} to service list</span>  </div>}

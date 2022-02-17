@@ -12,9 +12,8 @@ import FrontDesk, { FrontDeskList } from './ClientMgt/FrontDesk'
 import {UserContext,ObjectContext} from '../context'
 
 export default function ClientModule() {
-    const {state,setState}=useContext(ObjectContext) //,setState
+    const {state,setState}=useContext(ObjectContext) 
     const {user,setUser}=useContext(UserContext)
-    // eslint-disable-next-line
     const [selectedClinic,setSelectedClinic]=useState()
     const [showModal,setShowModal]=useState(false)
     const [showmenu, setShowMenu]=useState(false)
@@ -22,7 +21,6 @@ export default function ClientModule() {
     
     useEffect(() => {
        
-       // console.log("starting up Client module")
         if (!selectedClinic){
             handleChangeClinic()
 
@@ -47,7 +45,6 @@ export default function ClientModule() {
 
     const handleChangeClinic= async()=>{
         await setShowModal(true)                                                                                                                                                        
-       // console.log( showModal)
     }
 
     const handleBurger=()=>{
@@ -59,7 +56,6 @@ export default function ClientModule() {
     return (
             <section className="section has-background-info remPad">
 
-               {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
                         <div className="container minHt">
                             <div className="navbar-brand  minHt">
@@ -69,9 +65,6 @@ export default function ClientModule() {
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeClinic()}>Change Location</button> 
                                 </div>
                                 
-                            {/* <div className="navbar-item">
-                                <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
-                            </div> */}
                                 <span className="navbar-burger minHt" data-target="navbarMenuHeroB"  onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
@@ -83,9 +76,6 @@ export default function ClientModule() {
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/frontdesk`}>Front Desks</NavLink>
-                                    </div> */}
                                   
                                      <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/appointments`}>Appointments</NavLink>
@@ -94,26 +84,6 @@ export default function ClientModule() {
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/patients`}>Clients</NavLink>
                                     </div>
-                                     {/*   <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
-                                    </div>  */}
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
-                                    </div> */}
-                                     {/*  <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
-                                    </div> */}
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
-                                    </div> */}
-                                {/* <span className="navbar-item" onClick={handleBurger}>
-                                <div className="button is-info is-inverted">
-                                    <span className="icon">
-                                    <i className="fab fa-github"></i>
-                                    </span>
-                                    <span>Download</span>
-                                </div>
-                                </span> */}
                                 </div>
                             </div>
                         </div>
@@ -121,8 +91,6 @@ export default function ClientModule() {
                     
                {/*  </div> */}
                 
-                {/* <div className="section"> */}
-                {/* <div className="container mvUp " > */}
                        
                     <Switch>
                         <Route path={path} exact>
@@ -163,10 +131,6 @@ export default function ClientModule() {
                                         <section className="modal-card-body">
                                         <FrontDeskList standalone="true"  closeModal={()=>setShowModal(false)}/>
                                         </section>
-                                        {/* <footer className="modal-card-foot">
-                                        <button className="button is-success">Save changes</button>
-                                        <button className="button">Cancel</button>
-                                        </footer> */}
                                     </div>
                                 </div>        
             </section>

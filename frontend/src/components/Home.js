@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, {useContext, useEffect, useState} from 'react'
-import {Route, Switch,  useRouteMatch, /* Link, */ NavLink, useHistory} from 'react-router-dom'
+import {Route, Switch,  useRouteMatch, NavLink, useHistory} from 'react-router-dom'
 import FacilityModule from './FacilityModule'
 import InventoryModule from './InventoryModule'
 import ClinicModule from './ClinicModule'
@@ -8,19 +8,18 @@ import ClientModule from './ClientModule'
 import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
+import Ward from './WardModule'
 import ManagedCareModule from './ManagedCareModule'
-import Communication from './CommunicationModule'
-/* import NavBar from './NavBar' */
+import CommunicationModule from './CommunicationModule'
+import RadiologyModule from './RadiologyModule'
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
 import client from '../feathers'
 
 export default function Home() {
     let { path, url } = useRouteMatch();
-   // const {user,setUser} = useContext(UserContext)
 
     
-    //console.log(path)
 
     return (
         <div>
@@ -54,8 +53,14 @@ export default function Home() {
                 <Route path={`${path}/epid`} >
                     <EpidModule />
                 </Route>
-                <Route path={`${path}/comm`} >
-                    <Communication />
+                <Route path={`${path}/ward`} >
+                    <Ward />
+                </Route>
+                <Route path={`${path}/communication`} >
+                    <CommunicationModule />
+                </Route>
+                <Route path={`${path}/radiology`} >
+                    <RadiologyModule />
                 </Route>
             </Switch>
         </div>
@@ -75,10 +80,8 @@ function NavBar({url}){
     useEffect(() => {
        
        if (state.showpanel){
-        //handleBurger()
         setShowMenu(true)
         setState((prevstate)=>({...prevstate, showpanel:false}))
-       // alert(showmenu)
          }
         return () => {
             
@@ -88,11 +91,7 @@ function NavBar({url}){
     const reAuth =  async() =>{
         try{
             const resp = await client.reAuthenticate();
-            //console.log(resp)
             await setUser(resp.user)
-            /* console.log("lastname:",  user.lastname)
-            console.log("reauth tried")
-            */
            console.log(user)
             return
             }
@@ -102,14 +101,6 @@ function NavBar({url}){
         }  
     }
 
-    /* useEffect(() => {
-        const localUser= JSON.parse(localStorage.getItem("user"))
-        setUser(localUser)
-        console.log(user)
-        return () => {
-           
-        }
-    }, []) */
 
 
     useEffect( () => {
@@ -117,18 +108,17 @@ function NavBar({url}){
            console.log("No user")
             reAuth()
           
-            //history.push("/")    
              return
         }
 
         async function getFullname(){
             const zed= user.firstname+" "+user.lastname
            await setFullname(zed)
-        // console.log(zed)
+        
          if (user.employeeData.length){
-            user.currentEmployee= user.employeeData[0] //choose the first facilty
+            user.currentEmployee= user.employeeData[0] 
             const fac=  user.currentEmployee.facilityDetail.facilityName
-           // await set
+           
            await setUserFacility(fac)
          }else{
             user.currentEmployee= null
@@ -142,13 +132,10 @@ function NavBar({url}){
          
         }
         getFullname()
-        //console.log(user)
-       /*  console.log(user.lastname)
-      console.log(user) */
+        
         return () => {
             
         }
-        // eslint-disable-next-line 
     },[] )
 
     const handleLogOut=()=>{
@@ -156,7 +143,7 @@ function NavBar({url}){
         history.push('/')
     }
 
-    const handleFacilityClick=()=>{ //need to implement changing facility
+    const handleFacilityClick=()=>{
         const availableFacilities=[]
         if (Array.isArray(user.employeeData)&& user.employeeData.length){
             user.employeeData.map((emp)=>{
@@ -177,9 +164,6 @@ function NavBar({url}){
                     <div className="navbar-item is-size-5 minHt" onClick={handleFacilityClick}> 
                         <strong>{userFacility ||""} </strong> 
                     </div>
-                    {/* <div className="navbar-item" href="https://bulma.io">
-                    <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
-                    </div> */}
 
                     <a role="button" className="navbar-burger minHt" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample"  onClick={handleBurger} >
                         <span aria-hidden="true"></span>
@@ -203,7 +187,6 @@ function NavBar({url}){
                                 </span>
                                 <span>{fullname}</span>
                                 
-                                {/* <span>{user.firstname}</span> */}
                             </div>
                            
                         </div>
@@ -218,12 +201,16 @@ function NavBar({url}){
                                 {(user.currentEmployee?.roles.includes('Clinic')||user.currentEmployee?.roles.length===0 )&&  <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/clinic`}>Clinic</NavLink>
                                 </div>}
+                                {(user.currentEmployee?.roles.includes('Ward')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/ward`}>Ward</NavLink>
+                                </div>}
                                 {(user.currentEmployee?.roles.includes('Pharmacy')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/inventory`}>Pharmacy</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/labs`}>Laboratory</NavLink>
                                 </div>}
+                               
                                 {(user.currentEmployee?.roles.includes('Finance')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/hmo`}>Managed Care</NavLink>
                                 </div>}
@@ -237,13 +224,13 @@ function NavBar({url}){
                                     <NavLink to={`${url}/facility`}>Admin</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
-                                    <NavLink to={`${url}/comm`}>Communication</NavLink>
+                                   <NavLink to={`${url}/communication`}>Communication</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Admin')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/radiology`}>Radiology</NavLink>
                                 </div>}
                                
                                
-                                {/* <div className="navbar-item">
-                                    Front Desk
-                                </div> */}
                                 <hr className="navbar-divider" />
                                 <div className="navbar-item showAction" onClick={handleLogOut}>
                                    Sign Out
