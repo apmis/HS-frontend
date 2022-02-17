@@ -4,10 +4,13 @@ import client from '../../../feathers';
 import QuestionnaireForm from './QuestionnaireForm';
 import QuestionnaireListView from './QuestionnaireListView';
 
-let QuestionnaireServ = null;
-let QuestionServ = null;
 
 const Questionnaire = () => {
+
+
+const QuestionnaireServ = client.service('question-group');
+const QuestionServ = client.service('question');
+
  const [questionnaires, setQuestionnaires]=useState([])
  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState({questions: []})
  const [draftQuestion, setDraftQuestion] = useState({});
@@ -21,6 +24,7 @@ const Questionnaire = () => {
    questionnaire._id = undefined
    return QuestionnaireServ.create(questionnaire)
    .then(res => {
+    console.log(res);
     setSelectedQuestionnaire(questionnaire)
    })
    .catch(e => {
@@ -47,6 +51,7 @@ const Questionnaire = () => {
     };
     setSelectedQuestionnaire(questionnaire);
     setDraftQuestion({});
+    onSubmitQuestionnaire(questionnaire);
    })
    .catch(e => {
     throw e
@@ -56,7 +61,7 @@ const Questionnaire = () => {
 
 
 const handleSearch = (val) => {
- QuestionnaireServ.find({query: {}})
+ (QuestionnaireServ || client.service('question-group')).find({query: {}})
      .then((res)=>{
       console.log({res})
       setQuestionnaires(res.data)
@@ -72,12 +77,14 @@ const handleSearch = (val) => {
  }
 
  useEffect(() => {
-   QuestionnaireServ = client.service('question-group');
-   QuestionServ = client.service('question');
+   QuestionnaireServ.on("created", () => handleSearch());
+   QuestionnaireServ.on("updated", () => handleSearch());
+   QuestionnaireServ.on("patched", () => handleSearch());
+   QuestionnaireServ.on("removed", () => handleSearch());
    handleSearch();
   return () => {
-   QuestionServ = null
-   QuestionnaireServ = null
+   // QuestionServ = null
+   // QuestionnaireServ = null
   }
 }, []);
 

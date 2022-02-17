@@ -111,6 +111,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        as={RadioInput}
        label={question.name}
        name={question.name}
+       options={question.options || []}
        placeholder={question.caption}
        control={control}
        defaultValue={response}

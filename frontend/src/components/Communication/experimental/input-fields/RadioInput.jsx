@@ -1,20 +1,22 @@
 import React from 'react';
 
-const RadioInput = ({ value, name, inputId, onChange, label }) => {
+const RadioInput = ({ value, caption, name, inputId, onChange, options, label }) => {
+  console.log({options, value})
   return (
     <>
       <div class='flex mt-6'>
         <label class='flex items-center' htmlFor={inputId}>
-          <input
+          <span class='ml-2'>{caption}</span></label>
+          {(options || []).map((option) => <div>{option.label}<input
             type='radio'
             id={inputId}
             class='form-radio h-4 w-41'
             name={name}
-            value={value}
+            checked={value === option.value ? 'checked' : 'unchecked'}
+            value={option.value}
             onChange={onChange}
-          />
-          <span class='ml-2'>{label}</span>
-        </label>
+          /></div>)}
+        
       </div>
     </>
   );

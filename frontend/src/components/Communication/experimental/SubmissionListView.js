@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const SubmissionListView = ({onSelectSubmission, handleSearch, onChangeQuestionnnaire, questionnaires, submissions, onNew}) => {
- const [selectedSubmission, setSelectedSubmission] = useState({})
+ const [selectedSubmission, setSelectedSubmission] = useState({});
 
  return(     
          <> 
@@ -46,18 +46,21 @@ const SubmissionListView = ({onSelectSubmission, handleSearch, onChangeQuestionn
                                  <th><abbr title="ID">S/No</abbr></th>
                                  <th><abbr title="Name">Name</abbr></th>
                                  <th><abbr title="Short-Name">Short Name</abbr></th>
-                                 <th><abbr title="Question">Questions</abbr></th>
+                                 <th><abbr title="Asked">Asked</abbr></th>
+                                 <th><abbr title="Answered">Answered</abbr></th>
                              </tr>
                      </thead>
                      <tbody>
+                          {console.log(submissions)}
                          { submissions.map((submission, i)=> {
-                             const {questionnaire} = submission;
-                             const {_id, name, shortName} = questionnaire;
+                             const {questionGroup:questionnaire, interactions} = submission;
+                             const {_id, name, shortName, questions} = questionnaire || {};
                              return (<tr key={_id}  onClick={()=> {setSelectedSubmission(submission); onSelectSubmission(submission);}} className={selectedSubmission?._id===(_id)?"is-selected":""}>                                         
                              <td>{i+1}</td>
                              <th>{name}</th>
                              <td>{shortName}</td>
-                             <th>{questionnaire.questions.length} Questions {questionnaire.questions.map((obj) => {  })}</th>
+                             <th>{(questions || []).length} Questions</th>
+                             <th>{(interactions || []).length} Questions</th>
                              </tr>
                          )})
                         }

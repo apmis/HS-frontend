@@ -19,15 +19,16 @@ const Submission = () => {
    const question = questionnaire.questions.find(obj => obj.name ===  key);
    return {
      question: question._id,
+     questionCaption: question.caption,
      index: question.index,
-     response: data[key],
+     response: data[key] || '',
    }});
    const submission = {
      interactions,
      questionGroup: questionnaire._id,
    }
    console.log({submission});
-   // SubmissionServ.create(submission)
+   SubmissionServ.create(submission)
  };
 
  const handleSearch = (val) => {
@@ -40,7 +41,7 @@ const Submission = () => {
       });
   }
 
- const fetchQuestionnaires = () => {
+  const fetchQuestionnaires = () => {
    QuestionnaireServ.find({})
    .then(res => {
      setQuestionnaires(res.data || []);
@@ -62,7 +63,13 @@ const Submission = () => {
  useEffect(() => {
   QuestionnaireServ = client.service('question-group');
    SubmissionServ = client.service('conversation');
+
+   SubmissionServ.on("created", () => handleSearch());
+   SubmissionServ.on("updated", () => handleSearch());
+   SubmissionServ.on("patched", () => handleSearch());
+   SubmissionServ.on("removed", () => handleSearch());
    fetchQuestionnaires();
+   handleSearch();
   return () => {
    QuestionnaireServ =  null;
    SubmissionServ = null;
