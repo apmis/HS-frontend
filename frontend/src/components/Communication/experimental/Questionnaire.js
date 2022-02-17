@@ -8,7 +8,7 @@ import QuestionnaireListView from './QuestionnaireListView';
 const Questionnaire = () => {
 
 
-const QuestionnaireServ = client.service('question-group');
+const QuestionnaireServ = client.service('questionnaire');
 const QuestionServ = client.service('question');
 
  const [questionnaires, setQuestionnaires]=useState([])
@@ -16,7 +16,7 @@ const QuestionServ = client.service('question');
  const [draftQuestion, setDraftQuestion] = useState({});
 
 
- const onSubmitQuestionnaire = (questionnaire) => {
+ const onSubmitQuestionnaire = (questionnaire, reset) => {
    questionnaire.questions =  questionnaire.questions.map((question) => question._id);
   if (questionnaire._id) {
    return QuestionnaireServ.update(questionnaire._id, questionnaire);
@@ -24,8 +24,8 @@ const QuestionServ = client.service('question');
    questionnaire._id = undefined
    return QuestionnaireServ.create(questionnaire)
    .then(res => {
-    console.log(res);
-    setSelectedQuestionnaire(questionnaire)
+    console.log({res});
+    setSelectedQuestionnaire(res)
    })
    .catch(e => {
     throw e
@@ -63,7 +63,6 @@ const QuestionServ = client.service('question');
 const handleSearch = (val) => {
  (QuestionnaireServ || client.service('question-group')).find({query: {}})
      .then((res)=>{
-      console.log({res})
       setQuestionnaires(res.data)
      })
      .catch((err)=>{

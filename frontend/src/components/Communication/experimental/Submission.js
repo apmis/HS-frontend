@@ -61,7 +61,7 @@ const Submission = () => {
 };
 
  useEffect(() => {
-  QuestionnaireServ = client.service('question-group');
+  QuestionnaireServ = client.service('questionnaire');
    SubmissionServ = client.service('conversation');
 
    SubmissionServ.on("created", () => handleSearch());
@@ -70,10 +70,6 @@ const Submission = () => {
    SubmissionServ.on("removed", () => handleSearch());
    fetchQuestionnaires();
    handleSearch();
-  return () => {
-   QuestionnaireServ =  null;
-   SubmissionServ = null;
-  }
 }, []);
 
 

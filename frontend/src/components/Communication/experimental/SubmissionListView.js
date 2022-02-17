@@ -52,8 +52,8 @@ const SubmissionListView = ({onSelectSubmission, handleSearch, onChangeQuestionn
                      </thead>
                      <tbody>
                           {console.log(submissions)}
-                         { submissions.map((submission, i)=> {
-                             const {questionGroup:questionnaire, interactions} = submission;
+                         { submissions.filter((obj) => obj.questionnaire).map((submission, i)=> {
+                             const {questionnaire, interactions} = submission;
                              const {_id, name, shortName, questions} = questionnaire || {};
                              return (<tr key={_id}  onClick={()=> {setSelectedSubmission(submission); onSelectSubmission(submission);}} className={selectedSubmission?._id===(_id)?"is-selected":""}>                                         
                              <td>{i+1}</td>

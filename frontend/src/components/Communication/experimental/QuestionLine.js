@@ -37,6 +37,9 @@ return (<div className='grid grid-cols-3'>
        <div className="control has-icons-left grid-cols-2">
         <input className="input is-small" type="number" {...register('index')} defaultValue={question.index} placeholder="Index" name="index" ref={register}  />
        </div>
+       <div className="control has-icons-left grid-cols-2">
+        <input className="input is-small" type="number" {...register('columns')} defaultValue={question.columns || 1} placeholder="Column sizing" min="1" max="3" defaultValue="1" name="columns" ref={register}  />
+       </div>
        <select  className="is-small" onChange={handleChangeInputType} defaultValue={question.formInputType || 'default'} name="formInputType" ref={register} >
          <option value="TEXT_INPUT">Text Input</option>
          <option value="TEXT_AREA">Text Area</option>

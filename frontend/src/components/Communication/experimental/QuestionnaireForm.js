@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from "react-hook-form";
 import QuestionLine from './QuestionLine';
 
@@ -44,7 +44,7 @@ const QuestionnaireForm = ({questionnaire, onSubmitQuestionnaire, draftQuestion,
         <div style={{textAlign: 'left'}}> 
         {(questionnaire.questions || []).sort((a, b) => a.index - b.index ).map((question, i) => <div key={i} style={{textAlign: 'left'}}>  <QuestionLine key={question._id || i} question={question} onSubmit={onSubmitQuestion}/></div>)}
         </div>
-         <QuestionLine key={draftQuestion._id} question={draftQuestion} onSubmit={onSubmitQuestion}/>
+       {questionnaire._id ? <QuestionLine key={draftQuestion._id} question={draftQuestion} onSubmit={onSubmitQuestion}/> : <div></div>}
          </div>
          </div>
               
