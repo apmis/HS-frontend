@@ -94,12 +94,12 @@ export default function WardModule() {
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/inpatients`}>Inpatient</NavLink>
                                     </div>
-                                     <div className="navbar-item" onClick={handleBurger}>
+                                     {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/transfer`}>Transfer List</NavLink>
                                     </div>  
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/discharge`}>Discharge List</NavLink>
-                                    </div>
+                                    </div> */}
                                      {/*  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
                                     </div> */}

@@ -24,6 +24,7 @@ export default function AdmissionCreate(){
      const OrderServ=client.service('order')
      const LocationServ=client.service('location')
      const BillCreateServ=client.service('createbilldirect')
+     const AdmissionServ=client.service('admission')
      //const history = useHistory()
      const {user} = useContext(UserContext) //,setUser
      // eslint-disable-next-line
@@ -55,6 +56,8 @@ export default function AdmissionCreate(){
       const [patient, setPatient]=useState("")
       const [contracts, setContracts]=useState("")
       const [category, setCategory]=useState("")
+      const [chosenBed, setChosenBed]=useState()
+      const [bedObject, setBedObject]=useState()
 
      const {state,setState}=useContext(ObjectContext)
      const inputEl = useRef(0);
@@ -64,7 +67,8 @@ export default function AdmissionCreate(){
 
     
   let medication =state.AdmissionModule.selectedAdmission
-   console.log(medication)
+  let physicalbeds=state.WardModule.selectedWard?.sublocations
+   //console.log(medication)
 
   const showDocumentation = async (value)=>{
     setProductModal(true)
@@ -415,18 +419,120 @@ export default function AdmissionCreate(){
      }
 
 
-     const handleMedicationDone= async()=>{ //handle selected single order
+     const handleAdmit= async(e)=>{ //handle admit
 
-    
-        const    newProductEntryModule={
-            selectedMedication:{},
-            show :'create'
+    //alert("something")
+    //update order
+    //create admission resource
+    //?create bill?
+
+    const note={
+       Note:"Patient Admitted to " + state.employeeLocation.locationName + " " + state.employeeLocation.locationType + " at " +  Date().toLocaleString(),
+       Instruction: medication.instruction
+    }
+
+    //console.log(note)
+    let document={}
+    // data.createdby=user._id
+    // console.log(data);
+        if (user.currentEmployee){
+        document.facility=user.currentEmployee.facilityDetail._id 
+        document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
         }
-      await setState((prevstate)=>({...prevstate, medicationModule:newProductEntryModule}))
-    
-    
+        document.documentdetail=note
+        console.log(document.documentdetail)
+        document.documentname="Admission" //state.DocumentClassModule.selectedDocumentClass.name
+        // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+        document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+        document.locationId=state.employeeLocation.locationId
+        document.client=medication.client._id
+        document.clientname=medication.client.firstname+ " "+ medication.client.middlename+" "+ medication.client.lastname
+        document.clientobj=medication.client
+        document.createdBy=user._id
+        document.createdByname=user.firstname+ " "+user.lastname
+        document.status="completed"
+
+
+    const    data={
+              //  encounter_id:{type: Schema.Types.ObjectId,},
+              //  hospitalization_id:{type: Schema.Types.ObjectId,},
+                //order
+                order:medication,
+                order_id:medication._id,
+
+                //location: ward/bed
+                ward_name:state.WardModule.selectedWard.typeName,
+                ward_id:state.WardModule.selectedWard._id,
+                bed:bedObject.typeName,
+                bed_id:bedObject._id,
+                facility:user.currentEmployee.facilityDetail._id,
+                //billing:perpertuity
+                /* bill:{type:Schema.Types.Mixed},
+                bill_id:{type: Schema.Types.ObjectId,}, */
+                //status
+                status:"occupied",
+                //client
+                client:medication.client,
+                client_id:medication.clientId,
+                //careteam
+                admissionhx:[],
+                careteam:[],
+                start_time: new Date(),
+                //end_time:"",
+                createdby:user._id,
+                documentation:document
+                }
+
+                e.preventDefault();
+                setMessage("")
+              //  setError(false)
+                setSuccess(false)
+                 // data.createdby=user._id
+                  console.log(data);
+                /*   if (user.currentEmployee){
+                 data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+                  } */
+                 // data.locationType="Front Desk"
+                  AdmissionServ.create(data)
+                .then(async (res)=>{
+                        //console.log(JSON.stringify(res))
+                       // e.target.reset();
+                       /*  setMessage("Created Clinic successfully") */
+                        setSuccess(true)
+                        toast({
+                            message: 'Admission successfull',
+                            type: 'is-success',
+                            dismissible: true,
+                            pauseOnHover: true,
+                          })
+                          setSuccess(false)
+                          setChosenBed()                        
+                          setBedObject()
+                          const    newProductEntryModule={
+                            selectedAdmission:{},
+                            show :''
+                        }
+                      await setState((prevstate)=>({...prevstate, AdmissionModule:newProductEntryModule}))
+                    })
+                    .catch((err)=>{
+                        toast({
+                            message: 'Error creating Admission ' + err,
+                            type: 'is-danger',
+                            dismissible: true,
+                            pauseOnHover: true,
+                          })
+                    }) 
     }
  
+
+    const handleBed=(e)=>{
+        //console.log(JSON.parse(e.target.value))
+       setChosenBed(e.target.value)
+        let simpa= physicalbeds.find(obj=>obj._id===e.target.value)
+        setBedObject(simpa)
+
+    }
+
      const onSubmit = async(e) =>{
          e.preventDefault();
          setMessage("")
@@ -491,7 +597,7 @@ export default function AdmissionCreate(){
         if (oldname!==newname){
             //newclient
 
-            //recalculate bedspace
+            //recalculate bedspace: subtract occupied from physical space
 
         
         setProductItem([])
@@ -699,44 +805,7 @@ export default function AdmissionCreate(){
              </div>
             
              </div>
-             </div> {/* horizontal end */}
-            {/*  <div className="field">
-                 <p className="control has-icons-left"> // Audit/initialization/Purchase Invoice 
-                     <input className="input is-small"  ref={register({ required: true })} name="type" type="text" placeholder="Type of Product Entry"/>
-                     <span className="icon is-small is-left">
-                     <i className=" fas fa-user-md "></i>
-                     </span>
-                 </p>
-             </div> */}
-                {/* <div className="field is-horizontal">
-                <div className="field-body"> */}
-                {/* <div className="field">
-                 <p className="control has-icons-left has-icons-right">
-                     <input className="input is-small" ref={register({ required: true })} value={date}  name="date" type="text" onChange={e=>setDate(e.target.value)} placeholder="Date" />
-                     <span className="icon is-small is-left">
-                         <i className="fas fa-map-signs"></i>
-                     </span>
-                 </p>
-             </div> */}
-             {/* <div className="field">
-                 <p className="control has-icons-left">
-                     <input className="input is-small" ref={register} name="documentNo" value={documentNo} type="text" onChange={e=>setDocumentNo(e.target.value)} placeholder=" Invoice Number"/>
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-phone-alt"></i>
-                     </span>
-                 </p>
-             </div> */}
-           {/*   <div className="field">
-                 <p className="control has-icons-left">
-                     <input className="input is-small" ref={register({ required: true })} value={totalamount} name="totalamount" type="text" onChange={e=>setTotalamount(e.target.value)} placeholder=" Total Amount"/>
-                     <span className="icon is-small is-left">
-                     <i className="fas fa-coins"></i>
-                     </span>
-                 </p>
-             </div>
-  */}
-                 {/* </div> 
-                 </div> */} 
+             </div> 
                 
                  </form>   
                 
@@ -764,12 +833,15 @@ export default function AdmissionCreate(){
              </div>
              <label className="label is-small">Choose Bed:</label>
                  {!!state.WardModule.selectedWard.sublocations &&<div>
-                 { state.WardModule.selectedWard?.sublocations.map((locat, i)=>(
-                        <>
-                        <input type="checkbox" />
-                        {locat.type } {locat.typeName}
-                        </>
-                     ))}
+               
+
+                        <select name="bed" value={chosenBed} onChange={(e)=>handleBed(e)} className="selectadd" >         
+                         <option value="">Choose Bed </option>
+                           {physicalbeds.map((locat,i)=>(
+                               <option key={i} value={locat._id}> {locat.typeName}</option>
+                           ))}
+
+                         </select>
                      </div>}
 
 
@@ -780,7 +852,7 @@ export default function AdmissionCreate(){
              
                  <div className="field mt-2 is-grouped">
                  <p className="control">
-                     <button className="button is-success is-small" /* disabled={!productItem.length>0} */ onClick={handleMedicationDone}>
+                     <button className="button is-success is-small" /* disabled={!productItem.length>0} */ onClick={handleAdmit}>
                        Admit
                      </button>
                  </p>

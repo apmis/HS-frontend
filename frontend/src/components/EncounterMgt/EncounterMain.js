@@ -305,7 +305,7 @@ export default function EncounterMain ({nopresc}) {
                                                         && Clinic.documentname!=="Admission Order"
                                                         && Clinic.documentname!=="Pediatric Pulmonology Form") &&  Clinic.status!=="Draft"
                                                          && <div className={Clinic.show?"card-content p-1":"card-content p-1 is-hidden"} ref={el => (myRefs.current[i] = el)}  >
-                                                                { Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                                {Array.isArray(Clinic.documentdetail)? Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
                                                                     <div className="field is-horizontal"> 
                                                                             <div className="field-label"> 
                                                                                 <label className="label is-size-7" key={i}>
@@ -319,6 +319,34 @@ export default function EncounterMain ({nopresc}) {
                                                                             </div>                                                 
                                                                     </div>
                                                                     ))
+                                                                    :
+                                                                    <div className="field">
+                                                                    {    Object.entries(Clinic.documentdetail).map(([keys,value],i)=>(
+                                                                    <div className="field is-horizontal"> 
+                                                                            <div className="field-label"> 
+                                                                                <label className="label is-size-7" key={i}>
+                                                                                    {keys}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {value}   
+                                                                                </div>  
+                                                                            </div>                                                 
+                                                                    </div>
+                                                                    )) }
+                                                                           {/*  <div className="field-label">
+                                                                                <label className="label is-size-7" >
+                                                                                    {Object.keys(Clinic.documentdetail)[0]}:
+                                                                                    </label>
+                                                                            </div>
+                                                                            <div className="field-body"> 
+                                                                                <div className="field" >
+                                                                                    {Object.values(Clinic.documentdetail)[0]}   
+                                                                                </div>  
+                                                                            </div> */}                                                 
+                                                                    </div>
+
                                                                 }
                                                         </div>}
 

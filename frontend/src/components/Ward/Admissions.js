@@ -168,7 +168,7 @@ export function AdmissionList(){
                 }}
                 ],
                 order_category:"Admission Order",
-                fulfilled:false,
+                fulfilled:"False",
                 destination: user.currentEmployee.facilityDetail._id,
                 destination_location:state.WardModule.selectedWard._id,
                 order_status:"Pending",
@@ -204,12 +204,13 @@ export function AdmissionList(){
                 order_status:"Pending",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
-                $limit:50,
+                $limit:100,
                 $sort: {
                     createdAt: -1
                 }
                 }})
 
+                
            console.log("updatedorder", findProductEntry.data)
             await setFacilities(findProductEntry.data)
             await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.data}))

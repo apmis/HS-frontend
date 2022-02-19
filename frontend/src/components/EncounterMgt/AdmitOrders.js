@@ -438,6 +438,9 @@ export function AdmitOrdersList({standalone}){
                    
                 }}],
                 order_category:"Admission Order",
+                fulfilled:false,
+                destination: user.currentEmployee.facilityDetail._id,
+                order_status:"Pending",
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
                 $limit:10,
@@ -467,6 +470,9 @@ export function AdmitOrdersList({standalone}){
                     //destination: user.currentEmployee.facilityDetail._id,
                    
                     //storeId:state.StoreModule.selectedStore._id,
+                    fulfilled:false,
+                    destination: user.currentEmployee.facilityDetail._id,
+                    order_status:"Pending",
                     clientId:state.ClientModule.selectedClient._id,
                     $limit:20,
                     $sort: {
