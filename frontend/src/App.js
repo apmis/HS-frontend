@@ -35,6 +35,10 @@ function App() {
       show:'create',
       selectedLocation:{}
     },
+    ConversationConfigModule:{
+      show:'create',
+      selectedConversationConfig:{}
+    },
     BandModule:{
       show:'create',
       selectedBand:{}

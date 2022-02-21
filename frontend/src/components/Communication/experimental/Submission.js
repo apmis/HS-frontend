@@ -3,6 +3,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 import client from '../../../feathers';
 import SubmissionForm from './SubmissionForm';
 import SubmissionListView from './SubmissionListView';
+import SubmissionView from './SubmissionView';
 
 let QuestionnaireServ;
 let SubmissionServ;
@@ -12,6 +13,7 @@ const Submission = () => {
  const [submissions, setSubmissions] = useState([]);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState({questions: []});
  const [selectedSubmission, setSelectedSubmission] = useState()
+ const [view, setView] = useState('edit');
 
  const onSubmitSubmission = (data) => {
   const questionnaire = questionnaires.find(q => q._id === data.questionnaire_id);
@@ -27,7 +29,6 @@ const Submission = () => {
      interactions,
      questionGroup: questionnaire._id,
    }
-   console.log({submission});
    SubmissionServ.create(submission)
  };
 
@@ -40,6 +41,12 @@ const Submission = () => {
        console.log(err)
       });
   }
+
+  const handleRow = async (submission) => {
+    setSelectedSubmission(submission);
+    setView('detail');
+  };
+
 
   const fetchQuestionnaires = () => {
    QuestionnaireServ.find({})
@@ -57,7 +64,6 @@ const Submission = () => {
     questionnaire,
     interactions: questionnaire.questions.map((question) => ({ question }))
    });
-   console.log({questionnaire})
 };
 
  useEffect(() => {
@@ -78,7 +84,7 @@ const Submission = () => {
       <div className="columns ">
           <div className="column is-6 ">
               <SubmissionListView
-                onSelectSubmission={(submission) => setSelectedSubmission(submission)}
+                onSelectSubmission={(submission) => { setView('detail'); setSelectedSubmission(submission)}}
                 onChangeQuestionnnaire={(_id) => {
                  setSelectedQuestionnaire(questionnaires.find(q => q._id === _id))
                  if (selectedSubmission)
@@ -91,7 +97,7 @@ const Submission = () => {
               />
           </div>
           <div className="column is-6 ">
-              <SubmissionForm onSave={onSubmitSubmission} submission={selectedSubmission}/>
+              { selectedSubmission && view === 'edit' ? <SubmissionForm onSave={onSubmitSubmission} submission={selectedSubmission}/> : <SubmissionView onEdit={handleRow} submission={selectedSubmission}/>}
           </div>
       </div>                            
       </section>

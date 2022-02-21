@@ -20,10 +20,8 @@ const QuestionLine = ({question, onSubmit}) => {
  }
 
 useEffect(() => {
- setOptions(question.options || [])
- console.log({question});
+ setOptions(question.options || []);
 },[question])
-console.log({options})
 return (<div className='grid grid-cols-3'>
  <form onSubmit={handleSubmit(onSubmit)}>
    <div className="field">

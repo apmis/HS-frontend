@@ -45,22 +45,23 @@ const SubmissionListView = ({onSelectSubmission, handleSearch, onChangeQuestionn
                              <tr>
                                  <th><abbr title="ID">S/No</abbr></th>
                                  <th><abbr title="Name">Name</abbr></th>
-                                 <th><abbr title="Short-Name">Short Name</abbr></th>
-                                 <th><abbr title="Asked">Asked</abbr></th>
-                                 <th><abbr title="Answered">Answered</abbr></th>
+                                 <th><abbr title="Recipient">Recipient</abbr></th>
+                                 <th><abbr title="Autosent">Autosent</abbr></th>
+                                 <th><abbr title="Current">Active Interaction</abbr></th>
+                                 <th><abbr title="Completed">Completed</abbr></th>
                              </tr>
                      </thead>
                      <tbody>
-                          {console.log(submissions)}
                          { submissions.filter((obj) => obj.questionnaire).map((submission, i)=> {
-                             const {questionnaire, interactions} = submission;
-                             const {_id, name, shortName, questions} = questionnaire || {};
-                             return (<tr key={_id}  onClick={()=> {setSelectedSubmission(submission); onSelectSubmission(submission);}} className={selectedSubmission?._id===(_id)?"is-selected":""}>                                         
+                             const {questionnaire} = submission;
+                             const {_id, name} = questionnaire || {};
+                             return (<tr key={i}  onClick={()=> {setSelectedSubmission(submission); onSelectSubmission(submission);}} className={selectedSubmission?._id===submission._id?"is-selected":""}>                                         
                              <td>{i+1}</td>
                              <th>{name}</th>
-                             <td>{shortName}</td>
-                             <th>{(questions || []).length} Questions</th>
-                             <th>{(interactions || []).length} Questions</th>
+                             <td>{submission.receiverId || 'WebForm'}</td>
+                             <th>{submission.sessionId ? 'Yes' : 'No'}</th>
+                             <th>{submission.currentInteraction ? submission.currentInteraction.questionCaption : 'Not Applicable'}</th>
+                             <th>{submission.completed ? 'Yes' : 'No'}</th>
                              </tr>
                          )})
                         }

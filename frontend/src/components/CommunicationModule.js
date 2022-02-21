@@ -9,6 +9,7 @@ import InputFields  from  "./Communication/experimental/InputFields"
 
 
 import Channel from './Communication/Channel'
+import ConversationConfig from './Communication/ConversationConfig'
 export default function CommunicationModule() {
     const [showmenu, setShowMenu]=useState(false)
     let { path, url } = useRouteMatch();
@@ -53,6 +54,9 @@ export default function CommunicationModule() {
                                         <NavLink to={`${url}/questionnaire`}>Questionnaires</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/configuration`}>Configurations</NavLink>
+                                    </div>
+                                    <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/submission`}>Submissions</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
@@ -76,6 +80,9 @@ export default function CommunicationModule() {
 
                         <Route path={`${path}/questionnaire`} exact >
                             <Questionnaire />
+                        </Route>
+                        <Route path={`${path}/configuration`} exact >
+                            <ConversationConfig />
                         </Route>
                         <Route path={`${path}/submission`} exact >
                             <Submission />
