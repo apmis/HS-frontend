@@ -14,10 +14,9 @@ const FileUpload = ({
   return (
     <>
       <div>
-        <div class='form__div'>
+        <div>
           <input
             type='file'
-            class={`form__input ${error ? 'error__input' : null}`}
             id={inputId}
             onChange={onChange}
             value={value}
@@ -25,13 +24,12 @@ const FileUpload = ({
           />
           <label
             htmlFor={inputId}
-            class={`form__label ${error ? 'error__label' : null}`}
           >
             {label}
           </label>
         </div>
         {error ? (
-          <p class='text-red-500 text-xs italic mt-10'>{errorText}</p>
+          <p>{errorText}</p>
         ) : null}
         {helperText ? <p class=' text-xs italic mt-10'>{helperText}</p> : null}
       </div>

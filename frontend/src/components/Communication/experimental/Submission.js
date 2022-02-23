@@ -13,7 +13,7 @@ const Submission = () => {
  const [submissions, setSubmissions] = useState([]);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState({questions: []});
  const [selectedSubmission, setSelectedSubmission] = useState()
- const [view, setView] = useState('edit');
+ const [view, setView] = useState('form');
 
  const onSubmitSubmission = (data) => {
   const questionnaire = questionnaires.find(q => q._id === data.questionnaire_id);
@@ -24,12 +24,16 @@ const Submission = () => {
      questionCaption: question.caption,
      index: question.index,
      response: data[key] || '',
+     active: false,
    }});
    const submission = {
      interactions,
-     questionGroup: questionnaire._id,
+     questionnaire: questionnaire._id,
    }
+   console.log({submission})
    SubmissionServ.create(submission)
+    .then(console.log)
+    .catch(console.error)
  };
 
  const handleSearch = (val) => {
@@ -64,6 +68,7 @@ const Submission = () => {
     questionnaire,
     interactions: questionnaire.questions.map((question) => ({ question }))
    });
+   setView('form');
 };
 
  useEffect(() => {
@@ -97,7 +102,7 @@ const Submission = () => {
               />
           </div>
           <div className="column is-6 ">
-              { selectedSubmission && view === 'edit' ? <SubmissionForm onSave={onSubmitSubmission} submission={selectedSubmission}/> : <SubmissionView onEdit={handleRow} submission={selectedSubmission}/>}
+              { selectedSubmission && view === 'detail' ? <SubmissionView onEdit={handleRow} submission={selectedSubmission}/> : <SubmissionForm onSave={onSubmitSubmission} submission={selectedSubmission}/>}
           </div>
       </div>                            
       </section>

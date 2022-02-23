@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../../../input.css';
 
 const Input = ({
   label,
@@ -16,10 +15,9 @@ const Input = ({
   return (
     <>
       <div>
-        <div class='form__div'>
+        <div>
           <input
             type={type}
-            class={`form__input ${error ? 'error__input' : null}`}
             id={inputId}
             onChange={onChange}
             value={value}
@@ -28,13 +26,12 @@ const Input = ({
           />
           <label
             htmlFor={inputId}
-            class={`form__label ${error ? 'error__label' : null}`}
           >
             {label}
           </label>
         </div>
         {error ? (
-          <p class='text-red-500 text-xs italic mt-10'>{errorText}</p>
+          <p>{errorText}</p>
         ) : null}
       </div>
     </>

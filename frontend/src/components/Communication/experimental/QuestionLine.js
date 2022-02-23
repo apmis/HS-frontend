@@ -13,8 +13,9 @@ const QuestionLine = ({question, onSubmit}) => {
 
  const addNewOption = () => {
   if (newOption.label && newOption.value) {
-    setOptions([...options,  newOption]);
-    setOptionsStr(JSON.stringify(options));
+    const newOptions = [...options,  newOption];
+    setOptions(newOptions);
+    setOptionsStr(JSON.stringify(newOptions));
     setNewOption({label: '', value: ''})
   }
  }

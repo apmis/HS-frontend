@@ -135,6 +135,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
         type='text'
         placeholder={question.caption}
         control={control}
+        options={question.options}
         defaultValue={response}
         error={true}
       />)
