@@ -65,7 +65,7 @@ const SubmissionView= ({onEdit, submission}) => {
                   </span>
                 </td>
               </tr>
-              <tr key="currentInteraction">
+              <tr key="session">
                 <td>
                   <label className='label is-small'>
                     {" "}
@@ -100,8 +100,8 @@ const SubmissionView= ({onEdit, submission}) => {
                 </td>
               </tr>
               {
-                  interactions.map((interaction, i) => (<tr>
-                    <td key={i}>
+                  interactions.map((interaction, i) => (<tr key={i}>
+                    <td >
                       <label className='label is-small'>
                         {" "}
                         <span className='icon is-small is-left'>
@@ -120,7 +120,7 @@ const SubmissionView= ({onEdit, submission}) => {
               }
             </tbody>
         </table>
-          <button onClick={onEdit} type="submit" className="button is-success is-small"  >
+          <button onClick={() => onEdit({...submission})} type="submit" className="button is-success is-small"  >
          Edit
        </button>
         

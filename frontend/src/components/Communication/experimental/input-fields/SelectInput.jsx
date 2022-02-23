@@ -6,8 +6,8 @@ const SelectInput = ({ name, onChange, options = []}) => {
     <>
       <div>
         <select name={name} onChange={(e) => onChange(e)}>
-          {options.map(option => (
-            <option value={option.value}>{option.label}</option>
+          {options.map((option, i) => (
+            <option key={i} value={option.value}>{option.label}</option>
           ))}
         </select>
       </div>

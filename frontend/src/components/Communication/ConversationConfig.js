@@ -340,19 +340,11 @@ export function ConversationConfigCreateList() {
   };
 
   useEffect(() => {
-    return () => {};
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      getConversationConfigs();
-    } else {
-    }
+    getConversationConfigs();
     ConversationConfigerv.on("created", (obj) => getConversationConfigs());
     ConversationConfigerv.on("updated", (obj) => getConversationConfigs());
     ConversationConfigerv.on("patched", (obj) => getConversationConfigs());
     ConversationConfigerv.on("removed", (obj) => getConversationConfigs());
-    return () => {};
   }, []);
 
   //todo: pagination and vertical scroll bar

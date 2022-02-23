@@ -10,21 +10,20 @@ import {toast} from 'bulma-toast'
 export default function AsthmaIntake() {
 
     const { register, handleSubmit,setValue} = useForm(); 
-    const [error, setError] =useState(false)
-    const [success, setSuccess] =useState(false)
-    const [message,setMessage] = useState("")
+    const [, setError] =useState(false)
+    const [, setSuccess] =useState(false)
+    const [,setMessage] = useState("")
     
-    const [facility,setFacility] = useState()
     const ClientServ=client.service('clinicaldocument')
     
     const {user} = useContext(UserContext) 
     
-    const [currentUser,setCurrentUser] = useState()
+    const [,setCurrentUser] = useState()
     const [allergy,setAllergy] = useState("")
     const [reaction,setReaction] = useState("")
     const [allergine,setAllergine] = useState("")
     const [allergies,setAllergies] = useState([])
-    const [dataset,setDataset] = useState()
+    const [,setDataset] = useState()
     const {state}=useContext(ObjectContext)
     const [docStatus,setDocStatus] = useState("Draft")
 
@@ -49,13 +48,6 @@ export default function AsthmaIntake() {
         }
     }, [draftDoc])
 
-    const getSearchfacility=(obj)=>{
-        setValue("facility", obj._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })
-    }
-    
     useEffect(() => {
         setCurrentUser(user)
         

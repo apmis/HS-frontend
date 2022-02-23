@@ -1,3 +1,4 @@
+import { toast } from 'bulma-toast';
 import { useEffect, useState } from 'react';
 import 'react-accessible-accordion/dist/fancy-example.css';
 import client from '../../../feathers';
@@ -8,60 +9,67 @@ import QuestionnaireListView from './QuestionnaireListView';
 const Questionnaire = () => {
 
 
-const QuestionnaireServ = client.service('questionnaire');
-const QuestionServ = client.service('question');
-
  const [questionnaires, setQuestionnaires]=useState([])
  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState({questions: []})
  const [draftQuestion, setDraftQuestion] = useState({});
 
+ let QuestionnaireServ = client.service('questionnaire');
+ let QuestionServ = client.service('question');
+
 
  const onSubmitQuestionnaire = (questionnaire, reset) => {
    questionnaire.questions =  questionnaire.questions.map((question) => question._id);
-  if (questionnaire._id) {
-   return QuestionnaireServ.update(questionnaire._id, questionnaire);
-  } else {
-   questionnaire._id = undefined
-   return QuestionnaireServ.create(questionnaire)
+   questionnaire._id ? QuestionnaireServ.update(questionnaire._id, questionnaire) : QuestionnaireServ.create(questionnaire)
    .then(res => {
-    console.log({res});
-    setSelectedQuestionnaire(res)
+      setSelectedQuestionnaire(res)
+      toast({
+        message: 'Updated Questionnaire Successfully' ,
+        type: 'is-success',
+        dismissible: true,
+        pauseOnHover: true,
+      })
    })
    .catch(e => {
-    throw e
+    toast({
+      message: 'Submission Questionnaire unsuccessful' ,
+      type: 'is-danger',
+      dismissible: true,
+      pauseOnHover: true,
+    });
    })
-  }
  };
  const onSubmitQuestion = (question) => {
-  if (question.options === ""){
-    question.options = [];
-  }else {
-    question.options = JSON.parse(question.options);
-  }
-  console.log({ question })
-  if(question._id) {
-    return QuestionServ.update(question._id, question);
-  } else {
-   question._id = undefined
-   return QuestionServ.create(question)
+  question.options = question.options === "" ? [] : JSON.parse(question.options);
+
+  (question._id ? QuestionServ.update(question._id, question) : QuestionServ.create(question))
    .then(res => {
     const questionnaire = {
-     ...selectedQuestionnaire,
-     questions: [...selectedQuestionnaire.questions, res]
+      ...selectedQuestionnaire,
+      questions: [...selectedQuestionnaire.questions, res]
     };
-    setSelectedQuestionnaire(questionnaire);
     setDraftQuestion({});
+    if(!question._id)
     onSubmitQuestionnaire(questionnaire);
+    toast({
+      message: 'Updated Question Successfully' ,
+      type: 'is-success',
+      dismissible: true,
+      pauseOnHover: true,
+    })
    })
    .catch(e => {
-    throw e
+    toast({
+      message: 'Error submitting Questionnaire ' ,
+      type: 'is-danger',
+      dismissible: true,
+      pauseOnHover: true,
+    })
    })
-  }
  }
 
 
 const handleSearch = (val) => {
- (QuestionnaireServ || client.service('question-group')).find({query: {}})
+ (QuestionnaireServ).find({query: {}})
      .then((res)=>{
       setQuestionnaires(res.data)
      })
@@ -81,11 +89,11 @@ const handleSearch = (val) => {
    QuestionnaireServ.on("patched", () => handleSearch());
    QuestionnaireServ.on("removed", () => handleSearch());
    handleSearch();
-  return () => {
-   // QuestionServ = null
-   // QuestionnaireServ = null
-  }
-}, []);
+   return (() => {
+    QuestionnaireServ = null;
+    QuestionServ = null;
+   });
+}, []); //eslint-disable react-hooks/exhaustive-deps
 
 
  return(

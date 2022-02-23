@@ -5,15 +5,6 @@ export default function ClientGroup({list,closeModal,choosen,dupl,reg,depen}) {
     const [selectedClient, setSelectedClient]=useState("") 
     const handleRow= async(Client)=>{
         await setSelectedClient(Client)
-
-        const newClientModule={
-            selectedClient:Client,
-            show :'detail'
-        }
-
-        closeModal()
-
-    //   await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
     }
 
     return ( 

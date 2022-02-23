@@ -1,25 +1,22 @@
 import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
-import {UserContext,ObjectContext} from '../../context'
+import {UserContext} from '../../context'
 import {toast} from 'bulma-toast'
-import { formatDistanceToNowStrict, format } from 'date-fns'
 
 
 export  default function LocationSearch({id,getSearchfacility,clear}) {
     
     const ClientServ=client.service('location')
     const [facilities,setFacilities]=useState([])
-     const [searchError, setSearchError] =useState(false)
     const [showPanel, setShowPanel] =useState(false)
-   const [searchMessage, setSearchMessage] = useState("") 
+   const [, setSearchMessage] = useState("") 
    const [simpa,setSimpa]=useState("")
-   const [chosen,setChosen]=useState(false)
-   const [count,setCount]=useState(0)
+   const [,setChosen]=useState(false)
+   const [,setCount]=useState(0)
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
    const {user} = useContext(UserContext) 
-   const {state}=useContext(ObjectContext)
     const [productModal,setProductModal]=useState(false)
 
    const getInitial=async(id)=>{
@@ -33,9 +30,6 @@ export  default function LocationSearch({id,getSearchfacility,clear}) {
 
     useEffect(() => {
         getInitial(id)
-        return () => {
-            
-        }
     }, [])
 
    const handleRow= async(obj)=>{

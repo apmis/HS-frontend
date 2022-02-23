@@ -18,7 +18,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
     switch(question.formInputType) {
      case  'TEXT_INPUT':
       return (
-       <Controller
+       <Controller  noRef={true}
        as={Input}
        label={question.name}
        name={question.name}
@@ -37,7 +37,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        errorText='Errorcheck your field'
      />)
      case  'EMAIL':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={EmailInput}
        label={question.name}
        name={question.name}
@@ -47,7 +47,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'DATE':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={DateInput}
        label={question.name}
        name={question.name}
@@ -57,7 +57,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'DATE_TIME':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={DateTimeInput}
        label={question.name}
        name={question.name}
@@ -67,7 +67,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'DATE_RANGE':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={DateRangeInput}
        label={question.name}
        name={question.name}
@@ -77,7 +77,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'NUMBER':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={NumberInput}
        label={question.name}
        name={question.name}
@@ -87,7 +87,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'DECIMAL':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={DecimalInput}
        label={question.name}
        name={question.name}
@@ -97,7 +97,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'FILE_UPLOAD':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={FileUpload}
        label={question.name}
        name={question.name}
@@ -107,7 +107,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'RADIO_OPTIONS':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={RadioInput}
        label={question.name}
        name={question.name}
@@ -118,7 +118,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
      case  'CHECKBOX_OPTIONS':
-      return (<Controller
+      return (<Controller  noRef={true}
        as={CheckboxInput}
        label={question.name}
        name={question.name}
@@ -128,7 +128,7 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
        error={true}
      />)
       case  'SELECT_OPTIONS':
-       return (<Controller
+       return (<Controller  noRef={true}
         as={SelectInput}
         label={question.name}
         name={question.name}
@@ -139,10 +139,10 @@ const SubmissionLine = ({control, interaction: {question, response}}) => {
         defaultValue={response}
         error={true}
       />)
-       case  'LABEL':
+       case  'INFO':
         return (<div>{question.caption}</div>)
        default:
-      return (<Controller
+      return (<Controller  noRef={true}
        as={Input}
        label={question.name}
        name={question.name}

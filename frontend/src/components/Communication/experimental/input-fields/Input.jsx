@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useRef } from 'react';
 
 const Input = ({
   label,
@@ -12,6 +13,7 @@ const Input = ({
   required,
   step,
 }) => {
+  const ref = useRef()
   return (
     <>
       <div>
@@ -20,9 +22,10 @@ const Input = ({
             type={type}
             id={inputId}
             onChange={onChange}
-            value={value}
+            defaultValue={value}
             required={required}
             step={step}
+            ref={ref}
           />
           <label
             htmlFor={inputId}

@@ -1,12 +1,9 @@
+import { toast } from 'bulma-toast';
 import { useEffect, useState } from 'react';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import client from '../../../feathers';
 import SubmissionForm from './SubmissionForm';
 import SubmissionListView from './SubmissionListView';
 import SubmissionView from './SubmissionView';
-
-let QuestionnaireServ;
-let SubmissionServ;
 
 const Submission = () => {
  const [questionnaires, setQuestionnaires] = useState([]);
@@ -15,9 +12,12 @@ const Submission = () => {
  const [selectedSubmission, setSelectedSubmission] = useState()
  const [view, setView] = useState('form');
 
+ let QuestionnaireServ = client.service('questionnaire');
+ let SubmissionServ = client.service('conversation');
+
  const onSubmitSubmission = (data) => {
    console.log({data});
-  const questionnaire = questionnaires.find(q => q._id === data.questionnaire_id);
+  const questionnaire = questionnaires.find(q => q._id === selectedQuestionnaire._id);
   const interactions = Object.keys(data).filter(key => key!== 'questionnaire_id').map((key) => {
    const question = questionnaire.questions.find(obj => obj.name ===  key);
    return {
@@ -30,11 +30,29 @@ const Submission = () => {
    const submission = {
      interactions,
      questionnaire: questionnaire._id,
+     completed: true,
    }
-   console.log({submission})
-   SubmissionServ.create(submission)
-    .then(console.log)
-    .catch(console.error)
+   const id = selectedSubmission._id;
+   console.log({id, submission})
+  //  (id ? SubmissionServ.create(submission) : 
+   SubmissionServ.update(id, submission).then((success) => {
+      console.log({success})
+      toast({
+        message: 'Submited Successfully ' ,
+        type: 'is-success',
+        dismissible: true,
+        pauseOnHover: true,
+      })
+    })
+    .catch((e) => {
+      console.log({e})
+      toast({
+        message: 'Error occured submitting ' ,
+        type: 'is-danger',
+        dismissible: true,
+        pauseOnHover: true,
+      })
+    })
  };
 
  const handleSearch = (val) => {
@@ -47,9 +65,15 @@ const Submission = () => {
       });
   }
 
-  const handleRow = async (submission) => {
-    setSelectedSubmission(submission);
-    setView('detail');
+  const handleEdit = async (submission) => {
+    const questionnaire = questionnaires.find(q => q._id === submission.questionnaire._id);
+    setSelectedSubmission({
+      ...submission,
+      interactions: submission
+        .interactions
+        .map(interaction => ({...interaction, question: questionnaire.questions.find(({_id}) => _id === interaction.question) }))
+    });
+    setView('edit');
   };
 
 
@@ -73,8 +97,6 @@ const Submission = () => {
 };
 
  useEffect(() => {
-  QuestionnaireServ = client.service('questionnaire');
-   SubmissionServ = client.service('conversation');
 
    SubmissionServ.on("created", () => handleSearch());
    SubmissionServ.on("updated", () => handleSearch());
@@ -103,7 +125,7 @@ const Submission = () => {
               />
           </div>
           <div className="column is-6 ">
-              { selectedSubmission && view === 'detail' ? <SubmissionView onEdit={handleRow} submission={selectedSubmission}/> : <SubmissionForm onSave={onSubmitSubmission} submission={selectedSubmission}/>}
+              { selectedSubmission && view === 'detail' ? <SubmissionView onEdit={handleEdit} submission={selectedSubmission}/> : <SubmissionForm onSave={onSubmitSubmission} submission={selectedSubmission}/>}
           </div>
       </div>                            
       </section>
