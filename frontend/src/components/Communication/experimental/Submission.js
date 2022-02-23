@@ -16,6 +16,7 @@ const Submission = () => {
  const [view, setView] = useState('form');
 
  const onSubmitSubmission = (data) => {
+   console.log({data});
   const questionnaire = questionnaires.find(q => q._id === data.questionnaire_id);
   const interactions = Object.keys(data).filter(key => key!== 'questionnaire_id').map((key) => {
    const question = questionnaire.questions.find(obj => obj.name ===  key);

@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SelectInput = ({ label, inputId, onChange, options = []}) => {
+const SelectInput = ({ name, onChange, options = []}) => {
   return (
     <>
       <div>
-        <select onSelect={onChange}>
+        <select name={name} onChange={(e) => onChange(e)}>
           {options.map(option => (
             <option value={option.value}>{option.label}</option>
           ))}
