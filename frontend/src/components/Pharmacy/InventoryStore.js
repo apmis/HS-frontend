@@ -717,6 +717,11 @@ export function InventoryDetail(){
                        Audit
                     </button>
                 </p> 
+                <p className="control">
+                    <button className="button is-danger is-small"  onClick={handleAudit} >
+                       Delete
+                    </button>
+                </p> 
             </div>
             { error && <div className="message"> {message}</div>}
            
