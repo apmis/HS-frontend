@@ -1,18 +1,17 @@
 /* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import ClinicReport from './Ward/ClinicReport'
-import Discharge from './Ward/Discharge'
-import Transfer from './Ward/Transfer'
-import WardHome from './Ward/WardHome'
-import Inpatient from './Ward/Inpatient'
-import Admissions from './Ward/Admissions'
+import ClinicReport from './Clinic/ClinicReport'
+import ClinicSetup from './Clinic/ClinicSetup'
+import ClinicStore from './Clinic/ClinicStore'
+import ClinicHome from './Clinic/ClinicHome'
+import Appointments from './Clinic/Appointments'
 import Encounter from './EncounterMgt/Encounter'
 import Patients from './ClientMgt/Patient'
-import Ward, { WardList } from './Ward/Ward'
+import Clinic, { ClinicList } from './Clinic/Clinic'
 import {UserContext,ObjectContext} from '../context'
 
-export default function WardModule() {
+export default function TheatreModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
     const {user,setUser}=useContext(UserContext)
     // eslint-disable-next-line
@@ -20,10 +19,11 @@ export default function WardModule() {
     const [showModal,setShowModal]=useState(false)
     const [showmenu, setShowMenu]=useState(false)
     let { path, url } = useRouteMatch();
+
     
     useEffect(() => {
        
-       // console.log("starting up Client module")
+        console.log("starting up Clinic module")
         if (!selectedClinic){
             handleChangeClinic()
 
@@ -33,40 +33,40 @@ export default function WardModule() {
         }, [])
    
     useEffect(()=>{
-     setSelectedClinic(state.WardModule.selectedWard)
+     setSelectedClinic(state.ClinicModule.selectedClinic)
 
      const    newEmployeeLocation={
-        locationName:state.WardModule.selectedWard.name,
-        locationType:"Ward",
-        locationId:state.WardModule.selectedWard._id,
+        locationName:state.ClinicModule.selectedClinic.name,
+        locationType:"Clinic",
+        locationId:state.ClinicModule.selectedClinic._id,
         facilityId:user.currentEmployee.facilityDetail._id   ,
         facilityName:user.currentEmployee.facilityDetail.facilityName
     }
    setState((prevstate)=>({...prevstate, employeeLocation:newEmployeeLocation}))
 
-    },[state.WardModule.selectedWard])
+    },[state.ClinicModule])
 
     const handleChangeClinic= async()=>{
         await setShowModal(true)                                                                                                                                                        
        // console.log( showModal)
     }
-
     const handleBurger=()=>{
        
         setShowMenu(prev=>(!prev))
     }
-//
+
+
     return (
             <section className="section has-background-info remPad">
-
+               
                {/*  <div className=""> */}
                     <nav className="navbar minHt z10 has-background-info">
                         <div className="container minHt">
                             <div className="navbar-brand  minHt">
                                 <div className="navbar-item ">
                                     <span className="is-small has-text-weight-medium">
-                                        HealthStack:: Ward ::{selectedClinic?selectedClinic.name:""}</span>
-                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeClinic()}>Change Location</button> 
+                                        Health Stack::Clinic::{selectedClinic?selectedClinic.name:""}</span>
+                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeClinic()}>Change Clinic</button> 
                                 </div>
                                 
                             {/* <div className="navbar-item">
@@ -83,25 +83,23 @@ export default function WardModule() {
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/frontdesk`}>Front Desks</NavLink>
+                                   {/*  <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/clinics`}>Clinics</NavLink>
                                     </div> */}
-                                  
-                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/admissions`}>Admission List</NavLink>
-                                    </div>
-                                 
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/inpatients`}>Inpatient</NavLink>
-                                    </div>
-                                     {/* <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/transfer`}>Transfer List</NavLink>
-                                    </div> */} 
-                                    <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/discharge`}>Discharge List</NavLink>
-                                    </div> 
-                                     {/*  <div className="navbar-item" onClick={handleBurger}>
+                                   {/*  <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
+                                    </div> */}
+                                     <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/appointments`}>Appointments</NavLink>
+                                    </div>
+                                  {/*   <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/clinicstore`}>Checked In Clients</NavLink>
+                                    </div>  */}
+                                    {/* <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
+                                    </div> */}
+                                  {/*   <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/patients`}>Clients</NavLink>
                                     </div> */}
                                     {/* <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
@@ -126,30 +124,29 @@ export default function WardModule() {
                        
                     <Switch>
                         <Route path={path} exact>
-                            <WardHome />
+                            <ClinicHome />
                         </Route>
-                        <Route path={`${path}/transfer`} exact >
-                            <Transfer />
+                        <Route path={`${path}/clinicsetup`} exact >
+                            <ClinicSetup />
                         </Route>
-                        <Route path={`${path}/inpatients`} exact>
-                            <Inpatient/>
+                        <Route path={`${path}/appointments`} exact>
+                            <Appointments/>
                         </Route>
-                        <Route path={`${path}/admissions`} exact>
-                            <Admissions />
+                        <Route path={`${path}/clinicstore`} exact>
+                            <ClinicStore />
                         </Route>
                         <Route path={`${path}/encounter`} exact>
                             <Encounter/>
                         </Route>
-                        <Route path={`${path}/discharge`} exact>
-                            <Discharge />
+                        <Route path={`${path}/patients`} exact>
+                            <Patients />
                         </Route>
-                      {/*   <Route path={`${path}/clinicreports`} exact>
+                        <Route path={`${path}/clinicreports`} exact>
                             <ClinicReport />
                         </Route>
-                        <Route path={`${path}/frontdesk`} exact>
-                            <FrontDesk />
-                        </Route> */}
-                        
+                        <Route path={`${path}/clinics`} exact>
+                            <Clinic />
+                        </Route>
 
                     </Switch>
                   
@@ -158,11 +155,11 @@ export default function WardModule() {
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
                                         <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Location</p>
+                                        <p className="modal-card-title">Choose Clinic</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <WardList standalone="true"  closeModal={()=>setShowModal(false)}/>
+                                        <ClinicList standalone="true"  closeModal={()=>setShowModal(false)}/>
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

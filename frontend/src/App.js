@@ -81,7 +81,10 @@ function App() {
       show:'create',
       selectedAdmission:{}
     },
-
+    DischargeModule:{
+      show:'create',
+      selectedDischarge:{}
+    },
     EndEncounterModule:{
       show:'',
       selectedEndEncounter:{}

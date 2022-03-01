@@ -9,6 +9,9 @@ import FinanceModule from './FinanceModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
 import Ward from './WardModule'
+import RadiologyModule from './RadiologyModule'
+import PharmacyModule from './PharmacyModule'
+import TheatreModule from './TheatreModule'
 import ManagedCareModule from './ManagedCareModule'
 /* import NavBar from './NavBar' */
 import LandingPage from './LandingPage'
@@ -53,6 +56,15 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/epid`} >
                     <EpidModule />
+                </Route>
+                <Route path={`${path}/radiology`} >
+                    <RadiologyModule />
+                </Route>
+                <Route path={`${path}/pharmacy`} >
+                    <PharmacyModule />
+                </Route>
+                <Route path={`${path}/theatre`} >
+                    <TheatreModule />
                 </Route>
                 <Route path={`${path}/ward`} >
                     <Ward />
@@ -222,11 +234,21 @@ function NavBar({url}){
                                     <NavLink to={`${url}/ward`}>Ward</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Pharmacy')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
-                                    <NavLink to={`${url}/inventory`}>Pharmacy</NavLink>
+                                    <NavLink to={`${url}/Pharmacy`}>Pharmacy</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Inventory')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/inventory`}>Inventory</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/labs`}>Laboratory</NavLink>
                                 </div>}
+                                {(user.currentEmployee?.roles.includes('Radiology')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/radiology`}>Radiology</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Theatre')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/theatre`}>Theatre</NavLink>
+                                </div>}
+                               
                                
                                 {(user.currentEmployee?.roles.includes('Finance')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/hmo`}>Managed Care</NavLink>

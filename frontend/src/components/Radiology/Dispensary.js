@@ -7,9 +7,8 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-import DischargeCreate from './DischargeCreate'
+//import PaymentCreate from './PaymentCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
-import { DischargeOrdersList } from '../EncounterMgt/DischargeOrders';
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
 //const searchfacility={};
@@ -17,17 +16,19 @@ import {
     Accordion,
     AccordionItem,
     AccordionItemHeading,
+    AccordionItemState,
     AccordionItemButton,
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-import ClientBilledAdmission from './ClientAdmission';
+import { ProductExitCreate } from './DispenseExit';
+//import BillPrescriptionCreate from './BillPrescriptionCreate';
 
 
 
-export default function Discharge() {
+export default function Dispense() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -37,29 +38,16 @@ export default function Discharge() {
    const [success, setSuccess] =useState(false)
     // eslint-disable-next-line
   const [message, setMessage] = useState("") 
-   const OrderServ=client.service('order')
+   const BillServ=client.service('bills')
    //const history = useHistory()
   // const {user,setUser} = useContext(UserContext)
    const [facilities,setFacilities]=useState([])
     // eslint-disable-next-line
-  const [selectedDispense, setSelectedDispense]=useState() //
+  const [selectedOrders, setSelectedOrders]=useState([]) //
    // eslint-disable-next-line
    const {state,setState}=useContext(ObjectContext)
    // eslint-disable-next-line
    const {user,setUser}=useContext(UserContext)
-
-
-
-
-    /*  useEffect(() => {
-        const updatedOne= state.currentClients.filter(el=>(JSON.stringify(el.client_id)===JSON.stringify(state.DispenseModule.selectedDispense.client_id)))
-        console.log("udatedone", updatedOne)
-        console.log("state", state.currentClients)
-        handleRow(updatedOne)
-         return () => {
-             
-         }
-     }, []) */
     
     return(
         <section className= "section remPadTop">
@@ -67,19 +55,18 @@ export default function Discharge() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-5 ">
-               
-                    <DischargeList />
+                <div className="column is-6 ">
+                    <DispenseList />
                     </div>
               
-                <div className="column is-4 ">
+                <div className="column is-6 ">
                 
-                {(state.DischargeModule.show ==='detail')&&<DischargeCreate />}
+                {(state.financeModule.show ==='detail')&& <ProductExitCreate />}
                 </div>
-                <div className="column is-3 ">
+               {/*  <div className="column is-3 ">
                 
-                {(state.DischargeModule.show ==='detail')&&<PatientProfile />}
-                </div>
+                {(state.financeModule.show ==='detail')&&<PatientProfile />}
+                </div> */}
 
             </div>                            
             </section>
@@ -88,7 +75,7 @@ export default function Discharge() {
     
 }
 
-export function DischargeList(){
+export function DispenseList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -96,17 +83,20 @@ export function DischargeList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const OrderServ=client.service('order')
+   const BillServ=client.service('bills')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
    const [selectedDispense, setSelectedDispense]=useState() //
+   const [selectedOrders, setSelectedOrders]=useState([]) 
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
     const {user,setUser}=useContext(UserContext)
-    const [selectedMedication, setSelectedMedication] =useState("")
+    const [selectedFinance, setSelectedFinance] =useState("")
+    const [expanded, setExpanded] =useState("")
+    const [oldClient, setOldClient] =useState("")
 
     const handleSelectedClient= async(Client)=>{
         // await setSelectedClient(Client)
@@ -117,20 +107,51 @@ export function DischargeList(){
         await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
      }
 
-    const handleMedicationRow= async(ProductEntry)=>{ //handle selected single order
+    const handleChoseClient= async(client,e, order)=>{
+        setOldClient(client.clientname)
+        let newClient=client.clientname
+        if(oldClient!==newClient){
+            //alert("New Client Onboard")
+            //remove all checked clientsly
+            selectedOrders.forEach(el=>el.checked="")
+            setSelectedOrders([])
+        }
+
+       // console.log(e.target.checked)
+        order.checked=e.target.checked
+        await handleSelectedClient(order.participantInfo.client)
+        //handleMedicationRow(order)
+        await setSelectedFinance(order)
+        const    newProductEntryModule={
+            selectedFinance:order,
+            show :'detail',
+            state:e.target.checked
+        }
+      await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
+      if (e.target.checked){
+        await setSelectedOrders((prevstate)=>(prevstate.concat(order)))
+      }else{
+        setSelectedOrders( prevstate=>prevstate.filter(el=>el._id!==order._id))
+      }
+    
+       // console.log(selectedOrders)
+    }
+    const handleMedicationRow= async(ProductEntry,e)=>{ //handle selected single order
         //console.log("b4",state)
+        alert("Header touched")
     
         //console.log("handlerow",ProductEntry)
-        await handleSelectedClient(ProductEntry.client)
-
+       /* alert(ProductEntry.checked)*/
+       /*  ProductEntry.checked=!ProductEntry.checked */
     
-        await setSelectedMedication(ProductEntry)
+       /*  await setSelectedFinance(ProductEntry)
     
         const    newProductEntryModule={
-            selectedDischarge:ProductEntry,
+            selectedFinance:ProductEntry,
             show :'detail'
+
         }
-      await setState((prevstate)=>({...prevstate, DischargeModule:newProductEntryModule}))
+      await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule})) */
        //console.log(state)
       // ProductEntry.show=!ProductEntry.show
     
@@ -148,44 +169,32 @@ export function DischargeList(){
     }
   
 
-    const handleSearch= async(val)=>{
+    const handleSearch=(val)=>{
        const field='name'
-       console.log(val)
-       OrderServ.find({query: {
-           $or:[
-                {order: {
+       //console.log(val)
+       BillServ.find({query: {
+                order: {
                     $regex:val,
                     $options:'i'
                    
-                }},
-               { order_status: {
+                },
+                order_status: {
                     $regex:val,
                     $options:'i'
                    
-                }},
-                {clientname: {
-                    $regex:val,
-                    $options:'i'
-                   
-                }}
-                ],
-                order_category:"Discharge Order",
-                fulfilled:"False",
-                destination: user.currentEmployee.facilityDetail._id,
-                destination_location:state.WardModule.selectedWard._id,
-                order_status:"Pending",
+                },
+                order_category:"Prescription",
                // storeId:state.StoreModule.selectedStore._id,
                //facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:50,
+                $limit:10,
                 $sort: {
                     createdAt: -1
-                  }
-                }}).then( async(res)=>{
-               console.log(res)
-               setFacilities(res.groupedOrder)
-              // await setState((prevstate)=>({...prevstate, currentClients:res.groupedOrder}))
+                  }``
+                    }}).then((res)=>{
+               // console.log(res)
+               setFacilities(res.data)
                 setMessage(" ProductEntry  fetched successfully")
-                setSuccess(true)
+                setSuccess(true) 
             })
             .catch((err)=>{
                // console.log(err)
@@ -193,66 +202,94 @@ export function DischargeList(){
                 setError(true)
             })
         }
-
     const getFacilities= async()=>{
        
-             console.log(user.currentEmployee.facilityDetail._id)
-    const findProductEntry= await OrderServ.find(
+            // console.log("here b4 server")
+    const findProductEntry= await BillServ.find(
             {query: {
-                order_category:"Discharge Order",
-                fulfilled:"False",
-                destination:user.currentEmployee.facilityDetail._id,
-
-                destination_location:state.WardModule.selectedWard._id,
-                order_status:"Pending",  // need to set this finally
-                //storeId:state.StoreModule.selectedStore._id,
-                //clientId:state.ClientModule.selectedClient._id,
+                /* $or:[
+                    {
+                       'participantInfo.paymentmode.type':"Cash"
+                    },
+                    {
+                       'participantInfo.paymentmode.type':"Family Cover"
+                    }
+                ], */
+                'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
+                billing_status:{
+                    $ne: "Unpaid"
+                },
+               'orderInfo.orderObj.fulfilled':{
+                $ne:"True"
+               },
+                //billing_status:"Fully Paid",
+               // fulfilled:false,  
                 $limit:100,
                 $sort: {
-                    createdAt: -1
+                    updatedAt: 1
                 }
                 }})
 
-                
-           console.log("updatedorder", findProductEntry.data)
-            await setFacilities(findProductEntry.data)
-            await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.data}))
+            console.log("updatedorder", findProductEntry.groupedOrder)
+            await setFacilities(findProductEntry.groupedOrder)
+          //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
-
+    const handleRow= async(Client,e)=>{
+           // alert(expanded)
+              
+            }
     //1.consider using props for global data
     useEffect(() => {
         // console.log("started")
             getFacilities()
-            OrderServ.on('created', (obj)=>getFacilities())
-            OrderServ.on('updated', (obj)=>getFacilities())
-            OrderServ.on('patched', (obj)=>getFacilities())
-            OrderServ.on('removed', (obj)=>getFacilities())
+            BillServ.on('created', (obj)=>getFacilities())
+            BillServ.on('updated', (obj)=>getFacilities())
+            BillServ.on('patched', (obj)=>getFacilities())
+            BillServ.on('removed', (obj)=>getFacilities())
             return () => {
+              cleanup()
             
             }
             },[])
 
-    const handleRow= async(ProductEntry)=>{
-    
-        await setSelectedDispense(ProductEntry)
-
-        const    newProductEntryModule={
-            selectedDispense:ProductEntry,
-            show :'detail'
+    const cleanup =async ()=>{
+        const    newClientModule={
+            selectedClient:{},
+            show :'create'
         }
-        await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
-        //console.log(state)
+       await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+
+       const    newProductEntryModule={
+        selectedFinance:{},
+        show :'create',
+        state:""
+    }
+  await setState((prevstate)=>({...prevstate, financeModule:newProductEntryModule}))
+
+
+    }
+
+    useEffect(() => {
+        //changes with checked box
+        console.log(selectedOrders)
         
+        return () => {
+            
         }
+    }, [selectedOrders])
 
-   useEffect(() =>{
-    getFacilities()
+    useEffect(() => {
+       if (state.financeModule.show==="create"){
+        selectedOrders.forEach(el=>el.checked="")
+        setSelectedOrders([])
 
-            return ()=>{
-                
-            }
-
-   }, [state.WardModule.selectedWard])
+       }
+        return () => {
+           
+        }
+    }, [state.financeModule.show])
+   
+ 
 
     return(     
             <>  
@@ -262,7 +299,7 @@ export function DischargeList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Tests"
+                                        type="text" placeholder="Search Medications"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -273,50 +310,76 @@ export function DischargeList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Pending Discharges </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Paid Prescriptions </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
-                            <div nclassName="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
+                            <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
                         </div> 
                     </div>*/}
 
                 </div>
-                <div className=" pullup">
+                <div className=" pullup ">
                     <div className=" is-fullwidth vscrollable pr-1">   
-                
-                                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
-                                            <thead>
-                                                <tr>
-                                                    <th><abbr title="Serial No">S/No</abbr></th>
-                                                    <th><abbr title="Date">Date</abbr></th>
-                                                    <th><abbr title="Name">Name</abbr></th>
-                                                    <th><abbr title="Order">Dischcharge Order</abbr></th>
-                                                    <th>Fulfilled</th>
-                                                    <th><abbr title="Status">Status</abbr></th>
-                                                    <th><abbr title="Requesting Physician">Requesting Physician</abbr></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            { facilities.map((order, i)=>(
+                    <Accordion allowZeroExpanded >
+                        {facilities.map((Clinic, i)=>(
+                            <AccordionItem  key={Clinic.client_id}  >
+                               <AccordionItemHeading >
+                                    <AccordionItemButton  >
+                                   {/*  <input type = "checkbox" name={Clinic.client_id}  />  */} 
+                                    <strong> {i+1} {Clinic.clientname} {/* with {Clinic.bills.length} Unpaid bills. */} {/* Grand Total amount: N */}</strong> 
+                                    </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
+                                    <div className=" is-fullwidth vscrollable pr-1">   
+                                        <Accordion allowZeroExpanded>
+                                            {Clinic.bills.map((category, i)=>(
+                                                <AccordionItem  key={Clinic.client_id} >
+                                                    <AccordionItemHeading >
+                                                    <AccordionItemButton  >
+                                                   {/*  <input type = "checkbox" name={Clinic.client_id} onChange={(e)=>handleMedicationRow(Clinic,e)} />   */}
+                                                         {category.catName} with {category.order.length} Paid bill(s). {/* Total amount: N */}
+                                                    </AccordionItemButton>
+                                                    </AccordionItemHeading>
+                                                    <AccordionItemPanel>
+                                                        <table className="table is-striped  is-hoverable is-fullwidth is-scrollable mr-2">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th><abbr title="Serial No">S/No</abbr></th>
+                                                                        <th><abbr title="Date">Date</abbr></th>
+                                                                        <th><abbr title="Description">Description</abbr></th>
+                                                                    {/*  <th>Fulfilled</th> */}
+                                                                        <th><abbr title="Status">Status</abbr></th>
+                                                                        <th><abbr title="Amount">Amount</abbr></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                     { category.order.map((order, i)=>(
 
-                                                        <tr key={order._id} onClick={()=>handleMedicationRow(order)} className={order._id===(selectedMedication?._id||null)?"is-selected":""}>                                         
-                                                        <th>{i+1}</th>
+                                                        <tr key={order._id}  /*  onClick={()=>handleMedicationRow(order)} */  className={order._id===(selectedFinance?._id||null)?"is-selected":""}>                                         
+                                                        <th><input type = "checkbox" name={order._id} onChange={(e)=>handleChoseClient(Clinic,e, order)}  checked={order.checked}/>  {i+1}</th>
                                                         <td><span>{format(new Date(order.createdAt),'dd-MM-yy')}</span></td> {/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */} 
-                                                        <th>{order.client.firstname} {order.client.lastname}</th>
-                                                        <th>{order.order}</th>
-                                                        <td>{order.fulfilled==="True"?"Yes":"No"}</td>
-                                                        <td>{order.order_status}</td>
-                                                        <td>{order.requestingdoctor_Name}</td>
+                                                        <th>{order.serviceInfo.name}</th>
+                                                       {/*  <td>{order.fulfilled==="True"?"Yes":"No"}</td> */}
+                                                        <td>{order.billing_status}</td>
+                                                        <td>{order.serviceInfo.amount}</td>
                                                         </tr>
                                                 ))}
                                             </tbody>
                                             </table>
-                                            
-                             
-                    </div>                   
-                </div>  
+
+                                                    </AccordionItemPanel>                                          
+                                                </AccordionItem>
+                                            ))}
+                                        </Accordion>
+                                    </div>
+                                </AccordionItemPanel>                    
+                            </AccordionItem >
+                        ))}
+                    </Accordion >
+                    </div>  
+                </div>
             </>          
-        )
+    )
     }
 
 
@@ -332,7 +395,7 @@ export function DispenseDetail(){
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
-    const OrderServ=client.service('order')
+    const BillServ=client.service('order')
     /* const [ProductEntry, setProductEntry] = useState("")
     const [facilities, setFacilities] = useState("") */
 
@@ -387,11 +450,11 @@ export function DispenseDetail(){
     } */
  
     useEffect(() => {
-        /* OrderServ.on('created', (obj)=>getFacilities())
-        OrderServ.on('updated', (obj)=>getFacilities())
+        /* BillServ.on('created', (obj)=>getFacilities())
+        BillServ.on('updated', (obj)=>getFacilities())
        
-        OrderServ.on('removed', (obj)=>getFacilities()) */
-        OrderServ.on('patched',  (obj)=>{
+        BillServ.on('removed', (obj)=>getFacilities()) */
+        BillServ.on('patched',  (obj)=>{
             //update state.DispenseModule.selectedDispense
            // console.log(obj.clientId)
            // console.log("currentClients",state.currentClients)
