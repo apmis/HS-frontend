@@ -1,19 +1,19 @@
 /* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import InventoryReport from './inventory/InventoryReport'
-import InventorySetup from './inventory/InventorySetup'
-import InventoryStore from './inventory/InventoryStore'
-import InventoryHome from './inventory/InventoryHome'
-import ProductEntry from './inventory/ProductEntry'
-import ProductExit from './inventory/ProductExit'
-import Dispense from './inventory/Dispensary'
-import Products from './inventory/Products'
+import InventoryReport from './Pharmacy/InventoryReport'
+import InventorySetup from './Pharmacy/InventorySetup'
+import InventoryStore from './Pharmacy/InventoryStore'
+import PharmacyHome from './Pharmacy/PharmacyHome'
+import ProductEntry from './Pharmacy/ProductEntry'
+import ProductExit from './Pharmacy/ProductExit'
+import Dispense from './Pharmacyinventory/Dispensary'
+import Products from './Pharmacy/Products'
 import BillService from './Finance/BillService'
-import PharmacyPayment from './inventory/PharmacyPayment'
+import PharmacyPayment from './Pharmacy/PharmacyPayment'
 import Pharmacy, { PharamcyList, PharmacyListStandalone } from './Pharmacy/Pharmacy'
 import {UserContext,ObjectContext} from '../context'
-import BillPrescription from './inventory/BillPrescription'
+import BillPrescription from './Pharmacy/BillPrescription'
 
 export default function PharmacyModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -136,7 +136,7 @@ export default function PharmacyModule() {
                        
                     <Switch>
                         <Route path={path} exact>
-                            <InventoryHome />
+                            <PharmacyHome />
                         </Route>
                         <Route path={`${path}/inv-dispense`} exact >
                             <Dispense />
