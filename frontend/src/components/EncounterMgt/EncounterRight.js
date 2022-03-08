@@ -45,6 +45,10 @@ import SurgicalBookletConsentForm from "../../clientForm/forms/surgicalBookletCo
 export default function EncounterRight() {
     const {state,setState}=useContext(ObjectContext)
     console.log(state.DocumentClassModule.selectedDocumentClass)
+
+    const submitDocument = (data) => {
+        console.log({data});
+    }
     return (
         <div>
           {(state.DocumentClassModule.selectedDocumentClass.name==='Vital Signs') &&  <VitalSignCreate />}
@@ -107,7 +111,7 @@ export default function EncounterRight() {
       {state.DocumentClassModule.selectedDocumentClass.name ===
         "Payment Voucher" && <PaymentVoucher />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Surgical Booklet Consent Form" && <SurgicalBookletConsentForm />}
+        "Surgical Booklet Consent Form" && <SurgicalBookletConsentForm onSubmit={submitDocument}/>}
       {state.DocumentClassModule.selectedDocumentClass.name ===
         "Vital Signs Record" && <VitalSignsRecord />}
       {state.DocumentClassModule.selectedDocumentClass.name ===

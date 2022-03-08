@@ -95,6 +95,11 @@ let documentListForm = [
     _id: 1234,
   },
   {
+    name: "Labour Observation Chart",
+    facility: "60203e1c1ec8a00015baa357",
+    _id: 997,
+  },
+  {
     name: "Outpatient Registration Form",
     facility: "60203e1c1ec8a00015baa357",
     _id: 99,
