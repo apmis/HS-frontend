@@ -1,4 +1,8 @@
-const ReferralFormForConsultation = () => {
+import { useForm } from "react-hook-form";
+
+const ReferralFormForConsultation = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

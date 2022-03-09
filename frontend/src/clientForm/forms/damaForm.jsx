@@ -1,7 +1,11 @@
 import "../_style.css";
+import { useForm } from "react-hook-form";
 
-const DamaForm = () => {
+const DamaForm = ({onSubmit}) => {
+  const { register, handleSubmit } = useForm();
+
   return (
+
     <div className="card">
       <div className="card-header">
         <p className="card-header-title">Dama Form</p>

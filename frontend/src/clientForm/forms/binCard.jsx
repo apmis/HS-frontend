@@ -1,4 +1,9 @@
-const BinCard = () => {
+import { useForm } from "react-hook-form";
+
+
+
+const BinCard = ({onSubmit}) => {
+  const { register, handleSubmit } = useForm(); 
   return (
     <div className="card">
       <div className="card-header">

@@ -1,4 +1,8 @@
-const DiabetesMelitus = () => {
+import { useForm } from "react-hook-form";
+
+const DiabetesMelitus = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <>
       <div className="card">

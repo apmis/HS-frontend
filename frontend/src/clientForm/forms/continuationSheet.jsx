@@ -1,4 +1,8 @@
-const ContinuationSheet = () => {
+import { useForm } from "react-hook-form";
+
+const ContinuationSheet = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm(); 
   return (
     <div className="card">
       <div className="card-header">

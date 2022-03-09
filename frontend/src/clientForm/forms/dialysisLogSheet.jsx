@@ -1,4 +1,8 @@
-const DialysisLogSheet = () => {
+   import { useForm } from "react-hook-form";
+   
+const DialysisLogSheet = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

@@ -1,4 +1,8 @@
-const RadiologyRequestForm = () => {
+   import { useForm } from "react-hook-form";
+
+const RadiologyRequestForm = ({onSumbit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

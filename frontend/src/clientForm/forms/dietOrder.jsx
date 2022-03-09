@@ -1,4 +1,8 @@
-const DietOrder = () => {
+import { useForm } from "react-hook-form";
+
+const DietOrder = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

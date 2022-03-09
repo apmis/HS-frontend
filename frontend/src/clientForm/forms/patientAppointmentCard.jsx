@@ -1,4 +1,8 @@
-const PatientAppointmentCard = () => {
+import { useForm } from "react-hook-form";
+
+const PatientAppointmentCard = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

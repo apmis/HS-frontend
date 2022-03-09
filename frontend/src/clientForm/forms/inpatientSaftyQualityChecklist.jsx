@@ -1,4 +1,8 @@
-const InpatientSafetyQualityChecklist = () => {
+import { useForm } from "react-hook-form";
+
+const InpatientSafetyQualityChecklist = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

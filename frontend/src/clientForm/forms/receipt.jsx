@@ -1,4 +1,8 @@
-const Receipt = () => {
+import { useForm } from "react-hook-form";
+
+const Receipt = ({onSumbit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

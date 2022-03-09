@@ -1,4 +1,7 @@
-const LaboratoryReportForm = () => {
+import { useForm } from "react-hook-form";
+const LaboratoryReportForm = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
     <div className="card">
       <div className="card-header">

@@ -5,6 +5,9 @@ import "../_style.css";
 import PrivacyConsentNote from "./_formFragment/privacyConsentNote";
 
 const AdmissionConsentForm = ({onSubmit}) => {
+  const { register, handleSubmit } = useForm(); 
+
+  
   return (
     <div className="card">
       <div className="card-header">
