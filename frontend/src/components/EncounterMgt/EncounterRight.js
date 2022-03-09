@@ -65,66 +65,69 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='Medication List') &&   <MedicationList />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Clerking') &&   <Clerking />}
           {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Laboratory Report Form" && <LaboratoryReportForm />}
+        "Laboratory Report Form" && <LaboratoryReportForm  onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Labour Observation Chart" && <LaboratoryObservationChart />}
+        "Labour Observation Chart" && <LaboratoryObservationChart  onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Green Diagnostic Center Request" && <GreenDiagnosticCentre />}
+        "Green Diagnostic Center Request" && <GreenDiagnosticCentre  onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Admission Consent Form" && <AdmissionConsentForm />}
+        "Admission Consent Form" && <AdmissionConsentForm  onSubmit={submitDocument}/>}
       {state.DocumentClassModule.selectedDocumentClass.name === "Bin Card" && (
-        <BinCard />
+        <BinCard onSubmit={submitDocument} />
       )}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Outpatient Registration Form" && <OutpatientRegistrationForm />}
+        "Outpatient Registration Form" && <OutpatientRegistrationForm onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Outpatient Billing Sheet" && <OutpatientBillingSheet />}
+        "Outpatient Billing Sheet" && <OutpatientBillingSheet onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Medical Sick Leave Form" && <MedicalSickLeave />}
+        "Medical Sick Leave Form" && <MedicalSickLeave onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Daily Shift Handover Note" && <DailyShiftHandoverNote />}
+        "Daily Shift Handover Note" && <DailyShiftHandoverNote onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name === "Dama Form" && (
-        <DamaForm />
+        <DamaForm onSubmit={submitDocument} />
       )}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Inpatient Billing Sheet" && <MedicalBillingSheet />}
+        "Inpatient Billing Sheet" && <MedicalBillingSheet onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Emergency Form" && <EmergencyForm />}
+        "Emergency Form" && <EmergencyForm onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Discharge Summary" && <DischargeSummary />}
+        "Discharge Summary" && <DischargeSummary onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Diet Order" && <DietOrder />}
+        "Diet Order" && <DietOrder onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name === "Ecg Form" && (
-        <ECGForm />
+        <ECGForm onSubmit={submitDocument} />
       )}
       {state.DocumentClassModule.selectedDocumentClass.name ===
         "Vital Signs Flow Sheet" && <VitalSignsFlowSheet />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
         "Referral Form For Consultation" && <ReferralFormForConsultation />}
       {state.DocumentClassModule.selectedDocumentClass.name === "Receipt" && (
-        <Receipt />
+        <Receipt  onSubmit={submitDocument} />
       )}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Radiology Request Form" && <RadiologyRequestForm />}
+        "Radiology Request Form" && <RadiologyRequestForm  onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Pressure Areas Treatment Chart" && <PressureAreasTreatmentChart />}
+        "Pressure Areas Treatment Chart" && <PressureAreasTreatmentChart  onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Payment Voucher" && <PaymentVoucher />}
+        "Payment Voucher" && <PaymentVoucher  onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
         "Surgical Booklet Consent Form" && <SurgicalBookletConsentForm onSubmit={submitDocument}/>}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Vital Signs Record" && <VitalSignsRecord />}
+        "Vital Signs Record" && <VitalSignsRecord onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Patient Appointment Card" && <PatientAppointmentCard />}
+        "Patient Appointment Card" && <PatientAppointmentCard onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Fluid Intake And Output Record" && <FluidIntakeOutput />}
+        "Fluid Intake And Output Record" && <FluidIntakeOutput onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Diabetes Melitus Flowsheet" && <DiabetesMelitus />}
+        "Diabetes Melitus Flowsheet" && <DiabetesMelitus onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Dialysis Log Sheet" && <DialysisLogSheet />}
+        "Dialysis Log Sheet" && <DialysisLogSheet onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Continuation Sheet" && <ContinuationSheet />}
-         {( typeof state.DocumentClassModule.selectedDocumentClass.document !=='undefined' ) &&( typeof state.DocumentClassModule.selectedDocumentClass.document.documentType !=='undefined' ) && (state.DocumentClassModule.selectedDocumentClass.document.documentType==='Diagnostic Result') &&   <LabNoteCreate />} 
+        "Continuation Sheet" && <ContinuationSheet onSubmit={submitDocument} />}
+         {( typeof state.DocumentClassModule.selectedDocumentClass.document !=='undefined' ) 
+            &&( typeof state.DocumentClassModule.selectedDocumentClass.document.documentType !=='undefined' ) 
+            && (state.DocumentClassModule.selectedDocumentClass.document.documentType==='Diagnostic Result') 
+            &&   <LabNoteCreate onSubmit={submitDocument} />} 
           
           
         </div>

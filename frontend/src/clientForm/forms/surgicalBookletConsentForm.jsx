@@ -324,3 +324,5 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
 };
 
 export default SurgicalBookletConsentForm;
+
+// http://localhost:3002/app/clinic/encounter

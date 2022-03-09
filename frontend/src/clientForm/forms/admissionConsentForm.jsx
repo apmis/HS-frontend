@@ -1,7 +1,10 @@
+import { useForm } from "react-hook-form";
+
+
 import "../_style.css";
 import PrivacyConsentNote from "./_formFragment/privacyConsentNote";
 
-const AdmissionConsentForm = () => {
+const AdmissionConsentForm = ({onSubmit}) => {
   return (
     <div className="card">
       <div className="card-header">
