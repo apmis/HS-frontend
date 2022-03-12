@@ -13,19 +13,19 @@ const InpatientSafetyQualityChecklist = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Patient Name</label>
             <p className="control is-expanded">
-              <input className="input is-small" type="text" />
+              <input ref={register} name="patientName" className="input is-small" type="text" />
             </p>
           </div>
           <div className="field">
             <label className="label is-small">Date</label>
             <div className="control">
-              <input className="input is-small" type="date" />
+              <input ref={register} name="date" className="input is-small" type="date" />
             </div>
           </div>
           <div className="field">
             <label className="label is-small">Hospital No</label>
             <p className="control is-expanded">
-              <input className="input is-small" type="number" />
+              <input ref={register} name="hospitalNum" className="input is-small" type="number" />
             </p>
           </div>
           <div className="field w-100 mt-3">
@@ -36,11 +36,11 @@ const InpatientSafetyQualityChecklist = ({onSubmit}) => {
             </label>
             <div className="control">
               <label className="radio">
-                <input type="radio" name="patient-education" />
+                <input ref={register} type="radio" name="patient-education" />
                 <span className="ms-2 is-small">Yes</span>
               </label>
               <label className="radio">
-                <input type="radio" name="patient-education" />
+                <input ref={register} type="radio" name="patient-education" />
                 <span className="ms-2 is-small">No</span>
               </label>
             </div>
@@ -48,7 +48,7 @@ const InpatientSafetyQualityChecklist = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Remark</label>
             <div className="control">
-              <textarea className="textarea is-small"></textarea>
+              <textarea ref={register} name="remarks" className="textarea is-small"></textarea>
             </div>
           </div>
 
@@ -56,7 +56,7 @@ const InpatientSafetyQualityChecklist = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Item Description</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="itemDescription" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>

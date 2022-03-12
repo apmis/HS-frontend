@@ -143,7 +143,7 @@ const GreenDiagnosticCentre = ({onSubmit}) => {
               <span className="ms-2 is-small">Echocardiography</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="xry" type="checkbox" />
+              <input ref={register} name="xray" type="checkbox" />
               <span className="ms-2 is-small">Xray</span>
             </label>
             <label class="checkbox me-3">
