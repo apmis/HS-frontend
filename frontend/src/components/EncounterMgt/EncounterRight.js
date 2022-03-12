@@ -98,9 +98,9 @@ export default function EncounterRight() {
         <ECGForm onSubmit={submitDocument} />
       )}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Vital Signs Flow Sheet" && <VitalSignsFlowSheet />}
+        "Vital Signs Flow Sheet" && <VitalSignsFlowSheet onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
-        "Referral Form For Consultation" && <ReferralFormForConsultation />}
+        "Referral Form For Consultation" && <ReferralFormForConsultation onSubmit={submitDocument}/>}
       {state.DocumentClassModule.selectedDocumentClass.name === "Receipt" && (
         <Receipt  onSubmit={submitDocument} />
       )}

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 const Receipt = ({onSubmit}) => {
 
   const { register, handleSubmit } = useForm();
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="card">
@@ -13,13 +14,13 @@ const Receipt = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Date</label>
             <div className="control">
-              <input className="input is-small" type="date" />
+              <input ref={register} name="date" className="input is-small" type="date" />
             </div>
           </div>
           <div className="field">
             <label className="label is-small">Received From</label>
             <div className="control">
-              <input className="input is-small" type="text" />
+              <input ref={register} name="receivedFrom" className="input is-small" type="text" />
             </div>
           </div>
           <div className="columns mt-3">
@@ -27,7 +28,7 @@ const Receipt = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Cheque Number</label>
                 <div className="control">
-                  <input className="input is-small" type="number" />
+                  <input ref={register} name="chequeNum" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
@@ -35,7 +36,7 @@ const Receipt = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Dated</label>
                 <div className="control">
-                  <input className="input is-small" type="date" />
+                  <input ref={register} name="dated" className="input is-small" type="date" />
                 </div>
               </div>
             </div>
@@ -44,7 +45,7 @@ const Receipt = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">The Sum of</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="sum" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -52,14 +53,14 @@ const Receipt = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Being paid for</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="paid" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
           <div className="field">
             <label className="label is-small">For and on behalf of</label>
             <div className="control">
-              <input className="input is-small" type="text" />
+              <input ref={register} name="onBehalf" className="input is-small" type="text" />
             </div>
           </div>
           <div className="field mt-4">
