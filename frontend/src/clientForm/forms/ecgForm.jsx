@@ -13,26 +13,26 @@ const ECGForm = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Name</label>
             <p className="control is-expanded">
-              <input className="input is-small" type="text" />
+              <input ref={register} name="name" className="input is-small" type="text" />
             </p>
           </div>
           <div className="field">
             <label className="label is-small">Hospital No</label>
             <p className="control is-expanded">
-              <input className="input is-small" type="number" />
+              <input ref={register} name="hospitalNo" className="input is-small" type="number" />
             </p>
           </div>
           <div className="field">
             <label className="label is-small">Private/Company</label>
             <p className="control is-expanded">
-              <input className="input is-small" type="text" />
+              <input ref={register} name="privateOrCompany" className="input is-small" type="text" />
             </p>
           </div>
           <div className="field-body">
             <div className="field">
               <label className="label is-small">Clinical History</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="cliniclHistory" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -41,7 +41,7 @@ const ECGForm = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Refering Doctor Name</label>
                 <p className="control is-expanded">
-                  <input className="input is-small" type="text" />
+                  <input ref={register} name="referingDocName" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
@@ -49,7 +49,7 @@ const ECGForm = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Date</label>
                 <div className="control">
-                  <input className="input is-small" type="date" />
+                  <input ref={register} name="date" className="input is-small" type="date" />
                 </div>
               </div>
             </div>
