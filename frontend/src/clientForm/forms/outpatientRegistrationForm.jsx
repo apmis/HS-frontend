@@ -153,10 +153,12 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
             <input ref={register} name="infection" type="checkbox" />
             <span className="ms-2 is-small">Infection</span>
           </label>
+
           <label class="checkbox me-3">
-            <input ref={register} name="cancer" type="checkbox" />
+            <input ref={register} name="cancer1" type="checkbox" />
             <span className="ms-2 is-small">Cancer</span>
           </label>
+
           <label class="checkbox me-3">
             <input ref={register} name="insomnia" type="checkbox" />
             <span className="ms-2 is-small">Insomnia</span>
@@ -240,7 +242,7 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
             <span className="ms-2 is-small">Hypertensive</span>
           </label>
           <label class="checkbox me-3">
-            <input ref={register} name="cancer" type="checkbox" />
+            <input ref={register} name="cancer2" type="checkbox" />
             <span className="ms-2 is-small">Cancer</span>
           </label>
           <label class="checkbox me-3">
@@ -269,11 +271,11 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
             HAVE YOU DONE ANY SURGERY BEFORE?
           </label>
           <label class="checkbox me-3">
-            <input ref={register} name="surgery" type="checkbox" />
+            <input ref={register} name="surgeryYes" type="checkbox" />
             <span className="ms-2 is-small">Yes</span>
           </label>
           <label class="checkbox me-3">
-            <input ref={register} name="surgery" type="checkbox" />
+            <input ref={register} name="surgeryNo" type="checkbox" />
             <span className="ms-2 is-small">No</span>
           </label>
           <label className="label is-small">If yes, state type?</label>
@@ -360,11 +362,11 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
           </div>
           <label className="label is-small">Authorisation Letter Attached</label>
           <label class="checkbox me-3">
-            <input ref={register} name="authLetter" type="checkbox" />
+            <input ref={register} name="authLetter1" type="checkbox" />
             <span className="ms-2 is-small">Yes</span>
           </label>
           <label class="checkbox me-3">
-            <input ref={register} name="authLetter" type="checkbox" />
+            <input ref={register} name="authLetter2" type="checkbox" />
             <span className="ms-2 is-small">No</span>
           </label>
           <label className="label is-small">HMO/HEALTH INSURANCE</label>
