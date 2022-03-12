@@ -4,6 +4,7 @@ const PressureAreasTreatmentChart = ({onSubmit}) => {
 
   const { register, handleSubmit } = useForm();
   return (
+  <form onSubmit={handleSubmit(onSubmit)}>
     <div className="card">
       <div className="card-header">
         <p className="card-header-title">Pressure Areas Treatment Chart</p>
@@ -57,6 +58,7 @@ const PressureAreasTreatmentChart = ({onSubmit}) => {
         </div>
       </div>
     </div>
+  </form>
   );
 };
 
