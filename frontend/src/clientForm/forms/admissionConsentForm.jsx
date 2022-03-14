@@ -167,7 +167,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
                 <label className="label is-small">Country of Birth</label>
                 <p className="control">
                   <div className="select is-small">
-                    <select>
+                    <select ref={register} value="countryOfBirth">
                       <option value="Nigeria" >Nigeria</option>
                       <option value="Ghana" >Ghana</option>
                       <option value="Senegal" >Senegal</option>
@@ -222,7 +222,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
               <div className="field w-100">
                 <label className="label is-small">Next of Kin Name</label>
                 <div className="control">
-                  <input ref={register} name="" className="input is-small" type="text" />
+                  <input ref={register} name="nextOfKinName" className="input is-small" type="text" />
                 </div>
               </div>
               <div className="field w-100">
@@ -353,11 +353,11 @@ const AdmissionConsentForm = ({onSubmit}) => {
               </label>
               <div className="control">
                 <label className="radio">
-                  <input ref={register} value="yes" type="radio" name="hmo-authorization" />
+                  <input ref={register} value="yes" type="radio" name="hmoAuthorization" />
                   <span className="ms-2 is-small">Yes</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="no" type="radio" name="hmo-authorization" />
+                  <input ref={register} value="no" type="radio" name="hmoAuthorization" />
                   <span className="ms-2 is-small">No</span>
                 </label>
               </div>
