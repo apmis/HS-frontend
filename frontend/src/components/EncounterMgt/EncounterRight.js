@@ -51,19 +51,19 @@ export default function EncounterRight() {
     }
     return (
         <div>
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Vital Signs') &&  <VitalSignCreate />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Clinical Note') &&   <ClinicalNoteCreate />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Lab Result') &&   <LabNoteCreate />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Nursing Note') &&   <NursingNoteCreate />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Doctor Note') &&   <DoctorsNoteCreate />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Prescription') &&   <PrescriptionCreate />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Diagnostic Request') &&   <LabrequestCreate />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Adult Asthma Questionnaire') &&   <AsthmaIntake />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Pediatric Pulmonology Form') &&   <PulmonologyIntake />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='New Patient Consultation Form') &&   <NewPatientConsult />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Progress Note') &&   <ProgressNote />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Medication List') &&   <MedicationList />}
-          {(state.DocumentClassModule.selectedDocumentClass.name==='Clerking') &&   <Clerking />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Vital Signs') &&  <VitalSignCreate onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Clinical Note') &&   <ClinicalNoteCreate onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Lab Result') &&   <LabNoteCreate onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Nursing Note') &&   <NursingNoteCreate onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Doctor Note') &&   <DoctorsNoteCreate onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Prescription') &&   <PrescriptionCreate onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Diagnostic Request') &&   <LabrequestCreate onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Adult Asthma Questionnaire') &&   <AsthmaIntake onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Pediatric Pulmonology Form') &&   <PulmonologyIntake onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='New Patient Consultation Form') &&   <NewPatientConsult onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Progress Note') &&   <ProgressNote onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Medication List') &&   <MedicationList onSubmit={submitDocument} />}
+          {(state.DocumentClassModule.selectedDocumentClass.name==='Clerking') &&   <Clerking onSubmit={submitDocument} />}
           {state.DocumentClassModule.selectedDocumentClass.name ===
         "Laboratory Report Form" && <LaboratoryReportForm  onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
