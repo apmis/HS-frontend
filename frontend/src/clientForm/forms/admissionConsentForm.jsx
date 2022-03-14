@@ -320,7 +320,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
                 <div className="field w-100">
                   <label className="label is-small">Policy No</label>
                   <div className="control">
-                    <input ref={register} name="policyNo" className="input is-small" type="number" />
+                    <input ref={register} name="policyNumber" className="input is-small" type="number" />
                   </div>
                 </div>
               </div>
