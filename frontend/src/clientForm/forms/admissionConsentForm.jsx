@@ -228,7 +228,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
               <div className="field w-100">
                 <label className="label is-small">Next of Kin Tel</label>
                 <div className="control">
-                  <input ref={register} name="nextOfKinTel" className="input is-small" type="tel" />
+                  <input ref={register} name="nextOfKinTelephone" className="input is-small" type="tel" />
                 </div>
               </div>
             </div>
