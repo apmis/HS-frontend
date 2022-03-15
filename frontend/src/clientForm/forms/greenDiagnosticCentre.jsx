@@ -374,15 +374,15 @@ const GreenDiagnosticCentre = ({onSubmit}) => {
               <span className="ms-2 is-small">B-HCG</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="progesterone" type="checkbox" />
+              <input ref={register} name="progesterone2" type="checkbox" />
               <span className="ms-2 is-small">Progesterone</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="estradiol" type="checkbox" />
+              <input ref={register} name="estradiol2" type="checkbox" />
               <span className="ms-2 is-small">Estradiol (E2)</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="dheas" type="checkbox" />
+              <input ref={register} name="dheas2" type="checkbox" />
               <span className="ms-2 is-small">DHEAS</span>
             </label>
             <label class="checkbox me-3">
@@ -410,11 +410,11 @@ const GreenDiagnosticCentre = ({onSubmit}) => {
               <span className="ms-2 is-small">Digoxin</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="cortisol" type="checkbox" />
+              <input ref={register} name="cortisol2" type="checkbox" />
               <span className="ms-2 is-small">Cortisol</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="insulin" type="checkbox" />
+              <input ref={register} name="insulin2" type="checkbox" />
               <span className="ms-2 is-small">Insulin</span>
             </label>
             <label class="checkbox me-3">
