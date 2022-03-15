@@ -15,7 +15,7 @@ const DietOrder = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Date</label>
                 <div className="control">
-                  <input ref={register} name="date" className="input is-small" type="date" />
+                  <input ref={register} name="dietDate" className="input is-small" type="date" />
                 </div>
               </div>
             </div>
