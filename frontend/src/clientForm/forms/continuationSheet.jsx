@@ -45,7 +45,7 @@ const ContinuationSheet = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Description/Remark</label>
               <div className="control">
-                <textarea ref={register} name="descriptionOrRemark" className="textarea is-small"></textarea>
+                <textarea ref={register} name="descOrRemark" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
