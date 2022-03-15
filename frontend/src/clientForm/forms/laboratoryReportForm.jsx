@@ -1076,7 +1076,7 @@ const LaboratoryReportForm = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Culture</label>
             <div className="control">
-              <textarea ref={register} name="culture" className="textarea is-small"></textarea>
+              <textarea ref={register} name="culture2" className="textarea is-small"></textarea>
             </div>
           </div>
           <label className="label is-small">HVS CULTURE</label>
