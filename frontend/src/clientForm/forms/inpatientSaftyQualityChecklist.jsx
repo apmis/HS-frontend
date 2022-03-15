@@ -36,11 +36,11 @@ const InpatientSafetyQualityChecklist = ({onSubmit}) => {
             </label>
             <div className="control">
               <label className="radio">
-                <input ref={register} type="radio" name="patient-education" />
+                <input ref={register} type="radio" name="patientEducation" />
                 <span className="ms-2 is-small">Yes</span>
               </label>
               <label className="radio">
-                <input ref={register} type="radio" name="patient-education" />
+                <input ref={register} type="radio" name="patientEducation" />
                 <span className="ms-2 is-small">No</span>
               </label>
             </div>

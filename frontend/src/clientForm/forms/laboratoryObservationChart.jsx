@@ -61,7 +61,7 @@ const LaboratoryObservationChart = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">B/P</label>
                 <p className="control is-expanded">
-                  <input ref={register} name="" className="input is-small" type="text" />
+                  <input ref={register} name="bldPre" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
@@ -69,7 +69,7 @@ const LaboratoryObservationChart = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">FH</label>
                 <p className="control is-expanded">
-                  <input ref={register} name="bldPre" className="input is-small" type="text" />
+                  <input ref={register} name="fh" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
