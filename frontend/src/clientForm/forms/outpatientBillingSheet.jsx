@@ -179,7 +179,7 @@ const OutpatientBillingSheet = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Description</label>
               <div className="control">
-                <textarea ref={register} name="rehabDescription" className="textarea is-small"></textarea>
+                <textarea ref={register} name="labDescription" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ const OutpatientBillingSheet = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Tariff</label>
                 <div className="control">
-                  <input ref={register} name="rehabTarriff" className="input is-small" type="text" />
+                  <input ref={register} name="labTarriff2" className="input is-small" type="text" />
                 </div>
               </div>
             </div>
@@ -196,7 +196,7 @@ const OutpatientBillingSheet = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Name of Officer</label>
                 <div className="control">
-                  <input ref={register} name="rehabOfficerName" className="input is-small" type="text" />
+                  <input ref={register} name="labOfficerName" className="input is-small" type="text" />
                 </div>
               </div>
             </div>
@@ -204,7 +204,7 @@ const OutpatientBillingSheet = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Signature</label>
                 <div className="control">
-                  <input ref={register} name="rehabSign" className="input is-small" type="text" />
+                  <input ref={register} name="labSign" className="input is-small" type="text" />
                 </div>
               </div>
             </div>
