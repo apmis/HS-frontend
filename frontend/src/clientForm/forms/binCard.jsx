@@ -86,7 +86,7 @@ const BinCard = ({onSubmit}) => {
               <div className="field w-100">
                 <label className="label is-small">Expiry Date</label>
                 <div className="control">
-                  <input ref={register} name="ExpiryDate" className="input is-small" type="date" />
+                  <input ref={register} name="expiryDate" className="input is-small" type="date" />
                 </div>
               </div>
             </div>
