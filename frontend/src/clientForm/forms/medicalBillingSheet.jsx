@@ -82,7 +82,7 @@ const MedicalBillingSheet = ({onSubmit}) => {
               Cardiac Procedures etc (ECG/Echo/Holtar/Amb up/etc)
             </label>
             <div className="control">
-              <textarea ref={register} name="cardiacPre" className="textarea is-small"></textarea>
+              <textarea ref={register} name="cardiacPro" className="textarea is-small"></textarea>
             </div>
           </div>
           <div className="field">
@@ -118,7 +118,7 @@ const MedicalBillingSheet = ({onSubmit}) => {
               Pharmacy: <br /> Drugs/Injection/Vaccine
             </label>
             <div className="control">
-              <textarea ref={register} name="" className="textarea is-small"></textarea>
+              <textarea ref={register} name="pharmacy" className="textarea is-small"></textarea>
             </div>
           </div>
           <div className="field">
