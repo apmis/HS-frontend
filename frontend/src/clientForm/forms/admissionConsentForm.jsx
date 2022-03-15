@@ -61,6 +61,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
                   <input ref={register} name="surname" className="input is-small" type="text" />
                 </p>
               </div>
+
               <div className="field">
                 <label className="label is-small">First Name</label>
                 <p className="control is-expanded">
@@ -85,6 +86,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
                   <input ref={register} name="lga" className="input is-small" type="text" />
                 </p>
               </div>
+
               <div className="field">
                 <label className="label is-small">State</label>
                 <p className="control is-expanded">
@@ -167,7 +169,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
                 <label className="label is-small">Country of Birth</label>
                 <p className="control">
                   <div className="select is-small">
-                    <select>
+                    <select ref={register} name = "countryOfBirth">
                       <option value="Nigeria" >Nigeria</option>
                       <option value="Ghana" >Ghana</option>
                       <option value="Senegal" >Senegal</option>
@@ -184,6 +186,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
                   <input ref={register} name="occupation" className="input is-small" type="text" />
                 </div>
               </div>
+
               <div className="field w-100">
                 <label className="label is-small">Religion</label>
                 <div className="control">
@@ -196,23 +199,23 @@ const AdmissionConsentForm = ({onSubmit}) => {
               <label className="label is-small">Marital Status</label>
               <div className="control">
                 <label className="radio">
-                  <input ref={register} value="single" type="radio" name="marital-status" />
+                  <input ref={register} value="single" type="radio" name="maritalStatus" />
                   <span className="ms-2 is-small">Single</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="married" type="radio" name="marital-status" />
+                  <input ref={register} value="married" type="radio" name="maritalStatus" />
                   <span className="ms-2 is-small">Married</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="widowed" type="radio" name="marital-status" />
+                  <input ref={register} value="widowed" type="radio" name="maritalStatus" />
                   <span className="ms-2 is-small">Widowed</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="divorced" type="radio" name="marital-status" />
+                  <input ref={register} value="divorced" type="radio" name="maritalStatus" />
                   <span className="ms-2 is-small">Divorced</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="seperated" type="radio" name="marital-status" />
+                  <input ref={register} value="seperated" type="radio" name="maritalStatus" />
                   <span className="ms-2 is-small">Seperated</span>
                 </label>
               </div>
@@ -222,7 +225,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
               <div className="field w-100">
                 <label className="label is-small">Next of Kin Name</label>
                 <div className="control">
-                  <input ref={register} name="" className="input is-small" type="text" />
+                  <input ref={register} name="nextOfKinName" className="input is-small" type="text" />
                 </div>
               </div>
               <div className="field w-100">
@@ -236,7 +239,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Previous Hospitalizations</label>
               <div className="control">
-                <textarea ref={register} name="reasonForAdmission" className="textarea is-small"></textarea>
+                <textarea ref={register} name="prevHospi" className="textarea is-small"></textarea>
               </div>
             </div>
 
@@ -247,11 +250,11 @@ const AdmissionConsentForm = ({onSubmit}) => {
               </label>
               <div className="control">
                 <label className="radio">
-                  <input ref={register} value="yes" type="radio" name="been-admitted-at-olive" />
+                  <input ref={register} value="yes" type="radio" name="beenAdmittedAtOlive" />
                   <span className="ms-2 is-small">Yes</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="no" type="radio" name="been-admitted-at-olive" />
+                  <input ref={register} value="no" type="radio" name="beenAdmittedAtOlive" />
                   <span className="ms-2 is-small">No</span>
                 </label>
               </div>
@@ -263,11 +266,11 @@ const AdmissionConsentForm = ({onSubmit}) => {
               </label>
               <div className="control">
                 <label className="radio">
-                  <input ref={register} value="yes" type="radio" name="been-admitted-at-any-hospital" />
+                  <input ref={register} value="yes" type="radio" name="beenAdmittedAtAnyHosp" />
                   <span className="ms-2 is-small">Yes</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="no" type="radio" name="been-admitted-at-any-hospital" />
+                  <input ref={register} value="no" type="radio" name="beenAdmittedAtAnyHosp" />
                   <span className="ms-2 is-small">No</span>
                 </label>
               </div>
@@ -296,11 +299,11 @@ const AdmissionConsentForm = ({onSubmit}) => {
               </label>
               <div className="control">
                 <label className="radio">
-                  <input ref={register} value="yes" type="radio" name="financial-discussion" />
+                  <input ref={register} value="yes" type="radio" name="financialDiscussion" />
                   <span className="ms-2 is-small">Yes</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="no" type="radio" name="financial-discussion" />
+                  <input ref={register} value="no" type="radio" name="financialDiscussion" />
                   <span className="ms-2 is-small">No</span>
                 </label>
               </div>
@@ -314,7 +317,7 @@ const AdmissionConsentForm = ({onSubmit}) => {
                 <div className="field w-100">
                   <label className="label is-small">Insurance Name</label>
                   <div className="control">
-                    <input ref={register} name="insuranceNme" className="input is-small" type="text" />
+                    <input ref={register} name="insuranceName" className="input is-small" type="text" />
                   </div>
                 </div>
                 <div className="field w-100">
@@ -353,11 +356,11 @@ const AdmissionConsentForm = ({onSubmit}) => {
               </label>
               <div className="control">
                 <label className="radio">
-                  <input ref={register} value="yes" type="radio" name="hmo-authorization" />
+                  <input ref={register} value="yes" type="radio" name="hmoAuthorization" />
                   <span className="ms-2 is-small">Yes</span>
                 </label>
                 <label className="radio">
-                  <input ref={register} value="no" type="radio" name="hmo-authorization" />
+                  <input ref={register} value="no" type="radio" name="hmoAuthorization" />
                   <span className="ms-2 is-small">No</span>
                 </label>
               </div>
