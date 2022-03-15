@@ -125,7 +125,7 @@ const DialysisLogSheet = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Machine Type</label>
                 <p className="control is-expanded">
-                  <input ref={register} name="" className="input is-small" type="text" />
+                  <input ref={register} name="macType" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
@@ -159,7 +159,7 @@ const DialysisLogSheet = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Pulse</label>
                 <p className="control is-expanded">
-                  <input ref={register} name="" className="input is-small" type="text" />
+                  <input ref={register} name="pulseRate" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
