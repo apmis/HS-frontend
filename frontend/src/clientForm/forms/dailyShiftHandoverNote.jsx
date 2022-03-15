@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 
-const DailyShiftHandoverNote = ({ onSubmit}) => {
+const DailyShiftHandoverNote = ({onSubmit}) => {
 
   const { register, handleSubmit } = useForm();
 
@@ -42,7 +42,7 @@ const DailyShiftHandoverNote = ({ onSubmit}) => {
               Anticipated Date of Discharge
             </label>
             <div className="control">
-              <input ref={register} name="abticipatedDateOfDischarge" className="input is-small" type="date" />
+              <input ref={register} name="anticipatedDateOfDischarge" className="input is-small" type="date" />
             </div>
           </div>
           <div className="field-body">
@@ -51,7 +51,7 @@ const DailyShiftHandoverNote = ({ onSubmit}) => {
                 Physician/Specialists Consultation
               </label>
               <div className="control">
-                <textarea ref={register} name="physicianOrSpecialistsConsultation" className="textarea is-small"></textarea>
+                <textarea ref={register} name="phyOrSpeciConsultation" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -59,11 +59,11 @@ const DailyShiftHandoverNote = ({ onSubmit}) => {
             <label className="label is-small">ID Bracelet on wrist?</label>
             <div className="control">
               <label className="radio">
-                <input ref={register} type="radio" name="id-bracelet" />
+                <input ref={register} type="radio" name="idBracelet" />
                 <span className="ms-2">Yes</span>
               </label>
               <label className="radio">
-                <input ref={register} type="radio" name="id-bracelet" />
+                <input ref={register} type="radio" name="idBracelet" />
                 <span className="ms-2">No</span>
               </label>
             </div>
@@ -73,7 +73,7 @@ const DailyShiftHandoverNote = ({ onSubmit}) => {
               Date/Time last seen by Physician
             </label>
             <div className="control">
-              <input ref={register} name="dateOrTimeLastSeenByPhysician" className="input is-small" type="datetime-local" />
+              <input ref={register} name="lastSeen" className="input is-small" type="datetime-local" />
             </div>
           </div>
           <div className="field-body">
@@ -88,11 +88,11 @@ const DailyShiftHandoverNote = ({ onSubmit}) => {
             <label className="label is-small">Code Status/CODE BLUE event?</label>
             <div className="control">
               <label className="radio">
-                <input ref={register} type="radio" name="code-blue-event" />
+                <input ref={register} type="radio" name="codeBlueEvent" />
                 <span className="ms-2">Yes</span>
               </label>
               <label className="radio">
-                <input ref={register} type="radio" name="code-blue-event" />
+                <input ref={register} type="radio" name="codeBlueEvent" />
                 <span className="ms-2">No</span>
               </label>
             </div>
@@ -181,11 +181,11 @@ const DailyShiftHandoverNote = ({ onSubmit}) => {
             <label className="label is-small">Decubitus ulcer present?</label>
             <div className="control">
               <label className="radio">
-                <input ref={register} type="radio" name="code-blue-event" />
+                <input ref={register} type="radio" name="ulcerPresent" />
                 <span className="ms-2">Yes</span>
               </label>
               <label className="radio">
-                <input ref={register} type="radio" name="code-blue-event" />
+                <input ref={register} type="radio" name="ulcerPresent" />
                 <span className="ms-2">No</span>
               </label>
             </div>
@@ -380,7 +380,7 @@ const DailyShiftHandoverNote = ({ onSubmit}) => {
           <div className="field mt-3">
             <label className="label is-small">Name of persons educated</label>
             <div className="control">
-              <textarea ref={register} name="nameOfEducatedPerson" className="textarea is-small"></textarea>
+              <textarea ref={register} name="educatedPerson" className="textarea is-small"></textarea>
             </div>
           </div>
           <div className="field mt-3">
