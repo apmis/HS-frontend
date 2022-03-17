@@ -1,5 +1,10 @@
-const PressureAreasTreatmentChart = () => {
+   import { useForm } from "react-hook-form";
+
+const PressureAreasTreatmentChart = ({onSubmit}) => {
+
+  const { register, handleSubmit } = useForm();
   return (
+  <form onSubmit={handleSubmit(onSubmit)}>
     <div className="card">
       <div className="card-header">
         <p className="card-header-title">Pressure Areas Treatment Chart</p>
@@ -8,7 +13,7 @@ const PressureAreasTreatmentChart = () => {
         <div className="field">
           <label className="label is-small">Date & Time</label>
           <div className="control">
-            <input className="input is-small" type="datetime-local" />
+            <input ref={register} name="dateAndTime" className="input is-small" type="datetime-local" />
           </div>
         </div>
         <label className="label is-small">Repositioning (using Codes)</label>
@@ -17,7 +22,7 @@ const PressureAreasTreatmentChart = () => {
             <div className="field">
               <label className="label is-small">From</label>
               <div className="control">
-                <input className="input is-small" type="text" />
+                <input ref={register} name="from" className="input is-small" type="text" />
               </div>
             </div>
           </div>
@@ -25,7 +30,7 @@ const PressureAreasTreatmentChart = () => {
             <div className="field">
               <label className="label is-small">To</label>
               <div className="control">
-                <input className="input is-small" type="text" />
+                <input ref={register} name="to" className="input is-small" type="text" />
               </div>
             </div>
           </div>
@@ -33,19 +38,19 @@ const PressureAreasTreatmentChart = () => {
         <div className="field">
           <label className="label is-small">Pressure Area Treatment</label>
           <div className="control">
-            <textarea className="textarea is-small" type="number"></textarea>
+            <textarea ref={register} name="pressureAreaTxt" className="textarea is-small" type="number"></textarea>
           </div>
         </div>
         <div className="field">
           <label className="label is-small">Skin Inspection Comments</label>
           <div className="control">
-            <textarea className="textarea is-small" type="number"></textarea>
+            <textarea ref={register} name="skinInspectionComments" className="textarea is-small" type="number"></textarea>
           </div>
         </div>
         <div className="field">
           <label className="label is-small">Name/Signature</label>
           <div className="control">
-            <input className="input is-small" type="text" />
+            <input ref={register} name="nameOrSignature" className="input is-small" type="text" />
           </div>
         </div>
         <div className="field mt-4">
@@ -53,6 +58,7 @@ const PressureAreasTreatmentChart = () => {
         </div>
       </div>
     </div>
+  </form>
   );
 };
 
