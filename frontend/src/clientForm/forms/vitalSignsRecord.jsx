@@ -14,7 +14,7 @@ const VitalSignsRecord = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Patient's Name</label>
             <p className="control is-expanded">
-              <input className="input is-small" type="text" />
+              <input ref={register} name="" className="input is-small" type="text" />
             </p>
           </div>
           <div className="columns mt-3">
@@ -22,7 +22,7 @@ const VitalSignsRecord = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Month</label>
                 <p className="control is-expanded">
-                  <input className="input is-small" type="text" />
+                  <input ref={register} name="" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
@@ -30,7 +30,7 @@ const VitalSignsRecord = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Hospital Number</label>
                 <p className="control is-expanded">
-                  <input className="input is-small" type="text" />
+                  <input ref={register} name="" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
@@ -38,7 +38,7 @@ const VitalSignsRecord = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Ward</label>
                 <p className="control is-expanded">
-                  <input className="input is-small" type="text" />
+                  <input ref={register} name="" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
@@ -48,7 +48,7 @@ const VitalSignsRecord = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Hosp. Day</label>
                 <p className="control is-expanded">
-                  <input className="input is-small" type="date" />
+                  <input ref={register} name="" className="input is-small" type="date" />
                 </p>
               </div>
             </div>
@@ -56,7 +56,7 @@ const VitalSignsRecord = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Post-OP Day</label>
                 <p className="control is-expanded">
-                  <input className="input is-small" type="text" />
+                  <input ref={register} name="" className="input is-small" type="text" />
                 </p>
               </div>
             </div>
@@ -64,7 +64,7 @@ const VitalSignsRecord = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Date & Time</label>
                 <p className="control is-expanded">
-                  <input className="input is-small" type="datetime-local" />
+                  <input ref={register} name="" className="input is-small" type="datetime-local" />
                 </p>
               </div>
             </div>
@@ -73,7 +73,7 @@ const VitalSignsRecord = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Temp</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ const VitalSignsRecord = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Pulse</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -89,7 +89,7 @@ const VitalSignsRecord = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Resp</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@ const VitalSignsRecord = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Blood Pressure</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@ const VitalSignsRecord = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Oxygen SAT</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@ const VitalSignsRecord = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Weight</label>
               <div className="control">
-                <textarea className="textarea is-small"></textarea>
+                <textarea ref={register} name="" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
