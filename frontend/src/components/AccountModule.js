@@ -1,21 +1,23 @@
 /* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import InventoryReport from './Pharmacy/InventoryReport'
-import InventorySetup from './Pharmacy/InventorySetup'
-import InventoryStore from './Pharmacy/InventoryStore'
-import PharmacyHome from './Pharmacy/PharmacyHome'
-import ProductEntry from './Pharmacy/ProductEntry'
-import ProductExit from './Pharmacy/ProductExit'
-import Dispense from './Pharmacy/Dispensary'
-import Products from './Pharmacy/Products'
-import BillService from './Finance/BillService'
-import PharmacyPayment from './Pharmacy/PharmacyPayment'
-import Pharmacy, { PharamcyList, PharmacyListStandalone } from './Pharmacy/Pharmacy'
+import ChartofAccount from './Accounts/ChartofAccount'
+import FinanceSetup from './Finance/FinanceSetup'
+import Collections from './Finance/Collections'
+import FinanceHome from './Finance/FinanceHome'
+import ProductEntry from './Finance/Services'
+import ProductExit from './Finance/ProductExit'
+import Payment from './Finance/Payment'
+import Products from './Finance/Products'
+import Store, { StoreList, StoreListStandalone } from './Finance/Store'
 import {UserContext,ObjectContext} from '../context'
-import BillPrescription from './Pharmacy/BillPrescription'
+import BillPrescription from './Finance/BillPrescription'
+import Services from './Finance/Services'
+import BillService from './Finance/BillService'
+import FacilityAccount from './Finance/FacilityAccount'
+import HMOauth from './Finance/HMOauth'
 
-export default function PharmacyModule() {
+export default function AccountModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
     const {user,setUser}=useContext(UserContext)
     // eslint-disable-next-line
@@ -27,9 +29,10 @@ export default function PharmacyModule() {
     
     useEffect(() => {
        
-        console.log("starting up inventory module")
+        console.log("starting up Finance module")
         if (!selectedStore){
             handleChangeStore()
+
 
             }
          return () => {       
@@ -38,9 +41,10 @@ export default function PharmacyModule() {
    
     useEffect(()=>{
      setSelectedStore(state.StoreModule.selectedStore)
+
      const    newEmployeeLocation={
         locationName:state.StoreModule.selectedStore.name,
-        locationType:"Pharmacy",
+        locationType:"Finance",
         locationId:state.StoreModule.selectedStore._id,
         facilityId:user.currentEmployee.facilityDetail._id   ,
         facilityName:user.currentEmployee.facilityDetail.facilityName
@@ -51,10 +55,11 @@ export default function PharmacyModule() {
 
     const handleChangeStore= async()=>{
         await setShowModal(true)                                                                                                                                                        
-       // console.log( showModal)
+        console.log( showModal)
     }
+
     const handleBurger=()=>{
-       
+        
         setShowMenu(prev=>(!prev))
     }
 
@@ -67,14 +72,14 @@ export default function PharmacyModule() {
                             <div className="navbar-brand minHt">
                                 <div className="navbar-item ">
                                     <span className="is-small has-text-weight-medium">
-                                        Health Stack::Pharmacy::{selectedStore?selectedStore.name:""}</span>
-                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Pharmacy</button> 
+                                        Health Stack::Finance::{selectedStore?selectedStore.name:""}</span>
+                                        <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>
                                 
                             {/* <div className="navbar-item">
                                 <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
                             </div> */}
-                                <span className="navbar-burger minHt" data-target="navbarMenuHeroB"  onClick={handleBurger}>
+                                <span className="navbar-burger minHt" data-target="navbarMenuHeroB" onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
                                     <span></span>
@@ -82,38 +87,36 @@ export default function PharmacyModule() {
                             </div>
                             <div id="navbarMenuHeroB" className={`navbar-menu minHt  has-background-info ${showmenu?"is-active":""}`}>
                                 <div className={`navbar-end ${showmenu?"bckcolor":""}`}>
-                                    <div className="navbar-item"   onClick={handleBurger}>
+                                    <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                    {/* <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-stores`}>Stores</NavLink>
-                                    </div> */}
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/billservice`}>Bill Client</NavLink>
+                                        <NavLink to={`${url}/chartsaccount`}>Chart of Account</NavLink>
                                     </div>
-                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-bill`}>Bill Prescription Sent</NavLink>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/payment`}>Payment</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-payment`}>Payment</NavLink>
-                                    </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-dispense`}>Dispensary</NavLink>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/expenses`}>Expenses</NavLink>
+                                    </div> 
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/journal`}>Journal</NavLink>
                                     </div>
                                    
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/ledger`}>Ledgers</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-entry`}>Product Entry</NavLink>
+                                    <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/reports`}>Reports</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-exit`}>POS</NavLink>
+                                     
+                                   {/* <div className="navbar-item">
+                                        <NavLink to={`${url}/inv-exit`}>Product Exit</NavLink>
                                     </div>
-                                  {user.stacker &&  <div className="navbar-item"  onClick={handleBurger}>
+                                    <div className="navbar-item">
                                         <NavLink to={`${url}/inv-products`}>Products</NavLink>
-                                    </div>}
-                                   {/*  <div className="navbar-item"  onClick={handleBurger}>
+                                    </div>
+                                    <div className="navbar-item">
                                         <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
                                     </div> */}
                                 {/* <span className="navbar-item">
@@ -136,21 +139,27 @@ export default function PharmacyModule() {
                        
                     <Switch>
                         <Route path={path} exact>
-                            <PharmacyHome />
+                            <FinanceHome />
                         </Route>
-                        <Route path={`${path}/inv-dispense`} exact >
-                            <Dispense />
+                        <Route path={`${path}/payments`} exact >
+                            <Payment />
                         </Route>
-                        <Route path={`${path}/inv-bill`} exact >
-                            <BillPrescription />
+                        <Route path={`${path}/expenses`} exact >
+                            <Collections />
                         </Route>
-                        <Route path={`${path}/inv-admin`} exact >
-                            <InventorySetup />
+                       <Route path={`${path}/reports`} exact >
+                            <Services />
                         </Route>
-                        <Route path={`${path}/inv-inventory`} exact>
-                            <InventoryStore />
+                         <Route path={`${path}/journals`} exact>
+                            <BillService />
                         </Route>
-                        <Route path={`${path}/inv-entry`} exact>
+                        <Route path={`${path}/ledgers`} exact>
+                            <HMOauth />
+                        </Route>
+                        <Route path={`${path}/chartsaccount`} exact>
+                            <ChartofAccount />
+                        </Route>
+                        {/* <Route path={`${path}/inv-entry`} exact>
                             <ProductEntry />
                         </Route>
                         <Route path={`${path}/inv-exit`} exact>
@@ -159,17 +168,11 @@ export default function PharmacyModule() {
                         <Route path={`${path}/inv-products`} exact>
                             <Products />
                         </Route>
-                        <Route path={`${path}/billservice`} exact>
-                            <BillService />
-                        </Route>
                         <Route path={`${path}/inv-reports`} exact>
-                            <InventoryReport />
-                        </Route>
-                        <Route path={`${path}/inv-stores`} exact>
-                            <Pharmacy />
-                        </Route>
-                        <Route path={`${path}/inv-payment`} exact>
-                            <PharmacyPayment />
+                            <FinanceReport />
+                        </Route> */}
+                        <Route path={`${path}/location`} exact>
+                            <Store />
                         </Route>
 
                     </Switch>
@@ -179,11 +182,11 @@ export default function PharmacyModule() {
                                     <div className="modal-background"></div>
                                     <div className="modal-card">
                                         <header className="modal-card-head">
-                                        <p className="modal-card-title">Choose Pharmacy</p>
+                                        <p className="modal-card-title">Choose Location</p>
                                         <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
-                                        <PharmacyListStandalone standalone="true" closeModal={()=>setShowModal(false)} />
+                                        <StoreListStandalone standalone="true" closeModal={()=>setShowModal(false)} />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

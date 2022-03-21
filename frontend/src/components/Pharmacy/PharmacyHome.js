@@ -1,9 +1,9 @@
 /* eslint-disable */
 import React ,{useState,useEffect,useContext} from 'react'
-import Store, { StoreList } from './Store'
+import Pharmacy, { PharmacyList } from './Pharmacy'
 import {UserContext,ObjectContext} from '../../context'
 
-export default function InventoryHome() {
+export default function PharmacyHome() {
    // const [activeModal, setActiveModal]=useState("modal is-active ")
     const {state,setState}=useContext(ObjectContext)
     const handleCloseModal=()=>{

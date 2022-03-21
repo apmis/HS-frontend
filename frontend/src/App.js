@@ -21,9 +21,14 @@ function App() {
       show:'create',
       selectedFacility:{}
     },
+
     EmployeeModule:{
       show:'create',
       selectedEmployee:{}
+    },
+    ChartAccountModule:{
+      show:'create',
+      selectedChartAccount:{}
     },
     EpidemiologyModule:{
       show:'create',
@@ -140,8 +145,8 @@ function App() {
   
   
  
-  return (
-    <ObjectContext.Provider value={{state,setState}}>
+  return ( 
+   <ObjectContext.Provider value={{state,setState}}>
    {/*  <UserContext.Provider value={{user,setUser}}> */}
    <MyUserProvider>
     <Router>

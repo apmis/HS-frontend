@@ -6,6 +6,7 @@ import InventoryModule from './InventoryModule'
 import ClinicModule from './ClinicModule'
 import ClientModule from './ClientModule'
 import FinanceModule from './FinanceModule'
+import AccountModule from './AccountModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
 import Ward from './WardModule'
@@ -47,6 +48,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/finance`} >
                     <FinanceModule />
+                </Route>
+                <Route path={`${path}/account`} >
+                    <AccountModule />
                 </Route>
                 <Route path={`${path}/labs`} >
                     <LaboratoryModule />
@@ -252,6 +256,9 @@ function NavBar({url}){
                                
                                 {(user.currentEmployee?.roles.includes('Finance')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/hmo`}>Managed Care</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Finance')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/account`}>Account</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Finance')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/finance`}>Finance</NavLink>
