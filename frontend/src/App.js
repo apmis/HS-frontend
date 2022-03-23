@@ -28,7 +28,15 @@ function App() {
     },
     ChartAccountModule:{
       show:'create',
-      selectedChartAccount:{}
+      selectedAccount:{}
+    },
+    ExpenseModule:{
+      show:'create',
+      selectedExpense:{}
+    },
+    BankModule:{
+      show:'create',
+      selectedBank:{}
     },
     EpidemiologyModule:{
       show:'create',

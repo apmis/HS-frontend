@@ -3,6 +3,7 @@ import React, {useState,useContext, useEffect,useRef} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
+import {format, formatDistanceToNowStrict } from 'date-fns'
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
@@ -10,7 +11,7 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function ChartofAccount() {
+export default function Expense() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedLocation,setSelectedLocation]=useState()
@@ -22,13 +23,19 @@ export default function ChartofAccount() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Location  Module</span></div>
             </div> */}
             <div className="columns ">
-            <div className="column is-8 ">
-                <ChartofAccountList />
+            <div className="column is-1">
                 </div>
-            <div className="column is-4 ">
-                {(state.ChartAccountModule.show ==='create')&&<ChartofAccountCreate />}
-                {(state.ChartAccountModule.show ==='detail')&&<ChartofAccountDetail  />}
-                {(state.ChartAccountModule.show ==='modify')&&<ChartofAccountModify Location={selectedLocation} />}
+            <div className="column is-10  ">
+               
+                <ExpenseCreate />
+                <div className="mt-2">
+                <ExpenseList />
+                </div>
+                </div>
+            <div className="column is-1">
+                {/* {(state.ExpenseModule.show ==='create')&&<ExpenseCreate />}
+                {(state.ExpenseModule.show ==='detail')&&<ExpenseDetail  />}
+                {(state.ExpenseModule.show ==='modify')&&<ExpenseModify Location={selectedExpense} />} */}
                
             </div>
 
@@ -39,19 +46,19 @@ export default function ChartofAccount() {
     
 }
 
-export function ChartofAccountCreate(){
+export function ExpenseCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const accountServ=client.service('chartsofaccount')
+    const accountServ=client.service('expense')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const locationTypeOptions =["Assets", "Equity", "Expenses","Liability","Revenue" ]
+    const sourceTypeOptions =["Cash", "Bank", ]
 
 
     const getSearchfacility=(obj)=>{
@@ -95,6 +102,8 @@ export function ChartofAccountCreate(){
           console.log(data);
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
+         data.createdby=user.firstname + " " +user.lastname
+         data.userid=user._id
           }
         accountServ.create(data)
         .then((res)=>{
@@ -126,19 +135,20 @@ export function ChartofAccountCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Enter Expense
+                    Create Account
                 </p>
             </div>
             <div className="card-content vscrollable">
-            
+   
             <form onSubmit={handleSubmit(onSubmit)}>
-            
+            <div class="field is-horizontal">
+                    <div class="field-body">
                 <div className="field">    
                  <div className="control">
                      <div className="select is-small ">
-                         <select name="accountType"  ref={register({ required: true })}  className="selectadd" >
-                         <option value="">Choose Acoount Type</option>
-                           {locationTypeOptions.map((option,i)=>(
+                         <select name="source"  ref={register({ required: true })}  className="selectadd" >
+                         <option value="">Choose Source </option>
+                           {sourceTypeOptions.map((option,i)=>(
                                <option key={i} value={option}> {option}</option>
                            ))}
                          </select>
@@ -147,25 +157,7 @@ export function ChartofAccountCreate(){
                 </div>
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="class" type="text" placeholder="Class of Account" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div>
-            <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="subclass" type="text" placeholder="Subclass of Account" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div>
-            <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="accountName" type="text" placeholder="Name of Account" />
+                    <input className="input is-small" ref={register({ required: true })}  name="expenseAccount_name" type="text" placeholder="Expense Account Name" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -183,6 +175,24 @@ export function ChartofAccountCreate(){
             </div>
             <div className="field">
                     <p className="control has-icons-left has-icons-right">
+                    <input className="input is-small" ref={register({ required: true })}  name="payee" type="text" placeholder="Payee" />
+                    <span className="icon is-small is-left">
+                        <i className="fas fa-map-signs"></i>
+                    </span>
+                    
+                </p>
+            </div>
+            <div className="field">
+                    <p className="control has-icons-left has-icons-right">
+                    <input className="input is-small" ref={register({ required: true })}  name="amount" type="text" placeholder="Amount" />
+                    <span className="icon is-small is-left">
+                        <i className="fas fa-map-signs"></i>
+                    </span>
+                    
+                </p>
+            </div>
+            {/* <div className="field">
+                    <p className="control has-icons-left has-icons-right">
                     <input className="input is-small" ref={register({ required: true })}  name="code" type="text" placeholder="Account Code" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
@@ -199,16 +209,17 @@ export function ChartofAccountCreate(){
                     <i className="fas  fa-map-marker-alt"></i>
                     </span>
                 </p>
-            </div>
+            </div> */}
            
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
-                        Create
+                        Add
                     </button>
                 </p>
             </div>
-            
+            </div>
+            </div>
             </form>
             </div>
             </div>
@@ -217,7 +228,7 @@ export function ChartofAccountCreate(){
    
 }
 
-export function ChartofAccountList(){
+export function ExpenseList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -225,7 +236,7 @@ export function ChartofAccountList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const LocationServ=client.service('chartsofaccount')
+    const LocationServ=client.service('expense')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
@@ -375,7 +386,7 @@ export function ChartofAccountList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Locations"
+                                        type="text" placeholder="Search Expenses"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -386,12 +397,12 @@ export function ChartofAccountList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Accounts </span></div>
-                    <div className="level-right">
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Expenses </span></div>
+                    {/* <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
                 <div className="table-container pullup ">
@@ -399,15 +410,16 @@ export function ChartofAccountList(){
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
-                                        <th>Name</th>
-                                        <th><abbr title="Account Type">Account Type</abbr></th>
-                                       <th><abbr title="Account Class">Class</abbr></th>
-                                         <th><abbr title="Subclass">Subclass</abbr></th>
-                                         <th><abbr title="Code">Code</abbr></th>
-                                        <th><abbr title="Description">Description</abbr></th>
+                                       {/*  <th><abbr title="Date">Date</abbr></th> */}
+                                        <th>Source</th>
+                                        <th><abbr title="Expense Accounte">Expense Account</abbr></th>
+                                       <th><abbr title="Descriptions">Description</abbr></th>
+                                         <th><abbr title="Payee">Payee</abbr></th>
+                                         <th><abbr title="Amount">Amount</abbr></th>
+                                        <th><abbr title="User">User</abbr></th>
                                         
                                        {/*  <th><abbr title="Departmental Unit">Departmental Unit</abbr></th>  */}
-                                       {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
+                                      {/*  {user.stacker && <th><abbr title="Facility">Facility</abbr></th>} */}
                                         {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
                                     </thead>
@@ -419,12 +431,13 @@ export function ChartofAccountList(){
 
                                             <tr key={Location._id} onClick={()=>handleRow(Location)} className={Location._id===(selectedLocation?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Location.accountName}</th>
-                                            <td>{Location.accountType}</td>
-                                            <td>{Location.class}</td>
-                                            <td>{Location.subclass}</td>
-                                            <td>{Location.code}</td>
+                                            {/* <td> <span>{format(new Date(location.createdAt),'dd-MM-yy')}</span></td> */}
+                                            <th>{Location.source}</th>
+                                            <td>{Location.expenseAccount_name}</td>
                                             <td>{Location.description}</td>
+                                            <td>{Location.payee}</td>
+                                            <td>{Location.amount}</td>
+                                            <td>{Location.createdby}</td>
                                                {/*  <td>{Location.deptunit}</td>  */}
                                            {user.stacker &&  <td>{Location.facility}</td>}
                                            {/*  <td><span   className="showAction"  >...</span></td> */}
@@ -443,7 +456,7 @@ export function ChartofAccountList(){
     }
 
 
-export function ChartofAccountDetail(){
+export function ExpenseDetail(){
     const { register, handleSubmit, watch, setValue,reset } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
@@ -457,7 +470,7 @@ export function ChartofAccountDetail(){
     const [showUpdate, setShowUpdate] = useState(false) 
     const {state,setState} = useContext(ObjectContext)
     
-    const LocationServ=client.service('chartofaccount')
+    const LocationServ=client.service('expense')
 
     const sublocationTypeOptions =["Bed","Unit", ]
 
@@ -664,7 +677,7 @@ export function ChartofAccountDetail(){
    
 }
 
-export function ChartofAccountModify(){
+export function ExpenseModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -673,7 +686,7 @@ export function ChartofAccountModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const LocationServ=client.service('chartsofaccount')
+    const LocationServ=client.service('expense')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)

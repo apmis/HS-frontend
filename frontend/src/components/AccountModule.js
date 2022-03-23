@@ -3,7 +3,7 @@ import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import ChartofAccount from './Accounts/ChartofAccount'
 import FinanceSetup from './Finance/FinanceSetup'
-import Collections from './Finance/Collections'
+import Expense from './Accounts/Expense'
 import FinanceHome from './Finance/FinanceHome'
 import ProductEntry from './Finance/Services'
 import ProductExit from './Finance/ProductExit'
@@ -145,7 +145,7 @@ export default function AccountModule() {
                             <Payment />
                         </Route>
                         <Route path={`${path}/expenses`} exact >
-                            <Collections />
+                            <Expense />
                         </Route>
                        <Route path={`${path}/reports`} exact >
                             <Services />
