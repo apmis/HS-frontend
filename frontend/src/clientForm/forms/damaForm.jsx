@@ -77,7 +77,7 @@ const DamaForm = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Physician Name/Signature</label>
                 <div className="control">
-                  <input ref={register} name="phyNameOrSign" className="input is-small dotted_bottom" type="text" />
+                  <input ref={register} name="physicianNameOrSignature" className="input is-small dotted_bottom" type="text" />
                 </div>
               </div>
             </div>
@@ -85,7 +85,7 @@ const DamaForm = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Date</label>
                 <div className="control">
-                  <input ref={register} name="phyDate" className="input is-small dotted_bottom" type="date" />
+                  <input ref={register} name="physicianDate" className="input is-small dotted_bottom" type="date" />
                 </div>
               </div>
             </div>
