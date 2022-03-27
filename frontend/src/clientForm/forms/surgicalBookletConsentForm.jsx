@@ -19,7 +19,7 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <div className="field">
                 <p className="control label is-small">Full Name</p>
-                <input type="text" name="fullName2" ref={register} id="" className="is-small input" />
+                <input type="text" name="fullNameAgain" ref={register} id="" className="is-small input" />
               </div>
             </div>
             <div className="column">
@@ -63,7 +63,8 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
               <textarea
                 className="textarea dotted_bottom mt-3"
                 type="text"
-                name=""
+                ref={register}
+                name="seriousOrFrequentlyOccuringRisks"
                 id=""
               ></textarea>{" "}
               <br /> Any extra procedures which may become necessary during the
@@ -71,11 +72,11 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             </p>{" "}
             <div className="field">
               <label class="checkbox me-3">
-                <input type="checkbox" />
+                <input type="checkbox" ref={register} name="bloodTransfusion" />
                 <span className="ms-2 is-small">Blood transfusion</span>
               </label>
               <label class="checkbox me-3">
-                <input type="checkbox" />
+                <input type="checkbox" ref={register} name="otherProcedure" />
                 <span className="ms-2 is-small">
                   other procedure (please specify)
                 </span>
@@ -83,7 +84,8 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
               <textarea
                 className="textarea dotted_bottom mt-3"
                 type="text"
-                name=""
+                name="extraProcedureInfo"
+                ref={register}
                 id=""
               ></textarea>{" "}
             </div>
@@ -96,13 +98,14 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
                 (including no treatment) and any particular concerns of this
                 patient <br /> <br />
                 <label class="checkbox me-3">
-                  <input type="checkbox" />
+                  <input type="checkbox" ref={register} name="patientConsentGiven"/>
                   <span className="ms-2 is-small">
                     The following leaflet/tape has been provided (if applicable)
                     <input
                       className="dotted_bottom"
                       type="text"
-                      name=""
+                      name="leafletOrTape"
+                      ref={register}
                       id=""
                     />{" "}
                     <br /> <br />
@@ -110,17 +113,17 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
                 </label>
                 This process will involves{" "}
                 <label class="checkbox me-3 ms-3">
-                  <input type="checkbox" />
+                  <input type="checkbox" name="generalOrRegionalAnaesthesia" ref={register} />
                   <span className="ms-2 is-small">
                     general and/or regional anaesthesia
                   </span>
                 </label>
                 <label class="checkbox me-3">
-                  <input type="checkbox" />
+                  <input type="checkbox" name="localAnaesthesia" ref={register} />
                   <span className="ms-2 is-small">local anaesthesia</span>
                 </label>
                 <label class="checkbox me-3">
-                  <input type="checkbox" />
+                  <input type="checkbox" name="sedation" ref={register} />
                   <span className="ms-2 is-small">sedation</span>
                 </label>{" "}
                 <br /> <br />
@@ -131,13 +134,13 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Signature
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" type="text" ref={register} name="signatureForAnaesthesia" id="" />
               </p>
             </div>
             <div className="column">
               <p className="label is-small">
                 Date
-                <input className="dotted_bottom" type="date" name="" id="" />
+                <input className="dotted_bottom" type="dateOfAnaesthesia" ref={register} name="date" id="" />
               </p>
             </div>
           </div>
@@ -145,20 +148,20 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Name (print)
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" type="text" ref={register} name="nameOfAnaesthesian" id="" />
               </p>
             </div>
             <div className="column">
               <p className="label is-small">
                 Job Title
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" type="text" ref={register} name="jobTitleOfAnaesthesian" id="" />
               </p>
             </div>
           </div>
           <div className="field">
             <p className="label is-small">
               <span className="label is-small">Contact Detail</span>
-              <input className="dotted_bottom" type="text" name="" id="" />
+              <input className="dotted_bottom" type="text" ref={register} name="contactDetail" id="" />
             </p>
           </div>
           <div className="field">
@@ -175,13 +178,13 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Signature
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" type="text" ref={register} name="interpreterSignature" id="" />
               </p>
             </div>
             <div className="column">
               <p className="label is-small">
                 Date
-                <input className="dotted_bottom" type="date" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="interpreterDate" name="" id="" />
               </p>
             </div>
           </div>
@@ -189,7 +192,7 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Name (print)
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" type="text" ref={register} name="interpreterName" id="" />
               </p>
             </div>
           </div>
@@ -225,20 +228,21 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
           <textarea
             className="textarea dotted_bottom mt-3"
             type="text"
-            name=""
+            name="issuesExplained"
+            ref={register}
             id=""
           ></textarea>
           <div className="columns mt-3">
             <div className="column">
               <p className="label is-small">
                 Patient's Signature
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="text" name="patientSignature" id="" />
               </p>
             </div>
             <div className="column">
               <p className="label is-small">
                 Date
-                <input className="dotted_bottom" type="date" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="date" name="patientDate" id="" />
               </p>
             </div>
           </div>
@@ -246,7 +250,7 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Name (print)
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="text" name="parentOrNextofKinName" id="" />
               </p>
             </div>
           </div>{" "}
@@ -258,13 +262,13 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Patient's Signature
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="text" name="parentOrNextofKinSignature" id="" />
               </p>
             </div>
             <div className="column">
               <p className="label is-small">
                 Date
-                <input className="dotted_bottom" type="date" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="date" name="parentOrNextofKinDate" id="" />
               </p>
             </div>
           </div>
@@ -272,7 +276,7 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Name (print)
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="text" name="healthProfessionalName" id="" />
               </p>
             </div>
           </div>{" "}
@@ -290,13 +294,13 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Signature
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="text" name="healthProfessionalSignature" id="" />
               </p>
             </div>
             <div className="column">
               <p className="label is-small">
                 Date
-                <input className="dotted_bottom" type="date" name="" id="" />
+                <input className="dotted_bottom" ref={register} type="date" name="healthProfessionalDate" id="" />
               </p>
             </div>
           </div>
@@ -304,13 +308,13 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
             <div className="column">
               <p className="label is-small">
                 Name (print)
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" type="text" ref={register} name="healthProfessionalNamePrint" id="" />
               </p>
             </div>
             <div className="column">
               <p className="label is-small">
                 Job Title
-                <input className="dotted_bottom" type="text" name="" id="" />
+                <input className="dotted_bottom" type="text" ref={register} name="healthProfessionalJobTitle" id="" />
               </p>
             </div>
           </div>
@@ -325,4 +329,3 @@ const SurgicalBookletConsentForm = ({onSubmit}) => {
 
 export default SurgicalBookletConsentForm;
 
-// http://localhost:3002/app/clinic/encounter

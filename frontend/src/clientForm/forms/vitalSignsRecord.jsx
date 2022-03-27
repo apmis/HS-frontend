@@ -31,6 +31,7 @@ const VitalSignsRecord = ({onSubmit}) => {
                 <label className="label is-small">Hospital Number</label>
                 <p className="control is-expanded">
                   <input ref={register} name="hospitalNumber" className="input is-small" type="text" />
+
                 </p>
               </div>
             </div>
