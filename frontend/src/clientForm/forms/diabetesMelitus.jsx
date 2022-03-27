@@ -64,7 +64,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date1"  className="input is-small" type="date" />
+                            <input ref={register} name="patientNeedDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -87,7 +87,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown"  className="textarea is-small"></textarea>
+                        <textarea ref={register} name="otherInfo"  className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -109,7 +109,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date2"  className="input is-small" type="date" />
+                            <input ref={register} name="mgtDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -117,7 +117,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel2"  className="input is-small" type="number" />
+                            <input ref={register} name="mgtLearnLevel"  className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -125,14 +125,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu2"  className="input is-small" type="text" />
+                            <input ref={register} name="mgtDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown2"  className="textarea is-small"></textarea>
+                        <textarea ref={register} name="mgtOtherInfo"  className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -158,7 +158,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date3"  className="input is-small" type="date" />
+                            <input ref={register} name="txtDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -166,7 +166,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel3"  className="input is-small" type="number" />
+                            <input ref={register} name="txtLearnLevel"  className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -174,14 +174,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu3" className="input is-small" type="text" />
+                            <input ref={register} name="txtDmEdu" className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown3" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="txtOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -212,7 +212,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date4"  className="input is-small" type="date" />
+                            <input ref={register} name="oralDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -220,7 +220,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel4" className="input is-small" type="number" />
+                            <input ref={register} name="oralLearnLevel" className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -228,14 +228,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register}  name="dmEdu4" className="input is-small" type="text" />
+                            <input ref={register}  name="oralDmEdu" className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown4"  className="textarea is-small"></textarea>
+                        <textarea ref={register} name="oralOtherInfo"  className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -254,7 +254,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date5" className="input is-small" type="date" />
+                            <input ref={register} name="glycemiaDate" className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -262,7 +262,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel5"  className="input is-small" type="number" />
+                            <input ref={register} name="glycemiaLearnLevel"  className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -270,14 +270,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu5" className="input is-small" type="text" />
+                            <input ref={register} name="glycemiaDmEdu" className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown5"  className="textarea is-small"></textarea>
+                        <textarea ref={register} name="glycemiaOtherInfo"  className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -301,7 +301,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date6"  className="input is-small" type="date" />
+                            <input ref={register} name="bgmDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -309,7 +309,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel6"  className="input is-small" type="number" />
+                            <input ref={register} name="bgmLearnLevel"  className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -317,14 +317,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu6"  className="input is-small" type="text" />
+                            <input ref={register} name="bgmDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown6" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="bgmOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -350,7 +350,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date7"  className="input is-small" type="date" />
+                            <input ref={register} name="execDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -358,7 +358,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel7" className="input is-small" type="number" />
+                            <input ref={register} name="execLearnLevel" className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -366,14 +366,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu7"  className="input is-small" type="text" />
+                            <input ref={register} name="execDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown7" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="execOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -397,7 +397,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date8" className="input is-small" type="date" />
+                            <input ref={register} name="compliDate" className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -405,7 +405,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel8" className="input is-small" type="number" />
+                            <input ref={register} name="compliLearnLevel" className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -413,14 +413,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu8" className="input is-small" type="text" />
+                            <input ref={register} name="compliDmEdu" className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register}  name="unknown8" className="textarea is-small"></textarea>
+                        <textarea ref={register}  name="compliOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -450,7 +450,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date9"  className="input is-small" type="date" />
+                            <input ref={register} name="prevDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -458,7 +458,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel9"  className="input is-small" type="number" />
+                            <input ref={register} name="prevLearnLevel"  className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -466,14 +466,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu9"  className="input is-small" type="text" />
+                            <input ref={register} name="prevDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown9" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="prevOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -492,7 +492,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date10"  className="input is-small" type="date" />
+                            <input ref={register} name="mgtDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -500,7 +500,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel10" className="input is-small" type="number" />
+                            <input ref={register} name="mgtLearnLevel" className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -508,14 +508,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu10" className="input is-small" type="text" />
+                            <input ref={register} name="mgtDmEdu" className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown10" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="mgtOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -528,7 +528,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date11" className="input is-small" type="date" />
+                            <input ref={register} name="psychoDate" className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -536,7 +536,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel11" className="input is-small" type="number" />
+                            <input ref={register} name="psychoLearnLevel" className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -544,14 +544,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu11"  className="input is-small" type="text" />
+                            <input ref={register} name="psychoDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown11" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="psychoOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -572,7 +572,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date12" className="input is-small" type="date" />
+                            <input ref={register} name="careDate" className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -580,7 +580,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel12" className="input is-small" type="number" />
+                            <input ref={register} name="careLearnLevel" className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -588,14 +588,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu12" className="input is-small" type="text" />
+                            <input ref={register} name="careDmEdu" className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown12" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="careOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -619,7 +619,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date13" className="input is-small" type="date" />
+                            <input ref={register} name="famDate" className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -627,7 +627,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel13"  className="input is-small" type="number" />
+                            <input ref={register} name="famLearnLevel"  className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -635,14 +635,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu13"  className="input is-small" type="text" />
+                            <input ref={register} name="famDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown13" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="famOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -655,7 +655,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date14" className="input is-small" type="date" />
+                            <input ref={register} name="smokingDate" className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -663,7 +663,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel14"  className="input is-small" type="number" />
+                            <input ref={register} name="smokingLearnLevel"  className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -671,14 +671,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu14"  className="input is-small" type="text" />
+                            <input ref={register} name="smokingDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown14" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="smokingOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
@@ -699,7 +699,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Date</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="date15"  className="input is-small" type="date" />
+                            <input ref={register} name="esDate"  className="input is-small" type="date" />
                           </p>
                         </div>
                       </div>
@@ -707,7 +707,7 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">Learn Level</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="learnLevel15" className="input is-small" type="number" />
+                            <input ref={register} name="esLearnLevel" className="input is-small" type="number" />
                           </p>
                         </div>
                       </div>
@@ -715,14 +715,14 @@ const DiabetesMelitus = ({onSubmit}) => {
                         <div className="field">
                           <label className="label is-small">DM Educ.</label>
                           <p className="control is-expanded">
-                            <input ref={register} name="dmEdu15"  className="input is-small" type="text" />
+                            <input ref={register} name="esDmEdu"  className="input is-small" type="text" />
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="field">
                       <div className="control">
-                        <textarea ref={register} name="unknown15" className="textarea is-small"></textarea>
+                        <textarea ref={register} name="esOtherInfo" className="textarea is-small"></textarea>
                       </div>
                     </div>
                   </ul>
