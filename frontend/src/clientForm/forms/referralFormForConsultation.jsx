@@ -16,7 +16,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">From</label>
                 <div className="control">
-                  <input ref={register} name="from" className="input is-small" type="text" />
+                  <input ref={register} name="referralFrom" className="input is-small" type="text" />
                 </div>
               </div>
             </div>
@@ -24,7 +24,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Unit</label>
                 <div className="control">
-                  <input ref={register} name="unit" className="input is-small" type="text" />
+                  <input ref={register} name="referralUnit" className="input is-small" type="text" />
                 </div>
               </div>
             </div>
@@ -42,7 +42,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Referral Phone Number</label>
                 <div className="control">
-                  <input ref={register} name="referralPhone" className="input is-small" type="number" />
+                  <input ref={register} name="referralPhoneNumber" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
@@ -52,7 +52,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Date of Referral</label>
                 <div className="control">
-                  <input ref={register} name="referralDate" className="input is-small" type="text" />
+                  <input ref={register} name="dateOfReferral" className="input is-small" type="text" />
                 </div>
               </div>
             </div>
@@ -60,7 +60,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Name of Patient</label>
                 <div className="control">
-                  <input ref={register} name="patientName" className="input is-small" type="number" />
+                  <input ref={register} name="refferredPatientName" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
@@ -68,7 +68,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Patient Date of Birth</label>
                 <div className="control">
-                  <input ref={register} name="patientDob" className="input is-small" type="date" />
+                  <input ref={register} name="refferredPatientDateOfBirth" className="input is-small" type="date" />
                 </div>
               </div>
             </div>
@@ -96,7 +96,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
             <p className="control">
               <textarea 
                 ref={register} 
-                name="specialityReq"
+                name="specialityConsultationRequested"
                 className="textarea is-small"
                 cols="30"
                 rows="10"
@@ -128,7 +128,7 @@ const ReferralFormForConsultation = ({onSubmit}) => {
             <p className="control">
               <textarea 
                 ref={register} 
-                name="reason"
+                name="reasonForConsultation"
                 id=""
                 cols="30"
                 rows="10"
@@ -154,13 +154,13 @@ const ReferralFormForConsultation = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Name of Referring Doctor</label>
             <p className="control">
-              <input ref={register} name="referringDr" type="text" className="input is-small" />
+              <input ref={register} name="referringDrName" type="text" className="input is-small" />
             </p>
           </div>
           <div className="field">
             <label className="label is-small">Date</label>
             <p className="control">
-              <input ref={register} name="referralDate2" type="date" className="input is-small" />
+              <input ref={register} name="referralDateByDoctor" type="date" className="input is-small" />
             </p>
           </div>
           <div className="field mt-4">
