@@ -29,7 +29,7 @@ const PatientAppointmentCard = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Registration Number</label>
                 <p className="control is-expanded">
-                  <input ref={register} name="regNum" className="input is-small" type="number" />
+                  <input ref={register} name="registrationNum" className="input is-small" type="number" />
                 </p>
               </div>
             </div>
@@ -47,7 +47,7 @@ const PatientAppointmentCard = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Date of Registration</label>
                 <p className="control is-expanded">
-                  <input ref={register} name="regDate" className="input is-small" type="date" />
+                  <input ref={register} name="registrationDate" className="input is-small" type="date" />
                 </p>
               </div>
             </div>
