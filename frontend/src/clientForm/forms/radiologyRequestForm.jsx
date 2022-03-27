@@ -37,7 +37,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Tel</label>
                 <p className="control is-expanded">
-                  <input ref={register} name="tel" className="input is-small" type="tel" />
+                  <input ref={register} name="telephone" className="input is-small" type="tel" />
                 </p>
               </div>
             </div>
@@ -51,25 +51,25 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Intraveneous Urography</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="ascUrethrography" type="checkbox" />
+              <input ref={register} name="ascendingUrethrography" type="checkbox" />
               <span className="ms-2 is-small">Ascending Urethrography</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="percatheterAscUrethrography" type="checkbox" />
+              <input ref={register} name="percatheterAscendingUrethrography" type="checkbox" />
               <span className="ms-2 is-small">
                 Percatheter Ascending Urethrography
               </span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="micturatingCyto" type="checkbox" />
+              <input ref={register} name="micturatingCytourethrography" type="checkbox" />
               <span className="ms-2 is-small">Micturating Cytourethrography</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="cyto" type="checkbox" />
+              <input ref={register} name="cytourethrography" type="checkbox" />
               <span className="ms-2 is-small">Cytourethrography</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="sinoOrFistu" type="checkbox" />
+              <input ref={register} name="sinographyOrFistulography" type="checkbox" />
               <span className="ms-2 is-small">Sinography/Fistulography</span>
             </label>
             <label class="checkbox me-3">
@@ -77,11 +77,11 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Skeletal Surney - Adult</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="mammo" type="checkbox" />
+              <input ref={register} name="mammography" type="checkbox" />
               <span className="ms-2 is-small">Mammography</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="wellWomanPack" type="checkbox" />
+              <input ref={register} name="wellWomanPackage" type="checkbox" />
               <span className="ms-2 is-small">
                 Well Woman Package (Mammo, Chest, X-ray, PAP Smear)
               </span>
@@ -102,7 +102,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">CT Sinuses</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="ctIAM" type="checkbox" />
+              <input ref={register} name="ctInternalAuditoryMeatus" type="checkbox" />
               <span className="ms-2 is-small">CT Internal Auditory Meatus</span>
             </label>
             <label class="checkbox me-3">
@@ -126,11 +126,11 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">CT Abdomen</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="ctPelvic1" type="checkbox" />
+              <input ref={register} name="ctPelvic" type="checkbox" />
               <span className="ms-2 is-small">CT Pelvic</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="ctAbdoAndPelvic" type="checkbox" />
+              <input ref={register} name="ctAbdomenAndPelvic" type="checkbox" />
               <span className="ms-2 is-small">CT Abdomen & Pelvic</span>
             </label>
             <label class="checkbox me-3">
@@ -141,20 +141,20 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <input ref={register} name="ctThoracicSpine" type="checkbox" />
               <span className="ms-2 is-small">CT Thoracic Spine</span>
             </label>
-            <label class="checkbox me-3">
+            {/* <label class="checkbox me-3">
               <input ref={register} name="ctPelvic2" type="checkbox" />
               <span className="ms-2 is-small">CT Pelvic</span>
-            </label>
+            </label> */}
             <label class="checkbox me-3">
               <input ref={register} name="ctLumboSpine" type="checkbox" />
               <span className="ms-2 is-small">CT Lumbosacral Spine</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="ctSpinalRegion" type="checkbox" />
+              <input ref={register} name="ctTwoSpinalRegion" type="checkbox" />
               <span className="ms-2 is-small">CT Two Spinal Region</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="ctThreeSpinalReg" type="checkbox" />
+              <input ref={register} name="ctThreeSpinalRegions" type="checkbox" />
               <span className="ms-2 is-small">CT Three Spinal Regions</span>
             </label>
           </div>
@@ -163,7 +163,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
           </label>
           <div className="field">
             <label class="checkbox me-3">
-              <input ref={register} name="skullAll" type="checkbox" />
+              <input ref={register} name="skullAllView" type="checkbox" />
               <span className="ms-2 is-small">Skull - All View</span>
             </label>
             <label class="checkbox me-3">
@@ -171,7 +171,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Skull - AP & Lateral</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="sinuses2" type="checkbox" />
+              <input ref={register} name="sinuses" type="checkbox" />
               <span className="ms-2 is-small">Sinuses</span>
             </label>
             <label class="checkbox me-3">
@@ -179,11 +179,11 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Mastoids</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="tmj" type="checkbox" />
-              <span className="ms-2 is-small">Temporomandibular oints (TMJ)</span>
+              <input ref={register} name="temporomandibularJoints" type="checkbox" />
+              <span className="ms-2 is-small">Temporomandibular Joints (TMJ)</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="cSpineAll" type="checkbox" />
+              <input ref={register} name="cervicalSpineAllViews" type="checkbox" />
               <span className="ms-2 is-small">Cervical Spine - All Views</span>
             </label>
             <label class="checkbox me-3">
@@ -193,11 +193,11 @@ const RadiologyRequestForm = ({onSubmit}) => {
               </span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="thoracSpine" type="checkbox" />
+              <input ref={register} name="thoracolumnerSpine" type="checkbox" />
               <span className="ms-2 is-small">Thoracolumner Spine</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="lumboSpineAL" type="checkbox" />
+              <input ref={register} name="lumbosacralSpineAL" type="checkbox" />
               <span className="ms-2 is-small">
                 Lumbosacral Spine (AP & Lateral)
               </span>
@@ -211,27 +211,27 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Chest (Ap & Lateral)</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="chestA" type="checkbox" />
+              <input ref={register} name="chestApOnly" type="checkbox" />
               <span className="ms-2 is-small">Chest (Ap Only)</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="abdoSE" type="checkbox" />
+              <input ref={register} name="abdomenSupineErect" type="checkbox" />
               <span className="ms-2 is-small">Abdomen (Supine & Erect)</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="abdo" type="checkbox" />
+              <input ref={register} name="abdomenOneView" type="checkbox" />
               <span className="ms-2 is-small">Abdomen (One View)</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="shoulder" type="checkbox" />
+              <input ref={register} name="shoulderJoint" type="checkbox" />
               <span className="ms-2 is-small">Shoulder Joint</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="forearm" type="checkbox" />
+              <input ref={register} name="forearmRadiusAndUlner" type="checkbox" />
               <span className="ms-2 is-small">Forearm (Radius & Ulner)</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="wrist" type="checkbox" />
+              <input ref={register} name="wristJoint" type="checkbox" />
               <span className="ms-2 is-small">Wrist Joint</span>
             </label>
             <label class="checkbox me-3">
@@ -251,7 +251,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Leg - Tibia & Fibular</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="ankle" type="checkbox" />
+              <input ref={register} name="ankleJoint" type="checkbox" />
               <span className="ms-2 is-small">Ankle Joint</span>
             </label>
             <label class="checkbox me-3">
@@ -259,7 +259,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Foot</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="postNasal" type="checkbox" />
+              <input ref={register} name="postNasalSpace" type="checkbox" />
               <span className="ms-2 is-small">Post - Nasal Space</span>
             </label>
             <label class="checkbox me-3">
@@ -291,7 +291,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
               <span className="ms-2 is-small">Clavicle</span>
             </label>
             <label class="checkbox me-3">
-              <input ref={register} name="patella" type="checkbox" />
+              <input ref={register} name="patellaViews" type="checkbox" />
               <span className="ms-2 is-small">Patella Views</span>
             </label>
             <label class="checkbox me-3">
@@ -308,7 +308,7 @@ const RadiologyRequestForm = ({onSubmit}) => {
           <div className="field">
             <label className="is-small label">DOCTOR'S NAME</label>
             <div className="control">
-              <textarea ref={register} name="drName" className="textarea is-small"></textarea>
+              <textarea ref={register} name="mriDrName" className="textarea is-small"></textarea>
             </div>
           </div>
           <div className="field mt-4">
