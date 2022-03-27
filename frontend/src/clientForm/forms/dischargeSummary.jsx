@@ -102,7 +102,7 @@ const DischargeSummary = ({onSubmit}) => {
             </div>
           </div>
           <div className="field">
-            <label className="label is-small">Follow- up</label>
+            <label className="label is-small">Follow-up</label>
             <div className="control">
               <textarea ref={register} name="followUp" className="textarea is-small"></textarea>
             </div>

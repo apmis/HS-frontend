@@ -14,7 +14,7 @@ const Receipt = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Date</label>
             <div className="control">
-              <input ref={register} name="date" className="input is-small" type="date" />
+              <input ref={register} name="receiptDate" className="input is-small" type="date" />
             </div>
           </div>
           <div className="field">
@@ -28,13 +28,13 @@ const Receipt = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Cheque Number</label>
                 <div className="control">
-                  <input ref={register} name="chequeNum" className="input is-small" type="number" />
+                  <input ref={register} name="chequeNumber" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
             <div className="column">
               <div className="field">
-                <label className="label is-small">Dated</label>
+                <label className="label is-small">chequeDated</label>
                 <div className="control">
                   <input ref={register} name="dated" className="input is-small" type="date" />
                 </div>
@@ -45,7 +45,7 @@ const Receipt = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">The Sum of</label>
               <div className="control">
-                <textarea ref={register} name="sum" className="textarea is-small"></textarea>
+                <textarea ref={register} name="sumOf" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@ const Receipt = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">Being paid for</label>
               <div className="control">
-                <textarea ref={register} name="paid" className="textarea is-small"></textarea>
+                <textarea ref={register} name="paidFor" className="textarea is-small"></textarea>
               </div>
             </div>
           </div>

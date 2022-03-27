@@ -125,11 +125,11 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
           <div className="field w-100 mt-3">
             <div className="control">
               <label className="radio">
-                <input ref={register} type="radio" name="drink-alcohol" />
+                <input ref={register} type="radio" name="allegies" />
                 <span className="ms-2">Yes</span>
               </label>
               <label className="radio">
-                <input ref={register} type="radio" name="drink-alcohol" />
+                <input ref={register} type="radio" name="allegies" />
                 <span className="ms-2">No</span>
               </label>
             </div>
@@ -210,11 +210,11 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
             <label className="label is-small">Do you drink Alcohol?</label>
             <div className="control">
               <label className="radio">
-                <input ref={register} type="radio" name="drink-alcohol" />
+                <input ref={register} type="radio" name="drinkAlcoholYes" />
                 <span className="ms-2">Yes</span>
               </label>
               <label className="radio">
-                <input ref={register} type="radio" name="drink-alcohol" />
+                <input ref={register} type="radio" name="drinkAlcoholNo" />
                 <span className="ms-2">No</span>
               </label>
             </div>
@@ -223,11 +223,11 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
             <label className="label is-small">Do you use Tobacco?</label>
             <div className="control">
               <label className="radio">
-                <input ref={register} type="radio" name="drink-alcohol" />
+                <input ref={register} type="radio" name="tobaccoYes" />
                 <span className="ms-2">Yes</span>
               </label>
               <label className="radio">
-                <input ref={register} type="radio" name="drink-alcohol" />
+                <input ref={register} type="radio" name="tobaccoNo" />
                 <span className="ms-2">No</span>
               </label>
             </div>
@@ -242,7 +242,7 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
             <span className="ms-2 is-small">Hypertensive</span>
           </label>
           <label class="checkbox me-3">
-            <input ref={register} name="cancer2" type="checkbox" />
+            <input ref={register} name="familyCancer" type="checkbox" />
             <span className="ms-2 is-small">Cancer</span>
           </label>
           <label class="checkbox me-3">
@@ -279,7 +279,7 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
             <span className="ms-2 is-small">No</span>
           </label>
           <label className="label is-small">If yes, state type?</label>
-          <textarea ref={register} name="type" className="textarea is-small" type="text"></textarea>
+          <textarea ref={register} name="typeSurg" className="textarea is-small" type="text"></textarea>
           <div className="field">
             <label className="label is-small mt-4">
               List any medications you are currently taking
@@ -362,11 +362,11 @@ const OutpatientRegistrationForm = ({onSubmit}) => {
           </div>
           <label className="label is-small">Authorisation Letter Attached</label>
           <label class="checkbox me-3">
-            <input ref={register} name="authLetter1" type="checkbox" />
+            <input ref={register} name="authLetterYes" type="checkbox" />
             <span className="ms-2 is-small">Yes</span>
           </label>
           <label class="checkbox me-3">
-            <input ref={register} name="authLetter2" type="checkbox" />
+            <input ref={register} name="authLetterNo" type="checkbox" />
             <span className="ms-2 is-small">No</span>
           </label>
           <label className="label is-small">HMO/HEALTH INSURANCE</label>

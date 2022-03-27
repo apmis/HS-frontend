@@ -1,4 +1,4 @@
-   import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const PressureAreasTreatmentChart = ({onSubmit}) => {
 
@@ -13,7 +13,7 @@ const PressureAreasTreatmentChart = ({onSubmit}) => {
         <div className="field">
           <label className="label is-small">Date & Time</label>
           <div className="control">
-            <input ref={register} name="dateAndTime" className="input is-small" type="datetime-local" />
+            <input ref={register} name="repositioningDateAndTime" className="input is-small" type="datetime-local" />
           </div>
         </div>
         <label className="label is-small">Repositioning (using Codes)</label>
@@ -22,7 +22,7 @@ const PressureAreasTreatmentChart = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">From</label>
               <div className="control">
-                <input ref={register} name="from" className="input is-small" type="text" />
+                <input ref={register} name="repositioningFrom" className="input is-small" type="text" />
               </div>
             </div>
           </div>
@@ -30,7 +30,7 @@ const PressureAreasTreatmentChart = ({onSubmit}) => {
             <div className="field">
               <label className="label is-small">To</label>
               <div className="control">
-                <input ref={register} name="to" className="input is-small" type="text" />
+                <input ref={register} name="repositioningTo" className="input is-small" type="text" />
               </div>
             </div>
           </div>

@@ -13,7 +13,7 @@ const ECGForm = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Name</label>
             <p className="control is-expanded">
-              <input ref={register} name="name" className="input is-small" type="text" />
+              <input ref={register} name="patName" className="input is-small" type="text" />
             </p>
           </div>
           <div className="field">
