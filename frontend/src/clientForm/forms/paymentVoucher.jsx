@@ -14,7 +14,7 @@ const PaymentVoucher = ({onSubmit}) => {
           <div className="field">
             <label className="label is-small">Date</label>
             <div className="control">
-              <input ref={register} name="date" className="input is-small" type="date" />
+              <input ref={register} name="paymentDate" className="input is-small" type="date" />
             </div>
           </div>
           <div className="columns">
@@ -30,7 +30,7 @@ const PaymentVoucher = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Address</label>
                 <div className="control">
-                  <input ref={register} name="add" className="input is-small" type="text" />
+                  <input ref={register} name="payeeAddress" className="input is-small" type="text" />
                 </div>
               </div>
             </div>
@@ -40,7 +40,7 @@ const PaymentVoucher = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">SRV/LPO No</label>
                 <div className="control">
-                  <input ref={register} name="svrOrLpoNum" className="input is-small" type="number" />
+                  <input ref={register} name="srvOrLpoNum" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
@@ -48,7 +48,7 @@ const PaymentVoucher = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Invoice No</label>
                 <div className="control">
-                  <input ref={register} name="invoiceNum" className="input is-small" type="number" />
+                  <input ref={register} name="invoiceNumber" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@ const PaymentVoucher = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Cheque No</label>
                 <div className="control">
-                  <input ref={register} name="cheque" className="input is-small" type="number" />
+                  <input ref={register} name="chequeNumber" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
@@ -82,7 +82,7 @@ const PaymentVoucher = ({onSubmit}) => {
               <div className="field">
                 <label className="label is-small">Description/Analysis</label>
                 <div className="control">
-                  <input ref={register} name="descOrAnalysis" className="input is-small" type="number" />
+                  <input ref={register} name="descriptionOrAnalysis" className="input is-small" type="number" />
                 </div>
               </div>
             </div>
