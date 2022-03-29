@@ -26,9 +26,9 @@ export default function ChartofAccount() {
                 <ChartofAccountList />
                 </div>
             <div className="column is-4 ">
-                {(state.ChartAccountModule.show ==='create')&&<ChartofAccountCreate />}
-                {(state.ChartAccountModule.show ==='detail')&&<ChartofAccountDetail  />}
-                {(state.ChartAccountModule.show ==='modify')&&<ChartofAccountModify Location={selectedLocation} />}
+                {/* (state.ChartAccountModule.show ==='create')&& */<ChartofAccountCreate />}
+              {/*   {(state.ChartAccountModule.show ==='detail')&&<ChartofAccountDetail  />}
+                {(state.ChartAccountModule.show ==='modify')&&<ChartofAccountModify Location={selectedLocation} />} */}
                
             </div>
 
@@ -172,9 +172,10 @@ export function ChartofAccountCreate(){
                     
                 </p>
             </div>
+           
             <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="description" type="text" placeholder="Description" />
+                    <input className="input is-small" ref={register({ required: true })}  name="code" type="text" placeholder="Account Code" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -183,7 +184,7 @@ export function ChartofAccountCreate(){
             </div>
             <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="code" type="text" placeholder="Account Code" />
+                    <input className="input is-small"  ref={register(/* { required: true } */)}   name="description" type="text" placeholder="Description" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -299,7 +300,7 @@ export function ChartofAccountList(){
                     facility:user.currentEmployee.facilityDetail._id,
                     $limit:2000,
                     $sort: {
-                        createdAt: -1
+                        accountType: 1
                     }
                     }})
 
@@ -312,7 +313,7 @@ export function ChartofAccountList(){
                                 
                                 $limit:2000,
                                 $sort: {
-                                    facility: -1
+                                    accountType: 1
                                 }
                                 }})
             

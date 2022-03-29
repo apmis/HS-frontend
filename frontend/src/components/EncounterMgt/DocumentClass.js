@@ -5,6 +5,7 @@ import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
+import documentListForm from "../clientForm/documentList";
 import {toast} from 'bulma-toast'
 // eslint-disable-next-line
 const searchfacility={};
@@ -187,6 +188,9 @@ export function DocumentClassList({standalone,closeModal}){
 
    
 
+    let classList = [...facilities];
+    classList.push(...documentListForm);
+
     const handleCreateNew = async()=>{
         const    newDocumentClassModule={
             selectedDocumentClass:{},
@@ -251,11 +255,13 @@ export function DocumentClassList({standalone,closeModal}){
                 {query: {
                     /* locationType:"DocumentClass",*/
                     facility:user.currentEmployee.facilityDetail._id, 
-                    $limit:20,
+                    $limit:100,
                     $sort: {
                         name: 1
                     }
                     }})
+                    
+        console.log(findDocumentClass.data)
 
          await setFacilities(findDocumentClass.data)
                 }
@@ -264,7 +270,7 @@ export function DocumentClassList({standalone,closeModal}){
                         const findDocumentClass= await DocumentClassServ.find(
                             {query: {
                                /*  locationType:"DocumentClass", */
-                                $limit:20,
+                                $limit:1000,
                                 $sort: {
                                     name: 1
                                 }
@@ -350,7 +356,7 @@ export function DocumentClassList({standalone,closeModal}){
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((DocumentClass, i)=>(
+                                        {classList.map((DocumentClass, i)=>(
 
                                             <tr key={DocumentClass._id} onClick={()=>handleRow(DocumentClass)}  className={DocumentClass._id===(selectedDocumentClass?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>

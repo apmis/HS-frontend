@@ -426,7 +426,7 @@ export function InventoryList(){
        // setNext(true)
           setPage(page=>page+1)
        } else{
-        //setNext(false)  
+        //setNext(fals 
        }    
 
       // pages++
