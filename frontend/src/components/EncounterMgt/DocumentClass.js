@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
 import documentListForm from "../clientForm/documentList";
+import chartListForm from "../clientForm/chartList";
 import {toast} from 'bulma-toast'
 // eslint-disable-next-line
 const searchfacility={};
@@ -189,7 +190,7 @@ export function DocumentClassList({standalone,closeModal}){
    
 
     let classList = [...facilities];
-    classList.push(...documentListForm);
+   // classList.push(...documentListForm);
 
     const handleCreateNew = async()=>{
         const    newDocumentClassModule={
@@ -381,8 +382,223 @@ export function DocumentClassList({standalone,closeModal}){
             </>
               
     )
-    }
+}
 
+export function ChartClassList({standalone,closeModal}){
+    // const { register, handleSubmit, watch, errors } = useForm();
+     // eslint-disable-next-line
+     const [error, setError] =useState(false)
+      // eslint-disable-next-line
+     const [success, setSuccess] =useState(false)
+      // eslint-disable-next-line
+    const [message, setMessage] = useState("") 
+     const DocumentClassServ=client.service('documentclass')
+     //const history = useHistory()
+    // const {user,setUser} = useContext(UserContext)
+     const [facilities,setFacilities]=useState([])
+      // eslint-disable-next-line
+    const [selectedDocumentClass, setSelectedDocumentClass]=useState() //
+     // eslint-disable-next-line
+     const {state,setState}=useContext(ObjectContext)
+     // eslint-disable-next-line
+     const {user,setUser}=useContext(UserContext)
+ 
+    
+ 
+     let classList = [];
+     classList.push(...chartListForm);
+ 
+     const handleCreateNew = async()=>{
+         const    newDocumentClassModule={
+             selectedDocumentClass:{},
+             show :'create'
+             }
+        await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
+        //console.log(state)
+         
+ 
+     }
+     const handleRow= async(DocumentClass)=>{
+         //console.log("b4",state)
+ 
+         //console.log("handlerow",DocumentClass)
+ 
+         await setSelectedDocumentClass(DocumentClass)
+ 
+         const    newDocumentClassModule={
+             selectedDocumentClass:DocumentClass,
+             show :'detail'
+         }
+        await setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
+        //console.log(state)
+        if (standalone){
+            closeModal()
+        }
+ 
+     }
+ 
+    const handleSearch=(val)=>{
+        const field='name'
+        console.log(val)
+        DocumentClassServ.find({query: {
+                 [field]: {
+                     $regex:val,
+                     $options:'i'
+                    
+                 },
+                facility:user.currentEmployee.facilityDetail._id,
+                 /* locationType:"DocumentClass", */
+                $limit:10,
+                 $sort: {
+                     name: 1
+                   }
+                     }}).then((res)=>{
+                 console.log(res)
+                setFacilities(res.data)
+                 setMessage(" DocumentClass  fetched successfully")
+                 setSuccess(true) 
+             })
+             .catch((err)=>{
+                 console.log(err)
+                 setMessage("Error fetching DocumentClass, probable network issues "+ err )
+                 setError(true)
+             })
+         }
+    
+     const getFacilities= async()=>{
+             if (user.currentEmployee){
+             
+         const findDocumentClass= await DocumentClassServ.find(
+                 {query: {
+                     /* locationType:"DocumentClass",*/
+                     facility:user.currentEmployee.facilityDetail._id, 
+                     $limit:100,
+                     $sort: {
+                         name: 1
+                     }
+                     }})
+                     
+         console.log(findDocumentClass.data)
+ 
+          await setFacilities(findDocumentClass.data)
+                 }
+                 else {
+                     if (user.stacker){
+                         const findDocumentClass= await DocumentClassServ.find(
+                             {query: {
+                                /*  locationType:"DocumentClass", */
+                                 $limit:1000,
+                                 $sort: {
+                                     name: 1
+                                 }
+                                 }})
+             
+                     await setFacilities(findDocumentClass.data)
+ 
+                     }
+                 }
+           /*   .then((res)=>{
+                 console.log(res)
+                     setFacilities(res.data)
+                     setMessage(" DocumentClass  fetched successfully")
+                     setSuccess(true)
+                 })
+                 .catch((err)=>{
+                     setMessage("Error creating DocumentClass, probable network issues "+ err )
+                     setError(true)
+                 }) */
+             }
+      
+ 
+     useEffect(() => {
+         getFacilities()
+             
+             DocumentClassServ.on('created', (obj)=>getFacilities())
+             DocumentClassServ.on('updated', (obj)=>getFacilities())
+             DocumentClassServ.on('patched', (obj)=>getFacilities())
+             DocumentClassServ.on('removed', (obj)=>getFacilities())
+             return () => {
+             
+             }
+         },[])
+ 
+ 
+     //todo: pagination and vertical scroll bar
+ 
+     return(
+         <>
+            {user?( <>  
+                 <div className="level">
+                     <div className="level-left">
+                         <div className="level-item">
+                             <div className="field">
+                                 <p className="control has-icons-left  ">
+                                     <DebounceInput className="input is-small " 
+                                         type="text" placeholder="Search Chart Class"
+                                         minLength={3}
+                                         debounceTimeout={400}
+                                         onChange={(e)=>handleSearch(e.target.value)} />
+                                     <span className="icon is-small is-left">
+                                         <i className="fas fa-search"></i>
+                                     </span>
+                                 </p>
+                             </div>
+                         </div>
+                     </div>
+                     <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Charts</span></div>
+                     <div className="level-right">
+                 { !standalone &&   <div className="level-item"> 
+                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
+                         </div>}
+                     </div>
+ 
+                 </div>
+                 <div className="table-container pullup ">
+                                 <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
+                                     <thead>
+                                         <tr>
+                                         <th><abbr title="Serial No">S/No</abbr></th>
+                                         <th>Name</th>
+                                         {/* <th><abbr title="Last Name">DocumentClass Type</abbr></th>
+                                        <th><abbr title="Profession">Profession</abbr></th>
+                                          <th><abbr title="Phone">Phone</abbr></th>
+                                         <th><abbr title="Email">Email</abbr></th>
+                                         <th><abbr title="Department">Department</abbr></th>
+                                         <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> */}
+                                        {user.stacker &&  <th><abbr title="Facility">Facility</abbr></th>}
+                                        { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
+                                         </tr>
+                                     </thead>
+                                     <tfoot>
+                                         
+                                     </tfoot>
+                                     <tbody>
+                                         {classList.map((DocumentClass, i)=>(
+ 
+                                             <tr key={DocumentClass._id} onClick={()=>handleRow(DocumentClass)}  className={DocumentClass._id===(selectedDocumentClass?._id||null)?"is-selected":""}>
+                                             <th>{i+1}</th>
+                                             <th>{DocumentClass.name}</th>
+                                             {/*<td>{DocumentClass.DocumentClassType}</td>
+                                             < td>{DocumentClass.profession}</td>
+                                             <td>{DocumentClass.phone}</td>
+                                             <td>{DocumentClass.email}</td>
+                                             <td>{DocumentClass.department}</td>
+                                             <td>{DocumentClass.deptunit}</td>*/}
+                                            {user.stacker &&  <td>{DocumentClass.facility}</td>}
+                                           { !standalone &&   <td><span   className="showAction"  >...</span></td>}
+                                            
+                                             </tr>
+ 
+                                         ))}
+                                     </tbody>
+                                     </table>
+                                     
+                 </div>              
+             </>):<div>loading</div>}
+             </>
+               
+     )
+ }
 
 export function DocumentClassDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,

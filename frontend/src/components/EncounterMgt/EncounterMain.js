@@ -4,6 +4,8 @@ import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
 import {DocumentClassList} from './DocumentClass'
+
+import {ChartClassList} from './DocumentClass'
 import EndEncounter, {EndEncounterList} from './EndEncounter'
 //import {useHistory} from 'react-router-dom'
 import {UserContext,ObjectContext} from '../../context'
@@ -42,6 +44,8 @@ export default function EncounterMain ({nopresc}) {
     const [showPrescriptionModal,setShowPrescriptionModal]=useState(false)
     const [showLabModal,setShowLabModal]=useState(false)
     const [showRadModal,setShowRadModal]=useState(false)
+    const [showChartModal,setShowChartModal]=useState(false)
+    
     const componentRef = useRef();
     const myRefs = useRef([]);
     
@@ -179,6 +183,10 @@ export default function EncounterMain ({nopresc}) {
     const handleLabOrders =async()=>{
         await setShowLabModal(true)    
     } 
+
+    const handleCharts =async()=>{
+        await setShowChartModal(true)    
+    } 
     
     const handleOtherOrders =async()=>{
        // await setShowLabModal(true)    
@@ -208,6 +216,13 @@ export default function EncounterMain ({nopresc}) {
 
  useEffect(() => {
                 getFacilities()
+
+                const    newDocumentClassModule={
+                    selectedDocumentClass:{},
+                    //state.DocumentClassModule.selectedDocumentClass.name
+                    show :'detail'
+                }
+                setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
                 if (user){
                     
                 }else{
@@ -308,8 +323,9 @@ export default function EncounterMain ({nopresc}) {
                    {!standalone &&   <div className="level-item"> 
                         <div className="level-item ">
                            {!nopresc && <>
+                            <div className="button is-dark is-small mr-2" onClick={handleCharts}>Charts</div>
                             <div className="button is-dark is-small mr-2" onClick={handleEndEncounter}>End Encounter</div>
-                            <div className="button is-black is-small mr-2" onClick={handleOtherOrders}> Other Orders</div>
+                           {/*  <div className="button is-black is-small mr-2" onClick={handleOtherOrders}> Other Orders</div> */}
                             <div className="button is-primary is-small mr-2" onClick={handleRadOrders}>Radiology</div>
                                 <div className="button is-warning is-small mr-2" onClick={handleLabOrders}>Lab</div>
                                 <div className="button is-danger is-small mr-2" onClick={handleNewPrescription}>Prescription</div>
@@ -840,6 +856,22 @@ export default function EncounterMain ({nopresc}) {
                                         </header>
                                         <section className="modal-card-body">
                                         <DocumentClassList standalone="true" closeModal={()=>setShowModal(false)} />
+                                        </section>
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer> */}
+                                    </div>
+                                </div>
+                                <div className={`modal  ${showChartModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card ">
+                                        <header className="modal-card-head">
+                                        <p className="modal-card-title">Choose Chart</p>
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowChartModal(false)}></button>
+                                        </header>
+                                        <section className="modal-card-body">
+                                        <ChartClassList standalone="true" closeModal={()=>setShowChartModal(false)} />
                                         </section>
                                         {/* <footer className="modal-card-foot">
                                         <button className="button is-success">Save changes</button>

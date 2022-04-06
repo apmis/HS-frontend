@@ -13,10 +13,42 @@ import NewPatientConsult from './NewPatientConsult';
 import ProgressNote from './ProgressNote';
 import MedicationList from './MedicationList';
 import Clerking from './Clerking';
+import AdmissionConsentForm from "../clientForm/forms/admissionConsentForm";
+import BinCard from "../clientForm/forms/binCard";
+import ContinuationSheet from "../clientForm/forms/continuationSheet";
+import DailyShiftHandoverNote from "../clientForm/forms/dailyShiftHandoverNote";
+import DamaForm from "../clientForm/forms/damaForm";
+import DiabetesMelitus from "../clientForm/forms/diabetesMelitus";
+import DialysisLogSheet from "../clientForm/forms/dialysisLogSheet";
+import DietOrder from "../clientForm/forms/dietOrder";
+import DischargeSummary from "../clientForm/forms/dischargeSummary";
+import ECGForm from "../clientForm/forms/ecgForm";
+import EmergencyForm from "../clientForm/forms/emergencyForm";
+import FluidIntakeOutput from "../clientForm/forms/fluidIntake";
+import GreenDiagnosticCentre from "../clientForm/forms/greenDiagnosticCentre";
+import MedicalBillingSheet from "../clientForm/forms/medicalBillingSheet";
+import LaboratoryReportForm from "../clientForm/forms/laboratoryReportForm";
+import LaboratoryObservationChart from "../clientForm/forms/laboratoryObservationChart";
+import MedicalSickLeave from "../clientForm/forms/medicalSickLeave";
+import OutpatientBillingSheet from "../clientForm/forms/outpatientBillingSheet";
+import OutpatientRegistrationForm from "../clientForm/forms/outpatientRegistrationForm";
+import PatientAppointmentCard from "../clientForm/forms/patientAppointmentCard";
+import PaymentVoucher from "../clientForm/forms/paymentVoucher";
+import PressureAreasTreatmentChart from "../clientForm/forms/pressureAreasTreatmentChart";
+import RadiologyRequestForm from "../clientForm/forms/radiologyRequestForm";
+import Receipt from "../clientForm/forms/receipt";
+import ReferralFormForConsultation from "../clientForm/forms/referralFormForConsultation";
+import VitalSignsFlowSheet from "../clientForm/forms/vitalSignsFlowSheet";
+import VitalSignsRecord from "../clientForm/forms/vitalSignsRecord";
+import SurgicalBookletConsentForm from "../clientForm/forms/surgicalBookletConsentForm";
 
 export default function EncounterRight() {
     const {state,setState}=useContext(ObjectContext)
     console.log(state.DocumentClassModule.selectedDocumentClass)
+     const submitDocument = (data) => {
+        console.log({data});
+    }
+
     return (
         <div>
           {(state.DocumentClassModule.selectedDocumentClass.name==='Vital Signs') &&  <VitalSignCreate />}
@@ -33,7 +65,68 @@ export default function EncounterRight() {
           {(state.DocumentClassModule.selectedDocumentClass.name==='Medication List') &&   <MedicationList />}
           {(state.DocumentClassModule.selectedDocumentClass.name==='Clerking') &&   <Clerking />}
          {( typeof state.DocumentClassModule.selectedDocumentClass.document !=='undefined' ) &&( typeof state.DocumentClassModule.selectedDocumentClass.document.documentType !=='undefined' ) && (state.DocumentClassModule.selectedDocumentClass.document.documentType==='Diagnostic Result') &&   <LabNoteCreate />} 
-          
+          {/*  */}
+
+           {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Laboratory Report Form" && <LaboratoryReportForm  onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Labour Observation Chart" && <LaboratoryObservationChart  onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Green Diagnostic Center Request" && <GreenDiagnosticCentre  onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Admission Consent Form" && <AdmissionConsentForm  onSubmit={submitDocument}/>}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Bin Card" && (
+        <BinCard onSubmit={submitDocument} />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Outpatient Registration Form" && <OutpatientRegistrationForm onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Outpatient Billing Sheet" && <OutpatientBillingSheet onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Medical Sick Leave Form" && <MedicalSickLeave onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Daily Shift Handover Note" && <DailyShiftHandoverNote onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Dama Form" && (
+        <DamaForm onSubmit={submitDocument} />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Inpatient Billing Sheet" && <MedicalBillingSheet onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Emergency Form" && <EmergencyForm onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Discharge Summary" && <DischargeSummary onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Diet Order" && <DietOrder onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Ecg Form" && (
+        <ECGForm onSubmit={submitDocument} />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Vital Signs Flow Sheet" && <VitalSignsFlowSheet onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Referral Form For Consultation" && <ReferralFormForConsultation onSubmit={submitDocument}/>}
+      {state.DocumentClassModule.selectedDocumentClass.name === "Receipt" && (
+        <Receipt  onSubmit={submitDocument} />
+      )}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Radiology Request Form" && <RadiologyRequestForm  onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Pressure Areas Treatment Chart" && <PressureAreasTreatmentChart  onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Payment Voucher" && <PaymentVoucher  onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Surgical Booklet Consent Form" && <SurgicalBookletConsentForm onSubmit={submitDocument}/>}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Vital Signs Record" && <VitalSignsRecord onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Patient Appointment Card" && <PatientAppointmentCard onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Fluid Intake And Output Chart" && <FluidIntakeOutput onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Diabetes Melitus Flowsheet" && <DiabetesMelitus onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Dialysis Log Sheet" && <DialysisLogSheet onSubmit={submitDocument} />}
+      {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Continuation Sheet" && <ContinuationSheet onSubmit={submitDocument} />}
           
         </div>
     )
@@ -137,8 +230,8 @@ export function VitalSignCreate(){
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
           document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
-          document.location=state.ClinicModule.selectedClinic.name+" "+state.ClinicModule.selectedClinic.locationType
-          document.locationId=state.ClinicModule.selectedClinic._id
+          document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
@@ -456,8 +549,8 @@ export function ClinicalNoteCreate(){
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
           document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
-          document.location=state.ClinicModule.selectedClinic.name+" "+state.ClinicModule.selectedClinic.locationType
-          document.locationId=state.ClinicModule.selectedClinic._id
+          document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
@@ -1417,8 +1510,8 @@ export function PrescriptionCreate(){
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
           document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
-          document.location=state.ClinicModule.selectedClinic.name+" "+state.ClinicModule.selectedClinic.locationType
-          document.locationId=state.ClinicModule.selectedClinic._id
+          document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
@@ -1636,8 +1729,8 @@ export function LabrequestCreate(){
          document.documentdetail=data
           document.documentname=state.DocumentClassModule.selectedDocumentClass.name
           document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
-          document.location=state.ClinicModule.selectedClinic.name+" "+state.ClinicModule.selectedClinic.locationType
-          document.locationId=state.ClinicModule.selectedClinic._id
+          document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+          document.locationId=state.employeeLocation.locationId
           document.client=state.ClientModule.selectedClient._id
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname

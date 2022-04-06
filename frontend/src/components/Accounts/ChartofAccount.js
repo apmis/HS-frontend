@@ -395,7 +395,7 @@ export function ChartofAccountList(){
                     </div>
 
                 </div>
-                <div className="table-container pullup ">
+                <div className="table-container pullup  vscrola">
                                 <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
