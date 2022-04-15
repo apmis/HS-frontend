@@ -30,14 +30,18 @@ useEffect(() => {
    if (order.resultDetail?.labFormType == null){
      console.log(order.resultDetail)
     setChoosenForm("unknown")
+    setState((prevstate)=>({...prevstate, labFormType:"unknown"}))
     
    }else{
     console.log(order.resultDetail)
     setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
+    setState((prevstate)=>({...prevstate, labFormType:state.financeModule.selectedFinance.resultDetail.labFormType}))
    }
    if (order.resultDetail == null){
     console.log(order.resultDetail)
    setChoosenForm("")
+   setState((prevstate)=>({...prevstate, labFormType:""}))
+   
    
   }
   
@@ -74,15 +78,15 @@ useEffect(() => {
             <div>     
                                                                                                                                                                                                                       
               {( state.labFormType==="Haematology") && <Haematology />}
-              {  ( choosenForm==="Serology") && <Serology /> }
-               { ( choosenForm==="Biochemistry") && <Biochemistry />}
-               {( choosenForm==="Microbiology") && <Microbiology /> }
-               { ( choosenForm==="Urine") && <Urine />}
-               { ( choosenForm==="Urinalysis") && <Urinalysis />}
-               { ( choosenForm==="Stool") && <Stool />}
-               { ( choosenForm==="HVS Culture") && <HVS />}
-               { ( choosenForm==="Generic") && <LabNoteGeneric /> }
-               { ( choosenForm==="unknown") && <LabNoteCreate /> }
+              {  ( state.labFormType==="Serology") && <Serology /> }
+               { ( state.labFormType==="Biochemistry") && <Biochemistry />}
+               {( state.labFormType==="Microbiology") && <Microbiology /> }
+               { ( state.labFormType==="Urine") && <Urine />}
+               { ( state.labFormType==="Urinalysis") && <Urinalysis />}
+               { ( state.labFormType==="Stool") && <Stool />}
+               { (state.labFormType==="HVS Culture") && <HVS />}
+               { ( state.labFormType==="Generic") && <LabNoteGeneric /> }
+               { ( state.labFormType ==="unknown") && <LabNoteCreate /> }
             </div>   
             
         </div>
