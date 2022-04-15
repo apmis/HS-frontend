@@ -9,6 +9,7 @@ import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 import ReportCreate from './ReportCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
+import LaboratoryReportForm from '../clientForm/forms/laboratoryReportForm';
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
 //const searchfacility={};
@@ -60,9 +61,11 @@ export default function LabReport() {
               
                 <div className="column is-6 ">
                 
-                {(state.financeModule.show ==='detail')&&  <LabNoteCreate />}
+                {(state.financeModule.show ==='detail')&& <LaboratoryReportForm /> }
+              {/*   {(state.financeModule.show ==='detail')&& <LabNoteCreate /> } */}
+                
                 </div>
-               {/*  <div className="column is-3 ">  <ReportCreate />
+               {/*  <div className="column is-3 "> <LabNoteCreate /> <ReportCreate />
                 
                 {(state.financeModule.show ==='detail')&&<PatientProfile />}
                 </div> */}
@@ -154,18 +157,7 @@ export function LabOrderList(){
     
     }
 
-    const handleCreateNew = async()=>{
-        
-        const    newProductEntryModule={
-            selectedDispense:{},
-            show :'create'
-            }
-       await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
-       //console.log(state)
-        
-
-    }
-  
+   
 
     const handleSearch=(val)=>{
        const field='name'
@@ -355,14 +347,14 @@ export function LabNoteCreate(){
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const ClientServ=client.service('labresults')
+    //const ClientServ=client.service('labresults')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const [reportStatus,setReportStatus] = useState("Draft")
     const {state, setState}=useContext(ObjectContext)
-
+    const [reportStatus,setReportStatus] = useState("Draft")
+    const ClientServ=client.service('labresults')
     const order=state.financeModule.selectedFinance
     const bill_report_status=state.financeModule.report_status
 
@@ -381,17 +373,7 @@ export function LabNoteCreate(){
         }
     }, [user])
 
-  //check user for facility or get list of facility  
-    useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
-      if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
-      }
-    })
+ 
 
     const onSubmit = async(data,e) =>{
         e.preventDefault();

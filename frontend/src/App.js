@@ -133,6 +133,7 @@ function App() {
     },
     currentClients:[],
     showpanel:false,
+    labFormType:"",
     employeeLocation:{
       locationName:"",
       locationType:"",
