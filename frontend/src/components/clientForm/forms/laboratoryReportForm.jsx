@@ -31,7 +31,7 @@ useEffect(() => {
     setChoosenForm("unknown")
     
    }else{
-    onsole.log(order.resultDetail)
+    console.log(order.resultDetail)
     setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
    }
   
