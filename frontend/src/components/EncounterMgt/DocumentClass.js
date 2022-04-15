@@ -190,7 +190,7 @@ export function DocumentClassList({standalone,closeModal}){
    
 
     let classList = [...facilities];
-    classList.push(...documentListForm);
+   /*  classList.push(...documentListForm); */
 
     const handleCreateNew = async()=>{
         const    newDocumentClassModule={
