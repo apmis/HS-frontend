@@ -26,8 +26,8 @@ const handleChangeMode=(value)=>{
 
 useEffect(() => {
 
-   if (!!state.financeModule.selectedFinance.resultDetail.labFormType){
-    setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType||"")
+   if (state.financeModule.selectedFinance.resultDetail.labFormType !== null){
+    setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
    }else{
     setChoosenForm("unknown")
    }
