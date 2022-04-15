@@ -25,6 +25,7 @@ const handleChangeMode=(value)=>{
 }
 
 useEffect(() => {
+ 
 
    if (order.resultDetail?.labFormType == null){
      console.log(order.resultDetail)
@@ -34,6 +35,11 @@ useEffect(() => {
     console.log(order.resultDetail)
     setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
    }
+   if (order.resultDetail == null){
+    console.log(order.resultDetail)
+   setChoosenForm("")
+   
+  }
   
 
   return () => {
