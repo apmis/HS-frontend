@@ -146,7 +146,7 @@ export function LabOrderList(){
         // grab report
         // if draft show create/modify
         //if final: show final
-       // console.log(order)
+       console.log(order)
         const    newProductEntryModule={
             selectedFinance:order,
             show :'detail',

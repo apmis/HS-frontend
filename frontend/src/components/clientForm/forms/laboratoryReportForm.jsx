@@ -11,7 +11,7 @@ export default  function LaboratoryReportForm () {
 
   const {state, setState}=useContext(ObjectContext)
   const [reportStatus,setReportStatus] = useState("Draft")
-  const [choosenForm, setChoosenForm] = useState();
+  const [choosenForm, setChoosenForm] = useState("");
   
   const formtype= ["Haematology", "Serology", "Biochemistry", "Microbiology", "Urine", "Urinalysis","Stool", "HVS Culture", "Generic" ]
   const order=state.financeModule.selectedFinance
@@ -26,10 +26,13 @@ const handleChangeMode=(value)=>{
 
 useEffect(() => {
 
-   if (state.financeModule.selectedFinance.resultDetail.labFormType !== null){
-    setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
-   }else{
+   if (order.resultDetail?.labFormType == null){
+     console.log(order.resultDetail)
     setChoosenForm("unknown")
+    
+   }else{
+    onsole.log(order.resultDetail)
+    setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
    }
   
 
