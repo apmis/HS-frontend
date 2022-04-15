@@ -57,7 +57,7 @@ useEffect(() => {
        {/* disable dropdown if status is not pending; add flag to know form chosen */}
              
               </p>
-      { (reportStatus==="Pending") &&  <div className="control mt-2 mr-2">
+      { (bill_report_status==="Pending") &&  <div className="control mt-2 mr-2">
                       <div className="select is-small ">
                           <select name="FormType"  ref={register({ required: true })}  onChange={(e)=>handleChangeMode(e.target.value)} className="selectadd" >
                           <option value="">Choose Form </option>
