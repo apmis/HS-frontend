@@ -73,7 +73,7 @@ useEffect(() => {
          
             <div>     
                                                                                                                                                                                                                       
-              {( choosenForm==="Haematology") && <Haematology />}
+              {( state.labFormType==="Haematology") && <Haematology />}
               {  ( choosenForm==="Serology") && <Serology /> }
                { ( choosenForm==="Biochemistry") && <Biochemistry />}
                {( choosenForm==="Microbiology") && <Microbiology /> }
