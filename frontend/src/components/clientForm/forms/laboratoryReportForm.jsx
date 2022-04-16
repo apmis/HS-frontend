@@ -1,6 +1,7 @@
 import React, {useState,useContext, useEffect,useRef} from 'react'
 import { useForm } from "react-hook-form";
 import client from '../../../feathers'
+import Encounter from '../../EncounterMgt/Encounter';
 import {UserContext,ObjectContext} from '../../../context'
 import {toast} from 'bulma-toast'
 
@@ -12,6 +13,7 @@ export default  function LaboratoryReportForm () {
   const {state, setState}=useContext(ObjectContext)
   const [reportStatus,setReportStatus] = useState("Draft")
   const [choosenForm, setChoosenForm] = useState("");
+  const [productModal, setProductModal]=useState(false)
   
   const formtype= ["Haematology", "Serology", "Biochemistry", "Microbiology", "Urine", "Urinalysis","Stool", "HVS Culture", "Generic" ]
   const order=state.financeModule.selectedFinance
@@ -28,18 +30,18 @@ useEffect(() => {
  
 
    if (order.resultDetail?.labFormType == null){
-     console.log(order.resultDetail)
-    setChoosenForm("unknown")
+    console.log("null")
+    //setChoosenForm("unknown")
     setState((prevstate)=>({...prevstate, labFormType:"unknown"}))
     
    }else{
-    console.log(order.resultDetail)
-    setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
+    console.log("not null")
+    //setChoosenForm(state.financeModule.selectedFinance.resultDetail.labFormType)
     setState((prevstate)=>({...prevstate, labFormType:state.financeModule.selectedFinance.resultDetail.labFormType}))
    }
    if (order.resultDetail == null){
-    console.log(order.resultDetail)
-   setChoosenForm("")
+    console.log("does not exist")
+  // setChoosenForm("")
    setState((prevstate)=>({...prevstate, labFormType:""}))
    
    
@@ -49,17 +51,24 @@ useEffect(() => {
   return () => {
    
   }
-})
-
+},[order])
+const showDocumentation = async (value)=>{
+  setProductModal(true)
+}
+const handlecloseModal =()=>{
+  setProductModal(false)
+ // handleSearch(val)
+  }
+  
 
   return (
     
       <div className="card">
         <div className="card-header mb-0" >
-          <p className="card-header-title">Laboratory Investigation:  {order.serviceInfo.name} for {order.orderInfo.orderObj.clientname}</p>
+          <p className="card-header-title">{order.serviceInfo.name} for {order.orderInfo.orderObj.clientname}</p>
           <p>
        {/* disable dropdown if status is not pending; add flag to know form chosen */}
-             
+        
               </p>
       { (bill_report_status==="Pending") &&  <div className="control mt-2 mr-2">
                       <div className="select is-small ">
@@ -71,6 +80,7 @@ useEffect(() => {
                           </select>
                       </div>  
                   </div>}
+                  <button className="button is-success is-small btnheight mt-2" onClick={showDocumentation}>Documentation</button>
         </div>
        
         <div className="card-content mb-0 vscrollable">
@@ -90,7 +100,23 @@ useEffect(() => {
             </div>   
             
         </div>
-       
+        <div className={`modal ${productModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card  modalbkgrnd">
+                                        <header className="modal-card-head  btnheight">
+                                        <p className="modal-card-title">Documentation</p>
+                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                                        </header>
+                                        <section className="modal-card-body modalcolor">
+                                      
+                                         <Encounter standalone="true" />
+                                        </section> 
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer>  */}
+                                   </div>
+                                </div>    
       </div>
     
   );
@@ -117,9 +143,10 @@ export  function Haematology() {
     const order=state.financeModule.selectedFinance
     const bill_report_status=state.financeModule.report_status
 
-  let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
+ // let draftDoc=state.DocumentClassModule.selectedDocumentClass.document
 
   useEffect(() => {
+   // setState((prevstate)=>({...prevstate, labFormType:value}))
     if (!order.resultDetail?.documentdetail ){
         setValue("Finding", "",  {
             shouldValidate: true,

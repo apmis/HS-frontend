@@ -78,11 +78,11 @@ export default function EncounterMain ({nopresc}) {
         
 
     }
-    const handleRow= async(Clinic)=>{
+    const handleRow= async(Clinic,i)=>{
         //console.log("b4",state)
-
+       // alert(i)
         //console.log("handlerow",Clinic)
-        if (Clinic.status==="completed"){
+        if (Clinic.status==="completed"||Clinic.status==="Final"){
             await setSelectedNote(Clinic)
 
             const    newClinicModule={
@@ -91,7 +91,9 @@ export default function EncounterMain ({nopresc}) {
             }
         await setState((prevstate)=>({...prevstate, NoteModule:newClinicModule})) 
        //console.log(state)
-       Clinic.show=!Clinic.show
+       facilities[i].show =!facilities[i].show
+       await setFacilities(facilities)
+      // Clinic.show=!Clinic.show
         }else{
             let documentobj={}
             documentobj.name=Clinic.documentname
@@ -220,7 +222,7 @@ export default function EncounterMain ({nopresc}) {
                 const    newDocumentClassModule={
                     selectedDocumentClass:{},
                     //state.DocumentClassModule.selectedDocumentClass.name
-                    show :'detail'
+                    show :'list'
                 }
                 setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
                 if (user){
@@ -244,6 +246,12 @@ export default function EncounterMain ({nopresc}) {
                     observer.observe(loader.current)
                  } */
                 return () => {
+                    const    newDocumentClassModule={
+                        selectedDocumentClass:{},
+                        //state.DocumentClassModule.selectedDocumentClass.name
+                        show :'list'
+                    }
+                    setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
                 
                 }
             },[])

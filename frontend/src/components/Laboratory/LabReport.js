@@ -141,6 +141,7 @@ export function LabOrderList(){
        // console.log(selectedOrders)
     }
     const handleMedicationRow= async(order)=>{
+        await handleSelectedClient(order.orderInfo.orderObj.client)
         
         await setSelectedFinance(order)
         // grab report
@@ -216,26 +217,26 @@ export function LabOrderList(){
             // console.log("here b4 server")
     const findProductEntry= await BillServ.find(
             {query: {
-               /*  $or:[
+                 $or:[
                     {
-                       'participantInfo.paymentmode.type':"Cash"
+                       'orderInfo.orderObj.order_category':"Lab Order"
                     },
                     {
-                       'participantInfo.paymentmode.type':"Family Cover"
+                       'orderInfo.orderObj.order_category':"Laboratory"
                     }
-                ], */
+                ], 
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                'orderInfo.orderObj.order_category':"Lab Order",
-               // billing_status:"Unpaid",  // need to set this finally
+                //'orderInfo.orderObj.order_category':"Lab Order",
+               // billing_status:"Unpaid",  //need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
-                $limit:100,
+                $limit:1000,
                 $sort: {
                     createdAt: -1
                 }
                 }})
 
-        //    console.log("bills", findProductEntry.data)
+         console.log("lab bills", findProductEntry.data)
             await setFacilities(findProductEntry.data)
           //  await setState((prevstate)=>({...prevstate, currentClients:findProductEntry.groupedOrder}))
             }   
