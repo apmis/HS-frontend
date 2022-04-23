@@ -94,9 +94,9 @@ export default function PharmacyModule() {
                                      <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-bill`}>Bill Prescription Sent</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                   {/*  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-payment`}>Payment</NavLink>
-                                    </div>
+                                    </div> */}
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-dispense`}>Dispensary</NavLink>
                                     </div>

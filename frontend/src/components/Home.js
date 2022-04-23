@@ -10,6 +10,7 @@ import AccountModule from './AccountModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
 import Ward from './WardModule'
+import ReferralModule from './ReferralModule'
 import RadiologyModule from './RadiologyModule'
 import PharmacyModule from './PharmacyModule'
 import TheatreModule from './TheatreModule'
@@ -63,6 +64,9 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/radiology`} >
                     <RadiologyModule />
+                </Route>
+                <Route path={`${path}/referral`} >
+                    <ReferralModule />
                 </Route>
                 <Route path={`${path}/pharmacy`} >
                     <PharmacyModule />
@@ -252,7 +256,9 @@ function NavBar({url}){
                                 {(user.currentEmployee?.roles.includes('Theatre')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/theatre`}>Theatre</NavLink>
                                 </div>}
-                               
+                                {(user.currentEmployee?.roles.includes('Client')||user.currentEmployee?.roles.length===0 )&&  <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/referral`}>Referrals</NavLink>
+                                </div>}
                                
                                 {(user.currentEmployee?.roles.includes('Finance')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/hmo`}>Managed Care</NavLink>
