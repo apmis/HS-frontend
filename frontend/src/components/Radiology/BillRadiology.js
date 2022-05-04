@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import {UserContext,ObjectContext} from '../../context'
 import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
-import BillPrescriptionCreate from './BillLabCreate'
+import BillRadiologyCreate from './BillRadiologyCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
@@ -22,11 +22,11 @@ import {
 
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
-import ClientBilledLab from './ClientLab';
+import ClientBilledRadiology from './ClientRadiology';
 
 
 
-export default function BillLab() {
+export default function BillRadiology() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -67,12 +67,12 @@ export default function BillLab() {
             </div> */}
             <div className="columns ">
                 <div className="column is-5 ">
-                    <BillLabList />
+                    <BillRadiologyList />
                     </div>
               
                 <div className="column is-4 ">
                 
-                {(state.medicationModule.show ==='detail')&&<BillPrescriptionCreate />}
+                {(state.medicationModule.show ==='detail')&&<BillRadiologyCreate />}
                 </div>
                 <div className="column is-3 ">
                 
@@ -86,7 +86,7 @@ export default function BillLab() {
     
 }
 
-export function BillLabList(){
+export function BillRadiologyList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -167,7 +167,7 @@ export function BillLabList(){
                    
                 }}
                 ],
-                order_category:"Lab Order",
+                order_category:"Radiology Order",
                 fulfilled:false,
                 destination: user.currentEmployee.facilityDetail._id,
                 order_status:"Pending",
@@ -195,7 +195,7 @@ export function BillLabList(){
              console.log("here b4 server")
     const findProductEntry= await OrderServ.find(
             {query: {
-                order_category:"Lab Order",
+                order_category:"Radiology Order",
                 fulfilled:"False",
                 destination: user.currentEmployee.facilityDetail._id,
                 order_status:"Pending",  // need to set this finally
@@ -259,7 +259,7 @@ export function BillLabList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Pending Tests </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Pending Investigations </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -274,7 +274,7 @@ export function BillLabList(){
                             <AccordionItem  key={Clinic.client_id} >
                                <AccordionItemHeading >
                                <AccordionItemButton  >
-                                      <strong> {i+1} {Clinic.clientname} with {Clinic.orders.length} Pending Test(s)  </strong>
+                                      <strong> {i+1} {Clinic.clientname} with {Clinic.orders.length} Pending Investgation(s)  </strong>
                                 </AccordionItemButton>
                                 </AccordionItemHeading>
                                 <AccordionItemPanel>
@@ -303,7 +303,7 @@ export function BillLabList(){
                                                 ))}
                                             </tbody>
                                             </table>
-                                            {/*   */}<ClientBilledLab  selectedClient={Clinic.client_id}/>{/*  } */}
+                                            {/*   */}<ClientBilledRadiology  selectedClient={Clinic.client_id}/>{/*  } */}
                               </AccordionItemPanel>                                          
                                 </AccordionItem>
                             ))}

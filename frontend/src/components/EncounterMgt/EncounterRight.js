@@ -586,6 +586,13 @@ export function ClinicalNoteCreate(){
                         pauseOnHover: true,
                       })
                       setSuccess(false)
+
+                     /*  toast({
+                        message:message ,
+                        type: 'is-success',
+                        dismissible: true,
+                        pauseOnHover: true,
+                      }) */
                 })
                 .catch((err)=>{
                     toast({

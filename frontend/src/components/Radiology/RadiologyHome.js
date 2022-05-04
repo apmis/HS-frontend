@@ -1,9 +1,9 @@
 /* eslint-disable */
 import React ,{useState,useEffect,useContext} from 'react'
-import Store, { StoreList } from './Labs'
+import Radiology, { StoreList } from './Radiologys'
 import {UserContext,ObjectContext} from '../../context'
 
-export default function InventoryHome() {
+export default function RadiologyHome() {
    // const [activeModal, setActiveModal]=useState("modal is-active ")
     const {state,setState}=useContext(ObjectContext)
     const handleCloseModal=()=>{
@@ -21,7 +21,7 @@ export default function InventoryHome() {
                 <div className="hero-body">
                     <div className="container has-text-centered">
                     <h1 className="title">
-                     Laboratory Module
+                    Radiology Module
                     </h1>
                     <h2 className="subtitle">
                         Have fun working today!

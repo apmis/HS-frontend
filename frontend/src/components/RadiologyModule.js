@@ -1,19 +1,19 @@
 /* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import InventoryReport from './Laboratory/InventoryReport'
-import InventorySetup from './Laboratory/InventorySetup'
-import InventoryStore from './Laboratory/InventoryStore'
-import LaboratoryHome from './Laboratory/LaboratoryHome'
-import ProductEntry from './Laboratory/ProductEntry'
-import ProductExit from './Laboratory/ProductExit'
-import Dispense from './Laboratory/Dispensary'
+import InventoryReport from './Radiology/InventoryReport'
+import InventorySetup from './Radiology/InventorySetup'
+import InventoryStore from './Radiology/InventoryStore'
+import RadiologyHome from './Radiology/RadiologyHome'
+import ProductEntry from './Radiology/ProductEntry'
+import ProductExit from './Radiology/ProductExit'
+import Dispense from './Radiology/Dispensary'
 import BillService from './Finance/BillService'
-import LabReport from './Laboratory/LabReport'
-import LabPayment from './Laboratory/LabPayment'
-import Labs, { StoreList, StoreListStandalone } from './Laboratory/Labs'
+import RadiologyReport from './Radiology/RadiologyReport'
+import RadiologyPayment from './Radiology/RadiologyPayment'
+import Radiology, { StoreList, StoreListStandalone } from './Radiology/Radiologys'
 import {UserContext,ObjectContext} from '../context'
-import BillLab from './Laboratory/BillLab'
+import BillRadiology from './Radiology/BillRadiology'
 
 export default function RadiologyModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -67,7 +67,7 @@ export default function RadiologyModule() {
                             <div className="navbar-brand minHt">
                                 <div className="navbar-item ">
                                     <span className="is-small has-text-weight-medium">
-                                        Health Stack::Laboratory::{selectedStore?selectedStore.name:""}</span>
+                                        Health Stack::Radiology::{selectedStore?selectedStore.name:""}</span>
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>
                                 
@@ -92,13 +92,13 @@ export default function RadiologyModule() {
                                         <NavLink to={`${url}/billservice`}>Bill Client</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/lab-bill`}>Bill Lab Orders Sent</NavLink>
+                                        <NavLink to={`${url}/radiology-bill`}>Bill Radiology Orders Sent</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/lab-payment`}>Payment</NavLink>
+                                        <NavLink to={`${url}/radiology-payment`}>Payment</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/lab-result`}>Lab Result</NavLink>
+                                        <NavLink to={`${url}/radiology-result`}>Radiology Result</NavLink>
                                     </div>
                                     {/*  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
@@ -135,7 +135,7 @@ export default function RadiologyModule() {
                        
                     <Switch>
                         <Route path={path} exact>
-                            <LaboratoryHome />
+                            <RadiologyHome />
                         </Route>
                         {/* <Route path={`${path}/inv-dispense`} exact >
                             <Dispense />
@@ -159,17 +159,17 @@ export default function RadiologyModule() {
                         <Route path={`${path}/billservice`} exact>
                             <BillService />
                         </Route>
-                        <Route path={`${path}/lab-result`} exact>
-                            <LabReport />
+                        <Route path={`${path}/radiology-result`} exact>
+                            <RadiologyReport />
                         </Route> 
-                        <Route path={`${path}/lab-bill`} exact >
-                            <BillLab />
+                        <Route path={`${path}/radiology-bill`} exact >
+                            <BillRadiology />
                         </Route>
-                        <Route path={`${path}/labs`} exact>
-                            <Labs />
+                        <Route path={`${path}/radiology`} exact>
+                            <Radiology />
                         </Route>
-                        <Route path={`${path}/lab-payment`} exact>
-                            <LabPayment />
+                        <Route path={`${path}/radiology-payment`} exact>
+                            <RadiologyPayment />
                         </Route>
 
                     </Switch>

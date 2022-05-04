@@ -10,7 +10,7 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Labs() {
+export default function Radiology() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
@@ -92,7 +92,7 @@ export function StoreCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-          data.locationType="Laboratory"
+          data.locationType="Radiology"
         StoreServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -100,7 +100,7 @@ export function StoreCreate(){
                /*  setMessage("Created Store successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Laboratory created succesfully',
+                    message: 'Radiology created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -299,7 +299,7 @@ export function StoreList({standalone,closeModal}){
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                locationType:"Laboratory",
+                locationType:"Radiology",
                $limit:10,
                 $sort: {
                     name: 1
@@ -336,7 +336,7 @@ export function StoreList({standalone,closeModal}){
                     if (user.stacker){
                         const findStore= await StoreServ.find(
                             {query: {
-                                locationType:"Laboratory",
+                                locationType:"Radiology",
                                 $limit:20,
                                 $sort: {
                                     name: 1
@@ -405,7 +405,7 @@ export function StoreList({standalone,closeModal}){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Laboratory </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Radiology Locations </span></div>
                     <div className="level-right">
                 { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -518,7 +518,7 @@ export function StoreList({standalone,closeModal}){
                         
                      },
                     facility:user.currentEmployee.facilityDetail._id || "",
-                     locationType:"Laboratory",
+                     locationType:"Radiology",
                     $limit:10,
                      $sort: {
                          name: 1
@@ -541,7 +541,7 @@ export function StoreList({standalone,closeModal}){
                  
              const findStore= await StoreServ.find(
                      {query: {
-                         locationType:"Laboratory",
+                         locationType:"Radiology",
                          facility:user.currentEmployee.facilityDetail._id,
                          $limit:20,
                          $sort: {
@@ -555,7 +555,7 @@ export function StoreList({standalone,closeModal}){
                          if (user.stacker){
                              const findStore= await StoreServ.find(
                                  {query: {
-                                     locationType:"Laboratory",
+                                     locationType:"Radiology",
                                      $limit:20,
                                      $sort: {
                                          name: 1
@@ -625,7 +625,7 @@ export function StoreList({standalone,closeModal}){
                                  </div>
                              </div>
                          </div>
-                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Laboratory </span></div>
+                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Radiology Locations </span></div>
                          <div className="level-right">
                      { !standalone &&   <div className="level-item"> 
                                  <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>

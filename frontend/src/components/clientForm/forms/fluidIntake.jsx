@@ -50,7 +50,7 @@ const FluidIntakeOutput = () => {
       return () => {
       
       }
-    })
+    },[draftDoc])
 
 
         const findexistingChart=async()=>{

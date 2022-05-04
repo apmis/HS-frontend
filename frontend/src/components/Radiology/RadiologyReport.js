@@ -26,8 +26,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 //import BillPrescriptionCreate from './BillPrescriptionCreate';
 
 
-
-export default function LabReport() {
+export default function RadiologyReport() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -55,12 +54,12 @@ export default function LabReport() {
             </div> */}
             <div className="columns ">
                 <div className="column is-6 ">
-                    <LabOrderList />
+                    <RadiologyOrderList />
                     </div>
               
                 <div className="column is-6 ">
                 
-                {(state.financeModule.show ==='detail')&&  <LabNoteCreate />}
+                {(state.financeModule.show ==='detail')&&  <RadiologyNoteCreate />}
                 </div>
                {/*  <div className="column is-3 ">  <ReportCreate />
                 
@@ -74,7 +73,7 @@ export default function LabReport() {
     
 }
 
-export function LabOrderList(){
+export function RadiologyOrderList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -198,7 +197,7 @@ export function LabOrderList(){
                        'participantInfo.paymentmode.type':"Family Cover"
                     }
                 ],
-                'orderInfo.orderObj.order_category':"Lab Order",
+                'orderInfo.orderObj.order_category':"Radiology Order",
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
                 billing_status:"Unpaid",  // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
@@ -233,11 +232,11 @@ export function LabOrderList(){
                     }
                 ], */
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                'orderInfo.orderObj.order_category':"Lab Order",
+                'orderInfo.orderObj.order_category':"Radiology Order",
                // billing_status:"Unpaid",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
-                $limit:100,
+                $limit:1000,
                 $sort: {
                     createdAt: -1
                 }
@@ -303,7 +302,7 @@ export function LabOrderList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Laboratory test </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Radiology Investigations </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -348,7 +347,7 @@ export function LabOrderList(){
     )
 }
 
-export function LabNoteCreate(){
+export function RadiologyNoteCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
@@ -462,7 +461,7 @@ export function LabNoteCreate(){
               
                 setSuccess(true)
                 toast({
-                    message: 'Lab Result updated succesfully',
+                    message: 'Radiology Result updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -471,7 +470,7 @@ export function LabNoteCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error updating Lab Result ' + err,
+                    message: 'Error updating Radiology Result ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,

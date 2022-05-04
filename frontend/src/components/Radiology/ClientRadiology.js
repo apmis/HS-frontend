@@ -25,7 +25,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 
 
 //fetching billed prescription for client
-export default function ClientBilledLab({selectedClient}){
+export default function ClientBilledRadiology({selectedClient}){
     // const { register, handleSubmit, watch, errors } = useForm();
      // eslint-disable-next-line
      const [error, setError] =useState(false)
@@ -104,7 +104,7 @@ export default function ClientBilledLab({selectedClient}){
                  },
                  order_status:"Billed",  
                  clientId:selectedClient,
-                 order_category:"Lab Order",
+                 order_category:"Radiology Order",
                 // storeId:state.StoreModule.selectedStore._id,
                 //facility:user.currentEmployee.facilityDetail._id || "",
                  $limit:10,
@@ -128,7 +128,7 @@ export default function ClientBilledLab({selectedClient}){
              // console.log("here b4 server")
      const findProductEntry= await OrderServ.find(
              {query: {
-                 order_category:"Lab Order",
+                 order_category:"Radiology Order",
                  fulfilled:"False",
                  destination: user.currentEmployee.facilityDetail._id,
                  order_status:"Billed",  

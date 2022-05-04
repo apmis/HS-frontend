@@ -173,18 +173,18 @@ export default function ManagedCareModule() {
                         <Route path={`${path}/payment`} exact >
                             <Payment />
                         </Route>
-                        <Route path={`${path}/collections`} exact >
+{/*                         <Route path={`${path}/collections`} exact >
                             <Collections />
                         </Route>
-                       <Route path={`${path}/services`} exact >
+ */}                       <Route path={`${path}/services`} exact >
                             <ManagedServices />
                         </Route>
                          <Route path={`${path}/billservice`} exact>
                             <BillService />
                         </Route>
-                        <Route path={`${path}/revenue`} exact>
+                        {/* <Route path={`${path}/revenue`} exact>
                             <FacilityAccount />
-                        </Route>
+                        </Route> */}
                         
                         <Route path={`${path}/organization`} exact>
                             <OrganizationClient />
