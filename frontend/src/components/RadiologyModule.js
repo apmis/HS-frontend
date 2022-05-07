@@ -94,19 +94,19 @@ export default function RadiologyModule() {
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/radiology-bill`}>Bill Radiology Orders Sent</NavLink>
                                     </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
+                                    {/* <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/radiology-payment`}>Payment</NavLink>
-                                    </div>
+                                    </div> */}
                                     <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/radiology-result`}>Radiology Result</NavLink>
                                     </div>
+                                    <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/radiology-appointments`}>Appointments</NavLink>
+                                    </div>
+                                    <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/radiology-checkedin`}>Checked In</NavLink>
+                                    </div>
                                     {/*  <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-inventory`}>Store Inventory</NavLink>
-                                    </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/inv-entry`}>Product Entry</NavLink>
-                                    </div>
-                                    <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/inv-exit`}>POS</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>

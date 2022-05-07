@@ -9,6 +9,7 @@ import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 import ReportCreate from './ReportCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
+import Encounter from '../EncounterMgt/Encounter';
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
 //const searchfacility={};
@@ -53,18 +54,19 @@ export default function RadiologyReport() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-6 ">
+                <div className="column is-4 ">
                     <RadiologyOrderList />
                     </div>
               
-                <div className="column is-6 ">
+                <div className="column is-5 ">
                 
                 {(state.financeModule.show ==='detail')&&  <RadiologyNoteCreate />}
                 </div>
-               {/*  <div className="column is-3 ">  <ReportCreate />
+
+              <div className="column is-3 ">  
                 
                 {(state.financeModule.show ==='detail')&&<PatientProfile />}
-                </div> */}
+                </div> 
 
             </div>                            
             </section>
@@ -139,6 +141,7 @@ export function RadiologyOrderList(){
     const handleMedicationRow= async(order)=>{
         
         await setSelectedFinance(order)
+        await handleSelectedClient(order.participantInfo.client)
         // grab report
         // if draft show create/modify
         //if final: show final
@@ -361,6 +364,7 @@ export function RadiologyNoteCreate(){
     const [currentUser,setCurrentUser] = useState()
     const [reportStatus,setReportStatus] = useState("Draft")
     const {state, setState}=useContext(ObjectContext)
+    const [productModal, setProductModal]=useState(false)
 
     const order=state.financeModule.selectedFinance
     const bill_report_status=state.financeModule.report_status
@@ -373,24 +377,40 @@ export function RadiologyNoteCreate(){
     }
     
     useEffect(() => {
-        setCurrentUser(user)
-        //console.log(currentUser)
-        return () => {
-        
-        }
-    }, [user])
-
-  //check user for facility or get list of facility  
-    useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
-      if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
-      }
-    })
+        // setState((prevstate)=>({...prevstate, labFormType:value}))
+         if (!order.resultDetail?.documentdetail ){
+             setValue("Finding", "",  {
+                 shouldValidate: true,
+                 shouldDirty: true
+             })
+             setValue("Recommendation","",  {
+                 shouldValidate: true,
+                 shouldDirty: true
+             })
+            // setReportStatus(order.report_status)
+            
+             return
+     
+         }
+         if (order.report_status !=="Pending"){
+             console.log(order.resultDetail.documentdetail)
+     
+             
+            Object.entries(order.resultDetail.documentdetail).map(([keys,value],i)=>(
+             setValue(keys, value,  {
+                 shouldValidate: true,
+                 shouldDirty: true
+             })
+     
+         ))
+     
+     
+     }
+         
+         return () => {
+             
+         }
+     }, [order])
 
     const onSubmit = async(data,e) =>{
         e.preventDefault();
@@ -405,7 +425,8 @@ export function RadiologyNoteCreate(){
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
           }
          document.documentdetail=data
-          document.documentname= `${order.serviceInfo.name} Result`
+         document.documentType="Radiology Result"
+          document.documentname= `${data.Procedure} Result` /* `${order.serviceInfo.name} Result` */
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
@@ -525,29 +546,76 @@ export function RadiologyNoteCreate(){
             
         }
     }, [order])
+    const showDocumentation = async (value)=>{
+        setProductModal(true)
+      }
+      const handlecloseModal =()=>{
+        setProductModal(false)
+       // handleSearch(val)
+        }
 
     return (
         <>
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Lab Result
+                    Radiology Result for {order.orderInfo.orderObj.clientname} Ordered Test:  {order.serviceInfo.name}
                 </p>
+                <button className="button is-success is-small btnheight mt-2" onClick={showDocumentation}>Documentation</button>
             </div>
             <div className="card-content vscrollable remPad1">
 
-                <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label>
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field is-horizontal">
                 <div className="field-body">
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
+                            <input className="input is-small" ref={register()}  name="Procedure" type="text" placeholder="Procedure" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Clinical Indication" type="text" placeholder="Clinical Indication" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Technique" type="text" placeholder="Technique" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Comparison" type="text" placeholder="Comparison" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
                             <textarea className="textarea is-small" ref={register()}  name="Finding" type="text" placeholder="Findings" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Impression" type="text" placeholder="Impression" disabled={bill_report_status==="Final"}/>                 
                         </p>
                     </div>
                     </div>
@@ -588,7 +656,23 @@ export function RadiologyNoteCreate(){
             </form>
             </div>
             </div>
-                 
+            <div className={`modal ${productModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card  modalbkgrnd">
+                                        <header className="modal-card-head  btnheight">
+                                        <p className="modal-card-title">Documentation</p>
+                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                                        </header>
+                                        <section className="modal-card-body modalcolor">
+                                      
+                                         <Encounter standalone="true" />
+                                        </section> 
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer>  */}
+                                   </div>
+        </div>        
         </>
     )
    

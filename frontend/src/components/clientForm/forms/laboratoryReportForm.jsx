@@ -116,7 +116,7 @@ const handlecloseModal =()=>{
                                         <button className="button">Cancel</button>
                                         </footer>  */}
                                    </div>
-                                </div>    
+        </div>    
       </div>
     
   );
