@@ -14,6 +14,8 @@ import RadiologyPayment from './Radiology/RadiologyPayment'
 import Radiology, { StoreList, StoreListStandalone } from './Radiology/Radiologys'
 import {UserContext,ObjectContext} from '../context'
 import BillRadiology from './Radiology/BillRadiology'
+import RadAppointments from './Radiology/RadAppointments'
+import RadCheckedin from './Radiology/RadCheckedin'
 
 export default function RadiologyModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -149,13 +151,13 @@ export default function RadiologyModule() {
                         </Route>
                         <Route path={`${path}/inv-entry`} exact>
                             <ProductEntry />
-                        </Route>
-                        <Route path={`${path}/inv-exit`} exact>
-                            <ProductExit/>
-                        </Route>
-                        <Route path={`${path}/inv-products`} exact>
-                            <Products />
                         </Route>*/}
+                        <Route path={`${path}/radiology-checkedin`} exact>
+                            <RadCheckedin/>
+                        </Route>
+                        <Route path={`${path}/radiology-appointments`} exact>
+                            <RadAppointments />
+                        </Route>
                         <Route path={`${path}/billservice`} exact>
                             <BillService />
                         </Route>
