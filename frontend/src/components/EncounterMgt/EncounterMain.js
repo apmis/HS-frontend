@@ -355,7 +355,7 @@ export default function EncounterMain ({nopresc}) {
                                                     {/* header */}
                                                 <header className="card-header"  >
                                                         <div className="card-header-title" onClick={()=>handleRow(Clinic,i)}>
-                                                        <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
+                                                        <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy HH:mm:ss')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
                                                         <p className="right ml-2 mr-0">{Clinic.status} </p> 
                                                         </div>
                                                         <button className="button  sbut" aria-label="more options" onClick={()=>handleDelete (Clinic)}>

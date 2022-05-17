@@ -17,7 +17,7 @@ import "react-datepicker/dist/react-datepicker.css";
 const searchfacility={};
 
 
-export default function RadCheckedin() {
+export default function TheatreAppointments() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedClient,setSelectedClient]=useState()
@@ -28,14 +28,13 @@ export default function RadCheckedin() {
         <section className= "section remPadTop">
             <div className="columns ">
            
-            <div className="column is-6 ">
-                <RadStatusList />
+            <div className="column is-8 ">
+                <TheatreAppointmentList />
                 </div>
-            <div className="column is-6 ">
-            <RadCheckedOutList />
-               {/*  {(state.AppointmentModule.show ==='create')&&<RadAppointmentCreate />}
-                {(state.AppointmentModule.show ==='detail')&&<RadAppointmentDetail  />}
-                {(state.AppointmentModule.show ==='modify')&&<RadAppointmentModify Client={selectedClient} />} */}
+            <div className="column is-4 ">
+                {(state.AppointmentModule.show ==='create')&&<TheatreAppointmentCreate />}
+                {(state.AppointmentModule.show ==='detail')&&<TheatreAppointmentDetail  />}
+                {(state.AppointmentModule.show ==='modify')&&<TheatreAppointmentModify Client={selectedClient} />}
                
             </div>
 
@@ -46,7 +45,7 @@ export default function RadCheckedin() {
     
 }
 
-export function RadAppointmentCreate(){
+export function TheatreAppointmentCreate(){
     const {state,setState}=useContext(ObjectContext) 
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
@@ -71,11 +70,11 @@ export function RadAppointmentCreate(){
     const [appointment_status,setAppointment_status]=useState("")
     const [appointment_type, setAppointment_type]=useState("")
     const [billingModal, setBillingModal] =useState(false)
-
+   
     const [chosen, setChosen]=useState()
     const [chosen1, setChosen1]=useState()
     const [chosen2, setChosen2]=useState()
-    const appClass=[ "On-site","Teleconsultation","Home Visit"]
+    const appClass=[ "On-site","Off-Site"]
 
     let appointee  //  =state.ClientModule.selectedClient 
    /*  const getSearchfacility=(obj)=>{
@@ -104,7 +103,7 @@ export function RadAppointmentCreate(){
             setChosen()
            
         }
-    
+       /*  handleSelectedClient(obj) */
         
        /*  setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -212,7 +211,7 @@ export function RadAppointmentCreate(){
                   setSuccess(false)
                   setSuccess1(false)
                   setSuccess2(false)
-                 // showBilling()
+                 showBilling()
             })
             .catch((err)=>{
                 toast({
@@ -225,15 +224,25 @@ export function RadAppointmentCreate(){
 
       } 
 
-    useEffect(() => {
+   /*  useEffect(() => {
         getSearchfacility(state.ClientModule.selectedClient )
         
-        /* appointee=state.ClientModule.selectedClient 
-        console.log(appointee.firstname) */
+       
         return () => {
            
         }
-    }, [state.ClientModule.selectedClient ])
+    }, [state.ClientModule.selectedClient ]) */
+
+    const handleSelectedClient= async(Client)=>{
+        // await setSelectedClient(Client)
+         const    newClientModule={
+             selectedClient:Client,
+             show :'detail'
+         }
+         console.log("something", Client)
+         alert("looking for client")
+        await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
+     }
 
   /*   const showBilling = () =>{
         setBillingModal(true)
@@ -252,6 +261,13 @@ export function RadAppointmentCreate(){
                 }
                await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
             } */
+            const  handlecloseModal1 = () =>{
+                setBillingModal(false)
+                }
+          const showBilling = () =>{
+                setBillingModal(true)
+               //history.push('/app/finance/billservice')
+                }
 
     return (
         <>
@@ -259,7 +275,7 @@ export function RadAppointmentCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Create Appointment
+                    Create Appointment For Procedure
                 </p>
             </div>
             <div className="card-content vscrollable remPad1">
@@ -311,11 +327,11 @@ export function RadAppointmentCreate(){
              
             </div>
         </div>
-        <div className="field is-horizontal">
+        {/* <div className="field is-horizontal">
                        
                        <div className="field ml-3 ">
-                       {/* <label className= "mr-2 "> <b>Modules:</b></label> */}
-                           {
+                      
+                         {
                                appClass.map((c,i) => 
                                    <label  className=" is-small" key={c}>
                                        <input type="radio" value={c} name="appointmentClass" ref={register} />{c + " "}
@@ -323,7 +339,7 @@ export function RadAppointmentCreate(){
                                )
                            }
                        </div>  
-                       </div>
+                       </div> */}
         <div className="field">
             <input name="start_time" ref={register ({ required: true })} type="datetime-local" />
         </div>
@@ -333,9 +349,8 @@ export function RadAppointmentCreate(){
                     <div className="select is-small">
                         <select name="type" value={type} onChange={handleChangeType}>
                            <option value="">Choose Appointment Type  </option>
-                            <option value="New">New Walkin</option>
-                            <option value="New">New Referral</option>
-                            <option value="Followup">Repeat Investigation</option>
+                            <option value="New">New Procedure</option>
+                            <option value="Followup">Repeat Procedure</option>
                             
                            {/*  <option value="Readmission with 24hrs">Readmission with 24hrs</option>
                             <option value="Annual Checkup">Annual Checkup</option>
@@ -351,25 +366,29 @@ export function RadAppointmentCreate(){
                            <option value="">Appointment Status  </option>
                             <option value="Scheduled">Scheduled</option>
                             <option value="Confirmed">Confirmed</option>
+                            <option value="Billed">Billed</option>
+                            <option value="Paid">Paid</option>
                             <option value="Checked In">Checked In</option>
-                            {/* <option value="Vitals Taken">Vitals Taken</option>
-                            <option value="With Doctor">With Doctor</option> */}
-                            <option value="Procedure">Procedure in Progress</option>
-                            <option value="Completed">Completed Investigation</option>
-                            <option value="Checked In">Checked Out</option>
+                            <option value="Procedure in Progress">Procedure in Progress</option>
+                            <option value="Completed Procedure">Completed Procedure</option>
+                            <option value="Checked Out">Checked Out</option>
                             <option value="No Show">No Show</option>
                             <option value="Cancelled">Cancelled</option>
-                            <option value="Billed">Billed</option>
+                           
                         </select>
                     </div>
                 </div>
         </div>
         <div className="field">
-            <p className="control has-icons-left has-icons-right">
-                <input className="input is-small" ref={register()}  name="appointment_reason" type="text" placeholder="Reason For Appointment" />
-                <span className="icon is-small is-left">
-                    <i className="fas fa-hospital"></i>
-                </span>                    
+            <p className="control ">
+                <textarea className="textarea is-small" ref={register()}  name="appointment_reason" type="text" placeholder="Surgical Procedure" />
+                                  
+            </p>
+        </div>
+        <div className="field">
+            <p className="control ">
+                <textarea className="textarea is-small" ref={register()}  name="information" type="text" placeholder="Other Information" />
+                                
             </p>
         </div>
         <div className="field " style={{display:"none"}} >
@@ -403,7 +422,8 @@ export function RadAppointmentCreate(){
             </form>
             </div>
             </div>
-            {/* <div className={`modal ${billingModal?"is-active":""}` }>
+            
+             {/* <div className={`modal ${billingModal?"is-active":""}` }>
                 <div className="modal-background"></div>
                 <div className="modal-card">
                     <header className="modal-card-head">
@@ -412,17 +432,17 @@ export function RadAppointmentCreate(){
                     </header>
                     <section className="modal-card-body">
                    
-                    < BillServiceCreate closeModal={handlecloseModal1}/>
+                   { (!!state.ClientModule.client )&& <BillServiceCreate closeModal={handlecloseModal1}/>}
                     </section>
-                  
+                    
                 </div>
-            </div>  */}      
+            </div> */}               
         </>
     )
    
 }
 
-export function RadStatusList(){
+export function TheatreAppointmentList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -528,10 +548,6 @@ export function RadStatusList(){
         ],
       facility:user.currentEmployee.facilityDetail._id, // || "",
         $limit:20,
-        appointment_status:{
-            $in:["Checked In", "Procedure in Progress", "Completed Procedure"]
-        },
-
         $sort: {
             createdAt: -1
           }
@@ -557,11 +573,8 @@ export function RadStatusList(){
             if (user.currentEmployee){   
                 let stuff={
                     facility:user.currentEmployee.facilityDetail._id,
-                    appointment_status:{
-                        $in:["Checked In", "Procedure in Progress", "Completed Procedure"]
-                    },
                    // locationId:state.employeeLocation.locationId,
-                    $limit:100,
+                    $limit:1000,
                     $sort: {
                         createdAt: -1
                     }
@@ -571,7 +584,7 @@ export function RadStatusList(){
 
             const findClient= await ClientServ.find(
                 {query: stuff})
-
+               
          await setFacilities(findClient.data)
                 }
                 else {
@@ -624,9 +637,7 @@ const handleCalendarClose = async ()=>{
             $lt:addDays(startDate,1)
         },
         facility:user.currentEmployee.facilityDetail._id,
-        appointment_status:{
-            $in:["Checked In", "Procedure in Progress", "Completed Procedure"]
-        },
+       
         $limit:100,
         $sort: {
             createdAt: -1
@@ -691,12 +702,12 @@ const handleDate=async (date)=>{
                         {/* <input name="filter_time"  ref={register ({ required: true })}  type="datetime-local" /> */}
                     </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Checked-In Clients </span></div>
-                    {/* <div className="level-right">
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Appointments </span></div>
+                    <div className="level-right">
                         <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
                         </div>
-                    </div> */}
+                    </div>
 
                 </div>
                 <div className="table-container pullup ">
@@ -707,13 +718,14 @@ const handleDate=async (date)=>{
                                         <th><abbr title="Time">Date/Time</abbr></th>
                                         <th>First Name</th>
                                        <th><abbr title="Last Name">Last Name</abbr></th>
-                                       <th><abbr title="Class">Classification</abbr></th>
+                                      {/*  <th><abbr title="Class">Classification</abbr></th> */}
                                         <th><abbr title="Location">Location</abbr></th> 
                                         {/* <th><abbr title="Phone">Phone</abbr></th>
                                          */}
                                         <th><abbr title="Type">Type</abbr></th>
                                         <th><abbr title="Status">Status</abbr></th>
-                                        <th><abbr title="Reason">Reason</abbr></th>
+                                        <th><abbr title="Reason">Procedure</abbr></th>
+                                        <th><abbr title="Information">Information</abbr></th>
                                         <th><abbr title="Practitioner">Practitioner</abbr></th>
                                         {/* <th><abbr title="Actions">Actions</abbr></th> */}
                                         </tr>
@@ -732,11 +744,12 @@ const handleDate=async (date)=>{
                                           {/*  < td>{formatDistanceToNowStrict(new Date(Client.dob))}</td> */}
                                            {/*  <td>{Client.gender}</td> */}
                                             {/*  <td>{Client.phone}</td> */}
-                                            <td>{Client.appointmentClass}</td>
+                                          {/*   <td>{Client.appointmentClass}</td> */}
                                             <td>{Client.location_name} {Client.location_type}</td> 
                                             <td>{Client.appointment_type}</td>
                                             <td>{Client.appointment_status}</td>
                                             <td>{Client.appointment_reason}</td>
+                                            <td>{Client.information}</td>
                                             <td>{Client.practitioner_name}</td>
                                             {/* <td><span   className="showAction"  >...</span></td> */}
                                            
@@ -753,332 +766,7 @@ const handleDate=async (date)=>{
     )
     }
 
-export function RadCheckedOutList(){
-        // const { register, handleSubmit, watch, errors } = useForm();
-         // eslint-disable-next-line
-         const [error, setError] =useState(false)
-          // eslint-disable-next-line
-         const [success, setSuccess] =useState(false)
-          // eslint-disable-next-line
-        const [message, setMessage] = useState("") 
-         const ClientServ=client.service('appointments')
-         //const history = useHistory()
-        // const {user,setUser} = useContext(UserContext)
-         const [facilities,setFacilities]=useState([])
-          // eslint-disable-next-line
-        const [selectedClient, setSelectedClient]=useState() //
-         // eslint-disable-next-line
-         const {state,setState}=useContext(ObjectContext)
-         // eslint-disable-next-line
-         const {user,setUser}=useContext(UserContext)
-         const [startDate, setStartDate] = useState(new Date())
-         const [selectedAppointment,setSelectedAppointment]=useState()
-     
-     
-     
-         const handleCreateNew = async()=>{
-             const newClientModule={
-                 selectedAppointment:{},
-                 show :'create'
-                 }
-             await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
-            //console.log(state)
-            const newClient={
-             selectedClient:{},
-             show :'create'
-             }
-             await setState((prevstate)=>({...prevstate, ClientModule:newClient}))
-             } 
-     
-         
-         const handleRow= async(Client)=>{
-             await setSelectedAppointment(Client)
-             const    newClientModule={
-                 selectedAppointment:Client,
-                 show :'detail'
-             }
-            await setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
-         }
-         //console.log(state.employeeLocation)
-     
-        const handleSearch=(val)=>{
-            const field='firstname'
-          //  console.log(val)
-     
-          let query={
-             $or:[
-                 { firstname: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 { lastname: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 { middlename: {
-                     $regex:val,
-                     $options:'i' 
-                 }}, 
-                 { phone: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 { appointment_type: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 { appointment_status: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 {appointment_reason: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 {location_type: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 {location_name: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 {practitioner_department: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 {practitioner_profession: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-                 {practitioner_name: {
-                     $regex:val,
-                     $options:'i' 
-                 }},
-               
-             ],
-           facility:user.currentEmployee.facilityDetail._id, // || "",
-             $limit:20,
-             appointment_status:"Checked Out",
-             
-             $sort: {
-                 createdAt: -1
-               }
-                 }
-               if (state.employeeLocation.locationType!=="Front Desk"){
-                   query.locationId=state.employeeLocation.locationId}  
-          
-            ClientServ.find({query: query
-               }).then((res)=>{
-                       console.log(res)
-                    setFacilities(res.data)
-                     setMessage(" Client  fetched successfully")
-                     setSuccess(true) 
-                 })
-                 .catch((err)=>{
-                     console.log(err)
-                     setMessage("Error fetching Client, probable network issues "+ err )
-                     setError(true)
-                 })
-             }
-        
-         const getFacilities= async()=>{
-                 if (user.currentEmployee){   
-                     let stuff={
-                         facility:user.currentEmployee.facilityDetail._id,
-                         appointment_status:"Checked Out",
-                        // locationId:state.employeeLocation.locationId,
-                         $limit:100,
-                         $sort: {
-                             createdAt: -1
-                         }
-                     }
-                     if (state.employeeLocation.locationType!=="Front Desk"){
-                         stuff.locationId=state.employeeLocation.locationId}  
-     
-                 const findClient= await ClientServ.find(
-                     {query: stuff})
-     
-              await setFacilities(findClient.data)
-                     }
-                     else {
-                         if (user.stacker){
-                             const findClient= await ClientServ.find(
-                                 {query: {
-                                     $limit:100,
-                                     $sort: {
-                                         createdAt: -1
-                                     }
-                                     }})
-                 
-                         await setFacilities(findClient.data)
-     
-                         }
-                     }
-                 }
-                 
-     
-         useEffect(() => {
-                    
-                     if (user){
-                         handleCalendarClose()
-                     }else{
-                         /* const localUser= localStorage.getItem("user")
-                         const user1=JSON.parse(localUser)
-                         console.log(localUser)
-                         console.log(user1)
-                         fetchUser(user1)
-                         console.log(user)
-                         getFacilities(user) */
-                     }
-                     ClientServ.on('created', (obj)=>handleCalendarClose())
-                     ClientServ.on('updated', (obj)=>handleCalendarClose())
-                     ClientServ.on('patched', (obj)=>handleCalendarClose())
-                     ClientServ.on('removed', (obj)=>handleCalendarClose())
-                     const newClient={
-                         selectedClient:{},
-                         show :'create'
-                         }
-                      setState((prevstate)=>({...prevstate, ClientModule:newClient}))
-                     return () => {
-                     
-                     }
-                 },[])
-     const handleCalendarClose = async ()=>{
-         let query= {
-             start_time:{
-                 $gt:subDays(startDate,1),
-                 $lt:addDays(startDate,1)
-             },
-             facility:user.currentEmployee.facilityDetail._id,
-            
-             $limit:100,
-             $sort: {
-                 createdAt: -1
-             }
-             }
-             if (state.employeeLocation.locationType!=="Front Desk"){
-                 query.locationId=state.employeeLocation.locationId}  
-     
-         const findClient= await ClientServ.find(
-             {query:query})
-     
-             await setFacilities(findClient.data)
-     }
-     
-     const handleDate=async (date)=>{
-         setStartDate(date)
-         
-     }
-     
-         useEffect(() => {
-             if (!!startDate){
-             
-                 handleCalendarClose()
-             }else{
-                 getFacilities()
-             }
-             
-             return () => {
-                 
-             }
-         }, [startDate])
-         //todo: pagination and vertical scroll bar
-     
-         return(
-             <>
-                {user?( <>  
-                     <div className="level">
-                         <div className="level-left">
-                             <div className="level-item">
-                                 <div className="field">
-                                     <p className="control has-icons-left  ">
-                                         <DebounceInput className="input is-small " 
-                                             type="text" placeholder="Search Appointments"
-                                             minLength={3}
-                                             debounceTimeout={400}
-                                             onChange={(e)=>handleSearch(e.target.value)} />
-                                         <span className="icon is-small is-left">
-                                             <i className="fas fa-search"></i>
-                                         </span>
-                                     </p>
-                                 </div>
-                             </div>
-                        
-                         <div className="level-item">
-                             <DatePicker 
-                                 selected={startDate} 
-                                 onChange={date => handleDate(date)} 
-                                 dateFormat="dd/MM/yyyy"
-                                 placeholderText="Filter By Date"
-                                 isClearable
-                                 />
-                             {/* <input name="filter_time"  ref={register ({ required: true })}  type="datetime-local" /> */}
-                         </div>
-                         </div>
-                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Checked Out Clients </span></div>
-                         {/* <div className="level-right">
-                             <div className="level-item"> 
-                                 <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                             </div>
-                         </div> */}
-     
-                     </div>
-                     <div className="table-container pullup ">
-                                     <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
-                                         <thead>
-                                             <tr>
-                                             <th><abbr title="Serial No">S/No</abbr></th>
-                                             <th><abbr title="Time">Date/Time</abbr></th>
-                                             <th>First Name</th>
-                                            <th><abbr title="Last Name">Last Name</abbr></th>
-                                            <th><abbr title="Class">Classification</abbr></th>
-                                             <th><abbr title="Location">Location</abbr></th> 
-                                             {/* <th><abbr title="Phone">Phone</abbr></th>
-                                              */}
-                                             <th><abbr title="Type">Type</abbr></th>
-                                             <th><abbr title="Status">Status</abbr></th>
-                                             <th><abbr title="Reason">Reason</abbr></th>
-                                             <th><abbr title="Practitioner">Practitioner</abbr></th>
-                                             {/* <th><abbr title="Actions">Actions</abbr></th> */}
-                                             </tr>
-                                         </thead>
-                                         <tfoot>                                      
-                                         </tfoot>
-                                         <tbody>
-                                             {facilities.map((Client, i)=>(
-     
-                                                 <tr key={Client._id} onClick={()=>handleRow(Client)}  className={Client._id===(selectedAppointment?._id||null)?"is-selected":""}>
-                                                 <th>{i+1}</th>
-                                                 <td><strong>{format(new Date(Client.start_time),"dd-MM-yy HH:mm:ss")}</strong></td>
-                                                 <th>{Client.firstname}</th>
-                                                 {/* <td>{Client.middlename}</td> */}
-                                                < td>{Client.lastname}</td>
-                                               {/*  < td>{formatDistanceToNowStrict(new Date(Client.dob))}</td> */}
-                                                {/*  <td>{Client.gender}</td> */}
-                                                 {/*  <td>{Client.phone}</td> */}
-                                                 <td>{Client.appointmentClass}</td>
-                                                 <td>{Client.location_name} {Client.location_type}</td> 
-                                                 <td>{Client.appointment_type}</td>
-                                                 <td>{Client.appointment_status}</td>
-                                                 <td>{Client.appointment_reason}</td>
-                                                 <td>{Client.practitioner_name}</td>
-                                                 {/* <td><span   className="showAction"  >...</span></td> */}
-                                                
-                                                 </tr>
-     
-                                             ))}
-                                         </tbody>
-                                         </table>
-                                         
-                     </div>              
-                 </>):<div>loading</div>}
-                 </>
-                   
-         )
-    }
-
-export function RadAppointmentDetail(){
+export function TheatreAppointmentDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const history =useHistory()
@@ -1117,7 +805,7 @@ export function RadAppointmentDetail(){
         }
        await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
        //modify appointment
-        history.push('/app/clinic/encounter')
+        history.push('/app/theatre/encounter')
     }
  
     return (
@@ -1426,7 +1114,7 @@ export function RadAppointmentDetail(){
    
 }
 
-export function RadAppointmentModify(){
+export function TheatreAppointmentModify( ){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -1574,7 +1262,7 @@ export function RadAppointmentModify(){
             show :'create'
         }
         setState((prevstate)=>({...prevstate, AppointmentModule:newClientModule}))
-
+        
         }
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
@@ -1650,6 +1338,7 @@ export function RadAppointmentModify(){
                   })
                   
                 changeState()
+               
 
             })
             .catch((err)=>{
@@ -1733,11 +1422,10 @@ export function RadAppointmentModify(){
                     <div className="select is-small">
                         <select name="type" /* value={appointment_type} */  name = "appointment_type" ref={register ({ required: true })}  onChange={handleChangeType}>
                            <option value="">Choose Appointment Type  </option>
-                            <option value="New">New</option>
-                            <option value="Followup">Followup</option>
-                            <option value="Readmission with 24hrs">Readmission with 24hrs</option>
-                            <option value="Annual Checkup">Annual Checkup</option>
-                            <option value="Walk in">Walk-in</option>
+                            <option value="New">New Procedure</option>
+                            <option value="Repeat">Repeat Procedure</option>
+                          
+                           
                         </select>
                     </div>
                 </div>
@@ -1746,16 +1434,18 @@ export function RadAppointmentModify(){
                 <div className="control">
                     <div className="select is-small">
                         <select name="appointment_status" ref={register ({ required: true })} /* value={appointment_status} */ onChange={handleChangeStatus}>
-                           <option value="">Appointment Status  </option>
+                            <option value="">Appointment Status  </option>
                             <option value="Scheduled">Scheduled</option>
                             <option value="Confirmed">Confirmed</option>
+                            <option value="Billed">Billed</option>
+                            <option value="Paid">Paid</option>
                             <option value="Checked In">Checked In</option>
-                            <option value="Vitals Taken">Vitals Taken</option>
-                            <option value="With Nurse">With Nurse</option>
-                            <option value="With Doctor">With Doctor</option>
+                            <option value="Procedure in Progress">Procedure in Progress</option>
+                            <option value="Completed Procedure">Completed Procedure</option>
+                            <option value="Checked Out">Checked Out</option>
                             <option value="No Show">No Show</option>
                             <option value="Cancelled">Cancelled</option>
-                            <option value="Billed">Billed</option>
+                           
                         </select>
                     </div>
                 </div>

@@ -2,20 +2,14 @@
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
 import ChartofAccount from './Accounts/ChartofAccount'
-import FinanceSetup from './Finance/FinanceSetup'
 import Expense from './Accounts/Expense'
-import FinanceHome from './Finance/FinanceHome'
-import ProductEntry from './Finance/Services'
-import ProductExit from './Finance/ProductExit'
+import AccountHome from './Accounts/AccountHome'
 import Payment from './Finance/Payment'
-import Products from './Finance/Products'
-import Store, { StoreList, StoreListStandalone } from './Finance/Store'
+import Store, { StoreList, StoreListStandalone } from './Finance/Store' 
 import {UserContext,ObjectContext} from '../context'
-import BillPrescription from './Finance/BillPrescription'
-import Services from './Finance/Services'
-import BillService from './Finance/BillService'
-import FacilityAccount from './Finance/FacilityAccount'
-import HMOauth from './Finance/HMOauth'
+import Journal from './Accounts/Journal'
+import Ledgers from './Accounts/Ledgers'
+import Report from './Accounts/Report'
 
 export default function AccountModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -104,7 +98,7 @@ export default function AccountModule() {
                                     </div>
                                    
                                     <div className="navbar-item" onClick={handleBurger}>
-                                        <NavLink to={`${url}/ledger`}>Ledgers</NavLink>
+                                        <NavLink to={`${url}/ledgers`}>Ledgers</NavLink>
                                     </div>
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/reports`}>Reports</NavLink>
@@ -139,7 +133,7 @@ export default function AccountModule() {
                        
                     <Switch>
                         <Route path={path} exact>
-                            <FinanceHome />
+                            <AccountHome />
                         </Route>
                         <Route path={`${path}/payments`} exact >
                             <Payment />
@@ -148,13 +142,13 @@ export default function AccountModule() {
                             <Expense />
                         </Route>
                        <Route path={`${path}/reports`} exact >
-                            <Services />
+                            <Report />
                         </Route>
                          <Route path={`${path}/journals`} exact>
-                            <BillService />
+                            <Journal/>
                         </Route>
                         <Route path={`${path}/ledgers`} exact>
-                            <HMOauth />
+                            <Ledgers/>
                         </Route>
                         <Route path={`${path}/chartsaccount`} exact>
                             <ChartofAccount />
@@ -170,10 +164,10 @@ export default function AccountModule() {
                         </Route>
                         <Route path={`${path}/inv-reports`} exact>
                             <FinanceReport />
-                        </Route> */}
+                        </Route> 
                         <Route path={`${path}/location`} exact>
                             <Store />
-                        </Route>
+                        </Route>*/}
 
                     </Switch>
                   

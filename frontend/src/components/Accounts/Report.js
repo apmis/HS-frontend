@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function HSModules() {
+export default function Report() {
     return (
         <div>
-            HealthStack Modules
+            Roaster
         </div>
     )
 }

@@ -1,13 +1,7 @@
 /* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import InventoryReport from './Radiology/InventoryReport'
-import InventorySetup from './Radiology/InventorySetup'
-import InventoryStore from './Radiology/InventoryStore'
 import RadiologyHome from './Radiology/RadiologyHome'
-import ProductEntry from './Radiology/ProductEntry'
-import ProductExit from './Radiology/ProductExit'
-import Dispense from './Radiology/Dispensary'
 import BillService from './Finance/BillService'
 import RadiologyReport from './Radiology/RadiologyReport'
 import RadiologyPayment from './Radiology/RadiologyPayment'

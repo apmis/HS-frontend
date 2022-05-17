@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Roaster() {
+export default function Journal() {
     return (
         <div>
-            Roaster
+            HealthStack Modules
         </div>
     )
 }

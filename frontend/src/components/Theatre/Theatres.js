@@ -10,25 +10,25 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function ChartofAccount() {
+export default function Theatre() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
-    const [selectedLocation,setSelectedLocation]=useState()
+    const [selectedStore,setSelectedStore]=useState()
     //const [showState,setShowState]=useState() //create|modify|detail
     
     return(
         <section className= "section remPadTop">
            {/*  <div className="level">
-            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Location  Module</span></div>
+            <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Store  Module</span></div>
             </div> */}
             <div className="columns ">
             <div className="column is-8 ">
-                <ChartofAccountList />
+                <StoreList />
                 </div>
             <div className="column is-4 ">
-                {/* (state.ChartAccountModule.show ==='create')&& */<ChartofAccountCreate />}
-              {/*   {(state.ChartAccountModule.show ==='detail')&&<ChartofAccountDetail  />}
-                {(state.ChartAccountModule.show ==='modify')&&<ChartofAccountModify Location={selectedLocation} />} */}
+                {(state.StoreModule.show ==='create')&&<StoreCreate />}
+                {(state.StoreModule.show ==='detail')&&<StoreDetail  />}
+                {(state.StoreModule.show ==='modify')&&<StoreModify Store={selectedStore} />}
                
             </div>
 
@@ -39,22 +39,22 @@ export default function ChartofAccount() {
     
 }
 
-export function ChartofAccountCreate(){
+export function StoreCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const accountServ=client.service('chartsofaccount')
+    const StoreServ=client.service('location')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const locationTypeOptions =["Assets", "Equity", "Expenses","Liability","Revenue" ]
 
 
-    const getSearchfacility=(obj)=>{
+
+    const getSearchfacility=(obj)=>{ // buble-up from inputsearch for creating resource
         
         setValue("facility", obj._id,  {
             shouldValidate: true,
@@ -72,7 +72,7 @@ export function ChartofAccountCreate(){
 
   //check user for facility or get list of facility  
     useEffect(()=>{
-        //setFacility(user.activeLocation.FacilityId)//
+        //setFacility(user.activeStore.FacilityId)//
       if (!user.stacker){
           console.log(currentUser)
         setValue("facility", user.currentEmployee.facilityDetail._id,  {
@@ -84,10 +84,6 @@ export function ChartofAccountCreate(){
 
     const onSubmit = (data,e) =>{
         e.preventDefault();
-       /*  if (data.locationType===""){
-            alert("Kindly choose location type")
-            return
-        } */
         setMessage("")
         setError(false)
         setSuccess(false)
@@ -96,14 +92,15 @@ export function ChartofAccountCreate(){
           if (user.currentEmployee){
          data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
           }
-        accountServ.create(data)
+          data.locationType="Theatre"
+        StoreServ.create(data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 e.target.reset();
-               /*  setMessage("Created Location successfully") */
+               /*  setMessage("Created Store successfully") */
                 setSuccess(true)
                 toast({
-                    message: 'Account created succesfully',
+                    message: 'Theatre created succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -112,7 +109,7 @@ export function ChartofAccountCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error creating Account ' + err,
+                    message: 'Error creating Laboratory ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -126,72 +123,55 @@ export function ChartofAccountCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Enter Expense
+                    Create Laboratory
                 </p>
             </div>
             <div className="card-content vscrollable">
-            
+   
             <form onSubmit={handleSubmit(onSubmit)}>
-            
-                <div className="field">    
-                 <div className="control">
-                     <div className="select is-small ">
-                         <select name="accountType"  ref={register({ required: true })}  className="selectadd" >
-                         <option value="">Choose Acoount Type</option>
-                           {locationTypeOptions.map((option,i)=>(
-                               <option key={i} value={option}> {option}</option>
-                           ))}
-                         </select>
-                     </div>
-                 </div>
-                </div>
+               {/*  <div className="field">
+                    <p className="control has-icons-left has-icons-right">
+                        <input className="input is-small" ref={register({ required: true })}  name="StoreType" type="text" placeholder="Type of Store" />
+                        <span className="icon is-small is-left">
+                            <i className="fas fa-hospital"></i>
+                        </span>                    
+                    </p>
+                </div> */}
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="class" type="text" placeholder="Class of Account" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Laboratory" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
                     
                 </p>
             </div>
-            <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="subclass" type="text" placeholder="Subclass of Account" />
+           {/*  <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="profession" type="text" placeholder="Profession"/>
                     <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
+                    <i className=" fas fa-user-md "></i>
                     </span>
-                    
                 </p>
             </div>
             <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="accountName" type="text" placeholder="Name of Account" />
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="phone" type="text" placeholder=" Phone No"/>
                     <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
+                    <i className="fas fa-phone-alt"></i>
                     </span>
-                    
                 </p>
             </div>
            
             <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="code" type="text" placeholder="Account Code" />
+                <p className="control has-icons-left">
+                
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Email"  />
                     <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
+                    <i className="fas fa-envelope"></i>
                     </span>
-                    
                 </p>
-            </div>
-            <div className="field">
-                    <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small"  ref={register(/* { required: true } */)}   name="description" type="text" placeholder="Description" />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-map-signs"></i>
-                    </span>
-                    
-                </p>
-            </div>
-           
+            </div> */}
            <div className="field"  style={ !user.stacker?{display:"none"}:{}} >
                 <InputSearch  getSearchfacility={getSearchfacility} clear={success} /> 
                 <p className="control has-icons-left " style={{display:"none"}}>
@@ -201,7 +181,50 @@ export function ChartofAccountCreate(){
                     </span>
                 </p>
             </div>
-           
+           {/*  <div className="field">
+                <div className="control has-icons-left">
+                    <div className="dropdown ">
+                        <div className="dropdown-trigger">
+                            <input className="input is-small" ref={register({ required: true })} name="department" type="text" placeholder="Department"/>
+                            <span className="icon is-small is-left">
+                            <i className="fas fa-hospital-symbol"></i>
+                            </span>
+                        </div>
+                        <div className="dropdown-menu">
+                            <div className="dropdown-content">
+                                <div className="dropdown-item">
+                                    simpa
+                                </div>
+                                <div className="dropdown-item is-active">
+                                    simpa 2
+                                </div>
+                                <div className="dropdown-item">
+                                    simpa 3
+                                </div>
+                                <div className="dropdown-item">
+                                    simpa 4
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+            <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="deptunit" type="text" placeholder="Department Unit"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-clinic-medical"></i>
+                    </span>
+                </p>
+            </div>
+            <div className="field">
+                <p className="control has-icons-left">
+                    <input className="input is-small" ref={register({ required: true })} name="password" type="text" placeholder="password"/>
+                    <span className="icon is-small is-left">
+                    <i className="fas fa-clinic-medical"></i>
+                    </span>
+                </p>
+            </div> */}
             <div className="field">
                 <p className="control">
                     <button className="button is-success is-small">
@@ -218,7 +241,7 @@ export function ChartofAccountCreate(){
    
 }
 
-export function ChartofAccountList(){
+export function StoreList({standalone,closeModal}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -226,12 +249,12 @@ export function ChartofAccountList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const LocationServ=client.service('chartsofaccount')
+    const StoreServ=client.service('location')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
      // eslint-disable-next-line
-   const [selectedLocation, setSelectedLocation]=useState() //
+   const [selectedStore, setSelectedStore]=useState() //
     // eslint-disable-next-line
     const {state,setState}=useContext(ObjectContext)
     // eslint-disable-next-line
@@ -240,54 +263,56 @@ export function ChartofAccountList(){
 
 
     const handleCreateNew = async()=>{
-        const    newLocationModule={
-            selectedAccount:{},
+        const    newStoreModule={
+            selectedStore:{},
             show :'create'
             }
-       await setState((prevstate)=>({...prevstate,  ChartAccountModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
        //console.log(state)
         
 
     }
-    const handleRow= async(Location)=>{
+    const handleRow= async(Store)=>{
         //console.log("b4",state)
 
-        //console.log("handlerow",Location)
+        //console.log("handlerow",Store)
 
-        await setSelectedLocation(Location)
+        await setSelectedStore(Store)
 
-        const    newLocationModule={
-            selectedAccount:Location,
+        const    newStoreModule={
+            selectedStore:Store,
             show :'detail'
         }
-       await setState((prevstate)=>({...prevstate,  ChartAccountModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
        //console.log(state)
+       //closeModal()
 
     }
 
    const handleSearch=(val)=>{
        const field='name'
        console.log(val)
-       LocationServ.find({query: {
+       StoreServ.find({query: {
                 [field]: {
                     $regex:val,
                     $options:'i'
                    
                 },
                facility:user.currentEmployee.facilityDetail._id || "",
-                $limit:100,
+                locationType:"Theatre",
+               $limit:10,
                 $sort: {
-                    accountType: 1
+                    name: 1
                   }
                     }}).then((res)=>{
                 console.log(res)
                setFacilities(res.data)
-                setMessage(" Location  fetched successfully")
+                setMessage(" Store  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
                 console.log(err)
-                setMessage("Error fetching Location, probable network issues "+ err )
+                setMessage("Error fetching Store, probable network issues "+ err )
                 setError(true)
             })
         }
@@ -295,53 +320,46 @@ export function ChartofAccountList(){
         const getFacilities= async()=>{
             if (user.currentEmployee){
             
-        const findLocation= await LocationServ.find(
+        const findStore= await StoreServ.find(
                 {query: {
-                   /*  facility:user.currentEmployee.facilityDetail._id, */
-                    $limit:2000,
+                    locationType:"Laboratory",
+                    facility:user.currentEmployee.facilityDetail._id,
+                    $limit:20,
                     $sort: {
-                        accountType: 1
+                        name: 1
                     }
                     }})
 
-         await setFacilities(findLocation.data)
+         await setFacilities(findStore.data)
                 }
                 else {
                     if (user.stacker){
-                        const findLocation= await LocationServ.find(
+                        const findStore= await StoreServ.find(
                             {query: {
-                                
-                                $limit:2000,
+                                locationType:"Theatre",
+                                $limit:20,
                                 $sort: {
-                                    accountType: 1
+                                    name: 1
                                 }
                                 }})
             
-                    await setFacilities(findLocation.data)
+                    await setFacilities(findStore.data)
 
                     }
                 }
           /*   .then((res)=>{
                 console.log(res)
                     setFacilities(res.data)
-                    setMessage(" Location  fetched successfully")
+                    setMessage(" Store  fetched successfully")
                     setSuccess(true)
                 })
                 .catch((err)=>{
-                    setMessage("Error creating Location, probable network issues "+ err )
+                    setMessage("Error creating Store, probable network issues "+ err )
                     setError(true)
                 }) */
             }
             
-            useEffect(() => {
-             
-
-                return () => {
-                    
-
-                }
-            },[])
-
+           
             useEffect(() => {
                
                 if (user){
@@ -355,10 +373,10 @@ export function ChartofAccountList(){
                     console.log(user)
                     getFacilities(user) */
                 }
-                LocationServ.on('created', (obj)=>getFacilities())
-                LocationServ.on('updated', (obj)=>getFacilities())
-                LocationServ.on('patched', (obj)=>getFacilities())
-                LocationServ.on('removed', (obj)=>getFacilities())
+                StoreServ.on('created', (obj)=>getFacilities())
+                StoreServ.on('updated', (obj)=>getFacilities())
+                StoreServ.on('patched', (obj)=>getFacilities())
+                StoreServ.on('removed', (obj)=>getFacilities())
                 return () => {
                 
                 }
@@ -376,7 +394,7 @@ export function ChartofAccountList(){
                             <div className="field">
                                 <p className="control has-icons-left  ">
                                     <DebounceInput className="input is-small " 
-                                        type="text" placeholder="Search Locations"
+                                        type="text" placeholder="Search Stores"
                                         minLength={3}
                                         debounceTimeout={400}
                                         onChange={(e)=>handleSearch(e.target.value)} />
@@ -387,48 +405,47 @@ export function ChartofAccountList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Accounts </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Theatre Locations </span></div>
                     <div className="level-right">
-                        <div className="level-item"> 
+                { !standalone &&   <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
-                        </div>
+                        </div>}
                     </div>
 
                 </div>
-                <div className="table-container pullup  vscrola">
-                                <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                <div className="table-container pullup ">
+                                <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
                                     <thead>
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
-                                        <th><abbr title="Account Type">Account Type</abbr></th>
-                                       <th><abbr title="Account Class">Class</abbr></th>
-                                         <th><abbr title="Subclass">Subclass</abbr></th>
-                                         <th><abbr title="Code">Code</abbr></th>
-                                        <th><abbr title="Description">Description</abbr></th>
-                                        
-                                       {/*  <th><abbr title="Departmental Unit">Departmental Unit</abbr></th>  */}
-                                       {user.stacker && <th><abbr title="Facility">Facility</abbr></th>}
-                                        {/* <th><abbr title="Actions">Actions</abbr></th> */}
+                                        {/* <th><abbr title="Last Name">Store Type</abbr></th>
+                                       <th><abbr title="Profession">Profession</abbr></th>
+                                         <th><abbr title="Phone">Phone</abbr></th>
+                                        <th><abbr title="Email">Email</abbr></th>
+                                        <th><abbr title="Department">Department</abbr></th>
+                                        <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
+                                        <th><abbr title="Facility">Facility</abbr></th>*/}
+                                       { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         
                                     </tfoot>
                                     <tbody>
-                                        {facilities.map((Location, i)=>(
+                                        {facilities.map((Store, i)=>(
 
-                                            <tr key={Location._id} onClick={()=>handleRow(Location)} className={Location._id===(selectedLocation?._id||null)?"is-selected":""}>
+                                            <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Location.accountName}</th>
-                                            <td>{Location.accountType}</td>
-                                            <td>{Location.class}</td>
-                                            <td>{Location.subclass}</td>
-                                            <td>{Location.code}</td>
-                                            <td>{Location.description}</td>
-                                               {/*  <td>{Location.deptunit}</td>  */}
-                                           {user.stacker &&  <td>{Location.facility}</td>}
-                                           {/*  <td><span   className="showAction"  >...</span></td> */}
+                                            <th>{Store.name}</th>
+                                            {/*<td>{Store.StoreType}</td>
+                                            < td>{Store.profession}</td>
+                                            <td>{Store.phone}</td>
+                                            <td>{Store.email}</td>
+                                            <td>{Store.department}</td>
+                                            <td>{Store.deptunit}</td> 
+                                            <td>{Store.facility}</td>*/}
+                                          { !standalone &&   <td><span   className="showAction"  >...</span></td>}
                                            
                                             </tr>
 
@@ -443,98 +460,257 @@ export function ChartofAccountList(){
     )
     }
 
-
-export function ChartofAccountDetail(){
-    const { register, handleSubmit, watch, setValue,reset } = useForm(); //errors,
+    export function StoreListStandalone({standalone,closeModal}){
+        // const { register, handleSubmit, watch, errors } = useForm();
+         // eslint-disable-next-line
+         const [error, setError] =useState(false)
+          // eslint-disable-next-line
+         const [success, setSuccess] =useState(false)
+          // eslint-disable-next-line
+        const [message, setMessage] = useState("") 
+         const StoreServ=client.service('location')
+         //const history = useHistory()
+        // const {user,setUser} = useContext(UserContext)
+         const [facilities,setFacilities]=useState([])
+          // eslint-disable-next-line
+        const [selectedStore, setSelectedStore]=useState() //
+         // eslint-disable-next-line
+         const {state,setState}=useContext(ObjectContext)
+         // eslint-disable-next-line
+         const {user,setUser}=useContext(UserContext)
+     
+     
+     
+         const handleCreateNew = async()=>{
+             const    newStoreModule={
+                 selectedStore:{},
+                 show :'create'
+                 }
+            await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+            //console.log(state)
+             
+     
+         }
+         const handleRow= async(Store)=>{
+             //console.log("b4",state)
+     
+             //console.log("handlerow",Store)
+     
+             await setSelectedStore(Store)
+     
+             const    newStoreModule={
+                 selectedStore:Store,
+                 show :'detail'
+             }
+            await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
+            //console.log(state)
+            closeModal()
+     
+         }
+     
+        const handleSearch=(val)=>{
+            const field='name'
+            console.log(val)
+            StoreServ.find({query: {
+                     [field]: {
+                         $regex:val,
+                         $options:'i'
+                        
+                     },
+                    facility:user.currentEmployee.facilityDetail._id || "",
+                     locationType:"Theatre",
+                    $limit:10,
+                     $sort: {
+                         name: 1
+                       }
+                         }}).then((res)=>{
+                     console.log(res)
+                    setFacilities(res.data)
+                     setMessage(" Store  fetched successfully")
+                     setSuccess(true) 
+                 })
+                 .catch((err)=>{
+                     console.log(err)
+                     setMessage("Error fetching Store, probable network issues "+ err )
+                     setError(true)
+                 })
+             }
+        
+             const getFacilities= async()=>{
+                 if (user.currentEmployee){
+                 
+             const findStore= await StoreServ.find(
+                     {query: {
+                         locationType:"Theatre",
+                         facility:user.currentEmployee.facilityDetail._id,
+                         $limit:20,
+                         $sort: {
+                             name: 1
+                         }
+                         }})
+     
+              await setFacilities(findStore.data)
+                     }
+                     else {
+                         if (user.stacker){
+                             const findStore= await StoreServ.find(
+                                 {query: {
+                                     locationType:"Theatre",
+                                     $limit:20,
+                                     $sort: {
+                                         name: 1
+                                     }
+                                     }})
+                 
+                         await setFacilities(findStore.data)
+     
+                         }
+                     }
+               /*   .then((res)=>{
+                     console.log(res)
+                         setFacilities(res.data)
+                         setMessage(" Store  fetched successfully")
+                         setSuccess(true)
+                     })
+                     .catch((err)=>{
+                         setMessage("Error creating Store, probable network issues "+ err )
+                         setError(true)
+                     }) */
+                 }
+                 
+           
+     
+                 useEffect(() => {
+                    
+                     if (user){
+                         getFacilities()
+                     }else{
+                         /* const localUser= localStorage.getItem("user")
+                         const user1=JSON.parse(localUser)
+                         console.log(localUser)
+                         console.log(user1)
+                         fetchUser(user1)
+                         console.log(user)
+                         getFacilities(user) */
+                     }
+                     StoreServ.on('created', (obj)=>getFacilities())
+                     StoreServ.on('updated', (obj)=>getFacilities())
+                     StoreServ.on('patched', (obj)=>getFacilities())
+                     StoreServ.on('removed', (obj)=>getFacilities())
+                     return () => {
+                     
+                     }
+                 },[])
+     
+     
+         //todo: pagination and vertical scroll bar
+     
+         return(
+             <>
+                {user?( <>  
+                     <div className="level">
+                         <div className="level-left">
+                             <div className="level-item">
+                                 <div className="field">
+                                     <p className="control has-icons-left  ">
+                                         <DebounceInput className="input is-small " 
+                                             type="text" placeholder="Search Stores"
+                                             minLength={3}
+                                             debounceTimeout={400}
+                                             onChange={(e)=>handleSearch(e.target.value)} />
+                                         <span className="icon is-small is-left">
+                                             <i className="fas fa-search"></i>
+                                         </span>
+                                     </p>
+                                 </div>
+                             </div>
+                         </div>
+                         <div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Theatre Locations </span></div>
+                         <div className="level-right">
+                     { !standalone &&   <div className="level-item"> 
+                                 <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
+                             </div>}
+                         </div>
+     
+                     </div>
+                     <div className="table-container pullup ">
+                                     <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
+                                         <thead>
+                                             <tr>
+                                             <th><abbr title="Serial No">S/No</abbr></th>
+                                             <th>Name</th>
+                                             {/* <th><abbr title="Last Name">Store Type</abbr></th>
+                                            <th><abbr title="Profession">Profession</abbr></th>
+                                              <th><abbr title="Phone">Phone</abbr></th>
+                                             <th><abbr title="Email">Email</abbr></th>
+                                             <th><abbr title="Department">Department</abbr></th>
+                                             <th><abbr title="Departmental Unit">Departmental Unit</abbr></th> 
+                                             <th><abbr title="Facility">Facility</abbr></th>*/}
+                                            { !standalone &&  <th><abbr title="Actions">Actions</abbr></th>}
+                                             </tr>
+                                         </thead>
+                                         <tfoot>
+                                             
+                                         </tfoot>
+                                         <tbody>
+                                             {facilities.map((Store, i)=>(
+     
+                                                 <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
+                                                 <th>{i+1}</th>
+                                                 <th>{Store.name}</th>
+                                                 {/*<td>{Store.StoreType}</td>
+                                                 < td>{Store.profession}</td>
+                                                 <td>{Store.phone}</td>
+                                                 <td>{Store.email}</td>
+                                                 <td>{Store.department}</td>
+                                                 <td>{Store.deptunit}</td> 
+                                                 <td>{Store.facility}</td>*/}
+                                               { !standalone &&   <td><span   className="showAction"  >...</span></td>}
+                                                
+                                                 </tr>
+     
+                                             ))}
+                                         </tbody>
+                                         </table>
+                                         
+                     </div>              
+                 </>):<div>loading</div>}
+                 </>
+                   
+         )
+         }
+export function StoreDetail(){
+    //const { register, handleSubmit, watch, setValue } = useForm(); //errors,
      // eslint-disable-next-line
     const [error, setError] =useState(false) //, 
     //const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
     const [message, setMessage] = useState("") //,
-    //const LocationServ=client.service('/Location')
+    //const StoreServ=client.service('/Store')
     //const history = useHistory()
     //const {user,setUser} = useContext(UserContext)
-    const [showSub, setShowSub] = useState(false) 
-    const [showUpdate, setShowUpdate] = useState(false) 
     const {state,setState} = useContext(ObjectContext)
-    
-    const LocationServ=client.service('chartofaccount')
 
-    const sublocationTypeOptions =["Bed","Unit", ]
+   
 
-   const Location =state.LocationModule.selectedLocation 
+   const Store =state.StoreModule.selectedStore 
 
     const handleEdit= async()=>{
-        const    newLocationModule={
-            selectedLocation:Location,
+        const    newStoreModule={
+            selectedStore:Store,
             show :'modify'
         }
-       await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+       await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
        //console.log(state)
        
     }
-    const handleSublocation= ()=>{
-        setShowSub(true)
-        // show popup to create new sublocation.
-    }
  
-    const onSubmit = (data,e) =>{
-        e.preventDefault();
-        if (data.type===""|| data.typeName===""){
-            alert("Kindly enter missing data ")
-            return
-        }
-       
-          console.log(data);
-        /*   if (user.currentEmployee){
-         data.facility=user.currentEmployee.facilityDetail._id  // or from facility dropdown
-          } */
-          if (!Location.sublocations){
-              Location.sublocations=[]
-          }
-
-          Location.sublocations.push(data)
-          reset()
-          setShowUpdate(true)
-       
-        }
-    
-    const handleUpdate = ()=>{
-
-        LocationServ.patch(Location._id,Location)
-        .then((res)=>{
-                //console.log(JSON.stringify(res))
-               // e.target.reset();
-               // setMessage("updated Location successfully")
-                 toast({
-                    message: 'Location updated succesfully',
-                    type: 'is-success',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-                  
-               setShowUpdate(false)
-
-            })
-            .catch((err)=>{
-                //setMessage("Error creating Location, probable network issues "+ err )
-               // setError(true)
-                toast({
-                    message: "Error updating Location, probable network issues or "+ err,
-                    type: 'is-danger',
-                    dismissible: true,
-                    pauseOnHover: true,
-                  })
-            })
-        
-    }
-
     return (
         <>
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Location Details
+                   Laboratory Details
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -551,7 +727,7 @@ export function ChartofAccountDetail(){
                         </label>
                         </td>
                         <td>
-                        <span className="is-size-7 padleft"   name="name"> {Location.name} </span>
+                        <span className="is-size-7 padleft"   name="name"> {Store.name} </span>
                         </td>
                     </tr>
                     <tr>
@@ -561,102 +737,89 @@ export function ChartofAccountDetail(){
                     </span>Location Type:
                     </label></td>
                     <td>
-                    <span className="is-size-7 padleft"   name="LocationType">{Location.locationType} </span> 
+                    <span className="is-size-7 padleft"   name="StoreType">{Store.locationType} </span> 
                     </td>
-                </tr>         
+                </tr>
+                  {/*   <tr>
+                    <td>
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-map-marker-alt"></i>
+                    </span>Profession: 
+                
+                    
+                    </label>
+                    </td>
+                <td>
+                <span className="is-size-7 padleft "  name="StoreCity">{Store.profession}</span> 
+                </td>
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-phone-alt"></i>
+                    </span>Phone:           
+                    
+                        </label>
+                        </td>
+                        <td>
+                        <span className="is-size-7 padleft "  name="StoreContactPhone" >{Store.phone}</span>
+                        </td>
+                  </tr>
+                    <tr><td>
+            
+            <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                    </span>Email:                     
+                    
+                         </label></td><td>
+                         <span className="is-size-7 padleft "  name="StoreEmail" >{Store.email}</span>
+                         </td>
+             
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"> <span className="icon is-small is-left">
+                    <i className="fas fa-user-md"></i></span>Department:
+                    
+                    </label></td>
+                    <td>
+                    <span className="is-size-7 padleft "  name="StoreOwner">{Store.department}</span>
+                    </td>
+               
+                </tr>
+                    <tr>
+            <td>
+            <label className="label is-small"> <span className="icon is-small is-left">
+                    <i className="fas fa-hospital-symbol"></i>
+                    </span>Departmental Unit:              
+                    
+                </label></td>
+                <td>
+                <span className="is-size-7 padleft "  name="StoreType">{Store.deptunit}</span>
+                </td>
+              
+                </tr> */}
+                    
+          {/*   <div className="field">
+             <label className="label is-small"><span className="icon is-small is-left">
+                    <i className="fas fa-clinic-medical"></i>
+                    </span>Category:              
+                    <span className="is-size-7 padleft "  name= "StoreCategory">{Store.StoreCategory}</span>
+                </label>
+                 </div> */}
 
             </tbody> 
             </table> 
-            {  (Location.sublocations?.length>0 ||showSub) &&
-            <>
-                <label className="label is-size-7 mt-2">Sublocations:</label>
-                <div>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                    <div class="field is-horizontal">
-                    <div class="field-body">
-                <div className="field">    
-                    <div className="control">
-                        <div className="select is-small ">
-                            <select name="type"  ref={register({ required: true })} /* onChange={(e)=>handleChangeMode(e.target.value)} */ className="selectadd" >
-                            <option value="">Choose Sub-location Type </option>
-                            {sublocationTypeOptions.map((option,i)=>(
-                                <option key={i} value={option}> {option}</option>
-                            ))}
-                            </select>
-                        </div>
-                    </div>
-                    </div>
-                    <div className="field">
-                        <p className="control has-icons-left has-icons-right">
-                        <input className="input is-small" ref={register({ required: true })}  name="typeName" type="text" placeholder="Name of Sub-location" />
-                        <span className="icon is-small is-left">
-                            <i className="fas fa-map-signs"></i>
-                        </span>
-                        
-                    </p>
-                </div>
-                <div className="field">
-                    <p className="control">
-                        <button className="button is-success is-small selectadd">
-                            Add
-                        </button>
-                    </p>
-                    </div>
-                </div>
-                </div>
-                    </form>
-                </div>
-           {      (Location.sublocations?.length>0 ) &&
-                <div>
-                    
-                    <table className="table is-striped  is-hoverable is-fullwidth is-scrollable ">
-                    <thead>
-                        <tr>
-                        <th><abbr title="Serial No">S/No</abbr></th>
-                        <th><abbr title="Type">Type</abbr></th>
-                        <th><abbr title="Name">Name</abbr></th>
-                    
-                    
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        
-                    </tfoot>
-                    <tbody>
-                    { Location.sublocations?.map((ProductEntry, i)=>(  
-
-                            <tr key={i}>
-                            <th>{i+1}</th>
-                            <td>{ProductEntry.type}</td>
-                            <td>{ProductEntry.typeName}</td>                        
-                            </tr>
-
-                        ))}
-                    </tbody>
-                    </table>
-                </div> }       
-              
-           </>
-           }
-            <div className="field mt-2  is-grouped">
+           
+            <div className="field mt-2">
                 <p className="control">
                     <button className="button is-success is-small" onClick={handleEdit}>
                         Edit
                     </button>
                 </p>
-             {!showSub &&   <p className={Location.sublocations?.length>0?"is-hidden control":" control"}>
-                    <button className="button is-info is-small" onClick={handleSublocation}>
-                        Create Sublocation
-                    </button>
-                </p>}
-               {showUpdate &&  <p className= "control" >
-                    <button className="button is-info is-small" onClick={handleUpdate}>
-                        Update
-                    </button>
-                </p>}
-                
             </div>
-               
+            { error && <div className="message"> {message}</div>}
+           
         </div>
         </div>
         </>
@@ -665,7 +828,7 @@ export function ChartofAccountDetail(){
    
 }
 
-export function ChartofAccountModify(){
+export function StoreModify(){
     const { register, handleSubmit, setValue,reset, errors } = useForm(); //watch, errors,
     // eslint-disable-next-line 
     const [error, setError] =useState(false)
@@ -674,44 +837,44 @@ export function ChartofAccountModify(){
     // eslint-disable-next-line 
     const [message,setMessage] = useState("")
     // eslint-disable-next-line 
-    const LocationServ=client.service('chartsofaccount')
+    const StoreServ=client.service('location')
     //const history = useHistory()
      // eslint-disable-next-line
     const {user} = useContext(UserContext)
     const {state,setState} = useContext(ObjectContext)
 
-    const Location =state.LocationModule.selectedLocation 
+    const Store =state.StoreModule.selectedStore 
 
         useEffect(() => {
-            setValue("name", Location.name,  {
+            setValue("name", Store.name,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("locationType", Location.locationType,  {
+            setValue("locationType", Store.locationType,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-           /*  setValue("profession", Location.profession,  {
+           /*  setValue("profession", Store.profession,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("phone", Location.phone,  {
+            setValue("phone", Store.phone,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("email", Location.email,  {
+            setValue("email", Store.email,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("department", Location.department,  {
+            setValue("department", Store.department,  {
                 shouldValidate: true,
                 shouldDirty: true
             })
-            setValue("deptunit", Location.deptunit,  {
+            setValue("deptunit", Store.deptunit,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
-          /*   setValue("LocationCategory", Location.LocationCategory,  {
+          /*   setValue("StoreCategory", Store.StoreCategory,  {
                 shouldValidate: true,
                 shouldDirty: true
             }) */
@@ -722,41 +885,41 @@ export function ChartofAccountModify(){
         })
 
    const handleCancel=async()=>{
-    const    newLocationModule={
-        selectedLocation:{},
+    const    newStoreModule={
+        selectedStore:{},
         show :'create'
       }
-   await setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+   await setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
    //console.log(state)
            }
 
 
         const changeState =()=>{
-        const    newLocationModule={
-            selectedLocation:{},
+        const    newStoreModule={
+            selectedStore:{},
             show :'create'
         }
-        setState((prevstate)=>({...prevstate, LocationModule:newLocationModule}))
+        setState((prevstate)=>({...prevstate, StoreModule:newStoreModule}))
 
         }
     const handleDelete=async()=>{
         let conf=window.confirm("Are you sure you want to delete this data?")
         
-        const dleteId=Location._id
+        const dleteId=Store._id
         if (conf){
              
-        LocationServ.remove(dleteId)
+        StoreServ.remove(dleteId)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                 reset();
-               /*  setMessage("Deleted Location successfully")
+               /*  setMessage("Deleted Store successfully")
                 setSuccess(true)
                 changeState()
                setTimeout(() => {
                 setSuccess(false)
                 }, 200); */
                 toast({
-                    message: 'Location deleted succesfully',
+                    message: 'Store deleted succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -764,10 +927,10 @@ export function ChartofAccountModify(){
                 changeState()
             })
             .catch((err)=>{
-               // setMessage("Error deleting Location, probable network issues "+ err )
+               // setMessage("Error deleting Store, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error deleting Location, probable network issues or "+ err,
+                    message: "Error deleting Store, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -786,16 +949,16 @@ export function ChartofAccountModify(){
         
         setSuccess(false)
         console.log(data)
-        data.facility=Location.facility
+        data.facility=Store.facility
           //console.log(data);
           
-        LocationServ.patch(Location._id,data)
+        StoreServ.patch(Store._id,data)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
                // e.target.reset();
-               // setMessage("updated Location successfully")
+               // setMessage("updated Store successfully")
                  toast({
-                    message: 'Location updated succesfully',
+                    message: 'Store updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -805,10 +968,10 @@ export function ChartofAccountModify(){
 
             })
             .catch((err)=>{
-                //setMessage("Error creating Location, probable network issues "+ err )
+                //setMessage("Error creating Store, probable network issues "+ err )
                // setError(true)
                 toast({
-                    message: "Error updating Location, probable network issues or "+ err,
+                    message: "Error updating Store, probable network issues or "+ err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -824,7 +987,7 @@ export function ChartofAccountModify(){
         <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Location Details-Modify
+                    Store Details-Modify
                 </p>
             </div>
             <div className="card-content vscrollable">
@@ -843,7 +1006,7 @@ export function ChartofAccountModify(){
                 <div className="field">
                 <label className="label is-small">Location Type
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small " ref={register({ required: true })} disabled name="locationType" type="text" placeholder="Location Type" />
+                    <input className="input is-small " ref={register({ required: true })} disabled name="StoreType" type="text" placeholder="Store Type" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -874,7 +1037,7 @@ export function ChartofAccountModify(){
             <div className="field">
             <label className="label is-small">Email
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Location Email"/>
+                    <input className="input is-small" ref={register({ required: true })} name="email" type="email" placeholder="Store Email"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                     </span>
@@ -905,7 +1068,7 @@ export function ChartofAccountModify(){
            {/*  <div className="field">
             <label className="label is-small">Category
                 <p className="control has-icons-left">
-                    <input className="input is-small" ref={register({ required: true })} name="LocationCategory" type="text" placeholder="Location Category"/>
+                    <input className="input is-small" ref={register({ required: true })} name="StoreCategory" type="text" placeholder="Store Category"/>
                     <span className="icon is-small is-left">
                     <i className="fas fa-clinic-medical"></i>
                     </span>
@@ -927,11 +1090,11 @@ export function ChartofAccountModify(){
                         Cancel
                     </button>
                 </p>
-                <p className="control">
+                {/* <p className="control">
                     <button className="button is-danger is-small" onClick={()=>handleDelete()} type="delete">
                        Delete
                     </button>
-                </p>
+                </p> */}
             </div>
         </div>
         </div>
@@ -1063,7 +1226,7 @@ export  function InputSearch({getSearchfacility,clear}) {
                             <div className="dropdown-content">
                             {facilities.map((facility, i)=>(
                                     
-                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)}>
+                                    <div className="dropdown-item" key={facility._id} onClick={()=>handleRow(facility)} >
                                         
                                         <span>{facility.facilityName}</span>
                                         

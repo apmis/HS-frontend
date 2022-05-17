@@ -332,9 +332,8 @@ export function RadAppointmentCreate(){
                     <div className="select is-small">
                         <select name="type" value={type} onChange={handleChangeType}>
                            <option value="">Choose Appointment Type  </option>
-                            <option value="New">New Walkin</option>
-                            <option value="New">New Referral</option>
-                            <option value="Followup">Repeat Investigation</option>
+                           <option value="New">New Procedure</option>
+                            <option value="Repeat">Repeat Procedure</option>
                             
                            {/*  <option value="Readmission with 24hrs">Readmission with 24hrs</option>
                             <option value="Annual Checkup">Annual Checkup</option>
@@ -347,20 +346,18 @@ export function RadAppointmentCreate(){
                 <div className="control">
                     <div className="select is-small">
                         <select name="appointment_status" value={appointment_status} onChange={handleChangeStatus}>
-                           <option value="">Appointment Status  </option>
+                        <option value="">Appointment Status  </option>
                             <option value="Scheduled">Scheduled</option>
                             <option value="Confirmed">Confirmed</option>
                             <option value="Billed">Billed</option>
                             <option value="Paid">Paid</option>
                             <option value="Checked In">Checked In</option>
-                            {/* <option value="Vitals Taken">Vitals Taken</option>
-                            <option value="With Doctor">With Doctor</option> */}
-                            <option value="Procedure">Procedure in Progress</option>
-                            <option value="Completed">Completed Investigation</option>
+                            <option value="Procedure in Progress">Procedure in Progress</option>
+                            <option value="Completed Procedure">Completed Procedure</option>
                             <option value="Checked Out">Checked Out</option>
                             <option value="No Show">No Show</option>
                             <option value="Cancelled">Cancelled</option>
-                            <option value="Billed">Billed</option>
+                           
                         </select>
                     </div>
                 </div>
@@ -1400,11 +1397,8 @@ export function RadAppointmentModify(){
                     <div className="select is-small">
                         <select name="type" /* value={appointment_type} */  name = "appointment_type" ref={register ({ required: true })}  onChange={handleChangeType}>
                            <option value="">Choose Appointment Type  </option>
-                            <option value="New">New</option>
-                            <option value="Followup">Followup</option>
-                            <option value="Readmission with 24hrs">Readmission with 24hrs</option>
-                            <option value="Annual Checkup">Annual Checkup</option>
-                            <option value="Walk in">Walk-in</option>
+                           <option value="New">New Procedure</option>
+                            <option value="Repeat">Repeat Procedure</option>
                         </select>
                     </div>
                 </div>
@@ -1413,16 +1407,17 @@ export function RadAppointmentModify(){
                 <div className="control">
                     <div className="select is-small">
                         <select name="appointment_status" ref={register ({ required: true })} /* value={appointment_status} */ onChange={handleChangeStatus}>
-                           <option value="">Appointment Status  </option>
+                        <option value="">Appointment Status  </option>
                             <option value="Scheduled">Scheduled</option>
                             <option value="Confirmed">Confirmed</option>
+                            <option value="Billed">Billed</option>
+                            <option value="Paid">Paid</option>
                             <option value="Checked In">Checked In</option>
-                            <option value="Vitals Taken">Vitals Taken</option>
-                            <option value="With Nurse">With Nurse</option>
-                            <option value="With Doctor">With Doctor</option>
+                            <option value="Procedure in Progress">Procedure in Progress</option>
+                            <option value="Completed Procedure">Completed Procedure</option>
+                            <option value="Checked Out">Checked Out</option>
                             <option value="No Show">No Show</option>
                             <option value="Cancelled">Cancelled</option>
-                            <option value="Billed">Billed</option>
                         </select>
                     </div>
                 </div>

@@ -27,7 +27,7 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 //import BillPrescriptionCreate from './BillPrescriptionCreate';
 
 
-export default function RadiologyReport() {
+export default function TheatreReport() {
     //const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedProductEntry,setSelectedProductEntry]=useState()
@@ -55,12 +55,12 @@ export default function RadiologyReport() {
             </div> */}
             <div className="columns ">
                 <div className="column is-4 ">
-                    <RadiologyOrderList />
+                    <TheatreOrderList />
                     </div>
               
                 <div className="column is-5 ">
                 
-                {(state.financeModule.show ==='detail')&&  <RadiologyNoteCreate />}
+                {(state.financeModule.show ==='detail')&&  <TheatreNoteCreate />}
                 </div>
 
               <div className="column is-3 ">  
@@ -75,7 +75,7 @@ export default function RadiologyReport() {
     
 }
 
-export function RadiologyOrderList(){
+export function TheatreOrderList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -200,14 +200,7 @@ export function RadiologyOrderList(){
                        'participantInfo.paymentmode.type':"Family Cover"
                     }
                 ],
-                $or:[
-                    {
-                       'orderInfo.orderObj.order_category':"Radiology Order"
-                    },
-                    {
-                       'orderInfo.orderObj.order_category':"Radiology"
-                    }
-                ], 'orderInfo.orderObj.order_category':"Radiology Order",
+                'orderInfo.orderObj.order_category':"Theatre Order",
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
                 billing_status:"Unpaid",  // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
@@ -242,15 +235,7 @@ export function RadiologyOrderList(){
                     }
                 ], */
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                //'orderInfo.orderObj.order_category':"Radiology Order",
-                $or:[
-                    {
-                       'orderInfo.orderObj.order_category':"Radiology Order"
-                    },
-                    {
-                       'orderInfo.orderObj.order_category':"Radiology"
-                    }
-                ], 
+                'orderInfo.orderObj.order_category':"Theatre Order",
                // billing_status:"Unpaid",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
@@ -320,7 +305,7 @@ export function RadiologyOrderList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Radiology Investigations </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Theatre Investigations </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -365,7 +350,7 @@ export function RadiologyOrderList(){
     )
 }
 
-export function RadiologyNoteCreate(){
+export function TheatreNoteCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
@@ -440,8 +425,8 @@ export function RadiologyNoteCreate(){
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
           }
          document.documentdetail=data
-         document.documentType="Radiology Result"
-          document.documentname= `${data.Procedure} Result` /* `${order.serviceInfo.name} Result` */
+         document.documentType="Post-Op Documentation"
+          document.documentname= `Post-Op Notes` /* `${order.serviceInfo.name} Result` */
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
@@ -497,7 +482,7 @@ export function RadiologyNoteCreate(){
               
                 setSuccess(true)
                 toast({
-                    message: 'Radiology Result updated succesfully',
+                    message: 'Post-op Notes updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -506,7 +491,7 @@ export function RadiologyNoteCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error updating Radiology Result ' + err,
+                    message: 'Error updating Post-op Notes ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -574,7 +559,7 @@ export function RadiologyNoteCreate(){
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Radiology Result for {order.orderInfo.orderObj.clientname} Ordered Test:  {order.serviceInfo.name}
+                    Post-Op Note for {order.orderInfo.orderObj.clientname} Surgery:  {order.serviceInfo.name}
                 </p>
                 <button className="button is-success is-small btnheight mt-2" onClick={showDocumentation}>Documentation</button>
             </div>

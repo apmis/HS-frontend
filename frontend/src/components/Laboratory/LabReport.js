@@ -191,7 +191,15 @@ export function LabOrderList(){
                        'participantInfo.paymentmode.type':"Family Cover"
                     }
                 ],
-                'orderInfo.orderObj.order_category':"Lab Order",
+               // 'orderInfo.orderObj.order_category':"Lab Order",
+               $or:[
+                {
+                   'orderInfo.orderObj.order_category':"Lab Order"
+                },
+                {
+                   'orderInfo.orderObj.order_category':"Laboratory"
+                }
+            ],                                                                                                                                       
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
                 billing_status:"Unpaid",  // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
