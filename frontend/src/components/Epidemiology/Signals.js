@@ -11,7 +11,7 @@ import {toast} from 'bulma-toast'
 const searchfacility={};
 
 
-export default function Notifications() {
+export default function Signals() {
     const {state}=useContext(ObjectContext) //,setState
     // eslint-disable-next-line
     const [selectedStore,setSelectedStore]=useState()
@@ -26,7 +26,7 @@ export default function Notifications() {
             <div className="column is-1 ">
                 </div>  
             <div className="column is-10 ">
-                <StoreList />
+                <SignalsList />
                 </div>
                 <div className="column is-1 ">
                 </div>  
@@ -246,7 +246,7 @@ export function StoreCreate(){
    
 }
 
-export function StoreList({standalone,closeModal}){
+export function SignalsList({standalone,closeModal}){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -443,11 +443,11 @@ export function StoreList({standalone,closeModal}){
 
                                             <tr key={Store._id} onClick={()=>handleRow(Store)} className={Store._id===(selectedStore?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th><div className="docdate">{formatDistanceToNowStrict(new Date(Store.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Store.createdAt),'dd-MM-yy')}</span></div></th>
+                                            <th><div className="docdate">{formatDistanceToNowStrict(new Date(Store.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Store.createdAt),'dd-MM-yy hh:mm:ss')}</span></div></th>
                                             <td>{Store.disease}</td>
                                             < td>{Store.location}</td>
                                             <td>{Store.facility}</td>
-                                            <td>{Store.notified_by}</td>
+                                            <td>{Store.notified_by_name}</td>
                                             <td>{Store.notification_type}</td>
                                             <td>{Store.status}</td> 
                                             <td>{Store.action}</td>
