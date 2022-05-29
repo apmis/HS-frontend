@@ -4,10 +4,9 @@ WORKDIR /app
 COPY package*.json /app/
 RUN npm install
 COPY . /app/
-ARG API_HOST=http://host.docker.internal:3000
+ARG NODE_ENV=http://host.docker.internal:3000
 ARG DOLLAR=$
 RUN apk --no-cache add gettext
-ENV API_HOST=${API_HOST}
 ENV DOLLAR=${DOLLAR}
 RUN envsubst < /app/nginx.tmpl > /app/nginx.conf
 RUN cat /app/nginx.conf | tee /my-install-cmd.log
