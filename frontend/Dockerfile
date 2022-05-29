@@ -4,11 +4,11 @@ WORKDIR /app
 COPY package*.json /app/
 RUN npm install
 COPY . /app/
-# ARG NODE_ENV=http://host.docker.internal:3000
+ARG REACT_APP_API_URL=http://host.docker.internal:3000
 ARG DOLLAR=$
 RUN apk --no-cache add gettext
 ENV DOLLAR=${DOLLAR}
-ENV NODE_ENV=${NODE_ENV}
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
 RUN envsubst < /app/nginx.tmpl > /app/nginx.conf
 RUN cat /app/nginx.conf | tee /my-install-cmd.log
 RUN npm run build
