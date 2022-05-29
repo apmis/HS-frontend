@@ -17,12 +17,12 @@ const searchfacility={};
 
 
 export default function Encounter({standalone}) {
-    const {state}=useContext(ObjectContext) 
-    
-    
-    
-    
-    
+    const {state, setState}=useContext(ObjectContext) //,setState
+    // eslint-disable-next-line
+    //const [selectedProductEntry,setSelectedProductEntry]=useState()
+    //const [showState,setShowState]=useState() //create|modify|detail
+    //const {state,setState}=useContext(ObjectContext) //,setState
+    // eslint-disable-next-line
     const [selectedClient,setSelectedClient]=useState()
     const [showModal,setShowModal]=useState(false)
 
@@ -32,6 +32,13 @@ export default function Encounter({standalone}) {
        
         console.log("starting up Encounter module")
         console.log(state.ClientModule.selectedClient)
+        const    newDocumentClassModule={
+            selectedDocumentClass:{},
+            //state.DocumentClassModule.selectedDocumentClass.name
+            show :'detail'
+        }
+        setState((prevstate)=>({...prevstate, DocumentClassModule:newDocumentClassModule}))
+
         if (Object.keys(state.ClientModule.selectedClient).length === 0 && state.ClientModule.selectedClient.constructor === Object){
             handleChangeClient()
 

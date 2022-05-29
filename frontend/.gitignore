@@ -11,6 +11,7 @@ package-lock.json
 
 # production
 /build
+.env
 
 
 # misc
@@ -19,7 +20,7 @@ package-lock.json
 .env.development.local
 .env.test.local
 .env.production.local
-src/feathers.js
+/src/feathers.js
 
 npm-debug.log*
 yarn-debug.log*

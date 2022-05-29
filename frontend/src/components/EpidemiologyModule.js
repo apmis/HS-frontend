@@ -9,7 +9,7 @@ import EpidemiologyHome from './Epidemiology/EpidemiologyHome'
 import ProductExit from './Epidemiology/ProductExit'
 //import BillService from './Finance/BillService'
 /* import LabPayment from './Epidemiology/LabPayment' */
-import Notifications, { StoreList, StoreListStandalone } from './Epidemiology/Notifications'
+import Signals, { StoreList, StoreListStandalone } from './Epidemiology/Signals'
 import {UserContext,ObjectContext} from '../context'
 import BillLab from './Epidemiology/BillLab'
 import Dashboard from './Epidemiology/DashBoard'
@@ -95,7 +95,7 @@ export default function EpidModule() {
                                         <NavLink to={`${url}/definitions`}>Case Definition</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/notifications`}>Signals</NavLink>
+                                        <NavLink to={`${url}/signals`}>Signals</NavLink>
                                     </div>
                                    {/*  <div className="navbar-item"  onClick={handleBurger}>
                                         <NavLink to={`${url}/Communication`}>Communication</NavLink>
@@ -165,8 +165,8 @@ export default function EpidModule() {
                         <Route path={`${path}/communication`} exact >
                             <BillLab />
                         </Route>
-                        <Route path={`${path}/notifications`} exact>
-                            <Notifications />
+                        <Route path={`${path}/signals`} exact>
+                            <Signals />
                         </Route>
                        {/*  <Route path={`${path}/lab-payment`} exact>
                             <LabPayment />

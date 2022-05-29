@@ -411,7 +411,7 @@ export function InventoryList(){
                 {query: {
                     facility:user.currentEmployee.facilityDetail._id,
                     storeId:state.StoreModule.selectedStore._id,
-                    $limit:limit,
+                    $limit:2000, //limit,
                    /*  $skip:page * limit, */
                     $sort: {
                         name: 1
@@ -426,7 +426,7 @@ export function InventoryList(){
        // setNext(true)
           setPage(page=>page+1)
        } else{
-        //setNext(false)  
+        //setNext(fals 
        }    
 
       // pages++

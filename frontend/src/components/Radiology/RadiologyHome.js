@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React ,{useState,useEffect,useContext} from 'react'
-import Store, { StoreList } from './Radiology'
+import Radiology, { StoreList } from './Radiologys'
 import {UserContext,ObjectContext} from '../../context'
 
 export default function RadiologyHome() {
@@ -21,7 +21,7 @@ export default function RadiologyHome() {
                 <div className="hero-body">
                     <div className="container has-text-centered">
                     <h1 className="title">
-                     Radiology Module
+                    Radiology Module
                     </h1>
                     <h2 className="subtitle">
                         Have fun working today!

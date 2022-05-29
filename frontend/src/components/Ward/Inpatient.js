@@ -119,26 +119,19 @@ export function InpatientList(){
         await setState((prevstate)=>({...prevstate, ClientModule:newClientModule}))
      }
 
-    const handleMedicationRow= async(inpatient)=>{ //handle selected single order
-        //console.log("b4",state)
-    
-        //console.log("handlerow",ProductEntry)
-        /* await handleSelectedClient(ProductEntry.client)
-
-    
-        await setSelectedMedication(ProductEntry)
-    
-        const    newProductEntryModule={
-            selectedAdmission:ProductEntry,
-            show :'detail'
-        }
-      await setState((prevstate)=>({...prevstate, AdmissionModule:newProductEntryModule})) */
-       //console.log(state)
-      // ProductEntry.show=!ProductEntry.show
-
+    const handleMedicationRow= async(inpatient)=>{ 
+      
+        
       let currClient =inpatient.client 
       // eslint-disable-next-line
-    
+        currClient.ward=inpatient.ward_name
+        currClient.bed=inpatient.bed
+        currClient.bed_id=inpatient.bed_id
+        currClient.ward_id=inpatient.ward_id
+        currClient.admission_id=inpatient._id
+        console.log(currClient)
+        //currClient.details=inpatient
+
    
          const    newClientModule={
              selectedClient:currClient,

@@ -1,19 +1,15 @@
 /* eslint-disable */
 import React,{useState,useContext,useEffect} from 'react'
 import {Route, Switch,  useRouteMatch, Link, NavLink} from 'react-router-dom'
-import InventoryReport from './Radiology/InventoryReport'
-import InventorySetup from './Radiology/InventorySetup'
-import InventoryStore from './Radiology/InventoryStore'
 import RadiologyHome from './Radiology/RadiologyHome'
-import ProductEntry from './Radiology/ProductEntry'
-import ProductExit from './Radiology/ProductExit'
-import Dispense from './Radiology/Dispensary'
 import BillService from './Finance/BillService'
 import RadiologyReport from './Radiology/RadiologyReport'
 import RadiologyPayment from './Radiology/RadiologyPayment'
-import Labs, { StoreList, StoreListStandalone } from './Radiology/Radiology'
+import Radiology, { StoreList, StoreListStandalone } from './Radiology/Radiologys'
 import {UserContext,ObjectContext} from '../context'
-import BillLab from './Radiology/BillRadiology'
+import BillRadiology from './Radiology/BillRadiology'
+import RadAppointments from './Radiology/RadAppointments'
+import RadCheckedin from './Radiology/RadCheckedin'
 
 export default function RadiologyModule() {
     const {state,setState}=useContext(ObjectContext) //,setState
@@ -27,7 +23,7 @@ export default function RadiologyModule() {
     
     useEffect(() => {
        
-        console.log("starting up Radiology module")
+        console.log("starting up inventory module")
         if (!selectedStore){
             handleChangeStore()
 
@@ -71,7 +67,9 @@ export default function RadiologyModule() {
                                         <button className="button is-small is-info selectadd" onClick={()=>handleChangeStore()}>Change Location</button> 
                                 </div>
                                 
-                            
+                            {/* <div className="navbar-item">
+                                <img src="https://bulma.io/images/bulma-type-white.png" alt="Logo" />
+                            </div> */}
                                 <span className="navbar-burger minHt" data-target="navbarMenuHeroB"  onClick={handleBurger}>
                                     <span></span>
                                     <span></span>
@@ -83,20 +81,44 @@ export default function RadiologyModule() {
                                     <div className="navbar-item"   onClick={handleBurger}>
                                         <NavLink to={`${url}`}>Home Page</NavLink> 
                                     </div>
-                                  
+                                    {/* <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/labs`}>Labs</NavLink>
+                                    </div> */}
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/billservice`}>Bill Client</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/lab-bill`}>Bill Radiology Orders Sent</NavLink>
+                                        <NavLink to={`${url}/radiology-bill`}>Bill Radiology Orders Sent</NavLink>
+                                    </div>
+                                    {/* <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/radiology-payment`}>Payment</NavLink>
+                                    </div> */}
+                                    <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/radiology-result`}>Radiology Result</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/lab-payment`}>Payment</NavLink>
+                                        <NavLink to={`${url}/radiology-appointments`}>Appointments</NavLink>
                                     </div>
                                     <div className="navbar-item"  onClick={handleBurger}>
-                                        <NavLink to={`${url}/lab-result`}>Radiology Result</NavLink>
+                                        <NavLink to={`${url}/radiology-checkedin`}>Checked In</NavLink>
                                     </div>
-                                   
+                                    {/*  <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/inv-exit`}>POS</NavLink>
+                                    </div>
+                                    <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/inv-products`}>Products</NavLink>
+                                    </div>
+                                   <div className="navbar-item"  onClick={handleBurger}>
+                                        <NavLink to={`${url}/inv-reports`}>Reports</NavLink>
+                                    </div> */}
+                                {/* <span className="navbar-item">
+                                <div className="button is-info is-inverted">
+                                    <span className="icon">
+                                    <i className="fab fa-github"></i>
+                                    </span>
+                                    <span>Download</span>
+                                </div>
+                                </span> */}
                                 </div>
                             </div>
                         </div>
@@ -123,26 +145,26 @@ export default function RadiologyModule() {
                         </Route>
                         <Route path={`${path}/inv-entry`} exact>
                             <ProductEntry />
-                        </Route>
-                        <Route path={`${path}/inv-exit`} exact>
-                            <ProductExit/>
-                        </Route>
-                        <Route path={`${path}/inv-products`} exact>
-                            <Products />
                         </Route>*/}
+                        <Route path={`${path}/radiology-checkedin`} exact>
+                            <RadCheckedin/>
+                        </Route>
+                        <Route path={`${path}/radiology-appointments`} exact>
+                            <RadAppointments />
+                        </Route>
                         <Route path={`${path}/billservice`} exact>
                             <BillService />
                         </Route>
-                        <Route path={`${path}/lab-result`} exact>
+                        <Route path={`${path}/radiology-result`} exact>
                             <RadiologyReport />
                         </Route> 
-                        <Route path={`${path}/lab-bill`} exact >
-                            <BillLab />
+                        <Route path={`${path}/radiology-bill`} exact >
+                            <BillRadiology />
                         </Route>
-                        <Route path={`${path}/labs`} exact>
-                            <Labs />
+                        <Route path={`${path}/radiology`} exact>
+                            <Radiology />
                         </Route>
-                        <Route path={`${path}/lab-payment`} exact>
+                        <Route path={`${path}/radiology-payment`} exact>
                             <RadiologyPayment />
                         </Route>
 
@@ -154,7 +176,7 @@ export default function RadiologyModule() {
                                     <div className="modal-card">
                                         <header className="modal-card-head">
                                         <p className="modal-card-title">Choose Location</p>
-                                        {/* <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button> */}
+                                        <button className="delete" aria-label="close"  onClick={()=>setShowModal(false)}></button>
                                         </header>
                                         <section className="modal-card-body">
                                         <StoreListStandalone standalone="true" closeModal={()=>setShowModal(false)} />
