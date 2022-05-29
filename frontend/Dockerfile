@@ -18,4 +18,20 @@ COPY --from=build-stage /my-install-cmd.log /my-install-cmd.log
 COPY --from=build-stage /app/build/ /usr/share/nginx/html
 # Copy the default nginx.conf provided by tiangolo/node-frontend
 COPY --from=build-stage /app/nginx.conf /etc/nginx/conf.d/default.conf
+
+#Generate self signed cert
+
+COPY self-signed.conf /etc/nginx/snippets/self-signed.conf
+COPY ssl-params.conf /etc/nginx/snippets/ssl-params.conf
+COPY ssl-dhparams.pem /etc/nginx/snippets/ssl-dhparams.pem
+COPY options-ssl-nginx.conf /etc/nginx/snippets/options-ssl-nginx.conf
+
+RUN apt-get update && \
+    apt-get install -y openssl && \
+    openssl req -x509 -nodes -newkey rsa:4096 -days 1\
+    -keyout ${CERT_LOCATION}/privkey.pem \
+    -out ${CERT_LOCATION}/fullchain.pem \
+    -subj "/CN=live.healthstack.africa"
+
+
 EXPOSE 80
