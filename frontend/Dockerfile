@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json /app/
 RUN npm install
 COPY . /app/
-# ARG REACT_APP_API_URL=http://host.docker.internal:3000
+ARG REACT_APP_API_URL=${REACT_APP_API_URL}
 ARG DOLLAR=$
 RUN apk --no-cache add gettext
 ENV DOLLAR=${DOLLAR}
