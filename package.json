@@ -67,5 +67,9 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.10"
+  },
+  "engines" : { 
+    "npm" : ">=7.0.0",
+    "node" : "15.0.0"
   }
 }
