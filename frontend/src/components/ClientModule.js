@@ -8,6 +8,7 @@ import ClinicHome from './Clinic/ClinicHome'
 import Appointments from './Clinic/Appointments'
 import Encounter from './EncounterMgt/Encounter'
 import Patients from './ClientMgt/Patient'
+import Payment from './Finance/Payment'
 import FrontDesk, { FrontDeskList } from './ClientMgt/FrontDesk'
 import {UserContext,ObjectContext} from '../context'
 
@@ -84,6 +85,26 @@ export default function ClientModule() {
                                     <div className="navbar-item" onClick={handleBurger}>
                                         <NavLink to={`${url}/patients`}>Clients</NavLink>
                                     </div>
+                                        <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/payments`}>Payment</NavLink>
+                                    </div>  
+                                    {/* <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/encounter`}>Attend to Client</NavLink>
+                                    </div> */}
+                                     {/*  <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/clinicsetup`}> Clinic Admin</NavLink>
+                                    </div> */}
+                                    {/* <div className="navbar-item" onClick={handleBurger}>
+                                        <NavLink to={`${url}/clinicreports`}>Reports</NavLink>
+                                    </div> */}
+                                {/* <span className="navbar-item" onClick={handleBurger}>
+                                <div className="button is-info is-inverted">
+                                    <span className="icon">
+                                    <i className="fab fa-github"></i>
+                                    </span>
+                                    <span>Download</span>
+                                </div>
+                                </span> */}
                                 </div>
                             </div>
                         </div>
@@ -104,6 +125,9 @@ export default function ClientModule() {
                         </Route>
                         <Route path={`${path}/clinicstore`} exact>
                             <ClinicStore />
+                        </Route>
+                        <Route path={`${path}/payments`} exact>
+                            <Payment/>
                         </Route>
                         <Route path={`${path}/encounter`} exact>
                             <Encounter/>

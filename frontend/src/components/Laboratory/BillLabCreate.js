@@ -840,7 +840,7 @@ export default function BillLabCreate(){
           <div className="field is-horizontal">
              <div className="field-body">
              <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */ >
-                     <ServiceSearch  getSearchfacility={getSearchfacility} clear={success} /> 
+                     <ServiceSearch  getSearchfacility={getSearchfacility} clear={success} mode={billMode}/> 
                      <p className="control has-icons-left " style={{display:"none"}}>
                          <input className="input is-small" /* ref={register ({ required: true }) }  *//* add array no */  value={productId} name="productId" type="text" onChange={e=>setProductId(e.target.value)} placeholder="Product Id" />
                          <span className="icon is-small is-left">

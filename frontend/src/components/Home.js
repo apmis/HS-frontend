@@ -6,12 +6,16 @@ import InventoryModule from './InventoryModule'
 import ClinicModule from './ClinicModule'
 import ClientModule from './ClientModule'
 import FinanceModule from './FinanceModule'
+import AccountModule from './AccountModule'
 import LaboratoryModule from './LaboratoryModule'
 import EpidModule from './EpidemiologyModule'
 import Ward from './WardModule'
+import ReferralModule from './ReferralModule'
+import RadiologyModule from './RadiologyModule'
+import PharmacyModule from './PharmacyModule'
+import TheatreModule from './TheatreModule'
 import ManagedCareModule from './ManagedCareModule'
 import CommunicationModule from './CommunicationModule'
-import RadiologyModule from './RadiologyModule'
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
 import client from '../feathers'
@@ -44,6 +48,9 @@ export default function Home() {
                 <Route path={`${path}/finance`} >
                     <FinanceModule />
                 </Route>
+                <Route path={`${path}/account`} >
+                    <AccountModule />
+                </Route>
                 <Route path={`${path}/labs`} >
                     <LaboratoryModule />
                 </Route>
@@ -52,6 +59,18 @@ export default function Home() {
                 </Route>
                 <Route path={`${path}/epid`} >
                     <EpidModule />
+                </Route>
+                <Route path={`${path}/radiology`} >
+                    <RadiologyModule />
+                </Route>
+                <Route path={`${path}/referral`} >
+                    <ReferralModule />
+                </Route>
+                <Route path={`${path}/pharmacy`} >
+                    <PharmacyModule />
+                </Route>
+                <Route path={`${path}/theatre`} >
+                    <TheatreModule />
                 </Route>
                 <Route path={`${path}/ward`} >
                     <Ward />
@@ -205,14 +224,29 @@ function NavBar({url}){
                                     <NavLink to={`${url}/ward`}>Ward</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Pharmacy')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
-                                    <NavLink to={`${url}/inventory`}>Pharmacy</NavLink>
+                                    <NavLink to={`${url}/Pharmacy`}>Pharmacy</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Inventory')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/inventory`}>Inventory</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Laboratory')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/labs`}>Laboratory</NavLink>
                                 </div>}
+                                {(user.currentEmployee?.roles.includes('Radiology')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/radiology`}>Radiology</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Theatre')||user.currentEmployee?.roles.length===0||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/theatre`}>Theatre</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Client')||user.currentEmployee?.roles.length===0 )&&  <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/referral`}>Referrals</NavLink>
+                                </div>}
                                
                                 {(user.currentEmployee?.roles.includes('Finance')||user.stacker )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/hmo`}>Managed Care</NavLink>
+                                </div>}
+                                {(user.currentEmployee?.roles.includes('Finance')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
+                                    <NavLink to={`${url}/account`}>Account</NavLink>
                                 </div>}
                                 {(user.currentEmployee?.roles.includes('Finance')||user.currentEmployee?.roles.length===0 )&& <div className="navbar-item" onClick={handleBurger} >
                                     <NavLink to={`${url}/finance`}>Finance</NavLink>

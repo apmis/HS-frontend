@@ -9,6 +9,7 @@ import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 import ReportCreate from './ReportCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
+import Encounter from '../EncounterMgt/Encounter';
 /* import {ProductCreate} from './Products' */
 // eslint-disable-next-line
 //const searchfacility={};
@@ -24,7 +25,6 @@ import {
 // Demo styles, see 'Styles' section below for some notes on use.
 import 'react-accessible-accordion/dist/fancy-example.css';
 //import BillPrescriptionCreate from './BillPrescriptionCreate';
-
 
 
 export default function RadiologyReport() {
@@ -54,18 +54,19 @@ export default function RadiologyReport() {
             <div className="level-item"> <span className="is-size-6 has-text-weight-medium">ProductEntry  Module</span></div>
             </div> */}
             <div className="columns ">
-                <div className="column is-6 ">
-                    <LabOrderList />
+                <div className="column is-4 ">
+                    <RadiologyOrderList />
                     </div>
               
-                <div className="column is-6 ">
+                <div className="column is-5 ">
                 
-                {(state.financeModule.show ==='detail')&&  <LabNoteCreate />}
+                {(state.financeModule.show ==='detail')&&  <RadiologyNoteCreate />}
                 </div>
-               {/*  <div className="column is-3 ">  <ReportCreate />
+
+              <div className="column is-3 ">  
                 
-                {(state.financeModule.show ==='detail')&&<PatientProfile />}
-                </div> */}
+                {(state.ClientModule.show ==='detail')&&<PatientProfile />}
+                </div> 
 
             </div>                            
             </section>
@@ -74,7 +75,7 @@ export default function RadiologyReport() {
     
 }
 
-export function LabOrderList(){
+export function RadiologyOrderList(){
    // const { register, handleSubmit, watch, errors } = useForm();
     // eslint-disable-next-line
     const [error, setError] =useState(false)
@@ -140,6 +141,7 @@ export function LabOrderList(){
     const handleMedicationRow= async(order)=>{
         
         await setSelectedFinance(order)
+        await handleSelectedClient(order.participantInfo.client)
         // grab report
         // if draft show create/modify
         //if final: show final
@@ -198,7 +200,14 @@ export function LabOrderList(){
                        'participantInfo.paymentmode.type':"Family Cover"
                     }
                 ],
-                'orderInfo.orderObj.order_category':"Lab Order",
+                $or:[
+                    {
+                       'orderInfo.orderObj.order_category':"Radiology Order"
+                    },
+                    {
+                       'orderInfo.orderObj.order_category':"Radiology"
+                    }
+                ], 'orderInfo.orderObj.order_category':"Radiology Order",
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
                 billing_status:"Unpaid",  // need to set this finally
                // storeId:state.StoreModule.selectedStore._id,
@@ -233,11 +242,19 @@ export function LabOrderList(){
                     }
                 ], */
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                'orderInfo.orderObj.order_category':"Lab Order",
+                //'orderInfo.orderObj.order_category':"Radiology Order",
+                $or:[
+                    {
+                       'orderInfo.orderObj.order_category':"Radiology Order"
+                    },
+                    {
+                       'orderInfo.orderObj.order_category':"Radiology"
+                    }
+                ], 
                // billing_status:"Unpaid",  // need to set this finally
                 //storeId:state.StoreModule.selectedStore._id,
                 //clientId:state.ClientModule.selectedClient._id,
-                $limit:100,
+                $limit:1000,
                 $sort: {
                     createdAt: -1
                 }
@@ -303,7 +320,7 @@ export function LabOrderList(){
                             </div>
                         </div>
                     </div>
-                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Radiology test </span></div>
+                    <div className="level-item"> <span className="is-size-6 has-text-weight-medium">Radiology Investigations </span></div>
                      {/* <div className="level-right">
                        <div className="level-item"> 
                             <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
@@ -348,7 +365,7 @@ export function LabOrderList(){
     )
 }
 
-export function LabNoteCreate(){
+export function RadiologyNoteCreate(){
     const { register, handleSubmit,setValue} = useForm(); //, watch, errors, reset 
     const [error, setError] =useState(false)
     const [success, setSuccess] =useState(false)
@@ -362,6 +379,7 @@ export function LabNoteCreate(){
     const [currentUser,setCurrentUser] = useState()
     const [reportStatus,setReportStatus] = useState("Draft")
     const {state, setState}=useContext(ObjectContext)
+    const [productModal, setProductModal]=useState(false)
 
     const order=state.financeModule.selectedFinance
     const bill_report_status=state.financeModule.report_status
@@ -374,24 +392,40 @@ export function LabNoteCreate(){
     }
     
     useEffect(() => {
-        setCurrentUser(user)
-        //console.log(currentUser)
-        return () => {
-        
-        }
-    }, [user])
-
-  //check user for facility or get list of facility  
-    useEffect(()=>{
-        //setFacility(user.activeClient.FacilityId)//
-      if (!user.stacker){
-       /*    console.log(currentUser)
-        setValue("facility", user.currentEmployee.facilityDetail._id,  {
-            shouldValidate: true,
-            shouldDirty: true
-        })  */
-      }
-    })
+        // setState((prevstate)=>({...prevstate, labFormType:value}))
+         if (!order.resultDetail?.documentdetail ){
+             setValue("Finding", "",  {
+                 shouldValidate: true,
+                 shouldDirty: true
+             })
+             setValue("Recommendation","",  {
+                 shouldValidate: true,
+                 shouldDirty: true
+             })
+            // setReportStatus(order.report_status)
+            
+             return
+     
+         }
+         if (order.report_status !=="Pending"){
+             console.log(order.resultDetail.documentdetail)
+     
+             
+            Object.entries(order.resultDetail.documentdetail).map(([keys,value],i)=>(
+             setValue(keys, value,  {
+                 shouldValidate: true,
+                 shouldDirty: true
+             })
+     
+         ))
+     
+     
+     }
+         
+         return () => {
+             
+         }
+     }, [order])
 
     const onSubmit = async(data,e) =>{
         e.preventDefault();
@@ -406,7 +440,8 @@ export function LabNoteCreate(){
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
           }
          document.documentdetail=data
-          document.documentname= `${order.serviceInfo.name} Result`
+         document.documentType="Radiology Result"
+          document.documentname= `${data.Procedure} Result` /* `${order.serviceInfo.name} Result` */
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
           document.location=state.employeeLocation.locationName +" "+ state.employeeLocation.locationType
           document.locationId=state.employeeLocation.locationId
@@ -462,7 +497,7 @@ export function LabNoteCreate(){
               
                 setSuccess(true)
                 toast({
-                    message: 'Lab Result updated succesfully',
+                    message: 'Radiology Result updated succesfully',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -471,7 +506,7 @@ export function LabNoteCreate(){
             })
             .catch((err)=>{
                 toast({
-                    message: 'Error updating Lab Result ' + err,
+                    message: 'Error updating Radiology Result ' + err,
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,
@@ -494,9 +529,17 @@ export function LabNoteCreate(){
     }
 
     useEffect(() => {
-        if (typeof order.resultDetail.documentdetail ==="undefined"){
-            console.log(order)
-            alert("No Status")
+        if (!order.resultDetail?.documentdetail ){
+            setValue("Finding", "",  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            setValue("Recommendation","",  {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+           // setReportStatus(order.report_status)
+           
             return
 
         }
@@ -517,29 +560,76 @@ export function LabNoteCreate(){
             
         }
     }, [order])
+    const showDocumentation = async (value)=>{
+        setProductModal(true)
+      }
+      const handlecloseModal =()=>{
+        setProductModal(false)
+       // handleSearch(val)
+        }
 
     return (
         <>
             <div className="card ">
             <div className="card-header">
                 <p className="card-header-title">
-                    Lab Result
+                    Radiology Result for {order.orderInfo.orderObj.clientname} Ordered Test:  {order.serviceInfo.name}
                 </p>
+                <button className="button is-success is-small btnheight mt-2" onClick={showDocumentation}>Documentation</button>
             </div>
             <div className="card-content vscrollable remPad1">
 
-                <label className="label is-size-7">
-                  Client:  {order.orderInfo.orderObj.clientname}
-                </label>
-                <label className="label is-size-7">
-                 Test:  {order.serviceInfo.name}
-                </label>
             <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field is-horizontal">
                 <div className="field-body">
                     <div className="field">
                         <p className="control has-icons-left has-icons-right">
+                            <input className="input is-small" ref={register()}  name="Procedure" type="text" placeholder="Procedure" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Clinical Indication" type="text" placeholder="Clinical Indication" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Technique" type="text" placeholder="Technique" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Comparison" type="text" placeholder="Comparison" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+            <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
                             <textarea className="textarea is-small" ref={register()}  name="Finding" type="text" placeholder="Findings" disabled={bill_report_status==="Final"}/>                 
+                        </p>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="field is-horizontal">
+                <div className="field-body">
+                    <div className="field">
+                        <p className="control has-icons-left has-icons-right">
+                            <textarea className="textarea is-small" ref={register()}  name="Impression" type="text" placeholder="Impression" disabled={bill_report_status==="Final"}/>                 
                         </p>
                     </div>
                     </div>
@@ -580,7 +670,23 @@ export function LabNoteCreate(){
             </form>
             </div>
             </div>
-                 
+            <div className={`modal ${productModal?"is-active":""}` }>
+                                    <div className="modal-background"></div>
+                                    <div className="modal-card  modalbkgrnd">
+                                        <header className="modal-card-head  btnheight">
+                                        <p className="modal-card-title">Documentation</p>
+                                        <button className="delete" aria-label="close"  onClick={handlecloseModal}></button>
+                                        </header>
+                                        <section className="modal-card-body modalcolor">
+                                      
+                                         <Encounter standalone="true" />
+                                        </section> 
+                                        {/* <footer className="modal-card-foot">
+                                        <button className="button is-success">Save changes</button>
+                                        <button className="button">Cancel</button>
+                                        </footer>  */}
+                                   </div>
+        </div>        
         </>
     )
    

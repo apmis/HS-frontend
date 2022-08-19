@@ -2144,6 +2144,3 @@ export default function PulmonologyIntake() {
    
 }
 
-
-
-

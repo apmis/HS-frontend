@@ -1,9 +1,9 @@
 /* eslint-disable */
 import React ,{useState,useEffect,useContext} from 'react'
-import Store, { StoreList } from './Store'
+import Theatre, { StoreList } from './Theatres'
 import {UserContext,ObjectContext} from '../../context'
 
-export default function InventoryHome() {
+export default function TheatreHome() {
    // const [activeModal, setActiveModal]=useState("modal is-active ")
     const {state,setState}=useContext(ObjectContext)
     const handleCloseModal=()=>{
@@ -21,7 +21,7 @@ export default function InventoryHome() {
                 <div className="hero-body">
                     <div className="container has-text-centered">
                     <h1 className="title">
-                      Inventory Module
+                    Theatre Module
                     </h1>
                     <h2 className="subtitle">
                         Have fun working today!

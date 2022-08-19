@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React ,{useState,useEffect,useContext} from 'react'
-import Store, { StoreList } from './Notifications'
+import Store, { StoreList } from './Signals'
 import {UserContext,ObjectContext} from '../../context'
 
 export default function EpidemiologyHome() {

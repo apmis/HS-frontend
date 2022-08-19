@@ -23,9 +23,22 @@ function App() {
       show:'create',
       selectedFacility:{}
     },
+
     EmployeeModule:{
       show:'create',
       selectedEmployee:{}
+    },
+    ChartAccountModule:{
+      show:'create',
+      selectedAccount:{}
+    },
+    ExpenseModule:{
+      show:'create',
+      selectedExpense:{}
+    },
+    BankModule:{
+      show:'create',
+      selectedBank:{}
     },
     EpidemiologyModule:{
       show:'create',
@@ -87,7 +100,10 @@ function App() {
       show:'create',
       selectedAdmission:{}
     },
-
+    DischargeModule:{
+      show:'create',
+      selectedDischarge:{}
+    },
     EndEncounterModule:{
       show:'',
       selectedEndEncounter:{}
@@ -123,6 +139,9 @@ function App() {
     },
     currentClients:[],
     showpanel:false,
+    currDate:"",
+    currDate2:"",
+    labFormType:"",
     employeeLocation:{
       locationName:"",
       locationType:"",
@@ -143,8 +162,8 @@ function App() {
   
   
  
-  return (
-    <ObjectContext.Provider value={{state,setState}}>
+  return ( 
+   <ObjectContext.Provider value={{state,setState}}>
    {/*  <UserContext.Provider value={{user,setUser}}> */}
    <MyUserProvider>
     <Router>

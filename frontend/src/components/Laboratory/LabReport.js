@@ -9,8 +9,10 @@ import {toast} from 'bulma-toast'
 import {format, formatDistanceToNowStrict } from 'date-fns'
 import ReportCreate from './ReportCreate'
 import PatientProfile from '../ClientMgt/PatientProfile'
-
-
+import LaboratoryReportForm from '../clientForm/forms/laboratoryReportForm';
+/* import {ProductCreate} from './Products' */
+// eslint-disable-next-line
+//const searchfacility={};
 import {
     Accordion,
     AccordionItem,
@@ -56,8 +58,14 @@ export default function LabReport() {
               
                 <div className="column is-6 ">
                 
-                {(state.financeModule.show ==='detail')&&  <LabNoteCreate />}
+                {(state.financeModule.show ==='detail')&& <LaboratoryReportForm /> }
+              {/*   {(state.financeModule.show ==='detail')&& <LabNoteCreate /> } */}
+                
                 </div>
+               {/*  <div className="column is-3 "> <LabNoteCreate /> <ReportCreate />
+                
+                {(state.financeModule.show ==='detail')&&<PatientProfile />}
+                </div> */}
 
             </div>                            
             </section>
@@ -127,12 +135,13 @@ export function LabOrderList(){
        
     }
     const handleMedicationRow= async(order)=>{
+        await handleSelectedClient(order.orderInfo.orderObj.client)
         
         await setSelectedFinance(order)
-        
-        
-        
-       
+        // grab report
+        // if draft show create/modify
+        //if final: show final
+       console.log(order)
         const    newProductEntryModule={
             selectedFinance:order,
             show :'detail',
@@ -143,18 +152,7 @@ export function LabOrderList(){
     
     }
 
-    const handleCreateNew = async()=>{
-        
-        const    newProductEntryModule={
-            selectedDispense:{},
-            show :'create'
-            }
-       await setState((prevstate)=>({...prevstate, DispenseModule:newProductEntryModule}))
-       
-        
-
-    }
-  
+   
 
     const handleSearch=(val)=>{
        const field='name'
@@ -173,7 +171,15 @@ export function LabOrderList(){
                        'participantInfo.paymentmode.type':"Family Cover"
                     }
                 ],
-                'orderInfo.orderObj.order_category':"Lab Order",
+               // 'orderInfo.orderObj.order_category':"Lab Order",
+               $or:[
+                {
+                   'orderInfo.orderObj.order_category':"Lab Order"
+                },
+                {
+                   'orderInfo.orderObj.order_category':"Laboratory"
+                }
+            ],                                                                                                                                       
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
                 billing_status:"Unpaid", 
                 $limit:20,
@@ -197,15 +203,26 @@ export function LabOrderList(){
            
     const findProductEntry= await BillServ.find(
             {query: {
+                 $or:[
+                    {
+                       'orderInfo.orderObj.order_category':"Lab Order"
+                    },
+                    {
+                       'orderInfo.orderObj.order_category':"Laboratory"
+                    }
+                ], 
                 'participantInfo.billingFacility': user.currentEmployee.facilityDetail._id,
-                'orderInfo.orderObj.order_category':"Lab Order",
-                $limit:100,
+                //'orderInfo.orderObj.order_category':"Lab Order",
+               // billing_status:"Unpaid",  //need to set this finally
+                //storeId:state.StoreModule.selectedStore._id,
+                //clientId:state.ClientModule.selectedClient._id,
+                $limit:1000,
                 $sort: {
                     createdAt: -1
                 }
                 }})
 
-        
+         console.log("lab bills", findProductEntry.data)
             await setFacilities(findProductEntry.data)
           
             }   
@@ -310,14 +327,14 @@ export function LabNoteCreate(){
     const [message,setMessage] = useState("")
     
     const [facility,setFacility] = useState()
-    const ClientServ=client.service('labresults')
-    
-    const {user} = useContext(UserContext) 
-    
+    //const ClientServ=client.service('labresults')
+    //const history = useHistory()
+    const {user} = useContext(UserContext) //,setUser
+    // eslint-disable-next-line
     const [currentUser,setCurrentUser] = useState()
-    const [reportStatus,setReportStatus] = useState("Draft")
     const {state, setState}=useContext(ObjectContext)
-
+    const [reportStatus,setReportStatus] = useState("Draft")
+    const ClientServ=client.service('labresults')
     const order=state.financeModule.selectedFinance
     const bill_report_status=state.financeModule.report_status
 
@@ -336,12 +353,7 @@ export function LabNoteCreate(){
         }
     }, [user])
 
-  
-    useEffect(()=>{
-        
-      if (!user.stacker){
-      }
-    })
+ 
 
     const onSubmit = async(data,e) =>{
         e.preventDefault();
