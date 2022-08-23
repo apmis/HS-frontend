@@ -25,13 +25,13 @@ let chartListForm = [
     facility: "60203e1c1ec8a00015baa357",
     _id: "10203e1c1ec8a00015baa355",
   },
-  {
+ /*  {
     name: "Vital Signs Flow Sheet",
     facility: "60203e1c1ec8a00015baa357",
     _id:"10203e1c1ec8a00015baa356",
-  },
+  }, */
   {
-    name: "Vital Signs Chart",
+    name: "Vital Signs Chart", 
     facility: "60203e1c1ec8a00015baa357",
     _id: "10203e1c1ec8a00015baa357",
   },

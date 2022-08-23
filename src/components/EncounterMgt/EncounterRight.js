@@ -40,6 +40,7 @@ import Receipt from "../clientForm/forms/receipt";
 import ReferralFormForConsultation from "../clientForm/forms/referralFormForConsultation";
 import VitalSignsFlowSheet from "../clientForm/forms/vitalSignsFlowSheet";
 import VitalSignsRecord from "../clientForm/forms/vitalSignsRecord";
+import VitalSignsChart from "../clientForm/forms/vitalSignChart";                                                                                                                                                                                                                         
 import SurgicalBookletConsentForm from "../clientForm/forms/surgicalBookletConsentForm";
 
 export default function EncounterRight() {
@@ -127,6 +128,8 @@ export default function EncounterRight() {
         "Dialysis Log Sheet" && <DialysisLogSheet onSubmit={submitDocument} />}
       {state.DocumentClassModule.selectedDocumentClass.name ===
         "Continuation Sheet" && <ContinuationSheet onSubmit={submitDocument} />}
+          {state.DocumentClassModule.selectedDocumentClass.name ===
+        "Vital Signs Chart" && <VitalSignsChart onSubmit={submitDocument} />}
           
         </div>
     )
