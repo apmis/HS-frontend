@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, {useState,useContext, useEffect,useRef} from 'react'
+import React, {useState,useContext, useEffect,useRef,useMemo} from 'react'
 import client from '../../feathers'
 import {DebounceInput} from 'react-debounce-input';
 import { useForm } from "react-hook-form";
@@ -199,6 +199,8 @@ export function PrescriptionCreate(){
     setInstruction("")
     setProductItem([])
     }
+
+
     const onSubmit = () =>{
         //data,e
        // e.preventDefault();
@@ -618,6 +620,544 @@ export function PrescriptionList({standalone}){
     )
     }
 
+export function DrugAdminList({standalone}){
+        // const { register, handleSubmit, watch, errors } = useForm();
+         // eslint-disable-next-line
+         const [error, setError] =useState(false)
+          // eslint-disable-next-line
+         const [success, setSuccess] =useState(false)
+         const [hxModal, setHxModal] =useState(false)
+         const [currentMed, setCurrentMed] =useState(false)
+          // eslint-disable-next-line
+        const [message, setMessage] = useState("") 
+         const OrderServ=client.service('order')
+         //const history = useHistory()
+        // const {user,setUser} = useContext(UserContext)
+         const [facilities,setFacilities]=useState([])
+          // eslint-disable-next-line
+        const [selectedOrder, setSelectedOrder]=useState() //
+         // eslint-disable-next-line
+         const {state,setState}=useContext(ObjectContext)
+         // eslint-disable-next-line
+         const {user,setUser}=useContext(UserContext)
+         const refs=useMemo(() => facilities.map(() => React.createRef()), [facilities])
+         const ClientServ=client.service('clinicaldocument')
+     
+     
+     
+        const handleCreateNew = async()=>{
+             const    newProductEntryModule={
+                 selectedOrder:{},
+                 show :'create'
+                 }
+            await setState((prevstate)=>({...prevstate, OrderModule:newProductEntryModule}))
+            //console.log(state)
+         }
+
+        const handleHistory = async(medication,i)=>{
+            setHxModal(true)
+            setCurrentMed(medication)
+
+        }
+      
+
+        const handlecloseModal1 = async()=>{
+            setHxModal(false)
+        }
+
+        const handleAdminister=(medication,i)=>{
+
+            let confirm = window.confirm(`You are about to administer a dose of ${medication.order} for ${ state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname} ?`)
+            if (confirm){
+            //update the medication
+            console.log("order",medication)
+            medication.treatment_status="Active"
+           
+
+           const  treatment_action =
+                {actorname:user.firstname+ " "+user.lastname,
+                actorId:user._id,
+               order_id:medication._id,
+               action:"Administered", 
+                comments: refs[i].current.value, 
+                createdat:new Date().toLocaleString(), 
+                description:"Administered current dose of " + medication.order + " " + user.firstname+ " "+user.lastname+ " @ "+ new Date().toLocaleString() ,  
+              } 
+
+
+              medication.treatment_action=[treatment_action, ... medication.treatment_action]
+              const  treatment_doc =
+                        {
+                        Description:"Administered current dose of " + medication.order + " " + user.firstname+ " "+user.lastname+ " @ "+new  Date().toLocaleString() ,  
+                        Comments: refs[i].current.value, 
+                    } 
+              let productItem=treatment_doc
+              let document={}
+              // data.createdby=user._id
+              // console.log(data);
+              document.order=medication
+              document.update=treatment_action
+               if (user.currentEmployee){
+               document.facility=user.currentEmployee.facilityDetail._id 
+               document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+               }
+              document.documentdetail=productItem
+              console.log(document.documentdetail)
+               document.documentname="Drug Administration" //state.DocumentClassModule.selectedDocumentClass.name
+              // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+              document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+              document.locationId=state.employeeLocation.locationId
+               document.client=state.ClientModule.selectedClient._id
+               document.clientname=state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname
+               document.clientobj=state.ClientModule.selectedClient
+               document.createdBy=user._id
+               document.createdByname=user.firstname+ " "+user.lastname
+               document.status="completed"
+               console.log(document)
+             ClientServ.create(document)
+             .then((res)=>{
+                     //console.log(JSON.stringify(res))
+                    // e.target.reset();
+                    /*  setMessage("Created Client successfully") */
+                     setSuccess(true)
+                     toast({
+                         message: 'Drug administered succesfully',
+                         type: 'is-success',
+                         dismissible: true,
+                         pauseOnHover: true,
+                       })
+                       setSuccess(false)
+                       refs[i].current.value=""
+                      // setProductItem([])
+                 })
+                 .catch((err)=>{
+                     toast({
+                         message: 'Error In Drugs Adminstration ' + err,
+                         type: 'is-danger',
+                         dismissible: true,
+                         pauseOnHover: true,
+                       })
+                 })
+     
+           
+
+
+
+         }
+        }
+     
+        const handleDelete=(doc)=>{
+             // console.log(doc)
+              let confirm = window.confirm(`You are about to delete the prescription: ${doc.order}?`)
+              if (confirm){
+             OrderServ.remove(doc._id)
+              .then((res)=>{
+                  toast({
+                      message: 'Prescription deleted succesfully',
+                      type: 'is-success',
+                      dismissible: true,
+                      pauseOnHover: true,
+                    })
+                    setSuccess(false)
+              })
+              .catch((err)=>{
+                  toast({
+                      message: 'Error deleting Prescription' + err,
+                      type: 'is-danger',
+                      dismissible: true,
+                      pauseOnHover: true,
+                    })
+              })
+           }
+          }
+
+        const handleDiscontinue=(medication,i)=>{
+            let confirm = window.confirm(`You are about to discontinue this medication ${medication.order} for ${ state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname} ?`)
+            if (confirm){
+                console.log("order",medication)
+                medication.treatment_status="Cancelled"
+               
+    
+               const  treatment_action =
+                    {actorname:user.firstname+ " "+user.lastname,
+                    actorId:user._id,
+                   order_id:medication._id,
+                   action:"Discountinued", 
+                    comments: refs[i].current.value, 
+                    createdat:new Date().toLocaleString(), 
+                    description:"Discontinued " + medication.order + " for " + user.firstname+ " "+user.lastname+ " @ "+ new Date().toLocaleString() ,  
+                  } 
+    
+    
+                  medication.treatment_action=[treatment_action, ... medication.treatment_action]
+                  const  treatment_doc =
+                            {
+                            Description:"Discontinued  " + medication.order + " for " + user.firstname+ " "+user.lastname+ " @ "+new  Date().toLocaleString() ,  
+                            Comments: refs[i].current.value, 
+                        } 
+                  let productItem=treatment_doc
+                  let document={}
+                  // data.createdby=user._id
+                  // console.log(data);
+                  document.order=medication
+                  document.update=treatment_action
+                   if (user.currentEmployee){
+                   document.facility=user.currentEmployee.facilityDetail._id 
+                   document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+                   }
+                  document.documentdetail=productItem
+                  console.log(document.documentdetail)
+                   document.documentname="Drug Administration" //state.DocumentClassModule.selectedDocumentClass.name
+                  // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+                  document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+                  document.locationId=state.employeeLocation.locationId
+                   document.client=state.ClientModule.selectedClient._id
+                   document.clientname=state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname
+                   document.clientobj=state.ClientModule.selectedClient
+                   document.createdBy=user._id
+                   document.createdByname=user.firstname+ " "+user.lastname
+                   document.status="completed"
+                   console.log(document)
+                 ClientServ.create(document)
+                 .then((res)=>{
+                         //console.log(JSON.stringify(res))
+                        // e.target.reset();
+                        /*  setMessage("Created Client successfully") */
+                         setSuccess(true)
+                         toast({
+                             message: 'Drug administered succesfully',
+                             type: 'is-success',
+                             dismissible: true,
+                             pauseOnHover: true,
+                           })
+                           setSuccess(false)
+                           refs[i].current.value=""
+                          // setProductItem([])
+                     })
+                     .catch((err)=>{
+                         toast({
+                             message: 'Error In Drugs Adminstration ' + err,
+                             type: 'is-danger',
+                             dismissible: true,
+                             pauseOnHover: true,
+                           })
+                     })
+                     }
+        }
+
+        const handleDrop=(medication,i)=>{
+            let confirm = window.confirm(`You are about to drop this medication ${medication.order} for ${ state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname} ?`)
+            if (confirm){
+                console.log("order",medication)
+                medication.treatment_status="Aborted"
+                medication.drop=true
+               
+    
+               const  treatment_action =
+                    {actorname:user.firstname+ " "+user.lastname,
+                    actorId:user._id,
+                   order_id:medication._id,
+                   action:"Aborted", 
+                    comments: refs[i].current.value, 
+                    createdat:new Date().toLocaleString(), 
+                    description:"Dropped " + medication.order + " for " + user.firstname+ " "+user.lastname+ " @ "+ new Date().toLocaleString() ,  
+                  } 
+    
+    
+                  medication.treatment_action=[treatment_action, ... medication.treatment_action]
+                  const  treatment_doc =
+                            {
+                            Description:"Dropped  " + medication.order + " for " + user.firstname+ " "+user.lastname+ " @ "+new  Date().toLocaleString() ,  
+                            Comments: refs[i].current.value, 
+                        } 
+                  let productItem=treatment_doc
+                  let document={}
+                  // data.createdby=user._id
+                  // console.log(data);
+                  document.order=medication
+                  document.update=treatment_action
+                   if (user.currentEmployee){
+                   document.facility=user.currentEmployee.facilityDetail._id 
+                   document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
+                   }
+                  document.documentdetail=productItem
+                  console.log(document.documentdetail)
+                   document.documentname="Drug Administration" //state.DocumentClassModule.selectedDocumentClass.name
+                  // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
+                  document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
+                  document.locationId=state.employeeLocation.locationId
+                   document.client=state.ClientModule.selectedClient._id
+                   document.clientname=state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname
+                   document.clientobj=state.ClientModule.selectedClient
+                   document.createdBy=user._id
+                   document.createdByname=user.firstname+ " "+user.lastname
+                   document.status="completed"
+                   console.log(document)
+                 ClientServ.create(document)
+                 .then((res)=>{
+                         //console.log(JSON.stringify(res))
+                        // e.target.reset();
+                        /*  setMessage("Created Client successfully") */
+                         setSuccess(true)
+                         toast({
+                             message: 'Drug administered succesfully',
+                             type: 'is-success',
+                             dismissible: true,
+                             pauseOnHover: true,
+                           })
+                           setSuccess(false)
+                           refs[i].current.value=""
+                          // setProductItem([])
+                     })
+                     .catch((err)=>{
+                         toast({
+                             message: 'Error In Drugs Adminstration ' + err,
+                             type: 'is-danger',
+                             dismissible: true,
+                             pauseOnHover: true,
+                           })
+                     })
+                     }
+        }
+         
+        const handleRow= async(ProductEntry)=>{
+             //console.log("b4",state)
+     
+             //console.log("handlerow",ProductEntry)
+             if(!standalone){
+     
+             await setSelectedOrder(ProductEntry)
+     
+             const    newProductEntryModule={
+                 selectedOrder:ProductEntry,
+                 show :'detail'
+             }
+            await setState((prevstate)=>({...prevstate, OrderModule:newProductEntryModule}))
+            //console.log(state)
+          }
+         }
+     
+        const handleSearch=(val)=>{
+            const field='name'
+            console.log(val)
+            OrderServ.find({query: {
+                   $or:[ { order: {
+                         $regex:val,
+                         $options:'i'
+                        
+                     }},
+                     {order_status: {
+                         $regex:val,
+                         $options:'i'
+                        
+                     }}],
+                     order_category:"Prescription",
+                    // storeId:state.StoreModule.selectedStore._id,
+                    //facility:user.currentEmployee.facilityDetail._id || "",
+                     $limit:10,
+                     $sort: {
+                         createdAt: -1
+                       }
+                         }}).then((res)=>{
+                     console.log(res)
+                    setFacilities(res.data)
+                     setMessage(" ProductEntry  fetched successfully")
+                     setSuccess(true) 
+                 })
+                 .catch((err)=>{
+                     console.log(err)
+                     setMessage("Error fetching ProductEntry, probable network issues "+ err )
+                     setError(true)
+                 })
+             }
+        
+        const getFacilities= async()=>{
+            
+                 console.log("here b4 server")
+                 console.log(state.ClientModule.selectedClient._id)
+                  const findProductEntry= await OrderServ.find(
+                     {query: {
+                         order_category:"Prescription",
+                         //destination: user.currentEmployee.facilityDetail._id,
+                        
+                         //storeId:state.StoreModule.selectedStore._id,
+                         clientId:state.ClientModule.selectedClient._id,
+                         drop:false,
+                         $limit:200,
+                         $sort: {
+                            treatment_status:1,
+                             createdAt: -1,
+                             
+                         }
+                         }})
+              await setFacilities(findProductEntry.data)
+              }   
+     
+        useEffect(() => {
+                     console.log("started")
+                     getFacilities()
+                   
+                    
+                    OrderServ.on('created', (obj)=>getFacilities())
+                     OrderServ.on('updated', (obj)=>getFacilities())
+                     OrderServ.on('patched', (obj)=>getFacilities())
+                     OrderServ.on('removed', (obj)=>getFacilities())
+                     return () => {
+                     
+                     }
+                 },[])
+     
+                 
+         return(
+             
+                 <>  
+                     <div className="level">
+                         <div className="level-left">
+                             <div className="level-item">
+                                 <div className="field">
+                                     <p className="control has-icons-left  ">
+                                         <DebounceInput className="input is-small " 
+                                             type="text" placeholder="Search Medications"
+                                             minLength={3}
+                                             debounceTimeout={400}
+                                             onChange={(e)=>handleSearch(e.target.value)} />
+                                         <span className="icon is-small is-left">
+                                             <i className="fas fa-search"></i>
+                                         </span>
+                                     </p>
+                                 </div>
+                             </div>
+                         </div>
+                        {!standalone && (<><div className="level-item"> <span className="is-size-6 has-text-weight-medium">List of Prescriptions </span></div>
+                         <div className="level-right">
+                             <div className="level-item"> 
+                                 <div className="level-item"><div className="button is-success is-small" onClick={handleCreateNew}>New</div></div>
+                             </div>
+                         </div></>)}
+     
+                     </div>
+                     <div className="table-container pullup ">
+                                     <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                         <thead>
+                                             <tr>
+                                             <th><abbr title="Serial No">S/No</abbr></th>
+                                             <th><abbr title="Date">Date</abbr></th>
+                                             <th><abbr title="Order">Medication</abbr></th>
+                                             <th>Instructions</th>
+                                             
+                                             <th><abbr title="Status">Status</abbr></th>
+                                             <th><abbr title="Last Administered">Last Administered</abbr></th>
+                                             <th><abbr title="Latest Comments">Latest Comments</abbr></th>
+                                             <th><abbr title="Administered by">Administered By</abbr></th> 
+                                             <th><abbr title="Comments">New Comments</abbr></th> 
+                                             <th><abbr title="Actions">Actions</abbr></th>
+                                             </tr>
+                                         </thead>
+                                         <tfoot>
+                                             
+                                         </tfoot>
+                                         <tbody>
+                                             {facilities.map((ProductEntry, i)=>(
+     
+                                                 <tr key={ProductEntry._id} /* onClick={()=>handleRow(ProductEntry)} */ className={ProductEntry.treatment_status!=="Active"?"cancel":""}>
+                                                 <th>{i+1}</th>
+                                                 <td>{/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */}<span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td>
+                                                 <th>{ProductEntry.order}</th>
+                                                 <th>{ProductEntry.instruction}</th>
+                                                 {/* <td>{ProductEntry.requestingdoctor_Name}</td> */}
+                                                 <td>{ProductEntry.treatment_status}</td>
+                                                 <td>{ProductEntry.treatment_action[0]?.createdat &&<span>{format(new Date(ProductEntry.treatment_action[0].createdat),'dd-MM-yy hh:mmm:ss')}</span>}</td>
+                                                 <td>{ProductEntry.treatment_action[0]?.comments} </td>
+                                                 <td>{ProductEntry.treatment_action[0]?.actorname} </td>
+                                                 {/* <td>{ProductEntry.clientId}</td> */}
+                                                 <td> <input classname="input" type="text" name={i} ref={refs[i]}/></td>
+                                               <td> 
+                                               
+                                                 <button className="button is-small btnheight is-primary" aria-label="more options" onClick={()=>handleAdminister (ProductEntry,i)}>
+                                                                 <span>Administer</span>
+                                                             </button> 
+                                                    <button className="button is-small btnheight is-info" aria-label="more options" onClick={()=>handleHistory(ProductEntry,i)}>
+                                                                 <span>History</span>
+                                                             </button>  
+                                                    <button className="button is-small btnheight is-warning" aria-label="more options" onClick={()=>handleDiscontinue(ProductEntry,i)}>
+                                                                 <span>Discountinue</span>
+                                                             </button>       
+                                                    <button className="button is-small btnheight  is-danger" aria-label="more options" onClick={()=>handleDrop(ProductEntry,i)}>
+                                                                 <span>Drop </span>
+                                                             </button>            
+                                                             </td>
+                                                
+                                                 </tr>
+     
+                                             ))}
+                                         </tbody>
+                                         </table>
+                     </div>   
+                     <div className={`modal ${hxModal?"is-active":""}` }>
+                    <div className="modal-background"></div>
+                        <div className="modal-card">
+                            <header className="modal-card-head">
+                            <p className="modal-card-title">Drug Admin History </p>
+                           
+
+                            <button className="delete" aria-label="close"  onClick={handlecloseModal1}></button>
+                            </header>
+                            <section className="modal-card-body">
+                            <div className="table-container pullup ">
+                                <div>
+                                <span className='is-medium'><strong>{currentMed.order}</strong></span><br/>
+                                <span><strong>Instruction: </strong>{currentMed.instruction}</span><br/>
+                            <span><strong>Ordered by:</strong> {currentMed.requestingdoctor_Name}</span><br/>
+                           {currentMed.createdAt && <span><strong>{formatDistanceToNowStrict(new Date(currentMed.createdAt),{addSuffix: true})}</strong> <span>{format(new Date(currentMed.createdAt),'dd-MM-yy')}</span></span> }
+                                </div>
+                                     <table className="table is-striped is-narrow is-hoverable is-fullwidth is-scrollable ">
+                                         <thead>
+                                             <tr>
+                                             <th><abbr title="Serial No">S/No</abbr></th>
+                                             <th><abbr title="Date">Date/Time</abbr></th>
+                                             <th><abbr title="Action">Action</abbr></th>
+                                             <th>Comments</th>
+                                             <th><abbr title="Personnel">Personel</abbr></th>
+                                            {/*  <th><abbr title="Status">Status</abbr></th>
+                                             <th><abbr title="Last Administered">Last Administered</abbr></th>
+                                             <th><abbr title="Administered by">Administered By</abbr></th> 
+                                             <th><abbr title="Comments">Comments</abbr></th> 
+                                             <th><abbr title="Actions">Actions</abbr></th> */}
+                                             </tr>
+                                         </thead>
+                                         <tfoot>
+                                             
+                                         </tfoot>
+                                         <tbody>
+                                        {currentMed.hasOwnProperty('treatment_action') &&    currentMed.treatment_action.map((ProductEntry, i)=>(
+     
+                                                 <tr key={ProductEntry._id} /* onClick={()=>handleRow(ProductEntry)}  className={ProductEntry._id!== "Active"?"is-selected":""}*/ >
+                                                 <th>{i+1}</th>
+                                                 <td>{ProductEntry.createdat &&<span>{format(new Date(ProductEntry.createdat),'dd-MM-yy hh:mmm:ss')}</span>}</td>
+                                                 <th>{ProductEntry.action}</th>
+                                                 <th>{ProductEntry.comments}</th>
+                                                 <td>{ProductEntry.actorname} </td>
+                                                
+                                                 </tr>
+     
+                                             ))}
+                                         </tbody>
+                                         </table>
+                                         </div>
+                            
+                            {/* <StoreList standalone="true" /> */}
+                            {/* <BillServiceCreate closeModal={handlecloseModal1}/> */}
+                            </section>
+                            {/* <footer className="modal-card-foot">
+                            <button className="button is-success">Save changes</button>
+                            <button className="button">Cancel</button>
+                            </footer> */}
+                        </div>
+                </div>                           
+                 </>
+                   
+         )
+         }
 
 export function ProductEntryDetail(){
     //const { register, handleSubmit, watch, setValue } = useForm(); //errors,

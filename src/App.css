@@ -12,6 +12,9 @@
  
   color: white; */
 }
+.cancel{
+  text-decoration: line-through
+}
 .warp{
   flex-wrap: wrap;
 }
