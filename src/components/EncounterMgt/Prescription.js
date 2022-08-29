@@ -1059,7 +1059,7 @@ export function DrugAdminList({standalone}){
                                          <tbody>
                                              {facilities.map((ProductEntry, i)=>(
      
-                                                 <tr key={ProductEntry._id} /* onClick={()=>handleRow(ProductEntry)} */ className={ProductEntry.treatment_status!=="Active"?"cancel":""}>
+                                                 <tr key={ProductEntry._id} /* onClick={()=>handleRow(ProductEntry)} */ className={ProductEntry.treatment_status==="Cancelled"?"cancel":""}>
                                                  <th>{i+1}</th>
                                                  <td>{/* {formatDistanceToNowStrict(new Date(ProductEntry.createdAt),{addSuffix: true})} <br/> */}<span>{format(new Date(ProductEntry.createdAt),'dd-MM-yy')}</span></td>
                                                  <th>{ProductEntry.order}</th>
@@ -1073,16 +1073,16 @@ export function DrugAdminList({standalone}){
                                                  <td> <input classname="input" type="text" name={i} ref={refs[i]}/></td>
                                                <td> 
                                                
-                                                 <button className="button is-small btnheight is-primary" aria-label="more options" onClick={()=>handleAdminister (ProductEntry,i)}>
+                                                 <button className="button is-small btnheight is-primary" disabled={ProductEntry.treatment_status==="Cancelled"} aria-label="more options" onClick={()=>handleAdminister (ProductEntry,i)}>
                                                                  <span>Administer</span>
                                                              </button> 
                                                     <button className="button is-small btnheight is-info" aria-label="more options" onClick={()=>handleHistory(ProductEntry,i)}>
                                                                  <span>History</span>
                                                              </button>  
-                                                    <button className="button is-small btnheight is-warning" aria-label="more options" onClick={()=>handleDiscontinue(ProductEntry,i)}>
+                                                    <button className="button is-small btnheight is-warning" disabled={ProductEntry.treatment_status==="Cancelled"} aria-label="more options" onClick={()=>handleDiscontinue(ProductEntry,i)}>
                                                                  <span>Discountinue</span>
                                                              </button>       
-                                                    <button className="button is-small btnheight  is-danger" aria-label="more options" onClick={()=>handleDrop(ProductEntry,i)}>
+                                                    <button className="button is-small btnheight  is-danger"  disabled={ProductEntry.treatment_status==="Cancelled"} aria-label="more options" onClick={()=>handleDrop(ProductEntry,i)}>
                                                                  <span>Drop </span>
                                                              </button>            
                                                              </td>
