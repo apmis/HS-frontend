@@ -358,9 +358,9 @@ export default function EncounterMain ({nopresc}) {
                                                         <div className="docdate">{formatDistanceToNowStrict(new Date(Clinic.createdAt),{addSuffix: true})} <br/><span>{format(new Date(Clinic.createdAt),'dd-MM-yy HH:mm:ss')}</span></div> {Clinic.documentname} by {Clinic.createdByname} at {Clinic.location},{Clinic.facilityname} 
                                                         <p className="right ml-2 mr-0">{Clinic.status} </p> 
                                                         </div>
-                                                        <button className="button  sbut" aria-label="more options" onClick={()=>handleDelete (Clinic)}>
+                                                       {user.currentEmployee?.roles.includes('Delete Notes') && <button className="button  sbut" aria-label="more options" onClick={()=>handleDelete (Clinic)}>
                                                             <span>x</span>
-                                                        </button> 
+                                                        </button>} 
                                                         { <button className="button  sbut" aria-label="more options" onClick={()=>handlePrint(i) }>
                                                             <span>Print</span>
                                                         </button>  }

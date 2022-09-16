@@ -12,6 +12,14 @@
  
   color: white; */
 }
+.shift-left{
+  margin-left:-10 px ;
+}
+.shift-right{
+  margin-right:-10 px ;
+}
+
+
 .cancel{
   text-decoration: line-through
 }

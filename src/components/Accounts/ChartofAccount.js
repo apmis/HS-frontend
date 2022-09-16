@@ -46,7 +46,7 @@ export function ChartofAccountCreate(){
     const [message,setMessage] = useState("")
     // eslint-disable-next-line
     const [facility,setFacility] = useState()
-    const accountServ=client.service('chartsofaccount')
+    const accountServ=client.service('chartaccounts')
     //const history = useHistory()
     const {user} = useContext(UserContext) //,setUser
     // eslint-disable-next-line
@@ -136,7 +136,7 @@ export function ChartofAccountCreate(){
                 <div className="field">    
                  <div className="control">
                      <div className="select is-small ">
-                         <select name="accountType"  ref={register({ required: true })}  className="selectadd" >
+                         <select name="class"  ref={register({ required: true })}  className="selectadd" >
                          <option value="">Choose Acoount Type</option>
                            {locationTypeOptions.map((option,i)=>(
                                <option key={i} value={option}> {option}</option>
@@ -147,7 +147,7 @@ export function ChartofAccountCreate(){
                 </div>
                 <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="class" type="text" placeholder="Class of Account" />
+                    <input className="input is-small" ref={register({ required: true })}  name="group_code" type="text" placeholder="Group Code" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -165,7 +165,7 @@ export function ChartofAccountCreate(){
             </div>
             <div className="field">
                     <p className="control has-icons-left has-icons-right">
-                    <input className="input is-small" ref={register({ required: true })}  name="accountName" type="text" placeholder="Name of Account" />
+                    <input className="input is-small" ref={register({ required: true })}  name="name" type="text" placeholder="Name of Account" />
                     <span className="icon is-small is-left">
                         <i className="fas fa-map-signs"></i>
                     </span>
@@ -226,7 +226,7 @@ export function ChartofAccountList(){
     const [success, setSuccess] =useState(false)
      // eslint-disable-next-line
    const [message, setMessage] = useState("") 
-    const LocationServ=client.service('chartsofaccount')
+    const LocationServ=client.service('chartaccounts')
     //const history = useHistory()
    // const {user,setUser} = useContext(UserContext)
     const [facilities,setFacilities]=useState([])
@@ -401,7 +401,7 @@ export function ChartofAccountList(){
                                         <tr>
                                         <th><abbr title="Serial No">S/No</abbr></th>
                                         <th>Name</th>
-                                        <th><abbr title="Account Type">Account Type</abbr></th>
+                                        <th><abbr title="Group Code">Group Code</abbr></th>
                                        <th><abbr title="Account Class">Class</abbr></th>
                                          <th><abbr title="Subclass">Subclass</abbr></th>
                                          <th><abbr title="Code">Code</abbr></th>
@@ -420,8 +420,8 @@ export function ChartofAccountList(){
 
                                             <tr key={Location._id} onClick={()=>handleRow(Location)} className={Location._id===(selectedLocation?._id||null)?"is-selected":""}>
                                             <th>{i+1}</th>
-                                            <th>{Location.accountName}</th>
-                                            <td>{Location.accountType}</td>
+                                            <th>{Location.name}</th>
+                                          <td>{Location.group_code}</td> 
                                             <td>{Location.class}</td>
                                             <td>{Location.subclass}</td>
                                             <td>{Location.code}</td>
