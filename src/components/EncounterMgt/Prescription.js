@@ -61,13 +61,14 @@ export function PrescriptionCreate(){
     const [source,setSource] = useState("")
     const [date,setDate] = useState("")
     const [name,setName] = useState("")
+    const [hidePanel,setHidePanel] = useState(false)
     const [destination,setDestination] = useState('')
     const [destinationId,setDestinationId] = useState('')
     const [destinationModal,setDestinationModal] = useState(false)
     const [medication,setMedication] = useState()
     const [instruction,setInstruction] = useState()
     const [productItem,setProductItem] = useState([])
-    const {state}=useContext(ObjectContext)
+    const {state,setState}=useContext(ObjectContext)
     const ClientServ=client.service('clinicaldocument')
     
     const [productEntry,setProductEntry]=useState({
@@ -160,6 +161,7 @@ export function PrescriptionCreate(){
         await setProductItem(
             prevProd=>prevProd.concat(productItemI)
         )
+        setHidePanel(false)
         setName("")
         setMedication("")
         setInstruction("")
@@ -167,8 +169,12 @@ export function PrescriptionCreate(){
         setDestinationId( user.currentEmployee.facilityDetail._id)
        // setDestination("")
        await setSuccess(true)
-       console.log(success)
-       console.log(productItem)
+       const    newfacilityModule={
+        selectedDestination:user.currentEmployee.facilityDetail,
+        show :'list'
+         }
+   await setState((prevstate)=>({...prevstate, DestinationModule:newfacilityModule}))
+     
     }
   //check user for facility or get list of facility  
    /*  useEffect(()=>{
@@ -216,7 +222,7 @@ export function PrescriptionCreate(){
           document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
           }
          document.documentdetail=productItem
-         console.log(document.documentdetail)
+        
           document.documentname="Prescription" //state.DocumentClassModule.selectedDocumentClass.name
          // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
          document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
@@ -227,7 +233,7 @@ export function PrescriptionCreate(){
           document.createdBy=user._id
           document.createdByname=user.firstname+ " "+user.lastname
           document.status="completed"
-          console.log(document)
+      
         ClientServ.create(document)
         .then((res)=>{
                 //console.log(JSON.stringify(res))
@@ -240,6 +246,8 @@ export function PrescriptionCreate(){
                     dismissible: true,
                     pauseOnHover: true,
                   })
+                  setDestination( user.currentEmployee.facilityDetail.facilityName)
+                  setDestinationId( user.currentEmployee.facilityDetail._id)
                   setSuccess(false)
                   setProductItem([])
             })
@@ -262,8 +270,10 @@ export function PrescriptionCreate(){
         }
     }, [])
 
+   
+
     return (
-        <>
+        <div >
             <div className="card card-overflow">
             <div className="card-header">
                 <p className="card-header-title">
@@ -282,7 +292,7 @@ export function PrescriptionCreate(){
          <div className="field is-horizontal">
             <div className="field-body">
              <div className="field is-expanded"  /* style={ !user.stacker?{display:"none"}:{}} */  > 
-                    <MedicationHelperSearch  getSearchfacility={getSearchfacility} clear={success} />  
+                    <MedicationHelperSearch  getSearchfacility={getSearchfacility} clear={success}  hidePanel={hidePanel}/>  
                   <p className="control has-icons-left " style={{display:"none"}}>
                         <input className="input is-small"  /* ref={register ({ required: true }) }  */   value={medication} name="medication" type="text" onChange={e=>setMedication(e.target.value)} placeholder="medication" />
                         <span className="icon is-small is-left">
@@ -301,7 +311,7 @@ export function PrescriptionCreate(){
             </div>  */}
             
           
-            <div className="field">
+            <div className="field" onClick={()=>setHidePanel(true)}>
             <p className="control">
                     <button className="button is-info is-small  is-pulled-right">
                       <span className="is-small" onClick={handleClickProd}> +</span>
@@ -401,7 +411,7 @@ export function PrescriptionCreate(){
                                         </footer> */}
                                     </div>
                                 </div>       
-        </>
+        </div>
     )
    
 }
@@ -482,7 +492,7 @@ export function PrescriptionList({standalone}){
 
    const handleSearch=(val)=>{
        const field='name'
-       console.log(val)
+     
        OrderServ.find({query: {
               $or:[ { order: {
                     $regex:val,
@@ -502,13 +512,13 @@ export function PrescriptionList({standalone}){
                     createdAt: -1
                   }
                     }}).then((res)=>{
-                console.log(res)
+                
                setFacilities(res.data)
                 setMessage(" ProductEntry  fetched successfully")
                 setSuccess(true) 
             })
             .catch((err)=>{
-                console.log(err)
+                
                 setMessage("Error fetching ProductEntry, probable network issues "+ err )
                 setError(true)
             })
@@ -516,14 +526,11 @@ export function PrescriptionList({standalone}){
    
  const getFacilities= async()=>{
        
-            console.log("here b4 server")
-            console.log(state.ClientModule.selectedClient._id)
+          
              const findProductEntry= await OrderServ.find(
                 {query: {
                     order_category:"Prescription",
-                    //destination: user.currentEmployee.facilityDetail._id,
                    
-                    //storeId:state.StoreModule.selectedStore._id,
                     clientId:state.ClientModule.selectedClient._id,
                     $limit:20,
                     $sort: {
@@ -534,7 +541,7 @@ export function PrescriptionList({standalone}){
          }   
 
             useEffect(() => {
-                console.log("started")
+               
                 getFacilities()
               
                
@@ -670,7 +677,7 @@ export function DrugAdminList({standalone}){
             let confirm = window.confirm(`You are about to administer a dose of ${medication.order} for ${ state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname} ?`)
             if (confirm){
             //update the medication
-            console.log("order",medication)
+           
             medication.treatment_status="Active"
            
 
@@ -702,7 +709,7 @@ export function DrugAdminList({standalone}){
                document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
                }
               document.documentdetail=productItem
-              console.log(document.documentdetail)
+             
                document.documentname="Drug Administration" //state.DocumentClassModule.selectedDocumentClass.name
               // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
               document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
@@ -713,7 +720,7 @@ export function DrugAdminList({standalone}){
                document.createdBy=user._id
                document.createdByname=user.firstname+ " "+user.lastname
                document.status="completed"
-               console.log(document)
+             
              ClientServ.create(document)
              .then((res)=>{
                      //console.log(JSON.stringify(res))
@@ -774,7 +781,7 @@ export function DrugAdminList({standalone}){
         const handleDiscontinue=(medication,i)=>{
             let confirm = window.confirm(`You are about to discontinue this medication ${medication.order} for ${ state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname} ?`)
             if (confirm){
-                console.log("order",medication)
+               
                 medication.treatment_status="Cancelled"
                
     
@@ -806,7 +813,7 @@ export function DrugAdminList({standalone}){
                    document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
                    }
                   document.documentdetail=productItem
-                  console.log(document.documentdetail)
+                 
                    document.documentname="Drug Administration" //state.DocumentClassModule.selectedDocumentClass.name
                   // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
                   document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
@@ -817,7 +824,7 @@ export function DrugAdminList({standalone}){
                    document.createdBy=user._id
                    document.createdByname=user.firstname+ " "+user.lastname
                    document.status="completed"
-                   console.log(document)
+                  
                  ClientServ.create(document)
                  .then((res)=>{
                          //console.log(JSON.stringify(res))
@@ -848,7 +855,7 @@ export function DrugAdminList({standalone}){
         const handleDrop=(medication,i)=>{
             let confirm = window.confirm(`You are about to drop this medication ${medication.order} for ${ state.ClientModule.selectedClient.firstname+ " "+state.ClientModule.selectedClient.middlename+" "+state.ClientModule.selectedClient.lastname} ?`)
             if (confirm){
-                console.log("order",medication)
+                
                 medication.treatment_status="Aborted"
                 medication.drop=true
                
@@ -881,7 +888,7 @@ export function DrugAdminList({standalone}){
                    document.facilityname=user.currentEmployee.facilityDetail.facilityName // or from facility dropdown
                    }
                   document.documentdetail=productItem
-                  console.log(document.documentdetail)
+                
                    document.documentname="Drug Administration" //state.DocumentClassModule.selectedDocumentClass.name
                   // document.documentClassId=state.DocumentClassModule.selectedDocumentClass._id
                   document.location=state.employeeLocation.locationName+" "+state.employeeLocation.locationType
@@ -892,7 +899,7 @@ export function DrugAdminList({standalone}){
                    document.createdBy=user._id
                    document.createdByname=user.firstname+ " "+user.lastname
                    document.status="completed"
-                   console.log(document)
+                  
                  ClientServ.create(document)
                  .then((res)=>{
                          //console.log(JSON.stringify(res))
@@ -939,7 +946,7 @@ export function DrugAdminList({standalone}){
      
         const handleSearch=(val)=>{
             const field='name'
-            console.log(val)
+           
             OrderServ.find({query: {
                    $or:[ { order: {
                          $regex:val,
@@ -959,13 +966,13 @@ export function DrugAdminList({standalone}){
                          createdAt: -1
                        }
                          }}).then((res)=>{
-                     console.log(res)
+                    
                     setFacilities(res.data)
                      setMessage(" ProductEntry  fetched successfully")
                      setSuccess(true) 
                  })
                  .catch((err)=>{
-                     console.log(err)
+                    
                      setMessage("Error fetching ProductEntry, probable network issues "+ err )
                      setError(true)
                  })
@@ -973,8 +980,7 @@ export function DrugAdminList({standalone}){
         
         const getFacilities= async()=>{
             
-                 console.log("here b4 server")
-                 console.log(state.ClientModule.selectedClient._id)
+                
                   const findProductEntry= await OrderServ.find(
                      {query: {
                          order_category:"Prescription",
@@ -994,7 +1000,7 @@ export function DrugAdminList({standalone}){
               }   
      
         useEffect(() => {
-                     console.log("started")
+                    
                      getFacilities()
                    
                     
@@ -1502,7 +1508,7 @@ export function ProductEntryModify(){
         e.preventDefault();
         
         setSuccess(false)
-        console.log(data)
+      
         data.facility=ProductEntry.facility
           //console.log(data);
           
@@ -1659,7 +1665,7 @@ export function ProductEntryModify(){
                 
 }   
 
-export  function MedicationHelperSearch({getSearchfacility,clear}) {
+export  function MedicationHelperSearch({getSearchfacility,clear, hidePanel}) {
     
     const productServ=client.service('medicationhelper')
     const [facilities,setFacilities]=useState([])
@@ -1678,6 +1684,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
    const inputEl=useRef(null)
    const [val,setVal]=useState("")
     const [productModal,setProductModal]=useState(false)
+    const ref=useRef(null)
    let value
 
    const handleRow= async(obj)=>{
@@ -1688,33 +1695,34 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
        
        await  setSimpa(obj.medication)
       
-        // setSelectedFacility(obj)
+        
         setShowPanel(false)
         await setCount(2)
-        /* const    newfacilityModule={
-            selectedFacility:facility,
-            show :'detail'
-        }
-   await setState((prevstate)=>({...prevstate, facilityModule:newfacilityModule})) */
-   //console.log(state)
+     
 }
-    const handleBlur=async(e)=>{
-         if (count===2){
-             console.log("stuff was chosen")
-         }
-       
-       /*  console.log("blur")
-         setShowPanel(false)
-        console.log(JSON.stringify(simpa))
-        if (simpa===""){
-            console.log(facilities.length)
-            setSimpa("abc")
-            setSimpa("")
-            setFacilities([])
-            inputEl.current.setValue=""
-        }
-        console.log(facilities.length)
-        console.log(inputEl.current) */
+    const handleBlur=async()=>{
+        console.log(document.activeElement)
+     
+        // setShowPanel(false)
+         getSearchfacility({
+            medication:val,
+            instruction:""
+        })
+    
+   
+    }
+
+    
+    const handleBlur2=async()=>{
+       // console.log(document.activeElement)
+     
+        setShowPanel(false)
+         getSearchfacility({
+            medication:val,
+            instruction:""
+        })
+    
+   
     }
     const handleSearch=async(value)=>{
         setVal(value)
@@ -1738,8 +1746,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
                      createdAt: -1
                    }
                      }}).then((res)=>{
-              console.log("product  fetched successfully") 
-              console.log(res) 
+           
                     if(res.total>0){
                         setFacilities(res.data)
                         setSearchMessage(" product  fetched successfully")
@@ -1763,11 +1770,10 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
              })
          }
         else{
-            console.log("less than 3 ")
-            console.log(val)
+           
             setShowPanel(false)
             await setFacilities([])
-            console.log(facilities)
+          
         }
     }
 
@@ -1775,9 +1781,9 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
         setProductModal(true) 
     }
     const handlecloseModal =()=>{
-       // setDestinationModal(false)
-        //handleSearch(val)
+      
     }
+
     useEffect(() => {
         setSimpa(value)
         return () => {
@@ -1786,15 +1792,29 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
     }, [simpa])
     useEffect(() => {
        if (clear){
-           console.log("success has changed",clear)
+        
            setSimpa("")
        }
         return () => {
             
         }
     }, [clear] )
+
+    useEffect(() => {
+        if (hidePanel){
+         
+           setShowPanel(false)
+        }
+         return () => {
+             
+         }
+     }, [hidePanel] )
+
+
+
+
     return (
-        <div>
+        <div >
             <div className="field">
                 <div className="control has-icons-left  ">
                     <div className={`dropdown ${showPanel?"is-active":""}`} style={{width:"100%"}}>
@@ -1804,7 +1824,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
                                 value={simpa}
                                 minLength={3}
                                 debounceTimeout={400}
-                               /*  onBlur={(e)=>handleBlur(e)} */
+                                 onBlur={(e)=>handleBlur(e.target.value)} 
                                 onChange={(e)=>handleSearch(e.target.value)}
                                 inputRef={inputEl}
                                   />
@@ -1813,8 +1833,12 @@ export  function MedicationHelperSearch({getSearchfacility,clear}) {
                             </span>
                         </div>
                         {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu" style={{width:"100%"}} >
-                            <div className="dropdown-content">
+                        <div className="dropdown-menu" style={{width:"100%"}}   >
+                            <div className="dropdown-content" 
+                                onMouseOver={()=>  setShowPanel(true)} 
+                                onMouseOut={()=>  setShowPanel(false)}
+                            
+                            >
                          {/*  { facilities.length>0?"":<div className="dropdown-item" onClick={handleAddproduct}> <span>Add {val} to product list</span> </div>} */}
 
                               {facilities.map((facility, i)=>(
