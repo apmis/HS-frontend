@@ -1124,12 +1124,23 @@ export  function TestHelperSearch({getSearchfacility,clear, hidePanel}) {
        
 }
 const handleBlur=async(value)=>{
-    setShowPanel(false)
+   /*  setShowPanel(false) */
     getSearchfacility({
        test:value,
        instruction:""
    })
 }
+const handleBlur2=async()=>{
+    // console.log(document.activeElement)
+  
+     setShowPanel(false)
+      getSearchfacility({
+         medication:val,
+         instruction:""
+     })
+ 
+
+ }
     const handleSearch=async(value)=>{
         setVal(value)
         if (value===""){
