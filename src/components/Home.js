@@ -20,6 +20,7 @@ import ManagedCareModule2 from './ManagedCareModule2'
 import LandingPage from './LandingPage'
 import {UserContext,ObjectContext} from '../context'
 import client from '../feathers'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 export default function Home() {
     let { path, url } = useRouteMatch();
@@ -93,6 +94,17 @@ function NavBar({url}){
     const {state,setState}=useContext(ObjectContext)
     const [showmenu, setShowMenu]=useState(false)
     const history =useHistory()
+    const {
+        transcript,
+        listening,
+        resetTranscript,
+        browserSupportsSpeechRecognition
+      } = useSpeechRecognition();
+    
+      if (!browserSupportsSpeechRecognition) {
+        return <span>Browser doesn't support speech recognition.</span>;
+      }
+    
 
 
 
@@ -136,44 +148,43 @@ function NavBar({url}){
     }, []) */
 
 
-    useEffect( () => {
-        if(!user){
-           console.log("No user")
-            reAuth()
-          
-            //history.push("/")    
-             return
-        }
-
-        async function getFullname(){
-            const zed= user.firstname+" "+user.lastname
-           await setFullname(zed)
-        // console.log(zed)
-         if (user.employeeData.length){
-            user.currentEmployee= user.employeeData[0] //choose the first facilty
-            const fac=  user.currentEmployee.facilityDetail.facilityName
-           // await set
-           await setUserFacility(fac)
-         }else{
-            user.currentEmployee= null
-           
-         }
-        
-         await setUser(user)
-         localStorage.setItem("user",JSON.stringify(user))
-         
-         
-         
-        }
-        getFullname()
-        //console.log(user)
-       /*  console.log(user.lastname)
-      console.log(user) */
-        return () => {
+        useEffect( () => {
+            if(!user){
+            console.log("No user")
+                reAuth()
             
-        }
-        // eslint-disable-next-line 
-    },[] )
+                //history.push("/")    
+                return
+            }
+
+            async function getFullname(){
+                const zed= user.firstname+" "+user.lastname
+            await setFullname(zed)
+            // console.log(zed)
+            if (user.employeeData.length){
+                user.currentEmployee= user.employeeData[0] //choose the first facilty
+                const fac=  user.currentEmployee.facilityDetail.facilityName
+            // await set
+            await setUserFacility(fac)
+            }else{
+                user.currentEmployee= null
+            
+            }
+            
+            await setUser(user)
+            localStorage.setItem("user",JSON.stringify(user)) 
+            }
+            getFullname()
+
+            document.addEventListener("mousedown", handleClickin);
+            //console.log(user)
+        /*  console.log(user.lastname)
+        console.log(user) */
+            return () => {
+                document.removeEventListener("mousedown", handleClickin);
+            }
+            // eslint-disable-next-line 
+        },[] )
 
     const handleLogOut=()=>{
         client.logout()
@@ -193,6 +204,13 @@ function NavBar({url}){
        
         setShowMenu(prev=>(!prev))
     }
+
+    const handlelisten =()=>{
+        SpeechRecognition.startListening({ continuous: true })
+    }
+    const handleClickin=()=>{
+        document.activeElement.value=transcript
+    }
     if (!user) return 'Loading...'
     return(
         <div>
@@ -201,6 +219,13 @@ function NavBar({url}){
                     <div className="navbar-item is-size-5 minHt" onClick={handleFacilityClick}> 
                         <strong>{userFacility ||""} </strong> 
                     </div>
+                 {/*    <div>
+                        <p>Microphone: {listening ? 'on' : 'off'}</p>
+                        <button className='button is-small ' onClick={handlelisten}>Start</button>
+                        <button className='button is-small ' onClick={SpeechRecognition.stopListening}>Stop</button>
+                        <button className='button is-small ' onClick={resetTranscript}>Reset</button>
+                        <p>The transcript is here: {transcript}</p>
+                    </div>  */}
                     {/* <div className="navbar-item" href="https://bulma.io">
                     <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
                     </div> */}

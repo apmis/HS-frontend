@@ -1833,7 +1833,7 @@ export  function MedicationHelperSearch({getSearchfacility,clear, hidePanel}) {
                             </span>
                         </div>
                         {/* {searchError&&<div>{searchMessage}</div>} */}
-                        <div className="dropdown-menu" style={{width:"100%"}}   >
+                        <div className="dropdown-menu" style={{width:"100%"}} onBlur={handleBlur2}  >
                             <div className="dropdown-content" 
                                 onMouseOver={()=>  setShowPanel(true)} 
                                 onMouseOut={()=>  setShowPanel(false)}

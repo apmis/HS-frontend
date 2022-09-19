@@ -18,13 +18,13 @@
     "dotenv": "^8.2.0",
     "leaflet": "^1.8.0",
     "random-string-generator": "^1.0.0",
-    "react": "^17.0.1",
+    "react": ">=16.8.0",
     "react-accessible-accordion": "^3.3.4",
     "react-chartjs-2": "^3.0.3",
     "react-cool-onclickoutside": "^1.7.0",
     "react-datepicker": "^3.6.0",
     "react-debounce-input": "^3.2.3",
-    "react-dom": "^17.0.1",
+    "react-dom": ">=16.8.0",
     "react-draggable": "^4.4.3",
     "react-dropzone-uploader": "^2.11.0",
     "react-form-builder2": "^0.11.3",
@@ -36,6 +36,7 @@
     "react-query": "^3.5.16",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "react-speech-recognition": "^3.9.1",
     "react-to-print": "^2.12.5",
     "serve": "^11.3.2",
     "socket.io-client": "^2.3.1",
@@ -68,8 +69,8 @@
   "devDependencies": {
     "@types/leaflet": "^1.7.10"
   },
-  "engines" : { 
-    "npm" : "8.1.0",
-    "node" : "16.12.0"
+  "engines": {
+    "npm": "8.1.0",
+    "node": "16.12.0"
   }
 }
