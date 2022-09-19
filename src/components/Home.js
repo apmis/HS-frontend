@@ -209,7 +209,7 @@ function NavBar({url}){
         SpeechRecognition.startListening({ continuous: true })
     }
     const handleClickin=()=>{
-        document.activeElement.value=transcript
+       /*  document.activeElement.value=transcript */
     }
     if (!user) return 'Loading...'
     return(
