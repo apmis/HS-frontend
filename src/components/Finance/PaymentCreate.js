@@ -962,14 +962,16 @@ export default function PaymentCreate(){
                              <input type="radio" name={ProductEntry._id}  value="Part" onChange={(e)=>handleChangePart(ProductEntry,e)}/>
                              <span> Part </span>
                               </label>
-                              <div className="field " style={{display:`${ProductEntry.show}`}}>
-                              <div className="control">
-                                  <input  className="input selectadd" type="text" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
-                                  </div> 
-                                  <div className="control">
-                                  <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
+                              <div  style={{display:`${ProductEntry.show}`}}>
+                                <div className="blk">
+                                  <div>
+                                    <input  className="input selectadd shift-left" type="text" name={ProductEntry._id}  /* value={ProductEntry.partPay}  */  onChange={(e)=>handlePartAmount(ProductEntry,e)} />
+                                  </div>
+                                  <div >
+                                    <button className="button is-info selectadd" onClick={(e)=>handleUpdate(ProductEntry,e)}>Update</button>
                                   </div>
                                   </div>
+                            </div>
                              {/*  {ProductEntry.partPay} */}
                               </td>
                          <td>

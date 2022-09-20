@@ -19,7 +19,9 @@
   margin-right:-10 px ;
 }
 
-
+.blk{
+  display: block !important;
+}
 .cancel{
   text-decoration: line-through
 }
