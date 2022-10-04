@@ -1,7 +1,6 @@
 // import React, { useState, useContext, useEffect } from "react";
 // import { UserContext, ObjectContext } from "../context";
 
-import ClinicDashboard from "./UiHelper/@modules/ClinicDashboard";
 import LandingPageDashboard from "./UiHelper/@modules/LandingPageDashboard";
 
 // import useFetch from "./UiHelper/utils/usefetch";
@@ -32,20 +31,7 @@ export default function LandingPage() {
     <div>
       <section className="hero is-info is-fullheight">
         <div className="hero-body">
-          {/* <div className="container has-text-centered">
-                    <h1 className="title">
-                       Welcome!!
-                    </h1>
-                    <h2 className="subtitle">
-                        Have fun working today!
-                    </h2>
-                    <button className="button is-info minHt pullup  startbutton " onClick={()=>handleClick()}>
-                    Start Here !!
-                    </button>
-                    </div> */}
-
-          {/* <LandingPageDashboard /> */}
-          <ClinicDashboard />
+          <LandingPageDashboard />
         </div>
       </section>
     </div>

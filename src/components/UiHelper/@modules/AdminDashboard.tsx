@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import ViewCard from "./@sections/ViewCard";
 import AreaChart from "../charts/AreaChart";
@@ -12,17 +12,28 @@ import {
   DashboardPageWrapper,
   StartCardWapper,
 } from "../core-ui/styles";
+import { userDetails } from "../utils/fetchUserDetails";
 
 const AdminDashboard = () => {
+  const [userName, setUserName] = useState("");
+  const [facilityName, setFacilityName] = useState("");
+
+  useEffect(() => {
+    const { userFullName, facilityFullName } = userDetails();
+    setUserName(userFullName);
+    setFacilityName(facilityFullName);
+  }, []);
+
   return (
     <DashboardPageWrapper>
       <Box>
         <Box>
           <Typography variant="h2">
-            Hello <span>Alex John</span>👋
+            Hello <span>{userName}</span>👋
           </Typography>
           <Typography variant="body1">
-            Welcome to your Admin Module <span>@Your Company’s</span> Front Desk
+            Welcome to your Client Module{" "}
+            <span>@Front Desk {facilityName}</span>
           </Typography>
         </Box>
 

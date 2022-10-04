@@ -1,67 +1,31 @@
-import { Box, Card, Checkbox, Stack, Typography } from "@mui/material";
-import React from "react";
+import { Box, Card, Typography } from "@mui/material";
 interface ViewCardProps {
   count: any;
   title: string;
-  hasFilter?: boolean;
 }
 
-const ViewCard: React.FC<ViewCardProps> = ({
-  title,
-  count,
-  hasFilter = false,
-}) => {
-  const renderFilterGroup = () => {
-    return (
-      <>
-        <Stack direction="column">
-          {["Daily", "Weekly", "Monthly", "Quaterly", "Anually"].map(
-            (value, index) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  m: 0,
-                  p: 0,
-                }}
-              >
-                <label>{value}</label>
-                <Checkbox sx={{ m: 0, p: 0, ml: 2 }} size="small" />
-              </Box>
-            )
-          )}
-        </Stack>
-      </>
-    );
-  };
-
-  const isFilterObject = () => {
-    if (hasFilter) return { padding: 3, width: "75%" };
-    return { padding: 6, width: "75%" };
-  };
+const ViewCard: React.FC<ViewCardProps> = ({ title, count }) => {
   return (
     <Card
       sx={{
-        p: isFilterObject().padding,
+        p: 4,
         background: "#f9f9f9",
         boxShadow: "0",
         borderRadius: 4,
         width: { xs: "100%" },
         textAlign: "center",
-        mr: 2,
-        mb: { xs: 2 },
+        mr: 1,
+        mb: { xs: 1 },
         display: "flex",
         alignItems: "center",
       }}
     >
-      <Box sx={{ width: isFilterObject().width }}>
-        <Typography variant="h1" sx={{ fontWeight: "bold", fontSize: "25px" }}>
+      <Box sx={{ width: "75%" }}>
+        <Typography variant="h1" sx={{ fontWeight: "bold", fontSize: "15px" }}>
           {count}
         </Typography>
         <Typography>{title}</Typography>
       </Box>
-      {hasFilter && renderFilterGroup()}
     </Card>
   );
 };

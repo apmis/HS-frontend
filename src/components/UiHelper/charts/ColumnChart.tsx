@@ -32,7 +32,7 @@ const ColumnChart: React.FC<ColumnChartProps> = ({
         options={state.options}
         series={state.series}
         type="bar"
-        height={300}
+        height={250}
         width="100%"
       />
     </ChartCard>

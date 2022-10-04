@@ -2,7 +2,7 @@ import Chart from "react-apexcharts";
 import React from "react";
 import ChartCard from "./ChartCard";
 import { chartoptions } from "../utils/chartoptions";
-// import { lineSeries } from "../utils/mock_chart_data";
+import { lineSeries } from "../utils/mock_chart_data";
 
 interface LineChartProps {
   title: string;
@@ -14,7 +14,7 @@ interface LineChartProps {
 const LineChart: React.FC<LineChartProps> = ({
   title,
   subheader = "Sample Line Chart",
-  series,
+  series = lineSeries,
   monthArray,
 }) => {
   const state = {
@@ -38,7 +38,7 @@ const LineChart: React.FC<LineChartProps> = ({
         options={state.options}
         series={state.series}
         type="line"
-        height={300}
+        height={250}
         width="100%"
       />
     </ChartCard>

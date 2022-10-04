@@ -37,6 +37,9 @@ const CircleChart: React.FC<CircleChartProps> = ({
           },
         },
       },
+      title: {
+        text: title ? title : "",
+      },
     },
   };
   return (

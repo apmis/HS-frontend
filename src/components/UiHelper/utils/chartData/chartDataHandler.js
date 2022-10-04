@@ -86,7 +86,8 @@ export const TotalUpcomingAppointment = (service) => {
 };
 
 export const TotalNewClientWithinAMonth = (service) => {
-  const DAY_MS = 24 * 60 * 60 * 1000 * 100;
+  const getNumDaysInCurrentMonth = new Date().getDate();
+  const DAY_MS = 24 * 60 * 60 * 1000 * getNumDaysInCurrentMonth;
   const query = {
     $sort: { createdAt: -1 },
     createdAt: {
@@ -103,11 +104,7 @@ export const TotalNewClientWithinAMonth = (service) => {
   };
 };
 
-export const TotalNewClientWithinARangeOf30Day = (
-  service
-  // prevState,
-  // currentState
-) => {
+export const TotalNewClientWithinARangeOf30Day = (service) => {
   const DAY_MS60 = 24 * 60 * 60 * 1000 * 21;
   // const DAY_MS30 = 24 * 60 * 60 * 1000 * currentState;
 
@@ -165,7 +162,8 @@ export const TotalDischargedPatient = (service) => {
     },
   };
   const { data, isPending, error } = useFetch(service, query);
-  let totalDischargedPatient = Number(data.total);
+
+  let totalDischargedPatient = data.total;
   let err = error;
   return {
     totalDischargedPatient,
@@ -183,13 +181,156 @@ export const TotalAdmittedPatient = (service) => {
     },
   };
   const { data, isPending, error } = useFetch(service, query);
-  console.log({
-    queryResults: data,
-  });
-  let totalAdmittedPatient = Number(data.total);
+  let totalAdmittedPatient = data.total;
   let err = error;
   return {
     totalAdmittedPatient,
+    isPending,
+    err,
+  };
+};
+
+export const TotalPaymentMode = (service) => {
+  const query = {
+    $sort: { createdAt: -1 },
+    $select: ["createdAt", "paymentinfo"],
+  };
+  const { data, isPending, error } = useFetchData(service, query);
+  let queryResults = data;
+
+  let { paymentModeData } = paymentTotal(queryResults);
+  let err = error;
+
+  var paymentModeBarSeries = [
+    {
+      name: "mode of payment",
+      data: paymentModeData,
+    },
+  ];
+  return {
+    paymentModeBarSeries,
+    isPending,
+    err,
+  };
+};
+
+export const TotalServiceData = (service, selectQuery) => {
+  const query = {
+    $sort: { createdAt: -1 },
+    $select: [selectQuery],
+  };
+  const { data, isPending, error } = useFetchData(service, query);
+  let totalServiceData = data;
+  let err = error;
+  return {
+    totalServiceData,
+    isPending,
+    err,
+  };
+};
+
+export const TotalBedAvailable = (service) => {
+  const query = {
+    $sort: { createdAt: -1 },
+    $selete: ["status"],
+    status: "occupied",
+  };
+  const { data, isPending, error } = useFetch(service, query);
+  let totalBedAvailable = data.total;
+  let err = error;
+  return {
+    totalBedAvailable,
+    isPending,
+    err,
+  };
+};
+
+export const FetchLocationWard = (service) => {
+  const query = {
+    $sort: { createdAt: -1 },
+    $select: ["sublocations", "locationType"],
+    locationType: "Ward",
+  };
+  const { data, isPending, error } = useFetchData(service, query);
+  let fetchLocationWard = data;
+  let err = error;
+  return {
+    fetchLocationWard,
+    isPending,
+    err,
+  };
+};
+
+export const FetchDataWithInARange = (service, gt, lt) => {
+  const GT_MS = 24 * 60 * 60 * 1000 * gt;
+  const LT_MS = 24 * 60 * 60 * 1000 * lt;
+
+  const query = {
+    $sort: { createdAt: -1 },
+    $select: ["createdAt", "start_time"],
+    start_time: {
+      $gt: new Date().getTime() - GT_MS,
+      $lt: new Date().getTime() - LT_MS,
+    },
+  };
+  const { data, isPending, error } = useFetch(service, query);
+  let totalDataWithInARange = data.total;
+  let err = error;
+  return {
+    totalDataWithInARange,
+    isPending,
+    err,
+  };
+};
+
+export const FetchDataWithInAYear = (
+  service,
+  gtPreviousYear_MS,
+  ltCurrentYear_MS
+) => {
+  const query = {
+    $sort: { createdAt: -1 },
+    $select: ["createdAt", "start_time"],
+    start_time: {
+      $gt: gtPreviousYear_MS,
+      $lt: ltCurrentYear_MS,
+    },
+  };
+  const { data, isPending, error } = useFetch(service, query);
+
+  let totalDataWithInAYear = data.total;
+
+  // console.log("usefetch ===>", {
+  //   isPending: isPending,
+  //   data: Number(data.total),
+  // });
+  let err = error;
+  return {
+    totalDataWithInAYear,
+    isPending,
+    err,
+  };
+};
+
+export const ModelResult = (service) => {
+  // const query = {
+  //   $sort: { createdAt: +1 },
+  //   // $select: ["createdAt", "start_time"],
+  //   // $select: ["sublocations", "locationType"],
+  //   // locationType: "Ward",
+  //   // // $select: ["bed", "bed_id", "end_time"],
+  // };
+
+  const query = {
+    $sort: { createdAt: 1 },
+    $select: ["createdAt"],
+  };
+
+  const { data: modelResult, isPending, error } = useFetchData(service, query);
+
+  let err = error;
+  return {
+    modelResult,
     isPending,
     err,
   };

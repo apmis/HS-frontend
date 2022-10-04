@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import ViewCard from "./@sections/ViewCard";
 import AreaChart from "../charts/AreaChart";
@@ -12,25 +12,35 @@ import {
   DashboardPageWrapper,
   StartCardWapper,
 } from "../core-ui/styles";
+import { userDetails } from "../utils/fetchUserDetails";
 
 const InventoryDashboard = () => {
+  const [userName, setUserName] = useState("");
+  const [facilityName, setFacilityName] = useState("");
+
+  useEffect(() => {
+    const { userFullName, facilityFullName } = userDetails();
+    setUserName(userFullName);
+    setFacilityName(facilityFullName);
+  }, []);
+
   return (
     <DashboardPageWrapper>
       <Box>
         <Box>
           <Typography variant="h2">
-            Hello <span>Alex John</span>👋
+            Hello <span>{userName}</span>👋
           </Typography>
           <Typography variant="body1">
-            Welcome to your Inventory Module <span>@Your Company’s</span> Front
-            Desk
+            Welcome to your Client Module{" "}
+            <span>@Front Desk {facilityName}</span>
           </Typography>
         </Box>
 
         <StartCardWapper>
           <ViewCard count={25} title="Patients Count At Pharmacy" />
-          <ViewCard count={"50K"} title="Total Sales" hasFilter={true} />
-          <ViewCard count={"250K"} title="Total Stock" hasFilter={true} />
+          {/* <ViewCard count={"50K"} title="Total Sales" hasFilter={true} />
+          <ViewCard count={"250K"} title="Total Stock" hasFilter={true} /> */}
           <ViewCard count={"50%"} title="Available Stock" />
           <ViewCard count={80} title="Total Supplied Products" />
         </StartCardWapper>
@@ -47,7 +57,7 @@ const InventoryDashboard = () => {
             <Box sx={{ width: "100%", p: 0, pt: 2, pb: 2 }}>
               <AreaChart height={200} title="Recorder Level Monthly" />
               <StartCardWapper>
-                <ViewCard
+                {/* <ViewCard
                   count={"20K"}
                   title="Total Stock Value"
                   hasFilter={true}
@@ -56,7 +66,7 @@ const InventoryDashboard = () => {
                   count={"80K"}
                   title="Total Purchases"
                   hasFilter={true}
-                />
+                /> */}
               </StartCardWapper>
             </Box>
             <Box sx={{ width: "100%", pt: 2, pb: 2 }}>

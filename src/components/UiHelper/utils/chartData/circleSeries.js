@@ -1,19 +1,13 @@
-import {
-  TotalNumOfMaleClient,
-  TotalNumOfFemaleClient,
-  TotalNumOfOtherGenderClient,
-} from "./chartDataHandler";
-
+import { TotalNumOfAllGender } from "./queryHandler";
 export const CircleSeriesData = (service) => {
-  const { totalNumMaleClient } = TotalNumOfMaleClient(service);
-  const { totalNumFemaleClient } = TotalNumOfFemaleClient(service);
-  const { totalNumOtherGenderClient } = TotalNumOfOtherGenderClient(service);
+  const { totalMaleClient, totalFemaleClient, totalOtherClient } =
+    TotalNumOfAllGender(service);
 
   let circleSeriesArray = [
-    totalNumMaleClient,
-    totalNumFemaleClient,
-    totalNumOtherGenderClient,
+    totalMaleClient,
+    totalFemaleClient,
+    totalOtherClient,
   ];
 
-  return circleSeriesArray;
+  return { circleSeriesArray };
 };

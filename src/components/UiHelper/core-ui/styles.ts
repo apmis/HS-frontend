@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const PageWrapper = styled.div`
   display: flex;
@@ -531,7 +531,7 @@ export const SingleBox = styled.div`
 export const StartCardWapper = styled.div`
   display: flex;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 5px;
 
   @media (max-width: 400px) {
     flex-direction: column;

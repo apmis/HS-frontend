@@ -1,115 +1,155 @@
-import { Box } from "@mui/material";
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import AppointmentCard from "./@sections/AppointmentCard";
-// import AppointmentGrid from "./@sections/AppointmentGrid";
-// import StatCard from "./@sections/StatCard";
-import PieChart from "../charts/PieChat";
-import TabPanel from "../Tabs/TabPanel";
-import { StyledTab, StyledTabs } from "../Tabs/Tabs";
-// import StatusBatch from "../core-ui/Grid/StatusBatch";
+import { Box, Stack, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+
+import { userDetails } from "../utils/fetchUserDetails";
+
+import ViewCard from "./@sections/ViewCard";
+import LineChart from "../charts/LineChart";
+import ColumnChart from "../charts/ColumnChart";
+
+import client from "../../../feathers";
 import {
-  DashboardBox,
+  TotalNumOfData,
+  TotalNewClientWithinAMonth,
+  TotalUpcomingAppointment,
+  ClientPaymentMode,
+  TotalDischargedPatient,
+  TotalAdmittedPatient,
+  ModelResult,
+} from "../utils/chartData/chartDataHandler";
+
+import { CircleSeriesData } from "../utils/chartData/circleSeries";
+import {
+  clientLineData,
+  AdmittedAndDischargedPatientLineData,
+} from "../utils/chartData/LineData";
+
+import {
   DashboardContainer,
   DashboardPageWrapper,
   StartCardWapper,
 } from "../core-ui/styles";
-import ViewCard from "./@sections/ViewCard";
+import CircleChart from "../charts/CircleChart";
+import { MaleAndFemaleColumnSeriesData } from "../utils/chartData/columeData";
 
-export const a11yProps = (index: number) => {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-};
+const ClinicDashboard = () => {
+  const [userName, setUserName] = useState("");
+  const [facilityName, setFacilityName] = useState("");
 
-const LandingPageDashboard = () => {
-  const [value, setValue] = useState(0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const clientService = client.service("/client");
+  const admissionService = client.service("/admission");
+  const appointmentService = client.service("/appointments");
+  const orderService = client.service("/order");
+  const { totalValue } = TotalNumOfData(clientService);
+  const { totalNewClient } = TotalNewClientWithinAMonth(appointmentService);
+  const { totalUpcomingAppointment } = TotalUpcomingAppointment(clientService);
+  const { monthNameForCurrentYear, newClientLineSeriesData } =
+    clientLineData(clientService);
+  const { circleSeriesArray } = CircleSeriesData(clientService);
+  const { paymentModeBarSeries } = ClientPaymentMode(clientService);
+  const { totalDischargedPatient } = TotalDischargedPatient(admissionService);
+  const { totalAdmittedPatient } = TotalAdmittedPatient(admissionService);
+  const totalInPatient = totalAdmittedPatient - totalDischargedPatient;
+
+  const { admittedAndDischargedPatientLineSeriesData } =
+    AdmittedAndDischargedPatientLineData(admissionService);
+
+  const { genderPatientXAxisLabel, maleAndFemaleColumnSeriesData } =
+    MaleAndFemaleColumnSeriesData(admissionService);
+
+  /**
+   * test
+   */
+
+  // const { modelResult } = ModelResult(admissionService);
+
+  // console.log("===>", {
+  //   modelResult: modelResult,
+  // });
+
+  useEffect(() => {
+    const { userFullName, facilityFullName } = userDetails();
+    setUserName(userFullName);
+    setFacilityName(facilityFullName);
+  }, []);
 
   return (
     <DashboardPageWrapper>
       <Box>
         <Box>
-          <h2>
-            Hello <span>Alex John</span>👋
-          </h2>
-          <p>
-            Welcome to your Client Module <span>@Your Company’s</span> Front
-            Desk
-          </p>
+          <Typography variant="h2">
+            Hello <span>{userName}</span>👋
+          </Typography>
+          <Typography variant="body1">
+            Welcome to your Client Module{" "}
+            <span>@Front Desk {facilityName}</span>
+          </Typography>
         </Box>
 
         <StartCardWapper>
-          <ViewCard count={40} title="Total Clients" />
-          <ViewCard count={16} title="Upcoming Appointments" hasFilter={true} />
-          <ViewCard count={56} title="Total New Clients" />
+          <ViewCard count={totalValue} title="Total Clients" />
+          <ViewCard
+            count={totalUpcomingAppointment}
+            title="Upcoming Appointments"
+          />
+          <ViewCard count={totalNewClient} title="Total New Clients" />
+          {/* <ViewCard count={30} title={`Doctor's on Duty`} /> */}
         </StartCardWapper>
 
         <DashboardContainer>
-          <DashboardBox>
-            <header>
-              <div className="top-header">
-                <h2>Appointment</h2>
-                <NavLink to="app/clients/appointments">View All</NavLink>
-              </div>
+          <Box
+            sx={{
+              display: "grid",
+              width: "100%",
+              gridGap: "10px",
+              gridTemplateColumns: { lg: "repeat(3, 1fr)", xs: "1fr" },
+            }}
+          >
+            {/* 1st column */}
+            <Box sx={{ width: "100%", p: 2 }}>
+              <ColumnChart
+                title="Payment Mode"
+                series={paymentModeBarSeries}
+                xLabels={["Cash", "HMO", "Comp", "Family Plan", "All"]}
+              />
+              <LineChart
+                title="2022"
+                monthArray={monthNameForCurrentYear}
+                series={admittedAndDischargedPatientLineSeriesData}
+              />
+            </Box>
 
-              <StyledTabs value={value} onChange={handleChange}>
-                <StyledTab label="This Month" {...a11yProps(0)} />
-                <StyledTab label="This Week" {...a11yProps(1)} />
-                <StyledTab label="Today" {...a11yProps(2)} />
-              </StyledTabs>
-            </header>
-            <TabPanel value={value} index={0}>
-              <AppointmentCard />
-              <AppointmentCard />
-              <AppointmentCard />
-              <AppointmentCard />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <AppointmentCard />
-              <AppointmentCard />
-              <AppointmentCard />
-              <AppointmentCard />{" "}
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              <AppointmentCard />
-            </TabPanel>
-          </DashboardBox>
-          <DashboardBox className="lg">
-            {/* <div className="container">
-              <header>
-                <div className="top-header">
-                  <h2>Overview of Appointment</h2>
-                </div>
+            {/* 2nd column */}
+            <Box sx={{ width: "100%", p: 2 }}>
+              <LineChart
+                title="New Clients"
+                monthArray={monthNameForCurrentYear}
+                series={newClientLineSeriesData}
+              />
+              <ColumnChart
+                title="Patient Age"
+                series={maleAndFemaleColumnSeriesData}
+                xLabels={genderPatientXAxisLabel}
+              />
+            </Box>
 
-                <div style={{ display: "flex", overflow: "scroll" }}>
-                  <StatusBatch status="cancelled" />
-                  <StatusBatch label="Confirmed" status="confirmed" />
-                  <StatusBatch label="Attended" status="attended" />
-                  <StatusBatch label="Absent" status="absent" />
-                  <StatusBatch label="Rescheduled" status="rescheduled" />
-                </div>
-              </header>
-
-              <AppointmentGrid />
-            </div> */}
-
-            <div className="container">
-              <header>
-                <div className="top-header">
-                  <h2>At a glance</h2>
-                </div>
-              </header>
-              <PieChart />
-            </div>
-          </DashboardBox>
+            {/* 3rd column */}
+            <Box sx={{ width: "100%", p: 2 }}>
+              <CircleChart
+                series={circleSeriesArray}
+                labels={["Male", "Female", "Other"]}
+                title="Total Client by Gender"
+              />
+              {/* <Stack direction="row">
+                <ViewCard count={totalDischargedPatient} title="Out Patients" />
+                <ViewCard count={totalInPatient} title="In Patients" />
+              </Stack> */}
+            </Box>
+          </Box>
         </DashboardContainer>
       </Box>
     </DashboardPageWrapper>
   );
 };
 
-export default LandingPageDashboard;
+export default ClinicDashboard;

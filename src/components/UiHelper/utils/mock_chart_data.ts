@@ -102,13 +102,13 @@ export const horizontalSeries = [
 
 export const lineSeries = [
   {
-    name: "2021",
+    name: "2022",
     data: [31, 40, 28, 51, 42, 109, 100, 30, 20, 60, 50, 10],
   },
-  // {
-  //   name: 'series2',
-  //   data: [11, 32, 45, 32, 34, 52, 41],
-  // },
+  {
+    name: "series2",
+    data: [11, 32, 45, 32, 34, 52, 41],
+  },
 ];
 
 export const mixedSeries = [

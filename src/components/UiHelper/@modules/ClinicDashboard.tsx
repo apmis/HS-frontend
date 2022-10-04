@@ -1,5 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
-import React from "react";
+import { Box, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 
 import ViewCard from "./@sections/ViewCard";
 import LineChart from "../charts/LineChart";
@@ -11,11 +11,11 @@ import {
   TotalNewClientWithinAMonth,
   TotalUpcomingAppointment,
   ClientPaymentMode,
-  TotalDischargedPatient,
-  TotalAdmittedPatient,
+  // TotalDischargedPatient,
+  // TotalAdmittedPatient,
 } from "../utils/chartData/chartDataHandler";
 import { CircleSeriesData } from "../utils/chartData/circleSeries";
-import { clientLineData } from "../utils/chartData/newClientPerMonthLineData";
+import { clientLineData } from "../utils/chartData/LineData";
 
 import {
   DashboardContainer,
@@ -23,32 +23,42 @@ import {
   StartCardWapper,
 } from "../core-ui/styles";
 import CircleChart from "../charts/CircleChart";
+import { userDetails } from "../utils/fetchUserDetails";
 
 const ClinicDashboard = () => {
+  const [userName, setUserName] = useState("");
+  const [facilityName, setFacilityName] = useState("");
+
   const clientService = client.service("/client");
-  const admissionService = client.service("/admission");
+  // const admissionService = client.service("/admission");
   const appointmentService = client.service("/appointments");
   const { totalValue } = TotalNumOfData(clientService);
   const { totalNewClient } = TotalNewClientWithinAMonth(appointmentService);
   const { totalUpcomingAppointment } = TotalUpcomingAppointment(clientService);
   const { monthNameForCurrentYear, newClientLineSeriesData } =
     clientLineData(clientService);
-  const circleSeriesData = CircleSeriesData(clientService);
+  const { circleSeriesArray } = CircleSeriesData(clientService);
   const { paymentModeBarSeries } = ClientPaymentMode(clientService);
-  const { totalDischargedPatient } = TotalDischargedPatient(admissionService);
-  const { totalAdmittedPatient } = TotalAdmittedPatient(admissionService);
-  const totalInPatient = totalAdmittedPatient - totalDischargedPatient;
+  // const { totalDischargedPatient } = TotalDischargedPatient(admissionService);
+  // const { totalAdmittedPatient } = TotalAdmittedPatient(admissionService);
+  // const totalInPatient = totalAdmittedPatient - totalDischargedPatient;
+
+  useEffect(() => {
+    const { userFullName, facilityFullName } = userDetails();
+    setUserName(userFullName);
+    setFacilityName(facilityFullName);
+  }, []);
 
   return (
     <DashboardPageWrapper>
       <Box>
         <Box>
           <Typography variant="h2">
-            Hello <span>Alex John</span>👋
+            Hello <span>{userName}</span>👋
           </Typography>
           <Typography variant="body1">
-            Welcome to your Client Module <span>@Your Company’s</span> Front
-            Desk
+            Welcome to your Client Module{" "}
+            <span>@Front Desk {facilityName}</span>
           </Typography>
         </Box>
 
@@ -59,7 +69,7 @@ const ClinicDashboard = () => {
             title="Upcoming Appointments"
           />
           <ViewCard count={totalNewClient} title="Total New Clients" />
-          <ViewCard count={30} title={`Doctor's on Duty`} />
+          {/* <ViewCard count={30} title={`Doctor's on Duty`} /> */}
         </StartCardWapper>
 
         <DashboardContainer>
@@ -87,13 +97,14 @@ const ClinicDashboard = () => {
             </Box>
             <Box sx={{ width: "100%", p: 2 }}>
               <CircleChart
-                series={circleSeriesData}
+                series={circleSeriesArray}
                 labels={["Male", "Female", "Other"]}
+                title="Total Client by Gender"
               />
-              <Stack direction="row">
+              {/* <Stack direction="row">
                 <ViewCard count={totalDischargedPatient} title="Out Patients" />
                 <ViewCard count={totalInPatient} title="In Patients" />
-              </Stack>
+              </Stack> */}
             </Box>
           </Box>
         </DashboardContainer>
